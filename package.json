@@ -1,0 +1,33 @@
+{
+  "name": "react-tanstack-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.67.2",
+    "@tanstack/react-query-devtools": "^5.67.2",
+    "@tanstack/react-router": "^1.114.15",
+    "@tanstack/router-devtools": "^1.114.15",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.16.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.12",
+    "@tanstack/router-plugin": "^1.114.15",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.12",
+    "typescript": "~5.7.3",
+    "vite": "^6.2.1"
+  }
+}
