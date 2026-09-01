@@ -10,11 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuditRouteImport } from './routes/audit'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
+import { Route as LocalSeoGbpRouteImport } from './routes/local-seo-gbp'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as SystemsAutoRouteImport } from './routes/systems-auto'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ThankYouRouteImport } from './routes/thank-you'
+import { Route as WebsitesCareRouteImport } from './routes/websites-care'
+import { Route as WorkRouteImport } from './routes/work'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -22,31 +38,165 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiePolicyRoute = CookiePolicyRouteImport.update({
+  id: '/cookie-policy',
+  path: '/cookie-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocalSeoGbpRoute = LocalSeoGbpRouteImport.update({
+  id: '/local-seo-gbp',
+  path: '/local-seo-gbp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SystemsAutoRoute = SystemsAutoRouteImport.update({
+  id: '/systems-auto',
+  path: '/systems-auto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThankYouRoute = ThankYouRouteImport.update({
+  id: '/thank-you',
+  path: '/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsitesCareRoute = WebsitesCareRouteImport.update({
+  id: '/websites-care',
+  path: '/websites-care',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkRoute = WorkRouteImport.update({
+  id: '/work',
+  path: '/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/audit': typeof AuditRoute
+  '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
+  '/local-seo-gbp': typeof LocalSeoGbpRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/systems-auto': typeof SystemsAutoRoute
+  '/terms': typeof TermsRoute
+  '/thank-you': typeof ThankYouRoute
+  '/websites-care': typeof WebsitesCareRoute
+  '/work': typeof WorkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/audit': typeof AuditRoute
+  '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
+  '/local-seo-gbp': typeof LocalSeoGbpRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/systems-auto': typeof SystemsAutoRoute
+  '/terms': typeof TermsRoute
+  '/thank-you': typeof ThankYouRoute
+  '/websites-care': typeof WebsitesCareRoute
+  '/work': typeof WorkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/audit': typeof AuditRoute
+  '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
+  '/local-seo-gbp': typeof LocalSeoGbpRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/systems-auto': typeof SystemsAutoRoute
+  '/terms': typeof TermsRoute
+  '/thank-you': typeof ThankYouRoute
+  '/websites-care': typeof WebsitesCareRoute
+  '/work': typeof WorkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/about'
+    | '/audit'
+    | '/contact'
+    | '/cookie-policy'
+    | '/local-seo-gbp'
+    | '/privacy-policy'
+    | '/systems-auto'
+    | '/terms'
+    | '/thank-you'
+    | '/websites-care'
+    | '/work'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | '/$'
+    | '/about'
+    | '/audit'
+    | '/contact'
+    | '/cookie-policy'
+    | '/local-seo-gbp'
+    | '/privacy-policy'
+    | '/systems-auto'
+    | '/terms'
+    | '/thank-you'
+    | '/websites-care'
+    | '/work'
+  id:
+    | '__root__'
+    | '/'
+    | '/$'
+    | '/about'
+    | '/audit'
+    | '/contact'
+    | '/cookie-policy'
+    | '/local-seo-gbp'
+    | '/privacy-policy'
+    | '/systems-auto'
+    | '/terms'
+    | '/thank-you'
+    | '/websites-care'
+    | '/work'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
+  AuditRoute: typeof AuditRoute
+  ContactRoute: typeof ContactRoute
+  CookiePolicyRoute: typeof CookiePolicyRoute
+  LocalSeoGbpRoute: typeof LocalSeoGbpRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  SystemsAutoRoute: typeof SystemsAutoRoute
+  TermsRoute: typeof TermsRoute
+  ThankYouRoute: typeof ThankYouRoute
+  WebsitesCareRoute: typeof WebsitesCareRoute
+  WorkRoute: typeof WorkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +208,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -65,12 +222,93 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookie-policy': {
+      id: '/cookie-policy'
+      path: '/cookie-policy'
+      fullPath: '/cookie-policy'
+      preLoaderRoute: typeof CookiePolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/local-seo-gbp': {
+      id: '/local-seo-gbp'
+      path: '/local-seo-gbp'
+      fullPath: '/local-seo-gbp'
+      preLoaderRoute: typeof LocalSeoGbpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/systems-auto': {
+      id: '/systems-auto'
+      path: '/systems-auto'
+      fullPath: '/systems-auto'
+      preLoaderRoute: typeof SystemsAutoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/thank-you': {
+      id: '/thank-you'
+      path: '/thank-you'
+      fullPath: '/thank-you'
+      preLoaderRoute: typeof ThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/websites-care': {
+      id: '/websites-care'
+      path: '/websites-care'
+      fullPath: '/websites-care'
+      preLoaderRoute: typeof WebsitesCareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/work': {
+      id: '/work'
+      path: '/work'
+      fullPath: '/work'
+      preLoaderRoute: typeof WorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
+  AuditRoute: AuditRoute,
+  ContactRoute: ContactRoute,
+  CookiePolicyRoute: CookiePolicyRoute,
+  LocalSeoGbpRoute: LocalSeoGbpRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  SystemsAutoRoute: SystemsAutoRoute,
+  TermsRoute: TermsRoute,
+  ThankYouRoute: ThankYouRoute,
+  WebsitesCareRoute: WebsitesCareRoute,
+  WorkRoute: WorkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
