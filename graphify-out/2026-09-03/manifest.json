@@ -1,9 +1,9 @@
 {
   "package.json": {
-    "mtime": 1788408807.134565,
-    "seen": 1788408849.9735,
-    "ast_hash": "7a8032d3d6fcae6f960ffd831fe699c0",
-    "semantic_hash": "7a8032d3d6fcae6f960ffd831fe699c0"
+    "mtime": 1788409558.5889397,
+    "seen": 1788409675.626966,
+    "ast_hash": "494365e41cee9d3216cadbab19e64a34",
+    "semantic_hash": "494365e41cee9d3216cadbab19e64a34"
   },
   "src/components/Navbar.tsx": {
     "mtime": 1788407941.993198,
@@ -1020,10 +1020,10 @@
     "semantic_hash": "618f8dda54b497ee05330db7cb5fff5a"
   },
   "server.mjs": {
-    "mtime": 1788408739.5876741,
-    "seen": 1788408849.9738445,
-    "ast_hash": "f72861d26f8bd24327ccf6fa096f49e6",
-    "semantic_hash": "f72861d26f8bd24327ccf6fa096f49e6"
+    "mtime": 1788409567.9514146,
+    "seen": 1788409675.6274145,
+    "ast_hash": "6dfeb8b49686b91ed038763172be40be",
+    "semantic_hash": "6dfeb8b49686b91ed038763172be40be"
   },
   "src/router.tsx": {
     "mtime": 1788408676.9694924,
@@ -1036,5 +1036,11 @@
     "seen": 1788409002.2232695,
     "ast_hash": "35fb4e55f0111499d3f26cf1e3643fee",
     "semantic_hash": "35fb4e55f0111499d3f26cf1e3643fee"
+  },
+  "scripts/generate-sitemap.mjs": {
+    "mtime": 1788409538.4614296,
+    "seen": 1788409675.6271899,
+    "ast_hash": "a5d41dd6d6b5af0f38b5cf03866dff4b",
+    "semantic_hash": "a5d41dd6d6b5af0f38b5cf03866dff4b"
   }
 }
