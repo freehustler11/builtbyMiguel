@@ -7,11 +7,11 @@ export const Route = createFileRoute('/terms')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title: 'Terms of Service | Built by Miguel',
+        title: 'Terms of Service | built by Miguel',
       },
       {
         name: 'description',
-        content: 'Terms of Service for software development, Local SEO retainers, and care plan services provided by Built by Miguel.',
+        content: 'Terms of Service for software development, Local SEO retainers, and care plan services provided by built by Miguel.',
       },
     ],
     links: [
@@ -49,21 +49,21 @@ function TermsPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">1. Agreement to Terms</h2>
           <p>
-            By accessing https://builtbymiguel.net or engaging Built by Miguel for software development, Local SEO, or care plans, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, please do not use our services.
+            By accessing https://builtbymiguel.net or engaging built by Miguel for software development, Local SEO, or care plans, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, please do not use our services.
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">2. Scope of Services</h2>
           <p>
-            Built by Miguel provides technical software engineering, website development, Google Business Profile management, local citation optimization, and custom workflow automations as outlined in individual client proposals and service level agreements (SLAs).
+            built by Miguel provides technical software engineering, website development, Google Business Profile management, local citation optimization, and custom workflow automations as outlined in individual client proposals and service level agreements (SLAs).
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">3. Intellectual Property & Code Ownership</h2>
           <p>
-            Upon receipt of full payment for design sprints and custom development milestones, full intellectual property rights, source code, design assets, and database configurations transfer entirely to the client. Built by Miguel retains no proprietary lock-in on custom code created for your business.
+            Upon receipt of full payment for design sprints and custom development milestones, full intellectual property rights, source code, design assets, and database configurations transfer entirely to the client. built by Miguel retains no proprietary lock-in on custom code created for your business.
           </p>
         </section>
 
@@ -77,7 +77,7 @@ function TermsPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">5. Limitation of Liability</h2>
           <p>
-            While we apply industry-best engineering and search optimization practices, Google algorithm adjustments and local search dynamics are controlled by third-party search engines. Built by Miguel is not liable for indirect, incidental, or consequential damages resulting from platform updates or third-party service outages.
+            While we apply industry-best engineering and search optimization practices, Google algorithm adjustments and local search dynamics are controlled by third-party search engines. built by Miguel is not liable for indirect, incidental, or consequential damages resulting from platform updates or third-party service outages.
           </p>
         </section>
 

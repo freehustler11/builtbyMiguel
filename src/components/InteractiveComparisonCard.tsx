@@ -29,7 +29,7 @@ export function InteractiveComparisonCard() {
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            ⚡ Built by Miguel
+            ⚡ built by Miguel
           </button>
           <button
             type="button"

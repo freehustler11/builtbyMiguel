@@ -45,7 +45,7 @@ const SYSTEMS_JSON_LD = {
       name: 'Custom Business Systems & Workflow Automation',
       provider: {
         '@type': 'LocalBusiness',
-        name: 'Built by Miguel',
+        name: 'built by Miguel',
         url: 'https://builtbymiguel.net',
       },
       description:
@@ -73,7 +73,7 @@ export const Route = createFileRoute('/systems-auto')({
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
         title:
-          'Custom Business Systems & Workflow Automation | Built by Miguel',
+          'Custom Business Systems & Workflow Automation | built by Miguel',
       },
       {
         name: 'description',
@@ -90,7 +90,7 @@ export const Route = createFileRoute('/systems-auto')({
       {
         property: 'og:title',
         content:
-          'Custom Business Systems & Workflow Automation | Built by Miguel',
+          'Custom Business Systems & Workflow Automation | built by Miguel',
       },
       {
         property: 'og:description',

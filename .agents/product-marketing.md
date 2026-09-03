@@ -1,4 +1,4 @@
-# Product Marketing Context: Built by Miguel
+# Product Marketing Context: built by Miguel
 
 **Document Version:** 1.0.0  
 **Last Updated:** 2026-09-01  
@@ -9,7 +9,7 @@
 ## 1. Product Overview
 
 - **One-Line Description:** High-performance React websites, Google Business Profile (GBP) optimization, and automated dispatch pipelines for local service contractors.
-- **What It Does:** Built by Miguel replaces bloated WordPress agency retainers with custom-engineered software systems. We build fast, clean web applications, execute surgical Google Maps entity optimization for sustainable local search visibility, and automate lead intake to notify business owners instantly via SMS.
+- **What It Does:** built by Miguel replaces bloated WordPress agency retainers with custom-engineered software systems. We build fast, clean web applications, execute surgical Google Maps entity optimization for sustainable local search visibility, and automate lead intake to notify business owners instantly via SMS.
 - **Product Category:** Local SEO, Custom Web Development, Business Automation & Systems Engineering.
 - **Product Type:** Done-For-You (DFY) Technical Growth Engineering & Monthly Performance Retainers.
 - **Business Model & Pricing:**
@@ -51,7 +51,7 @@
 
 ## 4. Key Differentiators & Positioning
 
-| Traditional Marketing Agency | Built by Miguel (Systems Engineering Approach) |
+| Traditional Marketing Agency | built by Miguel (Systems Engineering Approach) |
 | :--- | :--- |
 | Cookie-cutter WordPress themes & page builders | Handcrafted React & Vite edge-hosted web applications |
 | Slow mobile load times & bloated theme CSS | Fast, clean React architecture with zero plugin bloat |

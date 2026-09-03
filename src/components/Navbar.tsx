@@ -76,7 +76,7 @@ export function Navbar() {
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
-                  Built by Miguel
+                  built by Miguel
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
               </div>

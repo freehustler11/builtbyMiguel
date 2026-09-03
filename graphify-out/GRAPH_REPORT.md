@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `aa850f67`
+- Built from commit: `56ca70dd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -2058,7 +2058,7 @@ Nodes (6): Canonical Overrides Hreflang, Canonicalization & i18n, International 
 
 ### Community 367 - "Product Marketing Context: Built by Miguel"
 Cohesion: 0.25
-Nodes (7): 1. Product Overview, 2. Target Audience & Ideal Customer Profile (ICP), 3. Pain Points & Problems, 4. Key Differentiators & Positioning, 5. Messaging Pillars, 6. Changelog, Product Marketing Context: Built by Miguel
+Nodes (7): 1. Product Overview, 2. Target Audience & Ideal Customer Profile (ICP), 3. Pain Points & Problems, 4. Key Differentiators & Positioning, 5. Messaging Pillars, 6. Changelog, Product Marketing Context: built by Miguel
 
 ### Community 368 - "Post-Purchase Flow"
 Cohesion: 0.33

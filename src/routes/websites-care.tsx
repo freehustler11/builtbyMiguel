@@ -43,7 +43,7 @@ const WEBSITES_JSON_LD = {
       name: 'High-Speed Custom Websites & Care Plans',
       provider: {
         '@type': 'LocalBusiness',
-        name: 'Built by Miguel',
+        name: 'built by Miguel',
         url: 'https://builtbymiguel.net',
       },
       description:
@@ -71,7 +71,7 @@ export const Route = createFileRoute('/websites-care')({
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
         title:
-          'High-Speed Websites & Monthly Care Plans | Built by Miguel',
+          'High-Speed Websites & Monthly Care Plans | built by Miguel',
       },
       {
         name: 'description',
@@ -88,7 +88,7 @@ export const Route = createFileRoute('/websites-care')({
       {
         property: 'og:title',
         content:
-          'High-Speed Websites & Monthly Care Plans | Built by Miguel',
+          'High-Speed Websites & Monthly Care Plans | built by Miguel',
       },
       {
         property: 'og:description',

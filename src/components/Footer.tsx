@@ -69,7 +69,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-base text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
-                  Built by Miguel
+                  built by Miguel
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
               </div>
@@ -221,7 +221,7 @@ export function Footer() {
       <div className="border-t border-slate-100 dark:border-slate-800 bg-[#fafafc] dark:bg-[#070A0F] py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 dark:text-slate-500">
           <div>
-            © {currentYear} Built by Miguel. All rights reserved.
+            © {currentYear} built by Miguel. All rights reserved.
           </div>
 
           <div className="flex flex-wrap items-center gap-6">

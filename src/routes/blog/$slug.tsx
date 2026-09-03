@@ -30,16 +30,16 @@ export const Route = createFileRoute('/blog/$slug')({
         meta: [
           { charSet: 'utf-8' },
           { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-          { title: 'Article Not Found | Built by Miguel' },
+          { title: 'Article Not Found | built by Miguel' },
           { name: 'robots', content: 'noindex, nofollow' },
         ],
       }
     }
 
     const metaTitleText = post.metaTitle?.trim() || post.title
-    const title = metaTitleText.includes('Built by Miguel')
+    const title = metaTitleText.toLowerCase().includes('built by miguel')
       ? metaTitleText
-      : `${metaTitleText} | Built by Miguel`
+      : `${metaTitleText} | built by Miguel`
     const description =
       post.metaDescription ||
       `Read ${post.title} - actionable SEO, web development, and local growth strategy from Miguel Umbac.`
@@ -93,7 +93,7 @@ export const Route = createFileRoute('/blog/$slug')({
             },
             publisher: {
               '@type': 'Organization',
-              name: 'Built by Miguel',
+              name: 'built by Miguel',
               url: 'https://builtbymiguel.net',
             },
           }),

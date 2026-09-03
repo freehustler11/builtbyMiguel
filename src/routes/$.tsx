@@ -7,11 +7,11 @@ export const Route = createFileRoute('/$')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title: '404 - Page Not Found | Built by Miguel',
+        title: '404 - Page Not Found | built by Miguel',
       },
       {
         name: 'description',
-        content: 'The page you are looking for does not exist on Built by Miguel.',
+        content: 'The page you are looking for does not exist on built by Miguel.',
       },
     ],
   }),

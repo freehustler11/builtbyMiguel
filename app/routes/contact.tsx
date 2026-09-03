@@ -33,7 +33,7 @@ export const Route = createFileRoute('/contact')({
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
-        content: 'Contact & Project Inquiries | Built by Miguel',
+        content: 'Contact & Project Inquiries | built by Miguel',
       },
       {
         property: 'og:description',

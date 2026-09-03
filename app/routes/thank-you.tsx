@@ -15,7 +15,7 @@ export const Route = createFileRoute('/thank-you')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title: 'Thank You | Audit Request Received | Built by Miguel',
+        title: 'Thank You | Audit Request Received | built by Miguel',
       },
       {
         name: 'robots',
@@ -25,7 +25,7 @@ export const Route = createFileRoute('/thank-you')({
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
-        content: 'Audit Request Confirmed | Built by Miguel',
+        content: 'Audit Request Confirmed | built by Miguel',
       },
       {
         property: 'og:description',

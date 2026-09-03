@@ -98,7 +98,7 @@ export const Route = createFileRoute('/admin/posts')({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { title: 'Blog CMS & SEO Studio | Built by Miguel Admin' },
+      { title: 'Blog CMS & SEO Studio | built by Miguel Admin' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -1925,8 +1925,8 @@ function AdminPostsPage() {
                       </div>
                       <div className="text-base text-[#1a0dab] dark:text-[#8ab4f8] font-medium hover:underline cursor-pointer">
                         {editorMetaTitle || editorTitle
-                          ? `${editorMetaTitle || editorTitle} | Built by Miguel`
-                          : 'Article SEO Title | Built by Miguel'}
+                          ? `${editorMetaTitle || editorTitle} | built by Miguel`
+                          : 'Article SEO Title | built by Miguel'}
                       </div>
                       <div className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">
                         {editorMetaDesc || 'Write a meta description to see how it appears in Google search results...'}
@@ -2007,7 +2007,7 @@ function AdminPostsPage() {
                       <input
                         type="text"
                         disabled
-                        value="Built by Miguel (Miguel Umbac)"
+                        value="built by Miguel (Miguel Umbac)"
                         className="w-full px-4 py-2.5 rounded-2xl text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
                       />
                     </div>

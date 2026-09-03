@@ -44,7 +44,7 @@ const LOCAL_SEO_JSON_LD = {
       name: 'Local SEO & Google Business Profile Optimization',
       provider: {
         '@type': 'LocalBusiness',
-        name: 'Built by Miguel',
+        name: 'built by Miguel',
         url: 'https://builtbymiguel.net',
       },
       description:
@@ -106,7 +106,7 @@ export const Route = createFileRoute('/local-seo-gbp')({
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
         title:
-          'Local SEO & Google Business Profile Optimization | Built by Miguel',
+          'Local SEO & Google Business Profile Optimization | built by Miguel',
       },
       {
         name: 'description',
@@ -123,7 +123,7 @@ export const Route = createFileRoute('/local-seo-gbp')({
       {
         property: 'og:title',
         content:
-          'Local SEO & Google Business Profile Optimization | Built by Miguel',
+          'Local SEO & Google Business Profile Optimization | built by Miguel',
       },
       {
         property: 'og:description',

@@ -7,11 +7,11 @@ export const Route = createFileRoute('/cookie-policy')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title: 'Cookie Policy | Built by Miguel',
+        title: 'Cookie Policy | built by Miguel',
       },
       {
         name: 'description',
-        content: 'Cookie Policy for Built by Miguel. Minimal cookies, zero tracking ad pixels, and strict performance metrics.',
+        content: 'Cookie Policy for built by Miguel. Minimal cookies, zero tracking ad pixels, and strict performance metrics.',
       },
     ],
     links: [

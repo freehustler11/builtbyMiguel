@@ -19,7 +19,7 @@ export const Route = createFileRoute('/about')({
       {
         name: 'description',
         content:
-          'Learn about Miguel, the developer and growth strategist behind Built by Miguel. Discover the engineering philosophy combining sub-second websites, local SEO, and custom business automation.',
+          'Learn about Miguel, the developer and growth strategist behind built by Miguel. Discover the engineering philosophy combining sub-second websites, local SEO, and custom business automation.',
       },
       {
         name: 'keywords',

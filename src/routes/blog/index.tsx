@@ -17,7 +17,7 @@ export const Route = createFileRoute('/blog/')({
     return await getPublicPostsServerFn()
   },
   head: () => {
-    const title = 'Blog & Local Growth Playbooks | Built by Miguel'
+    const title = 'Blog & Local Growth Playbooks | built by Miguel'
     const description =
       'Actionable SEO breakdowns, Google Business Profile ranking tactics, and high-converting web architecture playbooks for home service contractors and local businesses.'
     const canonical = 'https://builtbymiguel.net/blog'

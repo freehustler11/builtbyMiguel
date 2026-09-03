@@ -33,7 +33,7 @@ export const Route = createFileRoute('/audit')({
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
-        content: 'Claim Your Free 5-Minute Local Visibility Audit | Built by Miguel',
+        content: 'Claim Your Free 5-Minute Local Visibility Audit | built by Miguel',
       },
       {
         property: 'og:description',

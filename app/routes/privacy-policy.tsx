@@ -7,11 +7,11 @@ export const Route = createFileRoute('/privacy-policy')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title: 'Privacy Policy | Built by Miguel',
+        title: 'Privacy Policy | built by Miguel',
       },
       {
         name: 'description',
-        content: 'Privacy Policy and data protection terms for Built by Miguel. Zero data selling, strict form confidentiality, and minimal analytics.',
+        content: 'Privacy Policy and data protection terms for built by Miguel. Zero data selling, strict form confidentiality, and minimal analytics.',
       },
     ],
     links: [
@@ -107,7 +107,7 @@ function PrivacyPolicyPage() {
             If you have questions regarding this Privacy Policy, contact:
           </p>
           <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 font-mono text-xs text-slate-600 dark:text-slate-400 space-y-1 shadow-sm dark:shadow-none">
-            <div className="font-bold text-slate-900 dark:text-white">Built by Miguel</div>
+            <div className="font-bold text-slate-900 dark:text-white">built by Miguel</div>
             <div>Attn: Privacy & Data Protection</div>
             <div>Email: <a href="mailto:privacy@builtbymiguel.net" className="text-rose-600 dark:text-rose-400">privacy@builtbymiguel.net</a></div>
             <div>Website: https://builtbymiguel.net</div>

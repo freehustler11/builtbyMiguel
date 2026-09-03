@@ -26,7 +26,7 @@ export function AdminNav({ activeTab, title, description, actions }: AdminNavPro
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-transparent dark:from-rose-950/50 dark:via-rose-950/20 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50 text-xs font-mono font-bold tracking-wide shadow-xs">
             <ShieldCheck className="w-4 h-4 text-rose-500 shrink-0" />
-            <span>Built by Miguel · Admin</span>
+            <span>built by Miguel · Admin</span>
           </div>
 
           {/* Navigation Segmented Switcher */}

@@ -25,7 +25,7 @@ export const Route = createFileRoute('/login')({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { title: 'Admin Login | Built by Miguel' },
+      { title: 'Admin Login | built by Miguel' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -82,7 +82,7 @@ function LoginPage() {
             className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 hover:text-slate-900 dark:hover:text-slate-300 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Return to Built by Miguel</span>
+            <span>Return to built by Miguel</span>
           </a>
         </div>
 

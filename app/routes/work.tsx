@@ -20,7 +20,7 @@ export const Route = createFileRoute('/work')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title: 'Built In-House Software & Client Results | Built by Miguel',
+        title: 'Built In-House Software & Client Results | built by Miguel',
       },
       {
         name: 'description',
@@ -36,7 +36,7 @@ export const Route = createFileRoute('/work')({
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
-        content: 'Built In-House Software & Client Results | Built by Miguel',
+        content: 'Built In-House Software & Client Results | built by Miguel',
       },
       {
         property: 'og:description',

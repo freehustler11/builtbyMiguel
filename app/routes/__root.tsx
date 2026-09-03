@@ -17,7 +17,7 @@ export interface RouterContext {
 const LOCAL_BUSINESS_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
-  name: 'Built by Miguel',
+  name: 'built by Miguel',
   url: 'https://builtbymiguel.net',
   logo: 'https://builtbymiguel.net/logo.png',
   image: 'https://builtbymiguel.net/og-image.png',
@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content: 'tSjijzpdCvum7gpDKpknIY2FN0jLAGuRNfOiAf0Kg3o',
       },
       {
-        title: 'Built by Miguel | High-Performance Websites & Local SEO Systems',
+        title: 'built by Miguel | High-Performance Websites & Local SEO Systems',
       },
       {
         name: 'description',
@@ -100,11 +100,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {
         property: 'og:site_name',
-        content: 'Built by Miguel',
+        content: 'built by Miguel',
       },
       {
         property: 'og:title',
-        content: 'Built by Miguel | High-Performance Websites & Local SEO Systems',
+        content: 'built by Miguel | High-Performance Websites & Local SEO Systems',
       },
       {
         property: 'og:description',
@@ -126,7 +126,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {
         name: 'twitter:title',
-        content: 'Built by Miguel | High-Performance Websites & Local SEO Systems',
+        content: 'built by Miguel | High-Performance Websites & Local SEO Systems',
       },
       {
         name: 'twitter:description',

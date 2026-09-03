@@ -73,7 +73,7 @@ export const Route = createFileRoute('/admin/media')({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { title: 'Media Library & Files | Admin | Built by Miguel' },
+      { title: 'Media Library & Files | Admin | built by Miguel' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),

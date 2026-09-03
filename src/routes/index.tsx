@@ -28,7 +28,7 @@ export const Route = createFileRoute('/')({
       },
       {
         title:
-          'Built by Miguel | Local SEO, Fast Websites & Custom Business Systems',
+          'built by Miguel | Local SEO, Fast Websites & Custom Business Systems',
       },
       {
         name: 'description',
@@ -45,7 +45,7 @@ export const Route = createFileRoute('/')({
       {
         property: 'og:title',
         content:
-          'Built by Miguel | Local SEO, Fast Websites & Custom Business Systems',
+          'built by Miguel | Local SEO, Fast Websites & Custom Business Systems',
       },
       {
         property: 'og:description',
