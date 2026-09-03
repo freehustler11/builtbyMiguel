@@ -26,6 +26,7 @@ import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as WebsitesCareRouteImport } from './routes/websites-care'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
@@ -115,6 +116,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPostsRoute = AdminPostsRouteImport.update({
   id: '/posts',
   path: '/posts',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/media'
     | '/admin/posts'
     | '/blog/$slug'
     | '/admin/'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/media'
     | '/admin/posts'
     | '/blog/$slug'
     | '/admin'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/media'
     | '/admin/posts'
     | '/blog/$slug'
     | '/admin/'
@@ -407,6 +419,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/posts': {
       id: '/admin/posts'
       path: '/posts'
@@ -432,11 +451,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminMediaRoute: typeof AdminMediaRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminMediaRoute: AdminMediaRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

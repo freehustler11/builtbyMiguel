@@ -60,12 +60,23 @@ export async function runMigrations() {
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "custom_schema" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_title" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_text" text`
-    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_button_text" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_button_url" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_title" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_text" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_button_text" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_button_url" text`
+
+    // 5. Ensure media table exists
+    await sql`
+      CREATE TABLE IF NOT EXISTS "media" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "filename" text NOT NULL,
+        "file_url" text NOT NULL,
+        "mime_type" text NOT NULL,
+        "file_size" integer NOT NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
 
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {

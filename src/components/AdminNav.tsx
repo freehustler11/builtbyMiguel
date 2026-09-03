@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import {
   MessageSquare,
   FileText,
+  ImageIcon,
   ExternalLink,
   ShieldCheck,
   Activity,
@@ -10,7 +11,7 @@ import {
 import { LogoutButton } from './LogoutButton'
 
 interface AdminNavProps {
-  activeTab: 'messages' | 'posts'
+  activeTab: 'messages' | 'posts' | 'media'
   title: string
   description?: string
   actions?: React.ReactNode
@@ -52,6 +53,18 @@ export function AdminNav({ activeTab, title, description, actions }: AdminNavPro
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Blog CMS</span>
+            </Link>
+
+            <Link
+              to="/admin/media"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'media'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span>Media Library</span>
             </Link>
           </nav>
         </div>

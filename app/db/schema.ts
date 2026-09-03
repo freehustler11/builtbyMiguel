@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 /**
  * Messages table for storing Audit and Contact form inquiries
@@ -56,4 +56,20 @@ export const posts = pgTable('posts', {
 
 export type Post = typeof posts.$inferSelect
 export type NewPost = typeof posts.$inferInsert
+
+/**
+ * Media table for storing uploaded images, documents, and assets
+ */
+export const media = pgTable('media', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  filename: text('filename').notNull(),
+  fileUrl: text('file_url').notNull(),
+  mimeType: text('mime_type').notNull(),
+  fileSize: integer('file_size').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export type Media = typeof media.$inferSelect
+export type NewMedia = typeof media.$inferInsert
+
 
