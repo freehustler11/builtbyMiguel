@@ -354,6 +354,410 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
   )
 }
 
+function traverseInlineNode(node: Node): string {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent || ''
+  }
+
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return ''
+  }
+
+  const el = node as HTMLElement
+  const tag = el.tagName.toLowerCase()
+  const style = el.getAttribute('style') || ''
+  const isBold = tag === 'b' || tag === 'strong' || /font-weight:\s*(bold|[6-9]00)/i.test(style)
+  const isItalic = tag === 'i' || tag === 'em' || /font-style:\s*italic/i.test(style)
+  const isCode = tag === 'code' || /font-family:\s*(monospace|courier|consolas)/i.test(style)
+  const isStrike = tag === 's' || tag === 'del' || tag === 'strike' || /text-decoration:\s*line-through/i.test(style)
+
+  let content = ''
+  for (const child of Array.from(el.childNodes)) {
+    content += traverseInlineNode(child)
+  }
+
+  if (!content.trim()) return content
+
+  if (tag === 'a') {
+    const href = el.getAttribute('href')
+    if (href && href !== content) {
+      return `[${content}](${href})`
+    }
+  }
+
+  if (tag === 'br') {
+    return '\n'
+  }
+
+  if (isCode) {
+    return `\`${content.replace(/`/g, '')}\``
+  }
+  if (isBold) {
+    return `**${content.trim()}**`
+  }
+  if (isItalic) {
+    return `*${content.trim()}*`
+  }
+  if (isStrike) {
+    return `~~${content.trim()}~~`
+  }
+
+  return content
+}
+
+function parseHtmlInline(html: string): string {
+  if (!html) return ''
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html')
+  return traverseInlineNode(doc.body.firstChild || doc.body).trim()
+}
+
+function parseGoogleSheetsTable(body: HTMLElement): string | null {
+  const table = body.querySelector('table')
+  if (!table) return null
+
+  const rows = Array.from(table.querySelectorAll('tr'))
+  if (rows.length === 0) return null
+
+  const grid: Array<
+    Array<{
+      text: string
+      html: string
+      isBold: boolean
+      fontSizePt: number
+      headingLevel: number | null
+    }>
+  > = []
+
+  for (const tr of rows) {
+    const cells = Array.from(tr.querySelectorAll('td, th'))
+    if (cells.length === 0) continue
+
+    const rowData = cells.map((td) => {
+      const text = td.textContent?.trim() || ''
+      const style = td.getAttribute('style') || ''
+      const innerHtml = td.innerHTML
+
+      let fontSizePt = 0
+      const ptMatch = style.match(/font-size:\s*([\d.]+)pt/i)
+      const pxMatch = style.match(/font-size:\s*([\d.]+)px/i)
+      if (ptMatch) {
+        fontSizePt = parseFloat(ptMatch[1])
+      } else if (pxMatch) {
+        fontSizePt = parseFloat(pxMatch[1]) * 0.75
+      }
+
+      const isBold =
+        /font-weight:\s*(bold|[6-9]00)/i.test(style) ||
+        td.querySelector('b, strong') !== null
+
+      const hTag = td.querySelector('h1, h2, h3, h4, h5, h6')
+      let headingLevel: number | null = null
+      if (hTag) {
+        headingLevel = parseInt(hTag.tagName.replace('H', ''), 10)
+      }
+
+      const hPrefixMatch = text.match(/^(?:h([1-6])|heading\s*([1-6]))[:\s\t-]+(.*)$/i)
+      if (hPrefixMatch) {
+        headingLevel = parseInt(hPrefixMatch[1] || hPrefixMatch[2], 10)
+      } else if (/^#+\s/.test(text)) {
+        headingLevel = text.match(/^#+/)?.[0].length || 2
+      }
+
+      return {
+        text,
+        html: innerHtml,
+        isBold,
+        fontSizePt,
+        headingLevel,
+      }
+    })
+
+    grid.push(rowData)
+  }
+
+  if (grid.length === 0) return null
+
+  // Check for 2-column Outline (e.g. Col 1: H2/H3/Body, Col 2: Text)
+  const isOutlineFormat =
+    grid.length > 1 &&
+    grid.every((r) => r.length <= 2) &&
+    grid.some((r) => {
+      const col1 = r[0]?.text.toLowerCase().trim() || ''
+      return /^(h[1-6]|heading\s*[1-6]|title|intro|body|paragraph|bullet|quote|callout|cta|takeaway)$/i.test(
+        col1
+      )
+    })
+
+  if (isOutlineFormat) {
+    const markdownLines: string[] = []
+    for (const row of grid) {
+      if (row.length === 0 || !row[0]) continue
+      const col1 = row[0].text.toLowerCase().trim()
+      const col2Node = row[1]
+      const col2Text = col2Node ? parseHtmlInline(col2Node.html) : ''
+      if (!col2Text) continue
+
+      if (/^(h1|heading\s*1|title)$/i.test(col1)) {
+        markdownLines.push(`# ${col2Text}\n`)
+      } else if (/^(h2|heading\s*2|section)$/i.test(col1)) {
+        markdownLines.push(`## ${col2Text}\n`)
+      } else if (/^(h3|heading\s*3|subsection)$/i.test(col1)) {
+        markdownLines.push(`### ${col2Text}\n`)
+      } else if (/^(h4|heading\s*4|step)$/i.test(col1)) {
+        markdownLines.push(`#### ${col2Text}\n`)
+      } else if (/^(h5|heading\s*5)$/i.test(col1)) {
+        markdownLines.push(`##### ${col2Text}\n`)
+      } else if (/^(h6|heading\s*6)$/i.test(col1)) {
+        markdownLines.push(`###### ${col2Text}\n`)
+      } else if (/^(bullet|list|item)$/i.test(col1)) {
+        markdownLines.push(`- ${col2Text}`)
+      } else if (/^(quote|callout|takeaway)$/i.test(col1)) {
+        markdownLines.push(`> ${col2Text}\n`)
+      } else if (/^(cta)$/i.test(col1)) {
+        markdownLines.push(`> **CTA:** ${col2Text}\n`)
+      } else {
+        markdownLines.push(`${col2Text}\n`)
+      }
+    }
+    return markdownLines.join('\n')
+  }
+
+  // Check for 1-column Outline down rows
+  const maxCols = Math.max(...grid.map((r) => r.length))
+  if (maxCols === 1) {
+    const markdownLines: string[] = []
+    for (const row of grid) {
+      const cell = row[0]
+      if (!cell || !cell.text) continue
+
+      const cleanInline = parseHtmlInline(cell.html)
+
+      if (cell.headingLevel) {
+        const hashes = '#'.repeat(cell.headingLevel)
+        const textWithoutPrefix = cleanInline
+          .replace(/^(?:h[1-6]|heading\s*[1-6])[:\s\t-]+/i, '')
+          .replace(/^#+\s*/, '')
+        markdownLines.push(`${hashes} ${textWithoutPrefix}\n`)
+      } else if (cell.fontSizePt >= 20 || (cell.fontSizePt >= 16 && cell.isBold)) {
+        markdownLines.push(`## ${cleanInline}\n`)
+      } else if (cell.fontSizePt >= 13.5 && cell.isBold) {
+        markdownLines.push(`### ${cleanInline}\n`)
+      } else if (cell.fontSizePt >= 12 && cell.isBold && cleanInline.length < 120) {
+        markdownLines.push(`#### ${cleanInline}\n`)
+      } else {
+        markdownLines.push(`${cleanInline}\n`)
+      }
+    }
+    return markdownLines.join('\n')
+  }
+
+  // Multi-column Table Grid
+  const tableLines: string[] = []
+  const colCount = maxCols
+  const headerRow = grid[0]
+
+  if (headerRow) {
+    const headerCells = Array.from({ length: colCount }, (_, i) => {
+      const cell = headerRow[i]
+      return cell ? parseHtmlInline(cell.html).replace(/\|/g, '\\|') : ''
+    })
+    tableLines.push(`| ${headerCells.join(' | ')} |`)
+    tableLines.push(`| ${Array(colCount).fill('---').join(' | ')} |`)
+  }
+
+  for (let r = 1; r < grid.length; r++) {
+    const row = grid[r]
+    const cells = Array.from({ length: colCount }, (_, i) => {
+      const cell = row[i]
+      return cell ? parseHtmlInline(cell.html).replace(/\|/g, '\\|') : ''
+    })
+    tableLines.push(`| ${cells.join(' | ')} |`)
+  }
+
+  return tableLines.join('\n')
+}
+
+function parseHtmlNodes(container: HTMLElement): string {
+  const result: string[] = []
+
+  for (const child of Array.from(container.childNodes)) {
+    if (child.nodeType === Node.TEXT_NODE) {
+      const text = child.textContent?.trim()
+      if (text) result.push(text)
+      continue
+    }
+
+    if (child.nodeType !== Node.ELEMENT_NODE) continue
+
+    const el = child as HTMLElement
+    const tag = el.tagName.toLowerCase()
+    const style = el.getAttribute('style') || ''
+
+    let fontSizePt = 0
+    const ptMatch = style.match(/font-size:\s*([\d.]+)pt/i)
+    const pxMatch = style.match(/font-size:\s*([\d.]+)px/i)
+    if (ptMatch) fontSizePt = parseFloat(ptMatch[1])
+    else if (pxMatch) fontSizePt = parseFloat(pxMatch[1]) * 0.75
+
+    const isBold =
+      /font-weight:\s*(bold|[6-9]00)/i.test(style) ||
+      el.querySelector('b, strong') !== null
+
+    if (tag === 'h1' || fontSizePt >= 24) {
+      result.push(`# ${parseHtmlInline(el.innerHTML)}\n`)
+    } else if (
+      tag === 'h2' ||
+      (fontSizePt >= 17 && (isBold || fontSizePt >= 20))
+    ) {
+      result.push(`## ${parseHtmlInline(el.innerHTML)}\n`)
+    } else if (tag === 'h3' || (fontSizePt >= 14 && isBold)) {
+      result.push(`### ${parseHtmlInline(el.innerHTML)}\n`)
+    } else if (tag === 'h4' || (fontSizePt >= 12.5 && isBold)) {
+      result.push(`#### ${parseHtmlInline(el.innerHTML)}\n`)
+    } else if (tag === 'h5') {
+      result.push(`##### ${parseHtmlInline(el.innerHTML)}\n`)
+    } else if (tag === 'h6') {
+      result.push(`###### ${parseHtmlInline(el.innerHTML)}\n`)
+    } else if (tag === 'p' || tag === 'div') {
+      const inner = parseHtmlInline(el.innerHTML)
+      if (inner) {
+        const hMatch = inner.match(/^(?:h([1-6])|heading\s*([1-6]))[:\s\t-]+(.*)$/i)
+        if (hMatch) {
+          const lvl = parseInt(hMatch[1] || hMatch[2], 10)
+          result.push(`${'#'.repeat(lvl)} ${hMatch[3]}\n`)
+        } else {
+          result.push(`${inner}\n`)
+        }
+      }
+    } else if (tag === 'ul') {
+      const lis = Array.from(el.querySelectorAll('li'))
+      for (const li of lis) {
+        result.push(`- ${parseHtmlInline(li.innerHTML)}`)
+      }
+      result.push('')
+    } else if (tag === 'ol') {
+      const lis = Array.from(el.querySelectorAll('li'))
+      lis.forEach((li, idx) => {
+        result.push(`${idx + 1}. ${parseHtmlInline(li.innerHTML)}`)
+      })
+      result.push('')
+    } else if (tag === 'blockquote') {
+      result.push(`> ${parseHtmlInline(el.innerHTML)}\n`)
+    } else if (tag === 'hr') {
+      result.push('---\n')
+    } else if (tag === 'table') {
+      const tableMd = parseGoogleSheetsTable(el.parentElement || container)
+      if (tableMd) result.push(tableMd)
+    } else {
+      const inner = parseHtmlNodes(el)
+      if (inner) result.push(inner)
+    }
+  }
+
+  return result.join('\n\n')
+}
+
+function convertPlainTextOutlineOrTable(text: string): string {
+  if (!text) return ''
+  const lines = text.split(/\r?\n/)
+  const result: string[] = []
+  const hasTabs = lines.some((l) => l.includes('\t'))
+
+  if (!hasTabs) {
+    for (const line of lines) {
+      const trimmed = line.trim()
+      const hMatch = trimmed.match(/^(?:h([1-6])|heading\s*([1-6]))[:\s\t-]+(.*)$/i)
+      if (hMatch) {
+        const lvl = parseInt(hMatch[1] || hMatch[2], 10)
+        result.push(`${'#'.repeat(lvl)} ${hMatch[3]}`)
+      } else {
+        result.push(line)
+      }
+    }
+    return result.join('\n')
+  }
+
+  const rows = lines.map((l) => l.split('\t').map((c) => c.trim()))
+  const is2ColOutline =
+    rows.length > 1 &&
+    rows.every((r) => r.length <= 2) &&
+    rows.some((r) =>
+      /^(h[1-6]|heading\s*[1-6]|title|body|bullet|quote)$/i.test(r[0])
+    )
+
+  if (is2ColOutline) {
+    for (const r of rows) {
+      if (r.length === 0 || !r[0]) continue
+      const col1 = r[0].toLowerCase()
+      const col2 = r[1] || ''
+      if (/^(h1|heading\s*1|title)$/i.test(col1)) {
+        result.push(`# ${col2}\n`)
+      } else if (/^(h2|heading\s*2)$/i.test(col1)) {
+        result.push(`## ${col2}\n`)
+      } else if (/^(h3|heading\s*3)$/i.test(col1)) {
+        result.push(`### ${col2}\n`)
+      } else if (/^(h4|heading\s*4)$/i.test(col1)) {
+        result.push(`#### ${col2}\n`)
+      } else if (/^(bullet|list)$/i.test(col1)) {
+        result.push(`- ${col2}`)
+      } else if (/^(quote|callout)$/i.test(col1)) {
+        result.push(`> ${col2}\n`)
+      } else {
+        result.push(`${col2 || r[0]}\n`)
+      }
+    }
+    return result.join('\n')
+  }
+
+  const maxCols = Math.max(...rows.map((r) => r.length))
+  if (maxCols > 1) {
+    const tableLines: string[] = []
+    const headerRow = rows[0]
+    tableLines.push(
+      `| ${Array.from({ length: maxCols }, (_, i) => headerRow[i] || '').join(' | ')} |`
+    )
+    tableLines.push(`| ${Array(maxCols).fill('---').join(' | ')} |`)
+    for (let i = 1; i < rows.length; i++) {
+      const r = rows[i]
+      tableLines.push(
+        `| ${Array.from({ length: maxCols }, (_, j) => r[j] || '').join(' | ')} |`
+      )
+    }
+    return tableLines.join('\n')
+  }
+
+  return text
+}
+
+export function convertHtmlOrSheetsToMarkdown(html: string, plainText: string): string {
+  if (!html || !html.trim()) {
+    return convertPlainTextOutlineOrTable(plainText)
+  }
+
+  try {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, 'text/html')
+    const body = doc.body
+
+    const isGoogleSheets =
+      html.includes('google-sheets-html-origin') ||
+      body.querySelector('google-sheets-html-origin') !== null ||
+      body.querySelector('table') !== null
+
+    if (isGoogleSheets) {
+      const sheetsResult = parseGoogleSheetsTable(body)
+      if (sheetsResult) return sheetsResult
+    }
+
+    const parsed = parseHtmlNodes(body).trim()
+    return parsed || convertPlainTextOutlineOrTable(plainText)
+  } catch (err) {
+    console.error('Failed to parse clipboard HTML:', err)
+    return convertPlainTextOutlineOrTable(plainText)
+  }
+}
+
 interface SeoCheck {
   id: string
   label: string
@@ -963,6 +1367,45 @@ function AdminPostsPage() {
     setCodeSnippet('')
     setIsCodeModalOpen(false)
     addToast('Code Block Inserted', `Formatted for ${codeLang}.`)
+  }
+
+  const handleEditorPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const html = e.clipboardData.getData('text/html')
+    const plainText = e.clipboardData.getData('text/plain')
+
+    // Detect HTML formatting, Google Sheets tables, tab-separated rows, or explicit heading markers
+    if (
+      html ||
+      plainText.includes('\t') ||
+      /^(?:h[1-6]|heading\s*[1-6])[:\s\t-]/i.test(plainText) ||
+      /^#+\s/m.test(plainText)
+    ) {
+      const converted = convertHtmlOrSheetsToMarkdown(html, plainText)
+      if (converted && converted.trim() !== plainText.trim()) {
+        e.preventDefault()
+        const textarea = e.currentTarget
+        const start = textarea.selectionStart || 0
+        const end = textarea.selectionEnd || 0
+        const currentValue = editorContent
+        const before = currentValue.substring(0, start)
+        const after = currentValue.substring(end)
+
+        const separatorBefore = before.length > 0 && !before.endsWith('\n') ? '\n\n' : ''
+        const insertion = `${separatorBefore}${converted}`
+        const newValue = before + insertion + after
+
+        setEditorContent(newValue)
+        addToast(
+          'Google Sheets / Rich Text Converted',
+          'Retained headings (H2, H3, H4) and converted sheets formatting to Markdown.'
+        )
+
+        setTimeout(() => {
+          textarea.selectionStart = textarea.selectionEnd = start + insertion.length
+          textarea.focus()
+        }, 0)
+      }
+    }
   }
 
   const handleSavePost = async (e: React.FormEvent) => {
@@ -1989,6 +2432,11 @@ function AdminPostsPage() {
                       >
                         <Link2 className="w-3.5 h-3.5 text-emerald-500" />
                       </button>
+
+                      <div className="hidden sm:flex items-center gap-1 pl-1.5 border-l border-slate-200 dark:border-slate-700 text-[10px] font-mono font-medium text-slate-500 dark:text-slate-400">
+                        <Sparkles className="w-3 h-3 text-emerald-500" />
+                        <span>Sheets / Doc Paste Active</span>
+                      </div>
                     </div>
                   </div>
 
@@ -1999,7 +2447,8 @@ function AdminPostsPage() {
                       required
                       value={editorContent}
                       onChange={(e) => setEditorContent(e.target.value)}
-                      placeholder="Write your article in Markdown here...&#10;&#10;Use ## for major sections (auto-indexed in Table of Contents)&#10;Use ### for subheadings&#10;Use #### for detailed steps&#10;Click 'Media Library' to insert photos and documents with 1-click."
+                      onPaste={handleEditorPaste}
+                      placeholder="Write or paste your article here...&#10;&#10;✓ Direct Paste from Google Sheets & Docs retains H2, H3, H4, bold, lists, and tables&#10;✓ Use ## for major sections (auto-indexed in Table of Contents)&#10;✓ Click 'Media Library' to insert photos and documents with 1-click."
                       className="w-full h-full min-h-[450px] font-mono text-xs sm:text-sm bg-transparent border-0 focus:outline-none focus:ring-0 resize-none leading-relaxed text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600"
                     />
                   </div>
