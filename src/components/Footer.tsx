@@ -1,4 +1,4 @@
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import {
   ExternalLink,
   Sparkles,
@@ -8,18 +8,22 @@ import {
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
-  const location = useLocation()
-  const pathname = location.pathname
+  const routerPath = useRouterState({ select: (s) => s.location.pathname })
+  const browserPath = typeof window !== 'undefined' ? window.location.pathname : ''
+  const currentPath = routerPath || browserPath || ''
 
-  // Hide the global banner on blog reading pages, internal admin pages, and conversion form pages
-  const shouldHideBanner =
-    pathname.startsWith('/blog') ||
-    pathname.startsWith('/admin') ||
-    pathname.startsWith('/messages') ||
-    pathname === '/login' ||
-    pathname === '/audit' ||
-    pathname === '/contact' ||
-    pathname === '/thank-you'
+  // Strictly hide the global CTA banner on all blog pages, admin panels, and direct conversion forms
+  const isBlog = currentPath.includes('/blog')
+  const isAdmin =
+    currentPath.includes('/admin') ||
+    currentPath.includes('/messages') ||
+    currentPath.includes('/login')
+  const isConversionPage =
+    currentPath.includes('/audit') ||
+    currentPath.includes('/contact') ||
+    currentPath.includes('/thank-you')
+
+  const shouldHideBanner = isBlog || isAdmin || isConversionPage
 
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0F17] text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
