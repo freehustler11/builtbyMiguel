@@ -327,7 +327,7 @@ function HomePage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                  <span>Client portal integration (`app.builtbymiguel.net`)</span>
+                  <span>Client portal integration & reporting dashboard</span>
                 </li>
               </ul>
             </div>

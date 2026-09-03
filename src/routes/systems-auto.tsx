@@ -26,7 +26,7 @@ const SYSTEMS_FAQ = [
       'Yes. We build custom API bridges and webhooks into Housecall Pro, Jobber, ServiceTitan, HubSpot, Zoho, HighLevel, Airtable, or custom SQL databases.',
   },
   {
-    question: 'What is the Client Portal on app.builtbymiguel.net?',
+    question: 'What is the Private Client Portal?',
     answer:
       'Every client receives private portal access where you can monitor live lead activity, search ranking heatmaps, site health metrics, monthly invoices, and submit new development requests with 1 click.',
   },
@@ -288,7 +288,7 @@ function SystemsAutoPage() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Secure client portal integration (`app.builtbymiguel.net`)</span>
+                <span>Secure client portal integration & business dashboard</span>
               </li>
             </ul>
           </div>

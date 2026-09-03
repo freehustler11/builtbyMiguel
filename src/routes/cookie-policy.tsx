@@ -64,7 +64,7 @@ function CookiePolicyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">2. Cookies We Use</h2>
           <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300 pl-2">
-            <li><strong className="text-slate-800 dark:text-slate-100">Essential Technical Cookies:</strong> Necessary to enable security, form submission validation, and client portal authentication (`app.builtbymiguel.net`).</li>
+            <li><strong className="text-slate-800 dark:text-slate-100">Essential Technical Cookies:</strong> Necessary to enable security, form submission validation, and portal session authentication.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Diagnostic Performance Metrics:</strong> Privacy-friendly, aggregate analytics to measure page load speeds, Core Web Vitals, and server response times.</li>
           </ul>
         </section>

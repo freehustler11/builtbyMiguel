@@ -161,16 +161,14 @@ export function Footer() {
             </div>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <a
-                  href="https://app.builtbymiguel.net"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  to="/login"
                   className="inline-flex items-center gap-1.5 text-slate-800 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 font-semibold transition-colors group"
                 >
                   <Lock className="w-3.5 h-3.5 text-slate-700 dark:text-slate-400" />
                   <span>Portal Login</span>
                   <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-rose-600 dark:group-hover:text-rose-400" />
-                </a>
+                </Link>
               </li>
               <li>
                 <Link
@@ -210,15 +208,13 @@ export function Footer() {
             <Link to="/cookie-policy" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
               Cookie Policy
             </Link>
-            <a
-              href="https://app.builtbymiguel.net"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/login"
               className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors inline-flex items-center gap-1"
             >
               <span>Portal Login</span>
               <ExternalLink className="w-3 h-3" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

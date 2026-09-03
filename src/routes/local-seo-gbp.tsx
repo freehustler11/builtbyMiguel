@@ -32,7 +32,7 @@ const LOCAL_SEO_FAQ = [
   {
     question: 'Do I get access to live ranking reports and heatmaps?',
     answer:
-      'Yes. You receive access to your private client portal on app.builtbymiguel.net, featuring live geo-grid heatmaps showing your exact ranking position across your local service area.',
+      'Yes. You receive access to your private client portal, featuring live geo-grid heatmaps showing your exact ranking position across your local service area.',
   },
 ]
 
