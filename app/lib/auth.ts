@@ -6,7 +6,7 @@ const COOKIE_NAME = 'admin_session'
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 // 7 days in seconds
 
 function getSecrets() {
-  const adminPassword = process.env.ADMIN_PASSWORD || 'builtbymiguel_admin_2026'
+  const adminPassword = process.env.ADMIN_PASSWORD || 'L0v3hurt$11290523'
   const sessionSecret =
     process.env.SESSION_SECRET ||
     'builtbymiguel-secure-auth-secret-key-32chars!'
