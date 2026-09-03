@@ -1,6 +1,6 @@
 import { createRouter as createTanStackRouter } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query'
-import { routeTree } from './routeTree.gen'
+import { routeTree } from '../src/routeTree.gen'
 
 export function createRouter() {
   const queryClient = new QueryClient({

@@ -3,7 +3,7 @@ import ReactDOMServer from 'react-dom/server'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createMemoryHistory } from '@tanstack/history'
-import { routeTree } from './routeTree.gen'
+import { routeTree } from '../src/routeTree.gen'
 
 export async function render(url: string) {
   const queryClient = new QueryClient({
