@@ -122,11 +122,11 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     // Generate secure signed session token
     const token = await createSessionToken()
 
-    // Set secure HTTP-only cookie
+    // Set secure HTTP-only cookie (works seamlessly behind Dokploy/Traefik/Cloudflare reverse proxies)
     setCookie(COOKIE_NAME, token, {
       path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       sameSite: 'lax',
       maxAge: SESSION_MAX_AGE,
     })
@@ -142,7 +142,7 @@ export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
     deleteCookie(COOKIE_NAME, {
       path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       sameSite: 'lax',
     })
     return { success: true }
