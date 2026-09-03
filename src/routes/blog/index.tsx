@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   Sparkles,
-  ArrowRight,
   Clock,
   Calendar,
   Key,
@@ -9,7 +8,6 @@ import {
   ArrowUpRight,
   FolderOpen,
   Tag,
-  Filter,
 } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { getPublicPostsServerFn } from '../../server/posts'
@@ -101,21 +99,31 @@ function BlogIndexPage() {
   }, [posts, selectedCategory])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12 sm:space-y-16">
+    <div className="relative space-y-12 sm:space-y-16 py-6 sm:py-10">
+      {/* Soft Ambient Light Glow Matching Homepage */}
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-teal-100/40 dark:from-rose-500/15 dark:via-orange-500/10 dark:to-teal-500/15 blur-[130px] rounded-full pointer-events-none -z-10" />
+
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
-          <Sparkles className="w-3.5 h-3.5" /> Growth Playbooks & Case Studies
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm backdrop-blur-md">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
+          </span>
+          <span>Growth Playbooks & Case Studies</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          Local SEO, Web Architecture & Systems
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.18]">
+          Local SEO, Web Architecture &{' '}
+          <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
+            Automated Systems.
+          </span>
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
           Deep-dive technical guides on ranking in competitive local markets, turning website traffic into booked calls, and automating client operations.
         </p>
       </div>
 
-      {/* Category Filter Pills (if multiple categories exist) */}
+      {/* Category Filter Pills */}
       {categories.length > 1 && (
         <div className="flex items-center justify-center flex-wrap gap-2 pt-2">
           {categories.map((cat) => {
@@ -127,8 +135,8 @@ function BlogIndexPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-slate-900 dark:bg-rose-600 text-white shadow-sm ring-1 ring-slate-900/10'
-                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-800'
+                    ? 'bg-slate-900 dark:bg-rose-600 text-white shadow-md ring-1 ring-slate-900/10'
+                    : 'bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm shadow-2xs'
                 }`}
               >
                 {cat}
@@ -140,8 +148,8 @@ function BlogIndexPage() {
 
       {/* Articles Grid */}
       {filteredPosts.length === 0 ? (
-        <div className="max-w-xl mx-auto rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-10 text-center space-y-6 shadow-sm">
-          <div className="mx-auto flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
+        <div className="max-w-xl mx-auto rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md p-10 text-center space-y-6 shadow-sm">
+          <div className="mx-auto flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50">
             <BookOpen className="w-6 h-6" />
           </div>
           <div className="space-y-2">
@@ -174,7 +182,7 @@ function BlogIndexPage() {
             return (
               <article
                 key={post.id}
-                className="group flex flex-col justify-between rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] overflow-hidden hover:border-rose-500/40 dark:hover:border-rose-500/50 hover:shadow-xl transition-all duration-300 shadow-sm"
+                className="group flex flex-col justify-between rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md overflow-hidden hover:border-rose-500/40 dark:hover:border-rose-500/50 hover:shadow-xl transition-all duration-300 shadow-sm"
               >
                 <div>
                   {/* Cover Image or Aesthetic Pattern */}
@@ -189,7 +197,7 @@ function BlogIndexPage() {
                     </div>
                   ) : (
                     <div className="w-full h-36 bg-gradient-to-br from-slate-100 via-rose-50/30 to-amber-50/20 dark:from-slate-900 dark:via-rose-950/20 dark:to-slate-800 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/80">
-                      <div className="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-rose-500 shadow-sm">
+                      <div className="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-rose-500 shadow-sm border border-slate-200/60 dark:border-slate-700">
                         <BookOpen className="w-5 h-5" />
                       </div>
                     </div>
@@ -207,7 +215,7 @@ function BlogIndexPage() {
                       )}
 
                       {post.keyword && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider border border-rose-200/60 dark:border-rose-900/50">
                           <Key className="w-2.5 h-2.5" />
                           {post.keyword}
                         </span>
@@ -246,7 +254,7 @@ function BlogIndexPage() {
                         {tagsList.slice(0, 3).map((t, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-mono"
+                            className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-mono border border-slate-200/60 dark:border-slate-700/60"
                           >
                             <Tag className="w-2 h-2 text-slate-400" />
                             <span>{t}</span>

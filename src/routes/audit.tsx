@@ -86,11 +86,14 @@ function AuditPage() {
   }
 
   return (
-    <div className="space-y-20 sm:space-y-28 lg:space-y-32 py-8 sm:py-12 max-w-4xl mx-auto">
+    <div className="relative space-y-20 sm:space-y-28 lg:space-y-32 py-8 sm:py-12 max-w-4xl mx-auto">
+      {/* Soft Ambient Light Glow Matching Homepage */}
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-teal-100/40 dark:from-rose-500/15 dark:via-orange-500/10 dark:to-teal-500/15 blur-[130px] rounded-full pointer-events-none -z-10" />
+
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto">
         <div className="mb-8 sm:mb-10 flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5" /> 100% Free · 24-Hour Turnaround
           </div>
         </div>

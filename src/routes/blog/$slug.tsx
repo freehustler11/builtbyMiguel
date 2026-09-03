@@ -13,6 +13,7 @@ import {
   Copy,
   Zap,
   List,
+  Sparkles,
 } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { getPublicPostBySlugServerFn } from '../../server/posts'
@@ -194,11 +195,11 @@ function MarkdownRenderer({ content }: { content: string }) {
             return (
               <div
                 key={idx}
-                className="my-6 overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs"
+                className="my-6 overflow-x-auto rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs"
               >
                 <table className="w-full text-left text-xs sm:text-sm border-collapse">
                   <thead>
-                    <tr className="bg-slate-100 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700">
+                    <tr className="bg-slate-100/90 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700">
                       {headerRow.map((cell, cIdx) => (
                         <th
                           key={cIdx}
@@ -215,7 +216,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                         key={rIdx}
                         className={
                           rIdx % 2 === 0
-                            ? 'bg-white dark:bg-slate-900'
+                            ? 'bg-white/60 dark:bg-slate-900/60'
                             : 'bg-slate-50/50 dark:bg-slate-900/40'
                         }
                       >
@@ -241,7 +242,7 @@ function MarkdownRenderer({ content }: { content: string }) {
           return (
             <blockquote
               key={idx}
-              className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border-l-4 border-rose-500 text-slate-800 dark:text-slate-200 italic space-y-1 text-base sm:text-lg my-6 shadow-2xs"
+              className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-rose-50/60 via-amber-50/30 to-transparent dark:from-rose-950/30 dark:via-slate-900/40 dark:to-transparent border-l-4 border-rose-500 text-slate-800 dark:text-slate-200 italic space-y-1 text-base sm:text-lg my-6 shadow-2xs"
             >
               {trimmed
                 .replace(/^>\s+/, '')
@@ -403,7 +404,10 @@ function BlogPostPage() {
   const bottomBtnUrl = post.bottomCtaButtonUrl || '/audit'
 
   return (
-    <article className="min-h-screen py-6 sm:py-10 space-y-12">
+    <article className="relative min-h-screen py-6 sm:py-10 space-y-12">
+      {/* Soft Ambient Light Glow Matching Homepage */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[380px] bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-teal-100/40 dark:from-rose-500/15 dark:via-orange-500/10 dark:to-teal-500/15 blur-[140px] rounded-full pointer-events-none -z-10" />
+
       {/* Top Container: Navigation, Title, Category & Meta */}
       <header className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 text-center">
         {/* Back Button, Category & Keyword Breadcrumb */}
@@ -418,7 +422,7 @@ function BlogPostPage() {
 
           <div className="flex flex-wrap items-center gap-2">
             {post.category && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 shadow-2xs backdrop-blur-sm">
                 <FolderOpen className="w-3 h-3 text-rose-500" />
                 <span>{post.category}</span>
               </span>
@@ -433,9 +437,9 @@ function BlogPostPage() {
           </div>
         </div>
 
-        {/* Featured Cover Graphic (Clean & Centered) */}
+        {/* Featured Cover Graphic */}
         {post.featuredImage && (
-          <div className="mx-auto max-w-3xl rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md aspect-16/9">
+          <div className="mx-auto max-w-3xl rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 shadow-md aspect-16/9 backdrop-blur-sm">
             <img
               src={post.featuredImage}
               alt={post.title}
@@ -452,7 +456,7 @@ function BlogPostPage() {
 
           {/* Author Chip & Publication Meta */}
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-700 shadow-2xs backdrop-blur-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
               <span className="font-bold text-slate-900 dark:text-white">Miguel Umbac</span>
               <span className="text-slate-400">· Full-Stack SEO Engineer</span>
@@ -471,14 +475,14 @@ function BlogPostPage() {
         </div>
       </header>
 
-      {/* Main Body Section: Left Sticky Reading Guide (TOC + Mini CTA) + Center Article Content */}
+      {/* Main Body Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Left Sticky Sidebar: Table of Contents (TOP) + Subtle Sidebar CTA (BELOW) */}
+          {/* Left Sticky Sidebar: Table of Contents + Subtle Sidebar CTA */}
           <aside className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 order-2 lg:order-1">
-            {/* 1. TABLE OF CONTENTS (TOP OF LEFT SIDEBAR - H2 ANCHORS) */}
+            {/* 1. TABLE OF CONTENTS */}
             {tocHeadings.length > 0 && (
-              <div className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+              <div className="p-6 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
                 <div className="flex items-center justify-between text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
                     <List className="w-4 h-4 text-rose-500" />
@@ -496,7 +500,7 @@ function BlogPostPage() {
                       key={i}
                       type="button"
                       onClick={() => scrollToHeading(h.id)}
-                      className="w-full text-left flex items-start gap-2.5 px-2.5 py-1.5 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition cursor-pointer leading-snug group"
+                      className="w-full text-left flex items-start gap-2.5 px-2.5 py-1.5 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition cursor-pointer leading-snug group"
                     >
                       <span className="font-mono text-[10px] text-slate-400 group-hover:text-rose-500 shrink-0 mt-0.5">
                         0{i + 1}
@@ -515,7 +519,7 @@ function BlogPostPage() {
                     <button
                       type="button"
                       onClick={copyArticleLink}
-                      className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer shadow-2xs"
+                      className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-50/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer shadow-2xs"
                       title="Copy link"
                     >
                       {copiedLink ? (
@@ -530,7 +534,7 @@ function BlogPostPage() {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs"
+                      className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-50/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs"
                       title="Share on X"
                     >
                       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -543,7 +547,7 @@ function BlogPostPage() {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 rounded-xl text-slate-500 hover:text-[#0A66C2] bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs"
+                      className="p-2 rounded-xl text-slate-500 hover:text-[#0A66C2] bg-slate-50/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs"
                       title="Share on LinkedIn"
                     >
                       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -555,8 +559,8 @@ function BlogPostPage() {
               </div>
             )}
 
-            {/* 2. SUBTLE, CALM SIDEBAR CTA (PLACED BELOW TABLE OF CONTENTS) */}
-            <div className="p-5 rounded-3xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+            {/* 2. SUBTLE, CALM SIDEBAR CTA */}
+            <div className="p-5 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
                   Resource
@@ -572,7 +576,7 @@ function BlogPostPage() {
               <Link
                 to={sidebarBtnUrl.startsWith('/') ? (sidebarBtnUrl as any) : undefined}
                 href={!sidebarBtnUrl.startsWith('/') ? sidebarBtnUrl : undefined}
-                className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition shadow-2xs cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-900 dark:text-white bg-slate-100/80 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 transition shadow-2xs cursor-pointer"
               >
                 <span>{sidebarBtnText}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -581,15 +585,15 @@ function BlogPostPage() {
           </aside>
 
           {/* Center Column: Focused Article Content Column */}
-          <section className="lg:col-span-8 space-y-8 bg-white dark:bg-[#111827] p-6 sm:p-10 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs order-1 lg:order-2">
-            {/* Key Takeaways Card (Soft neutral outline) */}
+          <section className="lg:col-span-8 space-y-8 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md p-6 sm:p-10 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm order-1 lg:order-2">
+            {/* Key Takeaways Card */}
             {post.metaDescription && (
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+              <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-rose-50/50 via-white to-amber-50/30 dark:from-rose-950/20 dark:via-slate-900/60 dark:to-slate-900/30 border border-rose-100 dark:border-rose-900/30 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
                   <Zap className="w-3.5 h-3.5 text-rose-500" />
                   <span>Key Summary</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
                   {post.metaDescription}
                 </p>
               </div>
@@ -608,7 +612,7 @@ function BlogPostPage() {
                 {tagsList.map((t, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono border border-slate-200 dark:border-slate-700"
+                    className="px-2.5 py-1 rounded-lg text-xs bg-slate-100/90 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono border border-slate-200/80 dark:border-slate-700"
                   >
                     #{t}
                   </span>
@@ -616,9 +620,9 @@ function BlogPostPage() {
               </div>
             )}
 
-            {/* Tasteful, Calm Article Conclusion Callout (Editable in CMS) */}
+            {/* Tasteful Article Conclusion Callout */}
             <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
-              <div className="p-6 sm:p-8 rounded-3xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-center space-y-3">
+              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-rose-50/40 via-white to-orange-50/30 dark:from-rose-950/20 dark:via-slate-900/60 dark:to-slate-900/30 border border-slate-200/80 dark:border-slate-800 text-center space-y-3">
                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                   {bottomTitle}
                 </h3>
@@ -641,7 +645,7 @@ function BlogPostPage() {
         </div>
       </main>
 
-      {/* Explore Related Blogs Section (Intelligently matched by Category & Tags) */}
+      {/* Explore Related Blogs Section */}
       {relatedPosts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
           <div className="flex items-center justify-between gap-4 pb-3 border-b border-slate-200 dark:border-slate-800">
@@ -670,7 +674,7 @@ function BlogPostPage() {
                   key={related.id}
                   to="/blog/$slug"
                   params={{ slug: related.slug }}
-                  className="group rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col"
+                  className="group rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col"
                 >
                   {/* Related Article Image */}
                   <div className="aspect-16/9 bg-slate-100 dark:bg-slate-800 overflow-hidden relative">
@@ -707,7 +711,7 @@ function BlogPostPage() {
 
                     <div className="inline-flex items-center gap-1 text-xs font-semibold text-rose-600 dark:text-rose-400 group-hover:translate-x-0.5 transition duration-150">
                       <span>Read Playbook</span>
-                      <ArrowRight className="w-3 h-3" />
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </div>
                   </div>
                 </Link>
