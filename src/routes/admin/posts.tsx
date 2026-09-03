@@ -578,10 +578,109 @@ function parseGoogleSheetsTable(body: HTMLElement): string | null {
   return tableLines.join('\n')
 }
 
-function parseHtmlNodes(container: HTMLElement): string {
+function parseStyleSheetClasses(
+  doc: Document
+): Map<string, { fontSizePt: number; isBold: boolean; isItalic: boolean; isCode: boolean }> {
+  const map = new Map<string, { fontSizePt: number; isBold: boolean; isItalic: boolean; isCode: boolean }>()
+  const styleTags = doc.querySelectorAll('style')
+
+  for (const styleEl of Array.from(styleTags)) {
+    const css = styleEl.textContent || ''
+    const ruleRegex = /\.([a-zA-Z0-9_-]+)\s*\{([^}]+)\}/g
+    let match: RegExpExecArray | null
+    while ((match = ruleRegex.exec(css)) !== null) {
+      const className = match[1]
+      const rules = match[2]
+
+      let fontSizePt = 0
+      const ptMatch = rules.match(/font-size:\s*([\d.]+)pt/i)
+      const pxMatch = rules.match(/font-size:\s*([\d.]+)px/i)
+      if (ptMatch) fontSizePt = parseFloat(ptMatch[1])
+      else if (pxMatch) fontSizePt = parseFloat(pxMatch[1]) * 0.75
+
+      const isBold = /font-weight:\s*(bold|[6-9]00)/i.test(rules)
+      const isItalic = /font-style:\s*italic/i.test(rules)
+      const isCode = /font-family:\s*['"]?(courier|consolas|monospace)/i.test(rules)
+
+      map.set(className, { fontSizePt, isBold, isItalic, isCode })
+    }
+  }
+
+  return map
+}
+
+function getElementStyleMetrics(
+  el: HTMLElement,
+  classMap: Map<string, any>
+): { fontSizePt: number; isBold: boolean; isItalic: boolean; isCode: boolean; headingTagLevel: number | null } {
+  const tag = el.tagName.toLowerCase()
+  let headingTagLevel: number | null = null
+  if (/^h[1-6]$/.test(tag)) {
+    headingTagLevel = parseInt(tag.replace('h', ''), 10)
+  }
+
+  let fontSizePt = 0
+  let isBold = tag === 'b' || tag === 'strong'
+  let isItalic = tag === 'i' || tag === 'em'
+  let isCode = tag === 'code' || tag === 'pre'
+
+  const style = el.getAttribute('style') || ''
+  const ptMatch = style.match(/font-size:\s*([\d.]+)pt/i)
+  const pxMatch = style.match(/font-size:\s*([\d.]+)px/i)
+  if (ptMatch) fontSizePt = parseFloat(ptMatch[1])
+  else if (pxMatch) fontSizePt = parseFloat(pxMatch[1]) * 0.75
+
+  if (/font-weight:\s*(bold|[6-9]00)/i.test(style)) isBold = true
+  if (/font-style:\s*italic/i.test(style)) isItalic = true
+  if (/font-family:\s*['"]?(courier|consolas|monospace)/i.test(style)) isCode = true
+
+  const classes = el.className && typeof el.className === 'string' ? el.className.split(/\s+/) : []
+  for (const c of classes) {
+    const classData = classMap.get(c)
+    if (classData) {
+      if (classData.fontSizePt > fontSizePt) fontSizePt = classData.fontSizePt
+      if (classData.isBold) isBold = true
+      if (classData.isItalic) isItalic = true
+      if (classData.isCode) isCode = true
+    }
+  }
+
+  // Check children spans for Google Docs inline heading styles
+  const spans = el.querySelectorAll('span')
+  for (const span of Array.from(spans)) {
+    const spanStyle = span.getAttribute('style') || ''
+    const spanPt = spanStyle.match(/font-size:\s*([\d.]+)pt/i)
+    const spanPx = spanStyle.match(/font-size:\s*([\d.]+)px/i)
+    let spanFontSize = 0
+    if (spanPt) spanFontSize = parseFloat(spanPt[1])
+    else if (spanPx) spanFontSize = parseFloat(spanPx[1]) * 0.75
+
+    if (spanFontSize > fontSizePt) fontSizePt = spanFontSize
+    if (/font-weight:\s*(bold|[6-9]00)/i.test(spanStyle) || span.querySelector('b, strong')) {
+      isBold = true
+    }
+
+    const spanClasses = span.className && typeof span.className === 'string' ? span.className.split(/\s+/) : []
+    for (const c of spanClasses) {
+      const classData = classMap.get(c)
+      if (classData) {
+        if (classData.fontSizePt > fontSizePt) fontSizePt = classData.fontSizePt
+        if (classData.isBold) isBold = true
+      }
+    }
+  }
+
+  return { fontSizePt, isBold, isItalic, isCode, headingTagLevel }
+}
+
+function parseHtmlNodes(container: HTMLElement, classMap: Map<string, any>): string {
   const result: string[] = []
 
-  for (const child of Array.from(container.childNodes)) {
+  // If container has Google Docs internal wrapper, drill into its children
+  const googleDocsWrapper = container.querySelector('b[id^="docs-internal-guid"]')
+  const targetRoot = googleDocsWrapper || container
+
+  for (const child of Array.from(targetRoot.childNodes)) {
     if (child.nodeType === Node.TEXT_NODE) {
       const text = child.textContent?.trim()
       if (text) result.push(text)
@@ -592,33 +691,33 @@ function parseHtmlNodes(container: HTMLElement): string {
 
     const el = child as HTMLElement
     const tag = el.tagName.toLowerCase()
-    const style = el.getAttribute('style') || ''
+    const { fontSizePt, isBold, headingTagLevel } = getElementStyleMetrics(el, classMap)
 
-    let fontSizePt = 0
-    const ptMatch = style.match(/font-size:\s*([\d.]+)pt/i)
-    const pxMatch = style.match(/font-size:\s*([\d.]+)px/i)
-    if (ptMatch) fontSizePt = parseFloat(ptMatch[1])
-    else if (pxMatch) fontSizePt = parseFloat(pxMatch[1]) * 0.75
-
-    const isBold =
-      /font-weight:\s*(bold|[6-9]00)/i.test(style) ||
-      el.querySelector('b, strong') !== null
-
-    if (tag === 'h1' || fontSizePt >= 24) {
-      result.push(`# ${parseHtmlInline(el.innerHTML)}\n`)
+    // Heading Evaluation (Google Docs Heading 1/2/3/4 or HTML <h1-h6>)
+    if (headingTagLevel === 1 || fontSizePt >= 23.5) {
+      const content = parseHtmlInline(el.innerHTML)
+      if (content) result.push(`# ${content}\n`)
     } else if (
-      tag === 'h2' ||
-      (fontSizePt >= 17 && (isBold || fontSizePt >= 20))
+      headingTagLevel === 2 ||
+      (fontSizePt >= 15.2 && (isBold || fontSizePt >= 18))
     ) {
-      result.push(`## ${parseHtmlInline(el.innerHTML)}\n`)
-    } else if (tag === 'h3' || (fontSizePt >= 14 && isBold)) {
-      result.push(`### ${parseHtmlInline(el.innerHTML)}\n`)
-    } else if (tag === 'h4' || (fontSizePt >= 12.5 && isBold)) {
-      result.push(`#### ${parseHtmlInline(el.innerHTML)}\n`)
-    } else if (tag === 'h5') {
-      result.push(`##### ${parseHtmlInline(el.innerHTML)}\n`)
-    } else if (tag === 'h6') {
-      result.push(`###### ${parseHtmlInline(el.innerHTML)}\n`)
+      const content = parseHtmlInline(el.innerHTML)
+      if (content) result.push(`## ${content}\n`)
+    } else if (headingTagLevel === 3 || (fontSizePt >= 13.2 && isBold)) {
+      const content = parseHtmlInline(el.innerHTML)
+      if (content) result.push(`### ${content}\n`)
+    } else if (
+      headingTagLevel === 4 ||
+      (fontSizePt >= 11.5 && fontSizePt < 13.2 && isBold && (el.textContent?.trim().length || 0) < 140)
+    ) {
+      const content = parseHtmlInline(el.innerHTML)
+      if (content) result.push(`#### ${content}\n`)
+    } else if (headingTagLevel === 5) {
+      const content = parseHtmlInline(el.innerHTML)
+      if (content) result.push(`##### ${content}\n`)
+    } else if (headingTagLevel === 6) {
+      const content = parseHtmlInline(el.innerHTML)
+      if (content) result.push(`###### ${content}\n`)
     } else if (tag === 'p' || tag === 'div') {
       const inner = parseHtmlInline(el.innerHTML)
       if (inner) {
@@ -650,7 +749,7 @@ function parseHtmlNodes(container: HTMLElement): string {
       const tableMd = parseGoogleSheetsTable(el.parentElement || container)
       if (tableMd) result.push(tableMd)
     } else {
-      const inner = parseHtmlNodes(el)
+      const inner = parseHtmlNodes(el, classMap)
       if (inner) result.push(inner)
     }
   }
@@ -739,18 +838,19 @@ export function convertHtmlOrSheetsToMarkdown(html: string, plainText: string): 
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, 'text/html')
     const body = doc.body
+    const classMap = parseStyleSheetClasses(doc)
 
     const isGoogleSheets =
       html.includes('google-sheets-html-origin') ||
       body.querySelector('google-sheets-html-origin') !== null ||
-      body.querySelector('table') !== null
+      (body.querySelector('table') !== null && !html.includes('docs-internal-guid'))
 
     if (isGoogleSheets) {
       const sheetsResult = parseGoogleSheetsTable(body)
       if (sheetsResult) return sheetsResult
     }
 
-    const parsed = parseHtmlNodes(body).trim()
+    const parsed = parseHtmlNodes(body, classMap).trim()
     return parsed || convertPlainTextOutlineOrTable(plainText)
   } catch (err) {
     console.error('Failed to parse clipboard HTML:', err)
