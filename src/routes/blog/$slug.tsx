@@ -141,7 +141,77 @@ interface TocItem {
 }
 
 /**
- * Enhanced Markdown renderer with smooth scroll-margin anchor IDs and styled tables
+ * Helper to render inline markdown: **bold**, *italic*, `code`, [text](url)
+ */
+function renderInlineFormatting(text: string): React.ReactNode {
+  // Regex splitting on markdown tokens
+  const parts: React.ReactNode[] = []
+  const regex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\))/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index))
+    }
+
+    const token = match[0]
+    if (token.startsWith('**') && token.endsWith('**')) {
+      parts.push(
+        <strong key={match.index} className="font-bold text-slate-900 dark:text-white">
+          {token.slice(2, -2)}
+        </strong>
+      )
+    } else if (token.startsWith('*') && token.endsWith('*')) {
+      parts.push(
+        <em key={match.index} className="italic">
+          {token.slice(1, -1)}
+        </em>
+      )
+    } else if (token.startsWith('`') && token.endsWith('`')) {
+      parts.push(
+        <code
+          key={match.index}
+          className="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-rose-600 dark:text-rose-400 font-mono text-xs border border-slate-200/60 dark:border-slate-700/60"
+        >
+          {token.slice(1, -1)}
+        </code>
+      )
+    } else if (token.startsWith('[') && token.includes('](') && token.endsWith(')')) {
+      const linkMatch = token.match(/\[(.*?)\]\((.*?)\)/)
+      if (linkMatch) {
+        const [, label, href] = linkMatch
+        const isExternal = href.startsWith('http')
+        parts.push(
+          <a
+            key={match.index}
+            href={href}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
+            className="text-rose-600 dark:text-rose-400 hover:underline font-medium"
+          >
+            {label}
+          </a>
+        )
+      } else {
+        parts.push(token)
+      }
+    } else {
+      parts.push(token)
+    }
+
+    lastIndex = regex.lastIndex
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex))
+  }
+
+  return parts.length > 0 ? parts : text
+}
+
+/**
+ * Enhanced Markdown renderer with smooth scroll-margin anchor IDs, H1-H6, tables, and images
  */
 function MarkdownRenderer({ content }: { content: string }) {
   const paragraphs = content.split(/\n\n+/)
@@ -150,6 +220,41 @@ function MarkdownRenderer({ content }: { content: string }) {
     <div className="space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 dark:text-slate-300">
       {paragraphs.map((p, idx) => {
         const trimmed = p.trim()
+
+        // Horizontal Rule
+        if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+          return (
+            <hr
+              key={idx}
+              className="my-8 border-t border-slate-200/80 dark:border-slate-800"
+            />
+          )
+        }
+
+        // Image Block (![alt](url))
+        if (trimmed.startsWith('![') && trimmed.includes('](')) {
+          const imgMatch = trimmed.match(/!\[(.*?)\]\((.*?)\)/)
+          if (imgMatch) {
+            const [, alt, src] = imgMatch
+            return (
+              <figure key={idx} className="my-8 space-y-2">
+                <div className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 shadow-sm">
+                  <img
+                    src={src}
+                    alt={alt || 'Article visual'}
+                    className="w-full max-h-[520px] object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                {alt && (
+                  <figcaption className="text-center text-xs text-slate-400 dark:text-slate-500 font-mono">
+                    {alt}
+                  </figcaption>
+                )}
+              </figure>
+            )
+          }
+        }
 
         // H2 Heading (Matches Table of Contents anchor IDs)
         if (trimmed.startsWith('## ')) {
@@ -162,7 +267,7 @@ function MarkdownRenderer({ content }: { content: string }) {
               id={id}
               className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white pt-8 pb-2 border-b border-slate-200/80 dark:border-slate-800 tracking-tight scroll-mt-28 flex items-center gap-2 group"
             >
-              <span>{title}</span>
+              <span>{renderInlineFormatting(title)}</span>
             </h2>
           )
         }
@@ -178,8 +283,50 @@ function MarkdownRenderer({ content }: { content: string }) {
               id={id}
               className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white pt-6 tracking-tight scroll-mt-28"
             >
-              {title}
+              {renderInlineFormatting(title)}
             </h3>
+          )
+        }
+
+        // H4 Heading
+        if (trimmed.startsWith('#### ')) {
+          const title = trimmed.replace(/^####\s+/, '')
+          const id = slugifyHeading(title)
+
+          return (
+            <h4
+              key={idx}
+              id={id}
+              className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white pt-4 tracking-tight scroll-mt-28"
+            >
+              {renderInlineFormatting(title)}
+            </h4>
+          )
+        }
+
+        // H5 Heading
+        if (trimmed.startsWith('##### ')) {
+          const title = trimmed.replace(/^#####\s+/, '')
+          return (
+            <h5
+              key={idx}
+              className="text-base sm:text-lg font-bold text-slate-900 dark:text-white pt-3 tracking-tight"
+            >
+              {renderInlineFormatting(title)}
+            </h5>
+          )
+        }
+
+        // H6 Heading
+        if (trimmed.startsWith('###### ')) {
+          const title = trimmed.replace(/^######\s+/, '')
+          return (
+            <h6
+              key={idx}
+              className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2 tracking-tight uppercase tracking-wider text-rose-600 dark:text-rose-400"
+            >
+              {renderInlineFormatting(title)}
+            </h6>
           )
         }
 
@@ -208,7 +355,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                           key={cIdx}
                           className="px-4 py-3 font-bold text-slate-900 dark:text-white font-mono"
                         >
-                          {cell}
+                          {renderInlineFormatting(cell)}
                         </th>
                       ))}
                     </tr>
@@ -228,7 +375,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                             key={cIdx}
                             className="px-4 py-3 text-slate-700 dark:text-slate-300"
                           >
-                            {cell}
+                            {renderInlineFormatting(cell)}
                           </td>
                         ))}
                       </tr>
@@ -251,7 +398,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                 .replace(/^>\s+/, '')
                 .split('\n')
                 .map((line, lIdx) => (
-                  <p key={lIdx}>{line.replace(/^>\s*/, '')}</p>
+                  <p key={lIdx}>{renderInlineFormatting(line.replace(/^>\s*/, ''))}</p>
                 ))}
             </blockquote>
           )
@@ -268,7 +415,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                   className="flex items-start gap-3 text-slate-700 dark:text-slate-300 text-base sm:text-lg"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-2.5 shrink-0" />
-                  <span>{item.replace(/^[-*]\s+/, '')}</span>
+                  <span>{renderInlineFormatting(item.replace(/^[-*]\s+/, ''))}</span>
                 </li>
               ))}
             </ul>
@@ -288,7 +435,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                   <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-mono text-xs font-bold shrink-0 mt-0.5 border border-slate-200 dark:border-slate-700">
                     {iIdx + 1}
                   </span>
-                  <span>{item.replace(/^\d+\.\s+/, '')}</span>
+                  <span>{renderInlineFormatting(item.replace(/^\d+\.\s+/, ''))}</span>
                 </li>
               ))}
             </ol>
@@ -314,7 +461,7 @@ function MarkdownRenderer({ content }: { content: string }) {
             key={idx}
             className="text-base sm:text-lg leading-relaxed text-slate-700 dark:text-slate-300"
           >
-            {trimmed}
+            {renderInlineFormatting(trimmed)}
           </p>
         )
       })}
@@ -589,15 +736,15 @@ function BlogPostPage() {
 
           {/* Center Column: Focused Article Content Column */}
           <section className="lg:col-span-8 space-y-8 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md p-6 sm:p-10 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm order-1 lg:order-2">
-            {/* Key Takeaways Card */}
-            {post.metaDescription && (
+            {/* Key Summary / Executive Takeaways Card */}
+            {post.summary && (
               <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-rose-50/50 via-white to-amber-50/30 dark:from-rose-950/20 dark:via-slate-900/60 dark:to-slate-900/30 border border-rose-100 dark:border-rose-900/30 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
                   <Zap className="w-3.5 h-3.5 text-rose-500" />
                   <span>Key Summary</span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
-                  {post.metaDescription}
+                  {post.summary}
                 </p>
               </div>
             )}

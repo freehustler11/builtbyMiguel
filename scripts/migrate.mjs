@@ -56,6 +56,8 @@ export async function runMigrations() {
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "meta_title" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "category" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "tags" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "summary" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "excerpt" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "scheduled_at" timestamp with time zone`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "schema_type" text DEFAULT 'BlogPosting'`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "custom_schema" text`

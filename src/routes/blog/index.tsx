@@ -242,9 +242,9 @@ function BlogIndexPage() {
                     </h2>
 
                     {/* Excerpt */}
-                    {post.metaDescription && (
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
-                        {post.metaDescription}
+                    {(post.excerpt || post.summary || post.metaDescription) && (
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed font-normal">
+                        {post.excerpt || post.summary || post.metaDescription}
                       </p>
                     )}
 

@@ -103,6 +103,8 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
       keyword?: string
       category?: string
       tags?: string
+      summary?: string
+      excerpt?: string
       metaDescription?: string
       featuredImage?: string
       status: 'draft' | 'published' | 'scheduled'
@@ -162,6 +164,8 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
         keyword: data.keyword?.trim() || null,
         category: data.category?.trim() || 'Strategy',
         tags: data.tags?.trim() || null,
+        summary: data.summary?.trim() || null,
+        excerpt: data.excerpt?.trim() || null,
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,
@@ -199,6 +203,8 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
       keyword?: string
       category?: string
       tags?: string
+      summary?: string
+      excerpt?: string
       metaDescription?: string
       featuredImage?: string
       status: 'draft' | 'published' | 'scheduled'
@@ -276,6 +282,8 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
         keyword: data.keyword?.trim() || null,
         category: data.category?.trim() || 'Strategy',
         tags: data.tags?.trim() || null,
+        summary: data.summary?.trim() || null,
+        excerpt: data.excerpt?.trim() || null,
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,

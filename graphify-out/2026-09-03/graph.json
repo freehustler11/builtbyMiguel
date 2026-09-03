@@ -61052,7 +61052,7 @@
     },
     {
       "id": "agents_product_marketing_product_marketing_context_built_by_miguel",
-      "label": "Product Marketing Context: Built by Miguel",
+      "label": "Product Marketing Context: built by Miguel",
       "_origin": "ast",
       "community": 367,
       "community_name": "Product Marketing Context: Built by Miguel",
@@ -184805,5 +184805,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "aa850f671b09182551e87da7d42f01ff3d1fc7c3"
+  "built_at_commit": "56ca70dd2fe15ed1457ef2f51f66a3a4d9d4d76b"
 }

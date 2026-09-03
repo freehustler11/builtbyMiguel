@@ -35,7 +35,9 @@ export const posts = pgTable('posts', {
   keyword: text('keyword'),
   category: text('category'),
   tags: text('tags'),
-  metaDescription: text('meta_description'),
+  summary: text('summary'), // On-page key executive summary / takeaways callout
+  excerpt: text('excerpt'), // Blog thumbnail card short preview
+  metaDescription: text('meta_description'), // Google search snippet
   featuredImage: text('featured_image'),
   content: text('content').notNull(),
   status: text('status', { enum: ['draft', 'published', 'scheduled'] })
