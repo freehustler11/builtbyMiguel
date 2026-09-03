@@ -23,6 +23,10 @@ export const Route = createFileRoute('/')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
+        name: 'google-site-verification',
+        content: 'tSjijzpdCvum7gpDKpknIY2FN0jLAGuRNfOiAf0Kg3o',
+      },
+      {
         title:
           'Built by Miguel | Local SEO, Fast Websites & Custom Business Systems',
       },

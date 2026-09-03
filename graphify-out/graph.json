@@ -5790,7 +5790,7 @@
       "file_type": "code",
       "norm_label": "homepage()",
       "source_file": "app/routes/index.tsx",
-      "source_location": "L66"
+      "source_location": "L70"
     },
     {
       "id": "app_server_leads_submitauditlead",
@@ -6230,7 +6230,7 @@
       "file_type": "code",
       "norm_label": "homepage()",
       "source_file": "src/routes/index.tsx",
-      "source_location": "L66"
+      "source_location": "L70"
     },
     {
       "id": "src_server_leads_submitauditlead",
@@ -7471,7 +7471,7 @@
       "file_type": "code",
       "norm_label": "rootcomponent()",
       "source_file": "app/routes/__root.tsx",
-      "source_location": "L186"
+      "source_location": "L190"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_core_search_stack",
@@ -7815,7 +7815,7 @@
       "file_type": "code",
       "norm_label": "rootcomponent()",
       "source_file": "src/routes/__root.tsx",
-      "source_location": "L186"
+      "source_location": "L190"
     },
     {
       "id": "src_server_forms_isvalidemail",
@@ -23493,7 +23493,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/routes/index.tsx",
-      "source_location": "L86",
+      "source_location": "L90",
       "weight": 1.0
     },
     {
@@ -23625,7 +23625,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/index.tsx",
-      "source_location": "L86",
+      "source_location": "L90",
       "weight": 1.0
     },
     {
@@ -41797,7 +41797,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "app/routes/index.tsx",
-      "source_location": "L63",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -41833,7 +41833,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "app/routes/__root.tsx",
-      "source_location": "L183",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -41965,7 +41965,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/index.tsx",
-      "source_location": "L63",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -42001,7 +42001,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/__root.tsx",
-      "source_location": "L183",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -42154,5 +42154,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8ee8611649cfb104b11749fc3d6c03f61c5bf55b"
+  "built_at_commit": "203eccd4f83688806a397be1b7034e9ae73694af"
 }

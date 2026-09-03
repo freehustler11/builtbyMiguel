@@ -82,6 +82,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content: 'width=device-width, initial-scale=1.0',
       },
       {
+        name: 'google-site-verification',
+        content: 'tSjijzpdCvum7gpDKpknIY2FN0jLAGuRNfOiAf0Kg3o',
+      },
+      {
         title: 'Built by Miguel | High-Performance Websites & Local SEO Systems',
       },
       {

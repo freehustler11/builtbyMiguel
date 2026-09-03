@@ -30,10 +30,10 @@
     "semantic_hash": "fd554d7b43b2a57802b50900fcf62384"
   },
   "src/routes/__root.tsx": {
-    "mtime": 1788408929.8405323,
-    "seen": 1788409002.2278268,
-    "ast_hash": "c234639de5fae11bfd1395205048809b",
-    "semantic_hash": "c234639de5fae11bfd1395205048809b"
+    "mtime": 1788409216.9700267,
+    "seen": 1788409329.062367,
+    "ast_hash": "915cb8a551cdebdde8894c8f032837e8",
+    "semantic_hash": "915cb8a551cdebdde8894c8f032837e8"
   },
   "src/routes/about.tsx": {
     "mtime": 1788407855.7162402,
@@ -42,10 +42,10 @@
     "semantic_hash": "cdbe5f9e569adc6d13c724c2ce4e3159"
   },
   "src/routes/index.tsx": {
-    "mtime": 1788407791.8271809,
-    "seen": 1788408183.4088697,
-    "ast_hash": "6912cac7f0883a2d705d6fcc23e0d68e",
-    "semantic_hash": "6912cac7f0883a2d705d6fcc23e0d68e"
+    "mtime": 1788409222.041335,
+    "seen": 1788409329.0649168,
+    "ast_hash": "941fbe7234bc3996006c10eaca1e4ed8",
+    "semantic_hash": "941fbe7234bc3996006c10eaca1e4ed8"
   },
   "src/vite-env.d.ts": {
     "mtime": 1787971766.8137255,
@@ -444,10 +444,10 @@
     "semantic_hash": "5ab43f02eabb2458001af0e3da715d88"
   },
   "app/routes/__root.tsx": {
-    "mtime": 1788408929.8405323,
-    "seen": 1788409002.217855,
-    "ast_hash": "c234639de5fae11bfd1395205048809b",
-    "semantic_hash": "c234639de5fae11bfd1395205048809b"
+    "mtime": 1788409216.9700267,
+    "seen": 1788409329.03069,
+    "ast_hash": "915cb8a551cdebdde8894c8f032837e8",
+    "semantic_hash": "915cb8a551cdebdde8894c8f032837e8"
   },
   "src/components/Footer.tsx": {
     "mtime": 1788407960.3360944,
@@ -510,10 +510,10 @@
     "semantic_hash": "7dcd53cfb3cb56aa9d936e7317302e59"
   },
   "app/routes/index.tsx": {
-    "mtime": 1788407791.8271809,
-    "seen": 1788408183.4020255,
-    "ast_hash": "6912cac7f0883a2d705d6fcc23e0d68e",
-    "semantic_hash": "6912cac7f0883a2d705d6fcc23e0d68e"
+    "mtime": 1788409222.041335,
+    "seen": 1788409329.0316987,
+    "ast_hash": "941fbe7234bc3996006c10eaca1e4ed8",
+    "semantic_hash": "941fbe7234bc3996006c10eaca1e4ed8"
   },
   "app/routes/thank-you.tsx": {
     "mtime": 1788407893.4261997,

@@ -1991,6 +1991,17 @@
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
+      "source": "TestGeneratedConfigIsValidJs",
+      "target": "TailwindConfigGenerator",
+      "source_files": [
+        ".agents/skills/ui-styling/scripts/tests/test_tailwind_config_gen.py",
+        ".agents/skills/ui-styling/scripts/tailwind_config_gen.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
       "source": "TestTailwindConfigGenerator",
       "target": "TailwindConfigGenerator",
       "source_files": [
@@ -2018,17 +2029,6 @@
       "source_files": [
         ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
         ".agents/skills/design/scripts/cip/core.py"
-      ],
-      "confidence": "INFERRED",
-      "relation": "uses",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
-    },
-    {
-      "source": "TestGeneratedConfigIsValidJs",
-      "target": "TailwindConfigGenerator",
-      "source_files": [
-        ".agents/skills/ui-styling/scripts/tests/test_tailwind_config_gen.py",
-        ".agents/skills/ui-styling/scripts/tailwind_config_gen.py"
       ],
       "confidence": "INFERRED",
       "relation": "uses",
