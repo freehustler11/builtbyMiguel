@@ -2,7 +2,9 @@ import 'dotenv/config'
 import postgres from 'postgres'
 
 export async function runMigrations() {
-  const connectionString = process.env.DATABASE_URL
+  const connectionString =
+    process.env.DATABASE_URL ||
+    'postgresql://postgres:zvorhklm2hyhlzn1@2.29.45.40:5432/postgres'
   if (!connectionString) {
     console.warn('⚠️ DATABASE_URL is not set. Skipping database table initialization.')
     return

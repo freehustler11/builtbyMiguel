@@ -89,8 +89,19 @@ const server = http.createServer(async (req, res) => {
     const response = await startServer.fetch(webRequest)
 
     res.statusCode = response.status
+
+    // Correctly propagate Set-Cookie header arrays for session authentication
+    if (typeof response.headers.getSetCookie === 'function') {
+      const setCookies = response.headers.getSetCookie()
+      if (setCookies && setCookies.length > 0) {
+        res.setHeader('set-cookie', setCookies)
+      }
+    }
+
     response.headers.forEach((val, key) => {
-      res.setHeader(key, val)
+      if (key.toLowerCase() !== 'set-cookie') {
+        res.setHeader(key, val)
+      }
     })
 
     if (response.body) {

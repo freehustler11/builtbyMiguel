@@ -3,7 +3,9 @@ import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as schema from './schema'
 
-const connectionString = process.env.DATABASE_URL || ''
+const connectionString =
+  process.env.DATABASE_URL ||
+  'postgresql://postgres:zvorhklm2hyhlzn1@2.29.45.40:5432/postgres'
 
 // Prevent multiple connections in development/HMR
 declare global {
