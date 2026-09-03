@@ -23,5 +23,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Type check and build
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build application
+        env:
+          NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/postgres' }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD || 'ci_test_password_12345' }}
         run: npm run build
