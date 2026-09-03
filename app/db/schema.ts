@@ -32,6 +32,8 @@ export const posts = pgTable('posts', {
   title: text('title').notNull(),
   slug: text('slug').unique().notNull(),
   keyword: text('keyword'),
+  category: text('category'),
+  tags: text('tags'),
   metaDescription: text('meta_description'),
   featuredImage: text('featured_image'),
   content: text('content').notNull(),

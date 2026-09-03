@@ -7,7 +7,11 @@ import {
   Key,
   BookOpen,
   ArrowUpRight,
+  FolderOpen,
+  Tag,
+  Filter,
 } from 'lucide-react'
+import { useState, useMemo } from 'react'
 import { getPublicPostsServerFn } from '../../server/posts'
 
 export const Route = createFileRoute('/blog/')({
@@ -75,31 +79,76 @@ function formatDate(dateInput: string | Date | null) {
 
 function BlogIndexPage() {
   const { posts } = Route.useLoaderData()
+  const [selectedCategory, setSelectedCategory] = useState<string>('All')
+
+  // Extract all unique categories present in posts
+  const categories = useMemo(() => {
+    const set = new Set<string>()
+    for (const p of posts) {
+      if (p.category && p.category.trim()) {
+        set.add(p.category.trim())
+      }
+    }
+    return ['All', ...Array.from(set)]
+  }, [posts])
+
+  // Filter posts by selected category
+  const filteredPosts = useMemo(() => {
+    if (selectedCategory === 'All') return posts
+    return posts.filter(
+      (p) => p.category && p.category.toLowerCase() === selectedCategory.toLowerCase()
+    )
+  }, [posts, selectedCategory])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12 sm:space-y-16">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
           <Sparkles className="w-3.5 h-3.5" /> Growth Playbooks & Case Studies
         </div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          Local SEO, Web Architecture & Business Systems
+          Local SEO, Web Architecture & Systems
         </h1>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
           Deep-dive technical guides on ranking in competitive local markets, turning website traffic into booked calls, and automating client operations.
         </p>
       </div>
 
+      {/* Category Filter Pills (if multiple categories exist) */}
+      {categories.length > 1 && (
+        <div className="flex items-center justify-center flex-wrap gap-2 pt-2">
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === cat
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-slate-900 dark:bg-rose-600 text-white shadow-sm ring-1 ring-slate-900/10'
+                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-800'
+                }`}
+              >
+                {cat}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       {/* Articles Grid */}
-      {posts.length === 0 ? (
+      {filteredPosts.length === 0 ? (
         <div className="max-w-xl mx-auto rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-10 text-center space-y-6 shadow-sm">
           <div className="mx-auto flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
             <BookOpen className="w-6 h-6" />
           </div>
           <div className="space-y-2">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-              New Articles Coming Soon
+              {selectedCategory !== 'All'
+                ? `No playbooks under "${selectedCategory}" yet`
+                : 'New Articles Coming Soon'}
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               We are currently finalizing in-depth case studies and SEO blueprints. In the meantime, get a free personalized video teardown of your Google ranking.
@@ -115,8 +164,12 @@ function BlogIndexPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {posts.map((post) => {
+          {filteredPosts.map((post) => {
             const readingTime = calculateReadingTime(post.content)
+            const tagsList = (post.tags || '')
+              .split(',')
+              .map((t) => t.trim())
+              .filter(Boolean)
 
             return (
               <article
@@ -144,8 +197,15 @@ function BlogIndexPage() {
 
                   {/* Body Content */}
                   <div className="p-6 sm:p-7 space-y-3">
-                    {/* Meta Bar */}
+                    {/* Category & Meta Bar */}
                     <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono text-slate-400 dark:text-slate-500">
+                      {post.category && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold border border-slate-200 dark:border-slate-700">
+                          <FolderOpen className="w-2.5 h-2.5 text-rose-500" />
+                          <span>{post.category}</span>
+                        </span>
+                      )}
+
                       {post.keyword && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">
                           <Key className="w-2.5 h-2.5" />
@@ -178,6 +238,21 @@ function BlogIndexPage() {
                       <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
                         {post.metaDescription}
                       </p>
+                    )}
+
+                    {/* Tags */}
+                    {tagsList.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 pt-2">
+                        {tagsList.slice(0, 3).map((t, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-mono"
+                          >
+                            <Tag className="w-2 h-2 text-slate-400" />
+                            <span>{t}</span>
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>

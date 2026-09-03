@@ -4,20 +4,14 @@ import {
   Calendar,
   Clock,
   Key,
-  Sparkles,
+  FolderOpen,
+  Tag,
   Share2,
   BookOpen,
   ArrowRight,
-  CheckCircle2,
   Check,
   Copy,
-  ChevronDown,
-  ChevronUp,
-  FileText,
-  ShieldCheck,
   Zap,
-  HelpCircle,
-  TrendingUp,
   List,
 } from 'lucide-react'
 import { useState, useMemo } from 'react'
@@ -62,8 +56,10 @@ export const Route = createFileRoute('/blog/$slug')({
         { property: 'og:type', content: 'article' },
         { property: 'og:url', content: canonical },
         ...(post.featuredImage ? [{ property: 'og:image', content: post.featuredImage }] : []),
-        { property: 'article:published_time', content: publishedTime },
+        { property: 'article:published_time', publishedTime },
         { property: 'article:author', content: 'Miguel Umbac' },
+        ...(post.category ? [{ property: 'article:section', content: post.category }] : []),
+        ...(post.tags ? [{ property: 'article:tag', content: post.tags }] : []),
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: title },
         { name: 'twitter:description', content: description },
@@ -83,6 +79,8 @@ export const Route = createFileRoute('/blog/$slug')({
             dateModified: post.updatedAt
               ? new Date(post.updatedAt).toISOString()
               : publishedTime,
+            ...(post.category ? { articleSection: post.category } : {}),
+            ...(post.tags ? { keywords: post.tags } : {}),
             ...(post.featuredImage ? { image: post.featuredImage } : {}),
             author: {
               '@type': 'Person',
@@ -354,6 +352,10 @@ function BlogPostPage() {
   }
 
   const readingTime = calculateReadingTime(post.content)
+  const tagsList = (post.tags || '')
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean)
 
   // Extract Table of Contents specifically from H2 headings (## Heading)
   const tocHeadings = useMemo(() => {
@@ -402,10 +404,10 @@ function BlogPostPage() {
 
   return (
     <article className="min-h-screen py-6 sm:py-10 space-y-12">
-      {/* Top Container: Navigation, Title & Meta */}
+      {/* Top Container: Navigation, Title, Category & Meta */}
       <header className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 text-center">
-        {/* Back Button & Category Breadcrumb */}
-        <div className="flex items-center justify-between gap-4 text-left">
+        {/* Back Button, Category & Keyword Breadcrumb */}
+        <div className="flex flex-wrap items-center justify-between gap-3 text-left">
           <Link
             to="/blog"
             className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition"
@@ -414,12 +416,21 @@ function BlogPostPage() {
             <span>All Playbooks</span>
           </Link>
 
-          {post.keyword && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-              <Key className="w-3 h-3 text-rose-500" />
-              <span>{post.keyword}</span>
-            </span>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            {post.category && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                <FolderOpen className="w-3 h-3 text-rose-500" />
+                <span>{post.category}</span>
+              </span>
+            )}
+
+            {post.keyword && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50">
+                <Key className="w-3 h-3" />
+                <span>{post.keyword}</span>
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Featured Cover Graphic (Clean & Centered) */}
@@ -587,8 +598,26 @@ function BlogPostPage() {
             {/* Markdown Body */}
             <MarkdownRenderer content={post.content} />
 
+            {/* Tags Pills Section */}
+            {tagsList.length > 0 && (
+              <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2">
+                <span className="text-xs font-mono font-medium text-slate-400 flex items-center gap-1">
+                  <Tag className="w-3.5 h-3.5" />
+                  <span>Topics:</span>
+                </span>
+                {tagsList.map((t, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono border border-slate-200 dark:border-slate-700"
+                  >
+                    #{t}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {/* Tasteful, Calm Article Conclusion Callout (Editable in CMS) */}
-            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-800">
+            <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
               <div className="p-6 sm:p-8 rounded-3xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-center space-y-3">
                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                   {bottomTitle}
@@ -612,13 +641,18 @@ function BlogPostPage() {
         </div>
       </main>
 
-      {/* Explore Related Blogs Section */}
+      {/* Explore Related Blogs Section (Intelligently matched by Category & Tags) */}
       {relatedPosts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
           <div className="flex items-center justify-between gap-4 pb-3 border-b border-slate-200 dark:border-slate-800">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-              Related Playbooks
-            </h2>
+            <div className="space-y-0.5">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                Related Playbooks
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                More articles matching this topic and category.
+              </p>
+            </div>
             <Link
               to="/blog"
               className="inline-flex items-center gap-1 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline"
@@ -656,7 +690,12 @@ function BlogPostPage() {
                   {/* Related Article Body */}
                   <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-1.5">
-                      <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400">
+                      <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono text-slate-400">
+                        {related.category && (
+                          <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold border border-slate-200 dark:border-slate-700">
+                            {related.category}
+                          </span>
+                        )}
                         <span>{formatDate(related.publishedAt || related.createdAt)}</span>
                         <span>·</span>
                         <span>{relReadingTime} min read</span>

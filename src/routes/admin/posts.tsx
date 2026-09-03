@@ -47,6 +47,8 @@ import {
   Send,
   CalendarClock,
   ShieldCheck,
+  Tag,
+  FolderOpen,
 } from 'lucide-react'
 import { requireAuth } from '../../lib/auth'
 import {
@@ -476,6 +478,8 @@ function AdminPostsPage() {
   const [editorTitle, setEditorTitle] = useState('')
   const [editorSlug, setEditorSlug] = useState('')
   const [editorKeyword, setEditorKeyword] = useState('')
+  const [editorCategory, setEditorCategory] = useState('Local SEO & GBP')
+  const [editorTags, setEditorTags] = useState('')
   const [editorMetaDesc, setEditorMetaDesc] = useState('')
   const [editorCoverImage, setEditorCoverImage] = useState('')
   const [editorContent, setEditorContent] = useState('')
@@ -564,6 +568,8 @@ function AdminPostsPage() {
     setEditorTitle('')
     setEditorSlug('')
     setEditorKeyword('')
+    setEditorCategory('Local SEO & GBP')
+    setEditorTags('')
     setEditorMetaDesc('')
     setEditorCoverImage('')
     setEditorContent('')
@@ -591,6 +597,8 @@ function AdminPostsPage() {
     setEditorTitle(post.title)
     setEditorSlug(post.slug)
     setEditorKeyword(post.keyword || '')
+    setEditorCategory(post.category || 'Local SEO & GBP')
+    setEditorTags(post.tags || '')
     setEditorMetaDesc(post.metaDescription || '')
     setEditorCoverImage(post.featuredImage || '')
     setEditorContent(post.content || '')
@@ -705,6 +713,8 @@ function AdminPostsPage() {
         title: editorTitle.trim(),
         slug: editorSlug.trim(),
         keyword: editorKeyword.trim() || undefined,
+        category: editorCategory.trim() || undefined,
+        tags: editorTags.trim() || undefined,
         metaDescription: editorMetaDesc.trim() || undefined,
         featuredImage: editorCoverImage.trim() || undefined,
         content: editorContent.trim(),
@@ -757,6 +767,8 @@ function AdminPostsPage() {
           slug: post.slug,
           content: post.content,
           keyword: post.keyword || undefined,
+          category: post.category || undefined,
+          tags: post.tags || undefined,
           metaDescription: post.metaDescription || undefined,
           featuredImage: post.featuredImage || undefined,
           status: newStatus,
@@ -811,7 +823,7 @@ function AdminPostsPage() {
       <AdminNav
         activeTab="posts"
         title="Blog CMS & SEO Studio"
-        description="Publish, schedule, optimize, and manage articles with live RankMath-style SEO scoring and rich Markdown."
+        description="Publish, schedule, categorize, and optimize articles with live RankMath-style SEO scoring and rich Markdown."
         actions={
           <div className="flex items-center gap-2.5">
             <button
@@ -986,7 +998,7 @@ function AdminPostsPage() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search articles by title, keyword, slug..."
+            placeholder="Search articles by title, keyword, category, tags..."
             className="w-full pl-10 pr-24 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition"
           />
           {searchInput && (
@@ -1046,6 +1058,10 @@ function AdminPostsPage() {
             const isScheduled = post.status === 'scheduled'
             const readingTime = calculateReadingTime(post.content || '')
             const hasCustomCta = Boolean(post.sidebarCtaTitle || post.bottomCtaTitle)
+            const tagList = (post.tags || '')
+              .split(',')
+              .map((t) => t.trim())
+              .filter(Boolean)
 
             return (
               <div
@@ -1058,7 +1074,7 @@ function AdminPostsPage() {
                       : 'border-amber-500/40 dark:border-amber-500/30'
                 } ${isMutating ? 'opacity-50 pointer-events-none' : ''}`}
               >
-                {/* Header Row: Status, Keywords, Dates, Actions */}
+                {/* Header Row: Status, Category, Keywords, Dates, Actions */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex flex-wrap items-center gap-2.5">
                     {/* Status Badge */}
@@ -1083,6 +1099,14 @@ function AdminPostsPage() {
                       <span className="capitalize">{post.status}</span>
                     </span>
 
+                    {/* Category Badge */}
+                    {post.category && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                        <FolderOpen className="w-3 h-3 text-rose-500" />
+                        <span>{post.category}</span>
+                      </span>
+                    )}
+
                     {/* Target Keyword Badge */}
                     {post.keyword && (
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50">
@@ -1090,12 +1114,6 @@ function AdminPostsPage() {
                         <span>{post.keyword}</span>
                       </span>
                     )}
-
-                    {/* Schema Type Badge */}
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono text-slate-500 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                      <CodeXml className="w-3 h-3 text-slate-400" />
-                      <span>{post.schemaType || 'BlogPosting'}</span>
-                    </span>
 
                     {/* Custom CTA Indicator */}
                     {hasCustomCta && (
@@ -1190,11 +1208,26 @@ function AdminPostsPage() {
                     </button>
                   </h2>
 
-                  <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
                     <span>URL Slug:</span>
                     <span className="text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md">
                       /blog/{post.slug}
                     </span>
+
+                    {/* Tags Badges */}
+                    {tagList.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 pl-2 border-l border-slate-200 dark:border-slate-800">
+                        {tagList.map((t, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                          >
+                            <Tag className="w-2.5 h-2.5 text-slate-400" />
+                            <span>{t}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {post.metaDescription && (
@@ -1270,7 +1303,7 @@ function AdminPostsPage() {
                     {editingPost ? 'Edit Blog Article' : 'Create New Article'}
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Modern Markdown editor with live Yoast/RankMath SEO scoring, custom schema, and scheduled publishing.
+                    Modern Markdown editor with category, tags, Yoast/RankMath SEO scoring, and scheduling.
                   </p>
                 </div>
               </div>
@@ -1396,6 +1429,45 @@ function AdminPostsPage() {
                       className="w-full px-4 py-2.5 rounded-r-2xl text-xs sm:text-sm font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Category & Tags Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <FolderOpen className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Article Category (For Related Articles Matching)</span>
+                  </label>
+                  <select
+                    value={editorCategory}
+                    onChange={(e) => setEditorCategory(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-2xl text-xs font-bold border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                  >
+                    <option value="Local SEO & GBP">📍 Local SEO & GBP</option>
+                    <option value="Websites & Care">⚡ Websites & Care Plans</option>
+                    <option value="Systems & Automation">🤖 Systems & Automation</option>
+                    <option value="Conversion & CRO">📈 Conversion & CRO</option>
+                    <option value="Technical SEO">🔍 Technical SEO & Schema</option>
+                    <option value="Client Case Studies">🏆 Client Case Studies</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <Tag className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Tags (Comma-separated)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={editorTags}
+                    onChange={(e) => setEditorTags(e.target.value)}
+                    placeholder="e.g. Google Maps, Local Rank, PageSpeed, Schema"
+                    className="w-full px-4 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                  />
+                  <span className="text-[11px] text-slate-400">
+                    Used to intelligently recommend relevant blog articles to readers.
+                  </span>
                 </div>
               </div>
 
@@ -1644,10 +1716,17 @@ function AdminPostsPage() {
               {previewTab === 'preview' && (
                 <div className="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 min-h-[350px] max-h-[500px] overflow-y-auto space-y-6 text-xs sm:text-sm leading-relaxed">
                   <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-                    <span className="text-xs font-mono text-rose-600 dark:text-rose-400 font-bold uppercase">
-                      {editorKeyword || 'Playbook Article'}
-                    </span>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900">
+                        {editorCategory}
+                      </span>
+                      {editorKeyword && (
+                        <span className="text-xs font-mono text-slate-400">
+                          Focus: {editorKeyword}
+                        </span>
+                      )}
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2">
                       {editorTitle || 'Untitled Article'}
                     </h1>
                   </div>

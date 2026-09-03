@@ -52,7 +52,9 @@ export async function runMigrations() {
       CREATE UNIQUE INDEX IF NOT EXISTS "posts_slug_unique" ON "posts" ("slug");
     `
 
-    // 4. Ensure CTA, scheduling & schema columns exist on posts table
+    // 4. Ensure CTA, scheduling, schema, category & tags columns exist on posts table
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "category" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "tags" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "scheduled_at" timestamp with time zone`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "schema_type" text DEFAULT 'BlogPosting'`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "custom_schema" text`

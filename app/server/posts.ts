@@ -47,6 +47,8 @@ export const getAdminPostsServerFn = createServerFn({ method: 'GET' })
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.slug.toLowerCase().includes(q) ||
+          (p.category && p.category.toLowerCase().includes(q)) ||
+          (p.tags && p.tags.toLowerCase().includes(q)) ||
           (p.keyword && p.keyword.toLowerCase().includes(q)) ||
           (p.metaDescription && p.metaDescription.toLowerCase().includes(q)),
       )
@@ -98,6 +100,8 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
       slug: string
       content: string
       keyword?: string
+      category?: string
+      tags?: string
       metaDescription?: string
       featuredImage?: string
       status: 'draft' | 'published' | 'scheduled'
@@ -154,6 +158,8 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
         slug: cleanSlug,
         content: data.content.trim(),
         keyword: data.keyword?.trim() || null,
+        category: data.category?.trim() || 'Strategy',
+        tags: data.tags?.trim() || null,
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,
@@ -188,6 +194,8 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
       slug: string
       content: string
       keyword?: string
+      category?: string
+      tags?: string
       metaDescription?: string
       featuredImage?: string
       status: 'draft' | 'published' | 'scheduled'
@@ -262,6 +270,8 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
         slug: cleanSlug,
         content: data.content.trim(),
         keyword: data.keyword?.trim() || null,
+        category: data.category?.trim() || 'Strategy',
+        tags: data.tags?.trim() || null,
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,
@@ -326,7 +336,7 @@ export const getPublicPostsServerFn = createServerFn({ method: 'GET' }).handler(
 )
 
 /**
- * Public Server Function: Get a single published/scheduled post by slug and fetch related articles
+ * Public Server Function: Get a single post by slug and fetch intelligently matched Related Blogs
  */
 export const getPublicPostBySlugServerFn = createServerFn({ method: 'GET' })
   .validator((data: { slug: string }) => {
@@ -352,19 +362,57 @@ export const getPublicPostBySlugServerFn = createServerFn({ method: 'GET' })
       return { post: null, relatedPosts: [] }
     }
 
-    // Fetch up to 3 related published posts (excluding current)
+    // Fetch all other published posts to find the most relevant ones
     const allPublic = await db
       .select()
       .from(posts)
       .where(
-        or(
-          eq(posts.status, 'published'),
-          and(eq(posts.status, 'scheduled'), lte(posts.scheduledAt, now)),
+        and(
+          or(
+            eq(posts.status, 'published'),
+            and(eq(posts.status, 'scheduled'), lte(posts.scheduledAt, now)),
+          ),
         ),
       )
       .orderBy(desc(posts.publishedAt), desc(posts.createdAt))
 
-    const related = allPublic.filter((p) => p.id !== post.id).slice(0, 3)
+    const otherPosts = allPublic.filter((p) => p.id !== post.id)
+
+    // Current post tags array
+    const postTags = (post.tags || '')
+      .split(',')
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean)
+
+    // Score other posts based on Category and Tag match
+    const scoredPosts = otherPosts.map((other) => {
+      let score = 0
+      // Same category match = +10 pts
+      if (
+        post.category &&
+        other.category &&
+        post.category.toLowerCase() === other.category.toLowerCase()
+      ) {
+        score += 10
+      }
+
+      // Shared tags match = +5 pts per tag
+      if (other.tags && postTags.length > 0) {
+        const otherTags = other.tags
+          .split(',')
+          .map((t) => t.trim().toLowerCase())
+          .filter(Boolean)
+        const shared = otherTags.filter((t) => postTags.includes(t))
+        score += shared.length * 5
+      }
+
+      return { post: other, score }
+    })
+
+    // Sort by relevance score, then recent
+    scoredPosts.sort((a, b) => b.score - a.score)
+
+    const related = scoredPosts.slice(0, 3).map((item) => item.post)
 
     return { post, relatedPosts: related }
   })
