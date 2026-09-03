@@ -53,6 +53,7 @@ export async function runMigrations() {
     `
 
     // 4. Ensure CTA, scheduling, schema, category & tags columns exist on posts table
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "meta_title" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "category" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "tags" text`
     await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "scheduled_at" timestamp with time zone`

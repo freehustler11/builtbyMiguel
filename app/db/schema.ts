@@ -30,6 +30,7 @@ export const posts = pgTable('posts', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   publishedAt: timestamp('published_at', { withTimezone: true }),
   title: text('title').notNull(),
+  metaTitle: text('meta_title'),
   slug: text('slug').unique().notNull(),
   keyword: text('keyword'),
   category: text('category'),

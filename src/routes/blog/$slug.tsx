@@ -36,7 +36,10 @@ export const Route = createFileRoute('/blog/$slug')({
       }
     }
 
-    const title = `${post.title} | Built by Miguel`
+    const metaTitleText = post.metaTitle?.trim() || post.title
+    const title = metaTitleText.includes('Built by Miguel')
+      ? metaTitleText
+      : `${metaTitleText} | Built by Miguel`
     const description =
       post.metaDescription ||
       `Read ${post.title} - actionable SEO, web development, and local growth strategy from Miguel Umbac.`

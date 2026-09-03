@@ -129,10 +129,11 @@ interface SeoCheck {
 }
 
 /**
- * Real-Time Yoast / RankMath Style SEO Analyzer
+ * Real-Time On-Page SEO Intelligence Analyzer
  */
 function analyzeSeo({
   title,
+  metaTitle,
   slug,
   keyword,
   metaDescription,
@@ -140,6 +141,7 @@ function analyzeSeo({
   featuredImage,
 }: {
   title: string
+  metaTitle?: string
   slug: string
   keyword: string
   metaDescription: string
@@ -148,14 +150,16 @@ function analyzeSeo({
 }) {
   const checks: SeoCheck[] = []
   const kw = keyword.toLowerCase().trim()
+  const effectiveMetaTitle = metaTitle?.trim() || title
   const words = content.trim().split(/\s+/).filter(Boolean)
   const wordCount = words.length
   const lowerContent = content.toLowerCase()
   const lowerTitle = title.toLowerCase()
+  const lowerMetaTitle = effectiveMetaTitle.toLowerCase()
   const lowerMeta = metaDescription.toLowerCase()
   const lowerSlug = slug.toLowerCase()
 
-  // 1. Focus Keyword in Title
+  // 1. Focus Keyword in Title / Meta Title
   if (!kw) {
     checks.push({
       id: 'kw-title',
@@ -165,8 +169,8 @@ function analyzeSeo({
       points: 0,
       maxPoints: 15,
     })
-  } else if (lowerTitle.includes(kw)) {
-    const isEarly = lowerTitle.indexOf(kw) < 20
+  } else if (lowerTitle.includes(kw) || lowerMetaTitle.includes(kw)) {
+    const isEarly = lowerTitle.indexOf(kw) < 20 || lowerMetaTitle.indexOf(kw) < 20
     checks.push({
       id: 'kw-title',
       label: 'Focus Keyword in Title',
@@ -395,12 +399,12 @@ function analyzeSeo({
     })
   }
 
-  // 8. Title Length
-  const titleLen = title.length
+  // 8. Meta / Search Title Length
+  const titleLen = effectiveMetaTitle.length
   if (titleLen >= 45 && titleLen <= 65) {
     checks.push({
       id: 'title-len',
-      label: `Title Length (${titleLen} chars)`,
+      label: `SEO Title Length (${titleLen} chars)`,
       status: 'pass',
       detail: 'Optimal length for Google SERP display (no truncation).',
       points: 10,
@@ -409,18 +413,18 @@ function analyzeSeo({
   } else if (titleLen > 65) {
     checks.push({
       id: 'title-len',
-      label: `Title Length (${titleLen} chars)`,
+      label: `SEO Title Length (${titleLen} chars)`,
       status: 'warn',
-      detail: 'Title exceeds 65 characters and may be truncated on Google.',
+      detail: 'SEO title exceeds 65 characters and may be truncated on Google.',
       points: 5,
       maxPoints: 10,
     })
   } else {
     checks.push({
       id: 'title-len',
-      label: `Title Length (${titleLen} chars)`,
+      label: `SEO Title Length (${titleLen} chars)`,
       status: titleLen > 0 ? 'warn' : 'fail',
-      detail: 'Title is too short. Aim for 45–65 characters.',
+      detail: 'SEO title is too short. Aim for 45–65 characters.',
       points: titleLen > 20 ? 4 : 0,
       maxPoints: 10,
     })
@@ -494,6 +498,7 @@ function AdminPostsPage() {
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [editingPost, setEditingPost] = useState<Post | null>(null)
   const [editorTitle, setEditorTitle] = useState('')
+  const [editorMetaTitle, setEditorMetaTitle] = useState('')
   const [editorSlug, setEditorSlug] = useState('')
   const [editorKeyword, setEditorKeyword] = useState('')
   const [editorCategory, setEditorCategory] = useState('Local SEO & GBP')
@@ -547,13 +552,14 @@ function AdminPostsPage() {
   const seoReport = useMemo(() => {
     return analyzeSeo({
       title: editorTitle,
+      metaTitle: editorMetaTitle,
       slug: editorSlug,
       keyword: editorKeyword,
       metaDescription: editorMetaDesc,
       content: editorContent,
       featuredImage: editorCoverImage,
     })
-  }, [editorTitle, editorSlug, editorKeyword, editorMetaDesc, editorContent, editorCoverImage])
+  }, [editorTitle, editorMetaTitle, editorSlug, editorKeyword, editorMetaDesc, editorContent, editorCoverImage])
 
   const handleStatusTab = (newStatus: 'all' | 'published' | 'draft' | 'scheduled') => {
     navigate({
@@ -586,6 +592,7 @@ function AdminPostsPage() {
   const openNewPostModal = () => {
     setEditingPost(null)
     setEditorTitle('')
+    setEditorMetaTitle('')
     setEditorSlug('')
     setEditorKeyword('')
     setEditorCategory('Local SEO & GBP')
@@ -615,6 +622,7 @@ function AdminPostsPage() {
   const openEditPostModal = (post: Post) => {
     setEditingPost(post)
     setEditorTitle(post.title)
+    setEditorMetaTitle(post.metaTitle || '')
     setEditorSlug(post.slug)
     setEditorKeyword(post.keyword || '')
     setEditorCategory(post.category || 'Local SEO & GBP')
@@ -734,6 +742,7 @@ function AdminPostsPage() {
       setIsSaving(true)
       const payload = {
         title: editorTitle.trim(),
+        metaTitle: editorMetaTitle.trim() || undefined,
         slug: editorSlug.trim(),
         keyword: editorKeyword.trim() || undefined,
         category: editorCategory.trim() || undefined,
@@ -864,7 +873,7 @@ function AdminPostsPage() {
       <AdminNav
         activeTab="posts"
         title="Blog CMS & SEO Studio"
-        description="Publish, schedule, categorize, and optimize articles with live RankMath-style SEO scoring and rich Markdown."
+        description="Publish, schedule, categorize, and optimize articles with real-time SEO intelligence scoring and rich Markdown."
         actions={
           <div className="flex items-center gap-2.5">
             <button
@@ -1396,7 +1405,7 @@ function AdminPostsPage() {
                     {editingPost ? 'Edit Blog Article' : 'Create New Article'}
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Modern Markdown editor with category, tags, Yoast/RankMath SEO scoring, and scheduling.
+                    Modern Markdown editor with category, tags, real-time SEO scoring, and scheduling.
                   </p>
                 </div>
               </div>
@@ -1479,7 +1488,7 @@ function AdminPostsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                    Article Title *
+                    Article Title (On-Page H1 Heading) *
                   </label>
                   <input
                     type="text"
@@ -1490,18 +1499,8 @@ function AdminPostsPage() {
                     className="w-full px-4 py-2.5 rounded-2xl text-xs sm:text-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50"
                   />
                   <div className="flex justify-between text-[11px] font-mono text-slate-400">
-                    <span>Target: 45–65 characters</span>
-                    <span
-                      className={
-                        editorTitle.length >= 45 && editorTitle.length <= 65
-                          ? 'text-emerald-500 font-bold'
-                          : editorTitle.length > 65
-                            ? 'text-amber-500 font-bold'
-                            : 'text-slate-400'
-                      }
-                    >
-                      {editorTitle.length}/65 chars
-                    </span>
+                    <span>Main on-page H1 heading</span>
+                    <span>{editorTitle.length} chars</span>
                   </div>
                 </div>
 
@@ -1522,7 +1521,40 @@ function AdminPostsPage() {
                       className="w-full px-4 py-2.5 rounded-r-2xl text-xs sm:text-sm font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50"
                     />
                   </div>
+                  <div className="text-[11px] font-mono text-slate-400">
+                    Permanent link structure
+                  </div>
                 </div>
+              </div>
+
+              {/* SEO Meta Title (Google Search Results Title) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    SEO Meta Title (Google Search & Browser Tab Title)
+                  </label>
+                  <span
+                    className={`text-[11px] font-mono ${
+                      (editorMetaTitle || editorTitle).length >= 45 && (editorMetaTitle || editorTitle).length <= 60
+                        ? 'text-emerald-500 font-bold'
+                        : (editorMetaTitle || editorTitle).length > 60
+                          ? 'text-amber-500 font-bold'
+                          : 'text-slate-400'
+                    }`}
+                  >
+                    {(editorMetaTitle || editorTitle).length}/60 chars (Target: 45–60)
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  value={editorMetaTitle}
+                  onChange={(e) => setEditorMetaTitle(e.target.value)}
+                  placeholder={`Leave blank to use Article Title ("${editorTitle || '...'}")`}
+                  className="w-full px-4 py-2.5 rounded-2xl text-xs sm:text-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                />
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                  Custom title for Google search results and browser tabs. Allows optimizing CTR independently from the on-page H1.
+                </p>
               </div>
 
               {/* Category & Tags Row */}
@@ -1568,7 +1600,7 @@ function AdminPostsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                    Focus Target Keyword (RankMath)
+                    Focus Target Keyword
                   </label>
                   <input
                     type="text"
@@ -1850,7 +1882,7 @@ function AdminPostsPage() {
                 </div>
               )}
 
-              {/* TAB 3: RANKMATH / YOAST SEO SCORECARD */}
+              {/* TAB 3: ON-PAGE SEO INTELLIGENCE SCORECARD */}
               {previewTab === 'seo' && (
                 <div className="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-6">
                   {/* SEO Score Meter Banner */}
@@ -1859,11 +1891,11 @@ function AdminPostsPage() {
                       <div className="flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-rose-500" />
                         <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                          On-Page RankMath / Yoast SEO Score
+                          On-Page SEO Intelligence Score
                         </h3>
                       </div>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Evaluates focus keyword optimization, SERP length, keyword density, and search intent.
+                        Evaluates focus keyword optimization, SERP title & snippet lengths, keyword density, and search intent.
                       </p>
                     </div>
 
@@ -1892,7 +1924,9 @@ function AdminPostsPage() {
                         https://builtbymiguel.net/blog/{editorSlug || 'your-article-slug'}
                       </div>
                       <div className="text-base text-[#1a0dab] dark:text-[#8ab4f8] font-medium hover:underline cursor-pointer">
-                        {editorTitle || 'Article Title - Built by Miguel'}
+                        {editorMetaTitle || editorTitle
+                          ? `${editorMetaTitle || editorTitle} | Built by Miguel`
+                          : 'Article SEO Title | Built by Miguel'}
                       </div>
                       <div className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">
                         {editorMetaDesc || 'Write a meta description to see how it appears in Google search results...'}

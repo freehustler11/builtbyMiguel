@@ -97,6 +97,7 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
   .validator(
     (data: {
       title: string
+      metaTitle?: string
       slug: string
       content: string
       keyword?: string
@@ -155,6 +156,7 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
       .insert(posts)
       .values({
         title: data.title.trim(),
+        metaTitle: data.metaTitle?.trim() || null,
         slug: cleanSlug,
         content: data.content.trim(),
         keyword: data.keyword?.trim() || null,
@@ -191,6 +193,7 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
     (data: {
       id: string
       title: string
+      metaTitle?: string
       slug: string
       content: string
       keyword?: string
@@ -267,6 +270,7 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
       .update(posts)
       .set({
         title: data.title.trim(),
+        metaTitle: data.metaTitle?.trim() || null,
         slug: cleanSlug,
         content: data.content.trim(),
         keyword: data.keyword?.trim() || null,
