@@ -105,12 +105,24 @@ function AdminPostsPage() {
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
 
   const handleStatusTab = (newStatus: 'all' | 'published' | 'draft') => {
-    navigate({ search: (prev) => ({ ...prev, status: newStatus }) })
+    navigate({
+      to: '.',
+      search: {
+        status: newStatus,
+        q: searchInput.trim() || undefined,
+      },
+    })
   }
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    navigate({ search: (prev) => ({ ...prev, q: searchInput.trim() || undefined }) })
+    navigate({
+      to: '.',
+      search: {
+        status,
+        q: searchInput.trim() || undefined,
+      },
+    })
   }
 
   const handleRefresh = async () => {
@@ -450,7 +462,8 @@ function AdminPostsPage() {
                   <div className="flex items-center gap-2 self-start sm:self-auto">
                     {isPublished && (
                       <Link
-                        to={`/blog/${post.slug}`}
+                        to="/blog/$slug"
+                        params={{ slug: post.slug }}
                         target="_blank"
                         className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 transition"
                       >

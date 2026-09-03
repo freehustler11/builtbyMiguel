@@ -83,14 +83,22 @@ function MessagesPage() {
 
   const handleStatusTab = (newStatus: 'all' | 'new' | 'contacted' | 'archived') => {
     navigate({
-      search: (prev) => ({ ...prev, status: newStatus }),
+      to: '.',
+      search: {
+        status: newStatus,
+        q: searchInput.trim() || undefined,
+      },
     })
   }
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     navigate({
-      search: (prev) => ({ ...prev, q: searchInput.trim() || undefined }),
+      to: '.',
+      search: {
+        status,
+        q: searchInput.trim() || undefined,
+      },
     })
   }
 
@@ -286,9 +294,15 @@ function MessagesPage() {
               type="button"
               onClick={() => {
                 setSearchInput('')
-                navigate({ search: (prev) => ({ ...prev, q: undefined }) })
+                navigate({
+                  to: '.',
+                  search: {
+                    status,
+                    q: undefined,
+                  },
+                })
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
             >
               Clear Search
             </button>

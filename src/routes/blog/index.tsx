@@ -168,7 +168,7 @@ function BlogIndexPage() {
 
                     {/* Title */}
                     <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors line-clamp-2">
-                      <Link to={`/blog/${post.slug}`}>
+                      <Link to="/blog/$slug" params={{ slug: post.slug }}>
                         {post.title}
                       </Link>
                     </h2>
@@ -185,7 +185,8 @@ function BlogIndexPage() {
                 {/* Footer Action */}
                 <div className="p-6 sm:p-7 pt-0">
                   <Link
-                    to={`/blog/${post.slug}`}
+                    to="/blog/$slug"
+                    params={{ slug: post.slug }}
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 group-hover:translate-x-1 transition-all"
                   >
                     <span>Read Full Guide</span>
