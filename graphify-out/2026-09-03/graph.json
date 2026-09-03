@@ -7471,7 +7471,7 @@
       "file_type": "code",
       "norm_label": "rootcomponent()",
       "source_file": "app/routes/__root.tsx",
-      "source_location": "L190"
+      "source_location": "L186"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_core_search_stack",
@@ -7815,7 +7815,7 @@
       "file_type": "code",
       "norm_label": "rootcomponent()",
       "source_file": "src/routes/__root.tsx",
-      "source_location": "L190"
+      "source_location": "L186"
     },
     {
       "id": "src_server_forms_isvalidemail",
@@ -41833,7 +41833,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "app/routes/__root.tsx",
-      "source_location": "L187",
+      "source_location": "L183",
       "weight": 1.0
     },
     {
@@ -42001,7 +42001,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/__root.tsx",
-      "source_location": "L187",
+      "source_location": "L183",
       "weight": 1.0
     },
     {
@@ -42154,5 +42154,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "203eccd4f83688806a397be1b7034e9ae73694af"
+  "built_at_commit": "0025c45cd309361fb79563f8350253b446cd78ba"
 }
