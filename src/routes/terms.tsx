@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { FileText, ArrowLeft, ShieldAlert, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 export const Route = createFileRoute('/terms')({
   head: () => ({
@@ -11,7 +11,7 @@ export const Route = createFileRoute('/terms')({
       },
       {
         name: 'description',
-        content: 'Terms of service, project milestones, retainer cancellation policy, and intellectual property ownership for Built by Miguel.',
+        content: 'Terms of Service for software development, Local SEO retainers, and care plan services provided by Built by Miguel.',
       },
     ],
   }),
@@ -22,79 +22,64 @@ function TermsPage() {
   const lastUpdated = 'September 1, 2026'
 
   return (
-    <div className="max-w-3xl mx-auto py-8 sm:py-12 space-y-10 text-slate-300 leading-relaxed text-sm sm:text-base">
+    <div className="max-w-3xl mx-auto py-8 sm:py-12 space-y-10 text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
       {/* Header */}
-      <div className="space-y-3 pb-6 border-b border-slate-800">
+      <div className="space-y-3 pb-6 border-b border-slate-200 dark:border-slate-800">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Home
         </Link>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
           Terms of Service
         </h1>
-        <p className="text-xs font-mono text-slate-500">
+        <p className="text-xs font-mono text-slate-400 dark:text-slate-500">
           Last Updated: {lastUpdated}
         </p>
       </div>
 
       <div className="space-y-8">
         <section className="space-y-3">
-          <h2 className="text-xl font-bold text-white">1. Scope of Services</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">1. Agreement to Terms</h2>
           <p>
-            Built by Miguel ("we", "us", "our") delivers digital engineering, search engine optimization, and workflow automation services, including:
-          </p>
-          <ul className="list-disc list-inside space-y-1.5 text-slate-400 pl-2">
-            <li>Custom website design, React/TypeScript software development, and cloud edge hosting.</li>
-            <li>Google Business Profile optimization, local directory citation building, and Map Pack rank tracking.</li>
-            <li>Workflow automation, CRM pipelines, webhook integrations, and internal tool dashboards.</li>
-          </ul>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-bold text-white">2. Payments & Deposits</h2>
-          <p>
-            Fixed-scope projects (such as custom website builds) typically require a 50% non-refundable deposit prior to commencing work, with the remaining balance due upon milestone completion and before final domain DNS cutover.
+            By accessing https://builtbymiguel.com or engaging Built by Miguel for software development, Local SEO, or care plans, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, please do not use our services.
           </p>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-bold text-white">3. Monthly Growth & Care Retainers</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">2. Scope of Services</h2>
           <p>
-            Monthly Care and Local SEO Retainers are billed automatically every 30 days via Stripe. There are no multi-year lock-in contracts. You may cancel your monthly retainer at any time with a 30-day written notice.
+            Built by Miguel provides technical software engineering, website development, Google Business Profile management, local citation optimization, and custom workflow automations as outlined in individual client proposals and service level agreements (SLAs).
           </p>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-bold text-white">4. Intellectual Property & Ownership</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">3. Intellectual Property & Code Ownership</h2>
           <p>
-            Upon receipt of full payment for custom design and development services, all custom source code, website assets, design mockups, and copy become the sole intellectual property of the Client. We reserve the right to display the completed work in our portfolio and case studies.
+            Upon receipt of full payment for design sprints and custom development milestones, full intellectual property rights, source code, design assets, and database configurations transfer entirely to the client. Built by Miguel retains no proprietary lock-in on custom code created for your business.
           </p>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-bold text-white">5. Local Search & Performance Disclaimer</h2>
-          <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 text-xs text-slate-400 space-y-2">
-            <div className="font-semibold text-white flex items-center gap-1.5">
-              <ShieldAlert className="w-4 h-4 text-amber-400" />
-              Honest Algorithm Realities
-            </div>
-            <p>
-              While we utilize data-proven, white-hat Local SEO strategies and high-speed web architecture to maximize ranking velocity, Google algorithms and third-party AI models remain proprietary and operate outside direct external control. We do not make fraudulent "guaranteed #1 rank overnight" claims.
-            </p>
-          </div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">4. Monthly Retainers & Cancellation</h2>
+          <p>
+            Ongoing retainers (Local SEO Management and Website Care Plans) operate on a month-to-month basis unless a fixed-term agreement is explicitly signed. You may pause or cancel monthly retainer services at any time with a 30-day written notice before the next billing cycle.
+          </p>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-bold text-white">6. Governing Law & Contact</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">5. Limitation of Liability</h2>
           <p>
-            These terms are governed by the laws of the United States. For questions regarding agreements or contracts, contact:
+            While we apply industry-best engineering and search optimization practices, Google algorithm adjustments and local search dynamics are controlled by third-party search engines. Built by Miguel is not liable for indirect, incidental, or consequential damages resulting from platform updates or third-party service outages.
           </p>
-          <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono">
-            <div>Built by Miguel</div>
-            <div>Email: <a href="mailto:hello@builtbymiguel.com" className="text-emerald-400">hello@builtbymiguel.com</a></div>
-          </div>
+        </section>
+
+        <section className="space-y-3 pt-6 border-t border-slate-200 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">6. Governing Law</h2>
+          <p>
+            These terms are governed by and construed in accordance with the laws of the United States. For any inquiries regarding legal agreements, contact <a href="mailto:legal@builtbymiguel.com" className="text-rose-600 dark:text-rose-400 font-mono">legal@builtbymiguel.com</a>.
+          </p>
         </section>
       </div>
     </div>

@@ -9,10 +9,9 @@ import {
   ArrowRight,
   Sparkles,
   ExternalLink,
-  ShieldCheck,
-  CheckCircle,
 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
+import { ThemeToggle } from './ThemeToggle'
 
 export interface NavItem {
   label: string
@@ -59,46 +58,46 @@ export function Navbar() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-md transition-colors duration-200">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-md transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 rounded-xl p-1">
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] transition-all duration-300">
-              <span className="font-mono font-bold text-lg text-white group-hover:text-emerald-400 transition-colors">
+          {/* Brand Logo Lockup */}
+          <Link to="/" className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-rose-500 rounded-2xl p-1">
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-2xl bg-slate-900 dark:bg-rose-500/10 border border-slate-800 dark:border-rose-500/30 shadow-md group-hover:scale-105 transition-all duration-200 shrink-0">
+              <span className="font-mono font-bold text-lg text-white dark:text-rose-400">
                 M
               </span>
               <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 ring-2 ring-slate-950" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500 ring-2 ring-white dark:ring-[#0B0F17]" />
               </span>
             </div>
 
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-lg tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
                   Built by Miguel
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
               </div>
-              <span className="text-[11px] font-mono tracking-wider text-slate-400 uppercase">
+              <span className="text-[11px] font-mono tracking-wider text-slate-500 dark:text-slate-400 uppercase">
                 Websites · SEO · Systems
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1.5" aria-label="Main Navigation">
+          <nav className="hidden lg:flex items-center gap-1" aria-label="Main Navigation">
             {/* Services Dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
                 type="button"
                 onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
                 onMouseEnter={() => setServicesDropdownOpen(true)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-lg transition-all duration-150 cursor-pointer ${
+                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-all duration-150 cursor-pointer ${
                   servicesDropdownOpen
-                    ? 'text-emerald-400 bg-slate-900 border border-slate-800'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
+                    ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
                 }`}
                 aria-expanded={servicesDropdownOpen}
                 aria-haspopup="true"
@@ -106,7 +105,7 @@ export function Navbar() {
                 <span>Services</span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-200 ${
-                    servicesDropdownOpen ? 'rotate-180 text-emerald-400' : 'text-slate-400'
+                    servicesDropdownOpen ? 'rotate-180 text-slate-900 dark:text-white' : 'text-slate-400'
                   }`}
                 />
               </button>
@@ -115,9 +114,9 @@ export function Navbar() {
               {servicesDropdownOpen && (
                 <div
                   onMouseLeave={() => setServicesDropdownOpen(false)}
-                  className="absolute left-0 mt-2 w-80 rounded-2xl border border-slate-800 bg-slate-900/95 p-3 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-150 z-50"
+                  className="absolute left-0 mt-2 w-80 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#111827]/98 p-3 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-150 z-50"
                 >
-                  <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 px-3 py-1.5">
+                  <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 py-1.5 font-bold">
                     Core Solutions
                   </div>
                   <div className="space-y-1">
@@ -129,21 +128,21 @@ export function Navbar() {
                           to={service.to}
                           onClick={() => setServicesDropdownOpen(false)}
                           activeProps={{
-                            className: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
+                            className: 'bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold',
                           }}
                           inactiveProps={{
-                            className: 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/80',
+                            className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50',
                           }}
-                          className="flex items-start gap-3.5 p-3 rounded-xl border transition-all duration-150 group"
+                          className="flex items-start gap-3.5 p-3 rounded-2xl border border-transparent transition-all duration-150 group"
                         >
-                          <div className="p-2 rounded-lg bg-slate-950 border border-slate-800 text-emerald-400 group-hover:border-emerald-500/40 group-hover:scale-105 transition-all">
+                          <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 group-hover:scale-105 transition-all">
                             <Icon className="w-4 h-4" />
                           </div>
                           <div>
-                            <div className="font-semibold text-sm text-white group-hover:text-emerald-300 transition-colors">
+                            <div className="font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
                               {service.label}
                             </div>
-                            <p className="text-xs text-slate-400 leading-snug mt-0.5">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
                               {service.description}
                             </p>
                           </div>
@@ -152,11 +151,11 @@ export function Navbar() {
                     })}
                   </div>
 
-                  <div className="mt-2 pt-2 border-t border-slate-800/80 px-3 pb-1">
+                  <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 px-3 pb-1">
                     <Link
                       to="/audit"
                       onClick={() => setServicesDropdownOpen(false)}
-                      className="flex items-center justify-between text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+                      className="flex items-center justify-between text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 transition-colors"
                     >
                       <span>Need a custom growth plan?</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -170,12 +169,12 @@ export function Navbar() {
             <Link
               to="/work"
               activeProps={{
-                className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-300 hover:text-white hover:bg-slate-900/60 border-transparent',
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
               }}
-              className="px-3.5 py-2 text-sm font-medium rounded-lg border transition-all duration-150"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
             >
               Work
             </Link>
@@ -183,12 +182,12 @@ export function Navbar() {
             <Link
               to="/about"
               activeProps={{
-                className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-300 hover:text-white hover:bg-slate-900/60 border-transparent',
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
               }}
-              className="px-3.5 py-2 text-sm font-medium rounded-lg border transition-all duration-150"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
             >
               About
             </Link>
@@ -196,53 +195,58 @@ export function Navbar() {
             <Link
               to="/contact"
               activeProps={{
-                className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-300 hover:text-white hover:bg-slate-900/60 border-transparent',
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
               }}
-              className="px-3.5 py-2 text-sm font-medium rounded-lg border transition-all duration-150"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
             >
               Contact
             </Link>
           </nav>
 
           {/* Desktop Right Action Area */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-3">
             <a
               href="https://app.builtbymiguel.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-1"
+              className="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1 px-2 py-1"
             >
               Portal Login
-              <ExternalLink className="w-3 h-3 text-slate-500" />
+              <ExternalLink className="w-3 h-3 text-slate-400" />
             </a>
+
+            {/* Dark Mode Theme Toggle */}
+            <ThemeToggle variant="pill" />
 
             {/* Primary CTA */}
             <Link
               to="/audit"
-              className="relative inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-950 bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/35 transition-all duration-200 active:scale-95 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="relative inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-500 hover:bg-black shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-rose-500"
             >
-              <Sparkles className="w-4 h-4 text-slate-950 fill-slate-950" />
+              <Sparkles className="w-4 h-4 text-rose-400 dark:text-rose-200 fill-rose-400 dark:fill-rose-200" />
               <span>Get Free Audit</span>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex lg:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-2">
+            <ThemeToggle variant="pill" />
+
             <Link
               to="/audit"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-950 bg-emerald-500 hover:bg-emerald-400 transition active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 transition active:scale-95"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-rose-400 dark:text-rose-200" />
               <span>Audit</span>
             </Link>
 
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900 border border-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="p-2 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none cursor-pointer"
               aria-label="Toggle Navigation Menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -254,9 +258,9 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-slate-800 bg-slate-950/98 px-4 pt-3 pb-6 space-y-4 backdrop-blur-2xl">
+        <div className="lg:hidden border-b border-slate-200 dark:border-slate-800 bg-white/98 dark:bg-[#0B0F17]/98 px-4 pt-3 pb-6 space-y-4 backdrop-blur-2xl shadow-xl">
           <div className="space-y-1">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 px-3 py-1">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 py-1 font-bold">
               Services
             </div>
             {SERVICE_ITEMS.map((service) => {
@@ -267,77 +271,79 @@ export function Navbar() {
                   to={service.to}
                   onClick={() => setMobileMenuOpen(false)}
                   activeProps={{
-                    className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+                    className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
                   }}
                   inactiveProps={{
-                    className: 'text-slate-300 hover:text-white hover:bg-slate-900 border-transparent',
+                    className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60',
                   }}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl border text-sm font-medium"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium"
                 >
-                  <Icon className="w-4 h-4 text-emerald-400" />
+                  <Icon className="w-4 h-4 text-slate-800 dark:text-slate-200" />
                   <span>{service.label}</span>
                 </Link>
               )
             })}
           </div>
 
-          <div className="pt-2 border-t border-slate-800/80 space-y-1">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 px-3 py-1">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 py-1 font-bold">
               Navigation
             </div>
             <Link
               to="/work"
               onClick={() => setMobileMenuOpen(false)}
               activeProps={{
-                className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-300 hover:text-white hover:bg-slate-900 border-transparent',
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60',
               }}
-              className="flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm font-medium"
+              className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium"
             >
               <span>Work / Case Studies</span>
-              <ArrowRight className="w-4 h-4 text-slate-500" />
+              <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
 
             <Link
               to="/about"
               onClick={() => setMobileMenuOpen(false)}
               activeProps={{
-                className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-300 hover:text-white hover:bg-slate-900 border-transparent',
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60',
               }}
-              className="flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm font-medium"
+              className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium"
             >
               <span>About Miguel</span>
-              <ArrowRight className="w-4 h-4 text-slate-500" />
+              <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
 
             <Link
               to="/contact"
               onClick={() => setMobileMenuOpen(false)}
               activeProps={{
-                className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-300 hover:text-white hover:bg-slate-900 border-transparent',
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60',
               }}
-              className="flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm font-medium"
+              className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium"
             >
               <span>Contact</span>
-              <ArrowRight className="w-4 h-4 text-slate-500" />
+              <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
           </div>
 
-          <div className="pt-2 border-t border-slate-800/80 space-y-3">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-3">
+            <ThemeToggle variant="row" />
+
             <Link
               to="/audit"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm text-slate-950 bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"
+              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-full font-semibold text-sm text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-md"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 text-rose-400 dark:text-rose-200" />
               <span>Get Free Growth Audit</span>
             </Link>
 
@@ -346,10 +352,10 @@ export function Navbar() {
                 href="https://app.builtbymiguel.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-medium text-slate-400 hover:text-emerald-400 flex items-center gap-1.5"
+                className="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5"
               >
                 <span>Client Portal Login</span>
-                <ExternalLink className="w-3 h-3 text-slate-500" />
+                <ExternalLink className="w-3 h-3 text-slate-400" />
               </a>
             </div>
           </div>

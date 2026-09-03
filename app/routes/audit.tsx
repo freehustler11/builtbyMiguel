@@ -6,6 +6,7 @@ import {
   Search,
   Check,
   AlertCircle,
+  Zap,
 } from 'lucide-react'
 import { useState } from 'react'
 import { submitAuditLead } from '../server/leads'
@@ -56,7 +57,7 @@ function AuditPage() {
     email: '',
     cityArea: '',
     websiteUrl: '',
-    primaryGoal: 'Google Map Pack Top 3',
+    primaryGoal: 'Google Map Pack Visibility',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -79,31 +80,39 @@ function AuditPage() {
   }
 
   return (
-    <div className="space-y-16 sm:space-y-24 py-6 sm:py-10 max-w-4xl mx-auto">
+    <div className="space-y-20 sm:space-y-28 lg:space-y-32 py-8 sm:py-12 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-          <Sparkles className="w-3.5 h-3.5" /> 100% Free · 24-Hour Turnaround
+      <div className="text-center max-w-3xl mx-auto">
+        <div className="mb-8 sm:mb-10 flex justify-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5" /> 100% Free · 24-Hour Turnaround
+          </div>
         </div>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
           Get Your Free{' '}
-          <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
             Local Visibility Audit
           </span>
         </h1>
-        <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
           I will record a personalized 5-minute video breakdown analyzing your Google Map Pack ranking, mobile speed, and competitor gaps.
         </p>
       </div>
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Form Column */}
-        <div className="lg:col-span-7 rounded-3xl border border-slate-800 bg-slate-900/80 p-6 sm:p-8 space-y-6 shadow-2xl">
+        {/* Left Column: Form */}
+        <div className="lg:col-span-7 rounded-[3rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 sm:p-10 shadow-xl dark:shadow-none space-y-6">
+          <div className="space-y-1 border-b border-slate-100 dark:border-slate-800 pb-4">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Your Business Details</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Where should I send your video breakdown?</p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-1.5">
-              <label htmlFor="audit-name" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Your Full Name <span className="text-emerald-400">*</span>
+            {/* Name */}
+            <div className="space-y-2">
+              <label htmlFor="audit-name" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Your Name <span className="text-rose-500">*</span>
               </label>
               <input
                 id="audit-name"
@@ -112,48 +121,50 @@ function AuditPage() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g. Miguel Sanchez"
-                className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm focus:outline-none transition-colors ${
+                className={`w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none transition-colors ${
                   errors.name
                     ? 'border-rose-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500'
-                    : 'border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
+                    : 'border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-rose-500 focus:ring-1 focus:ring-slate-900 dark:focus:ring-rose-500'
                 }`}
               />
               {errors.name && (
-                <p className="text-xs text-rose-400 flex items-center gap-1">
+                <p className="text-xs text-rose-500 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>{errors.name}</span>
                 </p>
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="audit-biz" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Business Name <span className="text-emerald-400">*</span>
+            {/* Business Name */}
+            <div className="space-y-2">
+              <label htmlFor="audit-business" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Business Name <span className="text-rose-500">*</span>
               </label>
               <input
-                id="audit-biz"
+                id="audit-business"
                 type="text"
                 required
                 value={formData.businessName}
                 onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                placeholder="e.g. Austin Elite Roofing"
-                className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm focus:outline-none transition-colors ${
+                placeholder="e.g. Sanchez Plumbing & HVAC"
+                className={`w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none transition-colors ${
                   errors.businessName
                     ? 'border-rose-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500'
-                    : 'border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
+                    : 'border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-rose-500 focus:ring-1 focus:ring-slate-900 dark:focus:ring-rose-500'
                 }`}
               />
               {errors.businessName && (
-                <p className="text-xs text-rose-400 flex items-center gap-1">
+                <p className="text-xs text-rose-500 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>{errors.businessName}</span>
                 </p>
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="audit-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Work Email Address <span className="text-emerald-400">*</span>
+            {/* Email */}
+            <div className="space-y-2">
+              <label htmlFor="audit-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Email Address <span className="text-rose-500">*</span>
               </label>
               <input
                 id="audit-email"
@@ -162,23 +173,24 @@ function AuditPage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="you@company.com"
-                className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm focus:outline-none transition-colors ${
+                className={`w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none transition-colors ${
                   errors.email
                     ? 'border-rose-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500'
-                    : 'border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
+                    : 'border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-rose-500 focus:ring-1 focus:ring-slate-900 dark:focus:ring-rose-500'
                 }`}
               />
               {errors.email && (
-                <p className="text-xs text-rose-400 flex items-center gap-1">
+                <p className="text-xs text-rose-500 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>{errors.email}</span>
                 </p>
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="audit-city" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Primary Service City / Area <span className="text-emerald-400">*</span>
+            {/* Primary City / Area */}
+            <div className="space-y-2">
+              <label htmlFor="audit-city" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Primary Service City / Area <span className="text-rose-500">*</span>
               </label>
               <input
                 id="audit-city"
@@ -187,112 +199,137 @@ function AuditPage() {
                 value={formData.cityArea}
                 onChange={(e) => setFormData({ ...formData, cityArea: e.target.value })}
                 placeholder="e.g. Austin, TX & surrounding suburbs"
-                className={`w-full px-4 py-3 rounded-xl bg-slate-950 border text-white placeholder-slate-500 text-sm focus:outline-none transition-colors ${
+                className={`w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none transition-colors ${
                   errors.cityArea
                     ? 'border-rose-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500'
-                    : 'border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
+                    : 'border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-rose-500 focus:ring-1 focus:ring-slate-900 dark:focus:ring-rose-500'
                 }`}
               />
               {errors.cityArea && (
-                <p className="text-xs text-rose-400 flex items-center gap-1">
+                <p className="text-xs text-rose-500 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>{errors.cityArea}</span>
                 </p>
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="audit-web" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Website URL <span className="text-slate-500 font-normal lowercase">(optional)</span>
+            {/* Website URL */}
+            <div className="space-y-2">
+              <label htmlFor="audit-url" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Current Website <span className="text-slate-400 font-normal lowercase">(optional)</span>
               </label>
               <input
-                id="audit-web"
+                id="audit-url"
                 type="url"
                 value={formData.websiteUrl}
                 onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
                 placeholder="https://www.yourbusiness.com"
-                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-rose-500 focus:ring-1 focus:ring-slate-900 dark:focus:ring-rose-500 transition-colors"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="audit-goal" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Primary Growth Priority
+            {/* Primary Goal Dropdown */}
+            <div className="space-y-2">
+              <label htmlFor="audit-goal" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                What is your biggest current priority?
               </label>
               <select
                 id="audit-goal"
                 value={formData.primaryGoal}
                 onChange={(e) => setFormData({ ...formData, primaryGoal: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-slate-900 dark:focus:border-rose-500 focus:ring-1 focus:ring-slate-900 dark:focus:ring-rose-500 transition-colors"
               >
-                <option value="Google Map Pack Top 3">Google Map Pack Top 3 Dominance</option>
-                <option value="Faster Website & Higher Conversions">Faster Website & Higher Conversions</option>
-                <option value="Automated CRM & Operations">Automated CRM & Operations</option>
-                <option value="Full Comprehensive Growth Stack">Full Comprehensive Growth Stack</option>
+                <option value="Google Map Pack Visibility" className="dark:bg-slate-900">Increase Google Map Pack Visibility</option>
+                <option value="Website Speed & Rebuild" className="dark:bg-slate-900">Rebuild Slow Website / Improve Conversion</option>
+                <option value="Custom CRM & Lead Automation" className="dark:bg-slate-900">Automate Lead Capture & Operations</option>
+                <option value="All of the above" className="dark:bg-slate-900">All of the above (Full Growth Stack)</option>
               </select>
             </div>
 
-            <div className="pt-2">
+            {/* Submit Button */}
+            <div className="pt-3">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base text-slate-950 bg-emerald-500 hover:bg-emerald-400 shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-200 active:scale-95 cursor-pointer disabled:opacity-75"
+                className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                    <span>Verifying & Submitting...</span>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Preparing Your Audit Request...</span>
                   </>
                 ) : (
                   <>
-                    <Send className="w-5 h-5 fill-slate-950" />
+                    <Send className="w-5 h-5 fill-white" />
                     <span>Send Me the Free Video Audit</span>
                   </>
                 )}
               </button>
             </div>
 
-            <p className="text-center text-[11px] text-slate-500">
-              No sales pitch. 100% confidential. Delivered straight to your inbox within 24 hours.
+            <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+              100% confidential. No sales calls, no spam. Delivered directly to your email in 24 business hours.
             </p>
           </form>
         </div>
 
-        {/* Proof / Value Column */}
+        {/* Right Column: Breakdown Bullets */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/40 p-6 space-y-5">
-            <h3 className="font-bold text-white text-lg flex items-center gap-2">
-              <Search className="w-5 h-5 text-emerald-400" />
-              What's inside your video audit?
+          <div className="rounded-[3rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 sm:p-8 space-y-6 shadow-xl dark:shadow-none">
+            {/* Reviewer Header */}
+            <div className="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+              <img
+                src="/miguel-umbac.png"
+                alt="Miguel Umbac"
+                className="w-16 h-16 rounded-2xl object-cover object-top shadow-md border border-slate-100 dark:border-slate-800"
+              />
+              <div>
+                <div className="text-base font-bold text-slate-900 dark:text-white">Miguel Umbac</div>
+                <div className="text-xs font-mono text-rose-600 dark:text-rose-400 font-semibold">Founder & Systems Auditor</div>
+              </div>
+            </div>
+
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Search className="w-4 h-4 text-rose-500 dark:text-rose-400" />
+              <span>What I Cover in Your 5-Min Video:</span>
             </h3>
 
-            <ul className="space-y-3.5 text-xs sm:text-sm text-slate-300">
-              <li className="flex items-start gap-2.5">
-                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span><strong className="text-white">Geo-Grid Ranking Heatmap:</strong> See exactly where you rank block-by-block in your city.</span>
+            <ul className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+              <li className="flex items-start gap-3">
+                <div className="p-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 mt-0.5">
+                  <Check className="w-4 h-4" />
+                </div>
+                <div>
+                  <strong className="text-slate-900 dark:text-white block font-semibold">Google Map Pack Heatmap:</strong>
+                  See exactly where you drop off across your service radius.
+                </div>
               </li>
-              <li className="flex items-start gap-2.5">
-                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span><strong className="text-white">Competitor Gap Analysis:</strong> Why competitors above you are getting the calls.</span>
+
+              <li className="flex items-start gap-3">
+                <div className="p-1 rounded-lg bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 mt-0.5">
+                  <Zap className="w-4 h-4" />
+                </div>
+                <div>
+                  <strong className="text-slate-900 dark:text-white block font-semibold">Mobile Speed Test:</strong>
+                  Real Core Web Vitals diagnostics and bounce risks.
+                </div>
               </li>
-              <li className="flex items-start gap-2.5">
-                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span><strong className="text-white">Mobile Speed & Core Web Vitals:</strong> Real load test diagnostics on 4G networks.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span><strong className="text-white">Action Plan:</strong> 3 immediate fixes you can implement right away.</span>
+
+              <li className="flex items-start gap-3">
+                <div className="p-1 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 mt-0.5">
+                  <Check className="w-4 h-4" />
+                </div>
+                <div>
+                  <strong className="text-slate-900 dark:text-white block font-semibold">Competitor Citation Gaps:</strong>
+                  The exact directories and schema tags your top competitors have.
+                </div>
               </li>
             </ul>
-          </div>
 
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/40 p-6 space-y-3">
-            <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono font-semibold">
-              <Clock className="w-4 h-4" /> 24-Hour Guarantee
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400 font-mono">
+              <Clock className="w-4 h-4 text-rose-500 dark:text-rose-400 shrink-0" />
+              <span>Delivered via private Loom video in &lt; 24 business hours.</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Every audit is manually recorded by Miguel using live search diagnostics—never an automated template.
-            </p>
           </div>
         </div>
       </div>

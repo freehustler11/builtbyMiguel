@@ -4,18 +4,26 @@
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_apply_reasoning",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_build_style_lookup",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_extract_results",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_find_reasoning_rule",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_generate",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_init",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_load_landing_patterns",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_load_reasoning",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_load_styles",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_multi_domain_search",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_resolve_style",
       "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_select_best_match",
       "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_259",
       "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_268",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_321",
       "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_358",
       "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_366",
       "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_409",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_446",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_451",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_91",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_resolve_dial",
       "agents_skills_ui_ux_pro_max_scripts_reasoning_contract",
       "agents_skills_ui_ux_pro_max_scripts_reasoning_contract_apply_decision_rules",
       "agents_skills_ui_ux_pro_max_scripts_reasoning_contract_object_without_duplicates",
@@ -60,13 +68,6 @@
       "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_teststyleidentitycontract_setup",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_teststyleidentitycontract_test_every_product_and_reasoning_style_reference_resolves",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_teststyleidentitycontract_test_ids_aliases_status_and_parents_are_unambiguous",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_rationale_139",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_dark_query_does_not_advise_against_dark_mode",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_dark_query_foreground_is_lighter_than_background",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_dark_query_gets_a_dark_background",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_generator_exports_every_semantic_foreground_pair",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_light_query_keeps_a_light_background",
       "agents_skills_ui_ux_pro_max_scripts_validate_data_check_reasoning_contract"
     ],
     "1": [
@@ -185,58 +186,6 @@
       "agents_skills_design_system_templates_design_tokens_starter_yellow_500"
     ],
     "3": [
-      "agents_skills_design_scripts_cip_core",
-      "agents_skills_design_scripts_cip_core_bm25",
-      "agents_skills_design_scripts_cip_core_bm25_fit",
-      "agents_skills_design_scripts_cip_core_bm25_init",
-      "agents_skills_design_scripts_cip_core_bm25_score",
-      "agents_skills_design_scripts_cip_core_bm25_tokenize",
-      "agents_skills_design_scripts_cip_core_detect_domain",
-      "agents_skills_design_scripts_cip_core_get_cip_brief",
-      "agents_skills_design_scripts_cip_core_load_csv",
-      "agents_skills_design_scripts_cip_core_rationale_106",
-      "agents_skills_design_scripts_cip_core_rationale_112",
-      "agents_skills_design_scripts_cip_core_rationale_137",
-      "agents_skills_design_scripts_cip_core_rationale_153",
-      "agents_skills_design_scripts_cip_core_rationale_175",
-      "agents_skills_design_scripts_cip_core_rationale_185",
-      "agents_skills_design_scripts_cip_core_rationale_43",
-      "agents_skills_design_scripts_cip_core_rationale_56",
-      "agents_skills_design_scripts_cip_core_rationale_61",
-      "agents_skills_design_scripts_cip_core_rationale_80",
-      "agents_skills_design_scripts_cip_core_search",
-      "agents_skills_design_scripts_cip_core_search_all",
-      "agents_skills_design_scripts_cip_core_search_csv",
-      "agents_skills_design_scripts_cip_generate",
-      "agents_skills_design_scripts_cip_generate_build_cip_prompt",
-      "agents_skills_design_scripts_cip_generate_check_logo_required",
-      "agents_skills_design_scripts_cip_generate_generate_cip_set",
-      "agents_skills_design_scripts_cip_generate_generate_with_nano_banana",
-      "agents_skills_design_scripts_cip_generate_load_env",
-      "agents_skills_design_scripts_cip_generate_load_logo_image",
-      "agents_skills_design_scripts_cip_generate_main",
-      "agents_skills_design_scripts_cip_generate_rationale_187",
-      "agents_skills_design_scripts_cip_generate_rationale_287",
-      "agents_skills_design_scripts_cip_generate_rationale_342",
-      "agents_skills_design_scripts_cip_generate_rationale_37",
-      "agents_skills_design_scripts_cip_generate_rationale_70",
-      "agents_skills_design_scripts_cip_generate_rationale_90",
-      "agents_skills_design_scripts_cip_render_html",
-      "agents_skills_design_scripts_cip_render_html_generate_html",
-      "agents_skills_design_scripts_cip_render_html_get_deliverable_info",
-      "agents_skills_design_scripts_cip_render_html_get_image_base64",
-      "agents_skills_design_scripts_cip_render_html_main",
-      "agents_skills_design_scripts_cip_render_html_rationale_100",
-      "agents_skills_design_scripts_cip_render_html_rationale_110",
-      "agents_skills_design_scripts_cip_render_html_rationale_125",
-      "agents_skills_design_scripts_cip_search",
-      "agents_skills_design_scripts_cip_search_format_brief",
-      "agents_skills_design_scripts_cip_search_format_results",
-      "agents_skills_design_scripts_cip_search_main",
-      "agents_skills_design_scripts_cip_search_rationale_18",
-      "agents_skills_design_scripts_cip_search_rationale_33"
-    ],
-    "4": [
       "agents_skills_design_system_templates_design_tokens_starter",
       "agents_skills_design_system_templates_design_tokens_starter_background_type",
       "agents_skills_design_system_templates_design_tokens_starter_background_value",
@@ -287,7 +236,7 @@
       "agents_skills_design_system_templates_design_tokens_starter_spacing_component",
       "agents_skills_design_system_templates_design_tokens_starter_spacing_section"
     ],
-    "5": [
+    "4": [
       "clsx",
       "lucide_react",
       "package",
@@ -336,7 +285,7 @@
       "vite",
       "vitejs_plugin_react"
     ],
-    "6": [
+    "5": [
       "agents_skills_design_system_templates_design_tokens_starter_bg_type",
       "agents_skills_design_system_templates_design_tokens_starter_bg_value",
       "agents_skills_design_system_templates_design_tokens_starter_border_type",
@@ -383,7 +332,7 @@
       "agents_skills_design_system_templates_design_tokens_starter_shadow_type",
       "agents_skills_design_system_templates_design_tokens_starter_shadow_value"
     ],
-    "7": [
+    "6": [
       "agents_skills_design_system_scripts_search_slides",
       "agents_skills_design_system_scripts_search_slides_format_context",
       "agents_skills_design_system_scripts_search_slides_format_result",
@@ -427,45 +376,50 @@
       "agents_skills_design_system_scripts_slide_search_core_search_with_context",
       "agents_skills_design_system_scripts_slide_search_core_should_use_full_bleed"
     ],
-    "8": [
-      "agents_skills_ui_ux_pro_max_scripts_core_bm25",
-      "agents_skills_ui_ux_pro_max_scripts_core_bm25_fit",
-      "agents_skills_ui_ux_pro_max_scripts_core_bm25_init",
-      "agents_skills_ui_ux_pro_max_scripts_core_bm25_score",
-      "agents_skills_ui_ux_pro_max_scripts_core_bm25_tokenize",
-      "agents_skills_ui_ux_pro_max_scripts_core_bm25_vocabulary",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_283",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_297",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_303",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_324",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_346",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_format_markdown",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_generate_design_system",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_792",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_923",
-      "agents_skills_ui_ux_pro_max_scripts_search",
-      "agents_skills_ui_ux_pro_max_scripts_search_format_output",
-      "agents_skills_ui_ux_pro_max_scripts_search_rationale_45",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior_test_bm25_cache_rebuilds_after_file_mtime_changes",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior_test_empty_documents_produce_no_scores_or_vocab",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior_test_search_uses_one_verified_rows_and_index_snapshot",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdiagnosticscontracts",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdiagnosticscontracts_test_diagnostics_opt_in_is_additive_for_domain_search",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdiagnosticscontracts_test_diagnostics_opt_in_is_additive_for_stack_search",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_concurrent_non_force_persist_has_one_writer",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_then_skip_then_force",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_writes_only_under_output_dir",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_boundary_safe_nav_normalization_preserves_existing_words",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_punctuation_and_uk_variants_normalize_to_canonical_tokens",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_short_domain_terms_are_kept",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_stopwords_removed",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_synonym_normalization"
+    "7": [
+      "agents_skills_design_scripts_cip_core",
+      "agents_skills_design_scripts_cip_core_detect_domain",
+      "agents_skills_design_scripts_cip_core_get_cip_brief",
+      "agents_skills_design_scripts_cip_core_load_csv",
+      "agents_skills_design_scripts_cip_core_rationale_106",
+      "agents_skills_design_scripts_cip_core_rationale_112",
+      "agents_skills_design_scripts_cip_core_rationale_137",
+      "agents_skills_design_scripts_cip_core_rationale_153",
+      "agents_skills_design_scripts_cip_core_rationale_175",
+      "agents_skills_design_scripts_cip_core_rationale_185",
+      "agents_skills_design_scripts_cip_core_search",
+      "agents_skills_design_scripts_cip_core_search_all",
+      "agents_skills_design_scripts_cip_core_search_csv",
+      "agents_skills_design_scripts_cip_generate",
+      "agents_skills_design_scripts_cip_generate_build_cip_prompt",
+      "agents_skills_design_scripts_cip_generate_check_logo_required",
+      "agents_skills_design_scripts_cip_generate_generate_cip_set",
+      "agents_skills_design_scripts_cip_generate_generate_with_nano_banana",
+      "agents_skills_design_scripts_cip_generate_load_env",
+      "agents_skills_design_scripts_cip_generate_load_logo_image",
+      "agents_skills_design_scripts_cip_generate_main",
+      "agents_skills_design_scripts_cip_generate_rationale_187",
+      "agents_skills_design_scripts_cip_generate_rationale_287",
+      "agents_skills_design_scripts_cip_generate_rationale_342",
+      "agents_skills_design_scripts_cip_generate_rationale_37",
+      "agents_skills_design_scripts_cip_generate_rationale_70",
+      "agents_skills_design_scripts_cip_generate_rationale_90",
+      "agents_skills_design_scripts_cip_render_html",
+      "agents_skills_design_scripts_cip_render_html_generate_html",
+      "agents_skills_design_scripts_cip_render_html_get_deliverable_info",
+      "agents_skills_design_scripts_cip_render_html_get_image_base64",
+      "agents_skills_design_scripts_cip_render_html_main",
+      "agents_skills_design_scripts_cip_render_html_rationale_100",
+      "agents_skills_design_scripts_cip_render_html_rationale_110",
+      "agents_skills_design_scripts_cip_render_html_rationale_125",
+      "agents_skills_design_scripts_cip_search",
+      "agents_skills_design_scripts_cip_search_format_brief",
+      "agents_skills_design_scripts_cip_search_format_results",
+      "agents_skills_design_scripts_cip_search_main",
+      "agents_skills_design_scripts_cip_search_rationale_18",
+      "agents_skills_design_scripts_cip_search_rationale_33"
     ],
-    "9": [
+    "8": [
       "agents_skills_design_system_templates_design_tokens_starter_0_type",
       "agents_skills_design_system_templates_design_tokens_starter_0_value",
       "agents_skills_design_system_templates_design_tokens_starter_10_type",
@@ -501,41 +455,7 @@
       "agents_skills_design_system_templates_design_tokens_starter_spacing_6",
       "agents_skills_design_system_templates_design_tokens_starter_spacing_8"
     ],
-    "10": [
-      "agents_skills_ui_ux_pro_max_scripts_core_exact_stack_identifier",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_926",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_952",
-      "agents_skills_ui_ux_pro_max_scripts_core_search_stack",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_every_stack_file_exists_and_is_searchable",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_rows",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_current_mobile_contracts",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_current_threejs_uses_supported_module_and_color_apis",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_deprecated_symbols_are_not_recommended_by_current_rows",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_high_impact_rows_use_official_sources",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_migration_intent_returns_current_replacements",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_old_version_without_curated_rows_abstains",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_rows_have_final_freshness_metadata",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_standalone_current_and_deprecated_identifiers_resolve_replacement",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_windows_current_and_maintenance_lanes_are_visible",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_rows",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_active_rows_use_the_verified_current_applicability",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_common_old_major_syntaxes_select_legacy_guidance",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_current_high_drift_queries_return_current_contracts",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_current_major_migration_query_stays_on_current_guidance",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_explicit_old_major_uses_only_curated_legacy_rows",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_high_impact_rows_use_official_sources",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_old_major_without_curated_legacy_guidance_abstains",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_shadcn_named_base_excludes_incompatible_composition_apis",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_stack_without_curated_legacy_rows_keeps_nonlegacy_fallback",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_stale_apis_are_not_recommended_by_active_rows",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_svelte_current_and_legacy_queries_do_not_mix_generations",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_web_rows_have_explicit_freshness_metadata"
-    ],
-    "11": [
+    "9": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_101",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_112",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_138",
@@ -567,6 +487,70 @@
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_init_javascript",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_validate_config_empty_theme",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_write_config"
+    ],
+    "10": [
+      "agents_skills_design_scripts_cip_core_bm25",
+      "agents_skills_design_scripts_cip_core_bm25_fit",
+      "agents_skills_design_scripts_cip_core_bm25_init",
+      "agents_skills_design_scripts_cip_core_bm25_score",
+      "agents_skills_design_scripts_cip_core_bm25_tokenize",
+      "agents_skills_design_scripts_cip_core_rationale_43",
+      "agents_skills_design_scripts_cip_core_rationale_56",
+      "agents_skills_design_scripts_cip_core_rationale_61",
+      "agents_skills_design_scripts_cip_core_rationale_80",
+      "agents_skills_ui_ux_pro_max_scripts_core_bm25",
+      "agents_skills_ui_ux_pro_max_scripts_core_bm25_fit",
+      "agents_skills_ui_ux_pro_max_scripts_core_bm25_init",
+      "agents_skills_ui_ux_pro_max_scripts_core_bm25_score",
+      "agents_skills_ui_ux_pro_max_scripts_core_bm25_tokenize",
+      "agents_skills_ui_ux_pro_max_scripts_core_bm25_vocabulary",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_283",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_297",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_303",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_324",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_346",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior_test_bm25_cache_rebuilds_after_file_mtime_changes",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior_test_empty_documents_produce_no_scores_or_vocab",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testbm25corebehavior_test_search_uses_one_verified_rows_and_index_snapshot",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_boundary_safe_nav_normalization_preserves_existing_words",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_punctuation_and_uk_variants_normalize_to_canonical_tokens",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_short_domain_terms_are_kept",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_stopwords_removed",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testtokenizer_test_synonym_normalization"
+    ],
+    "11": [
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_952",
+      "agents_skills_ui_ux_pro_max_scripts_core_search_stack",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_every_stack_file_exists_and_is_searchable",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_rows",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_current_mobile_contracts",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_current_threejs_uses_supported_module_and_color_apis",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_deprecated_symbols_are_not_recommended_by_current_rows",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_high_impact_rows_use_official_sources",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_migration_intent_returns_current_replacements",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_old_version_without_curated_rows_abstains",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_rows_have_final_freshness_metadata",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_standalone_current_and_deprecated_identifiers_resolve_replacement",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_native_desktop_stack_freshness_testnativedesktopstackfreshness_test_windows_current_and_maintenance_lanes_are_visible",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_rows",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_active_rows_use_the_verified_current_applicability",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_common_old_major_syntaxes_select_legacy_guidance",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_current_high_drift_queries_return_current_contracts",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_current_major_migration_query_stays_on_current_guidance",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_explicit_old_major_uses_only_curated_legacy_rows",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_high_impact_rows_use_official_sources",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_old_major_without_curated_legacy_guidance_abstains",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_shadcn_named_base_excludes_incompatible_composition_apis",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_stack_without_curated_legacy_rows_keeps_nonlegacy_fallback",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_stale_apis_are_not_recommended_by_active_rows",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_svelte_current_and_legacy_queries_do_not_mix_generations",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_web_stack_freshness_testwebstackfreshness_test_web_rows_have_explicit_freshness_metadata"
     ],
     "12": [
       "agents_skills_design_system_scripts_html_token_validator",
@@ -602,6 +586,7 @@
       "agents_skills_ui_ux_pro_max_scripts_core",
       "agents_skills_ui_ux_pro_max_scripts_core_contains_phrase",
       "agents_skills_ui_ux_pro_max_scripts_core_domain_keywords",
+      "agents_skills_ui_ux_pro_max_scripts_core_exact_stack_identifier",
       "agents_skills_ui_ux_pro_max_scripts_core_file_signature",
       "agents_skills_ui_ux_pro_max_scripts_core_get_bm25",
       "agents_skills_ui_ux_pro_max_scripts_core_load_csv",
@@ -620,6 +605,7 @@
       "agents_skills_ui_ux_pro_max_scripts_core_rationale_539",
       "agents_skills_ui_ux_pro_max_scripts_core_rationale_596",
       "agents_skills_ui_ux_pro_max_scripts_core_rationale_706",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_926",
       "agents_skills_ui_ux_pro_max_scripts_core_rewrite_query_for_domain",
       "agents_skills_ui_ux_pro_max_scripts_core_search_csv",
       "agents_skills_ui_ux_pro_max_scripts_core_search_csv_detailed",
@@ -627,6 +613,35 @@
       "agents_skills_ui_ux_pro_max_scripts_core_valid_max_results"
     ],
     "14": [
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_737",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_756",
+      "agents_skills_ui_ux_pro_max_scripts_core_search",
+      "agents_skills_ui_ux_pro_max_scripts_core_style_search_destination",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_accessibility_query_hits_ux",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_chart_output_keeps_legacy_grade_during_risk_migration",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_every_configured_domain_file_exists_and_is_searchable",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_hard_negative_query_abstains_across_registered_domains_and_stacks",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_read_failure_is_not_reported_as_a_search_result",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_suggestions_never_repeat_the_input_or_offer_a_dead_first_retry",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_typo_suggestions_are_deterministic_and_retryable",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_ui_is_searchable_in_style_domain",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_unknown_programmatic_domain_keeps_legacy_style_fallback",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_unsupported_icon_library_abstains_instead_of_returning_other_library",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_zero_result_query_reports_suggestions_not_error",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_read_rows",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_setupclass",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_curated_state_distribution_is_explicit",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_deprecated_rows_never_appear_in_generic_results",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_every_style_name_and_alias_has_a_deterministic_destination",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_family_variants_and_mobile_intent_remain_distinct",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_new_rows_have_first_party_provenance",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_searchable_prompt_lengths_are_balanced",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_style_arbitration_does_not_steal_product_intent"
+    ],
+    "15": [
       "src_routes_thank_you",
       "src_routes_thank_you_route",
       "src_routes_thank_you_thankyoupage",
@@ -654,7 +669,7 @@
       "src_routetree_gen_websitescareroute",
       "src_routetree_gen_workroute"
     ],
-    "15": [
+    "16": [
       "agents_skills_design_scripts_logo_core",
       "agents_skills_design_scripts_logo_core_bm25",
       "agents_skills_design_scripts_logo_core_bm25_fit",
@@ -681,34 +696,34 @@
       "agents_skills_design_scripts_logo_search_rationale_16",
       "agents_skills_design_scripts_logo_search_rationale_38"
     ],
-    "16": [
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_737",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_756",
-      "agents_skills_ui_ux_pro_max_scripts_core_search",
-      "agents_skills_ui_ux_pro_max_scripts_core_style_search_destination",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_accessibility_query_hits_ux",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_chart_output_keeps_legacy_grade_during_risk_migration",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_every_configured_domain_file_exists_and_is_searchable",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_hard_negative_query_abstains_across_registered_domains_and_stacks",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_read_failure_is_not_reported_as_a_search_result",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_suggestions_never_repeat_the_input_or_offer_a_dead_first_retry",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_typo_suggestions_are_deterministic_and_retryable",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_ui_is_searchable_in_style_domain",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_unknown_programmatic_domain_keeps_legacy_style_fallback",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_unsupported_icon_library_abstains_instead_of_returning_other_library",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testsearchdomains_test_zero_result_query_reports_suggestions_not_error",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_claim_fields_use_controlled_non_guarantee_language",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_curated_state_distribution_is_explicit",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_deprecated_rows_never_appear_in_generic_results",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_every_style_name_and_alias_has_a_deterministic_destination",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_family_variants_and_mobile_intent_remain_distinct",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_new_rows_have_first_party_provenance",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_searchable_prompt_lengths_are_balanced",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_style_arbitration_does_not_steal_product_intent"
-    ],
     "17": [
+      "app_routes",
+      "app_routes_notfoundpage",
+      "app_routes_route",
+      "app_routes_terms",
+      "app_routes_terms_route",
+      "app_routes_terms_termspage",
+      "app_routetree_gen",
+      "app_routetree_gen_aboutroute",
+      "app_routetree_gen_auditroute",
+      "app_routetree_gen_contactroute",
+      "app_routetree_gen_cookiepolicyroute",
+      "app_routetree_gen_fileroutesbyfullpath",
+      "app_routetree_gen_fileroutesbyto",
+      "app_routetree_gen_fileroutetypes",
+      "app_routetree_gen_indexroute",
+      "app_routetree_gen_localseogbproute",
+      "app_routetree_gen_privacypolicyroute",
+      "app_routetree_gen_rootroutechildren",
+      "app_routetree_gen_splatroute",
+      "app_routetree_gen_systemsautoroute",
+      "app_routetree_gen_tanstack_react_router",
+      "app_routetree_gen_termsroute",
+      "app_routetree_gen_thankyouroute",
+      "app_routetree_gen_websitescareroute",
+      "app_routetree_gen_workroute"
+    ],
+    "18": [
       "ref_dom",
       "ref_dom_iterable",
       "ref_src",
@@ -735,7 +750,7 @@
       "tsconfig_app_include",
       "tsconfig_app_json_ref_es2022"
     ],
-    "18": [
+    "19": [
       "agents_skills_ui_styling_scripts_tailwind_config_gen",
       "agents_skills_ui_styling_scripts_tailwind_config_gen_main",
       "agents_skills_ui_styling_scripts_tailwind_config_gen_rationale_123",
@@ -759,7 +774,7 @@
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_173",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_add_plugins_no_duplicates"
     ],
-    "19": [
+    "20": [
       "agents_skills_design_system_scripts_generate_slide",
       "agents_skills_design_system_scripts_generate_slide_e",
       "agents_skills_design_system_scripts_generate_slide_generate_chart_slide",
@@ -781,7 +796,28 @@
       "agents_skills_design_system_scripts_generate_slide_rationale_638",
       "agents_skills_design_system_scripts_generate_slide_safe_url"
     ],
-    "20": [
+    "21": [
+      "agents_skills_ui_ux_pro_max_scripts_core_detect_domain",
+      "agents_skills_ui_ux_pro_max_scripts_core_rationale_629",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdiagnosticscontracts",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdiagnosticscontracts_test_diagnostics_opt_in_is_additive_for_domain_search",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdiagnosticscontracts_test_diagnostics_opt_in_is_additive_for_stack_search",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_accessibility_keywords_route_to_ux",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_ambiguous_query_returns_runner_up",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_empty_query_falls_back_to_style",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_every_router_term_is_searchable_or_has_a_corpus_rewrite",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_hash_only_routes_color_for_a_valid_hex_literal",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_native_drag_intent_beats_generic_react_token",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_product_router_keeps_high_signal_service_aliases",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_chart_queries_over_generic_product_keywords",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_color_intent_over_generic_product_terms",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_icons_when_icon_library_and_icon_intent_present",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_typography_for_font_pairing_queries",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_style_keywords_route_to_style"
+    ],
+    "22": [
       "ref_vite_config_ts",
       "tsconfig_node",
       "tsconfig_node_compileroptions",
@@ -802,7 +838,7 @@
       "tsconfig_node_include",
       "tsconfig_node_json_ref_es2022"
     ],
-    "21": [
+    "23": [
       "agents_skills_design_system_scripts_fetch_background",
       "agents_skills_design_system_scripts_fetch_background_generate_css_for_background",
       "agents_skills_design_system_scripts_fetch_background_get_background_image",
@@ -822,7 +858,7 @@
       "agents_skills_design_system_scripts_fetch_background_rationale_40",
       "agents_skills_design_system_scripts_fetch_background_resolve_token_reference"
     ],
-    "22": [
+    "24": [
       "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testfixturevalidation",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testfixturevalidation_test_rejects_bad_count_duplicate_id_and_grade",
@@ -841,7 +877,7 @@
       "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testthresholdgate_test_oracle_fingerprint_hashes_the_selected_cases_file",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testthresholdgate_test_runtime_fingerprint_binds_reasoning_contract"
     ],
-    "23": [
+    "25": [
       "agents_skills_design_scripts_icon_generate",
       "agents_skills_design_scripts_icon_generate_apply_color",
       "agents_skills_design_scripts_icon_generate_apply_viewbox_size",
@@ -859,7 +895,7 @@
       "agents_skills_design_scripts_icon_generate_rationale_288",
       "agents_skills_design_scripts_icon_generate_rationale_372"
     ],
-    "24": [
+    "26": [
       "agents_skills_design_system_templates_design_tokens_starter_2xl_type",
       "agents_skills_design_system_templates_design_tokens_starter_2xl_value",
       "agents_skills_design_system_templates_design_tokens_starter_3xl_type",
@@ -877,25 +913,7 @@
       "agents_skills_design_system_templates_design_tokens_starter_xs_type",
       "agents_skills_design_system_templates_design_tokens_starter_xs_value"
     ],
-    "25": [
-      "agents_skills_ui_ux_pro_max_scripts_design_system",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_detect_page_type",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_format_master_md",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_format_page_override_md",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_generate_intelligent_overrides",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_persist_design_system",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_py_path",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1077",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1382",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1491",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1597",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_962",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_973",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_997",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_safe_slug",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_write_persisted_file"
-    ],
-    "26": [
+    "27": [
       "agents_skills_ui_ux_pro_max_scripts_tests_test_catalog_refresh",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_catalog_refresh_catalogrefreshtest",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_catalog_refresh_catalogrefreshtest_font_args",
@@ -912,24 +930,6 @@
       "agents_skills_ui_ux_pro_max_scripts_tests_test_catalog_refresh_catalogrefreshtest_test_icon_refresh_rejects_invalid_schema_size_and_curated_import",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_catalog_refresh_catalogrefreshtest_test_live_font_refresh_requires_environment_key",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_catalog_refresh_catalogrefreshtest_test_official_metadata_checkout_is_strict_and_reusable"
-    ],
-    "27": [
-      "app_routes_audit",
-      "app_routes_audit_auditpage",
-      "app_routes_audit_route",
-      "app_routes_contact",
-      "app_routes_contact_contactpage",
-      "app_routes_contact_route",
-      "app_routes_index",
-      "app_routes_index_homepage",
-      "app_routes_index_route",
-      "app_server_leads",
-      "app_server_leads_auditleadpayload",
-      "app_server_leads_contactleadpayload",
-      "app_server_leads_leadsubmissionresponse",
-      "app_server_leads_submitauditlead",
-      "app_server_leads_submitcontactlead",
-      "app_server_leads_validateemail"
     ],
     "28": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_147",
@@ -949,40 +949,74 @@
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_list_installed_no_config"
     ],
     "29": [
-      "agents_skills_ui_ux_pro_max_scripts_core_detect_domain",
-      "agents_skills_ui_ux_pro_max_scripts_core_rationale_629",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_accessibility_keywords_route_to_ux",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_ambiguous_query_returns_runner_up",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_empty_query_falls_back_to_style",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_every_router_term_is_searchable_or_has_a_corpus_rewrite",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_hash_only_routes_color_for_a_valid_hex_literal",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_native_drag_intent_beats_generic_react_token",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_product_router_keeps_high_signal_service_aliases",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_chart_queries_over_generic_product_keywords",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_color_intent_over_generic_product_terms",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_icons_when_icon_library_and_icon_intent_present",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_router_prioritizes_typography_for_font_pairing_queries",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testdomaindetection_test_style_keywords_route_to_style"
+      "agents_skills_ui_ux_pro_max_scripts_design_system",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_ansi_ljust",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_detect_page_type",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_format_ascii_box",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_format_page_override_md",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_generate_intelligent_overrides",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_hex_to_ansi",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1382",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1491",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1597",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_612",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_626",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_634",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_641",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_section_header"
     ],
     "30": [
-      "src_routes_audit",
-      "src_routes_audit_auditpage",
-      "src_routes_audit_route",
-      "src_routes_contact",
-      "src_routes_contact_contactpage",
-      "src_routes_index",
-      "src_routes_index_homepage",
-      "src_routes_index_route",
-      "src_server_leads",
-      "src_server_leads_auditleadpayload",
-      "src_server_leads_contactleadpayload",
-      "src_server_leads_leadsubmissionresponse",
-      "src_server_leads_submitauditlead",
-      "src_server_leads_submitcontactlead",
-      "src_server_leads_validateemail"
+      "agents_skills_ui_ux_pro_max_scripts_design_system_palette_is_dark",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_130",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_148",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_relative_luminance",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_rationale_139",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_dark_query_does_not_advise_against_dark_mode",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_dark_query_foreground_is_lighter_than_background",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_dark_query_gets_a_dark_background",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_light_query_keeps_a_light_background",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_classifies_backgrounds_from_the_shipped_data",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_missing_background_is_not_dark",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_parses_six_and_three_digit_hex",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_returns_none_for_unparseable"
     ],
     "31": [
+      "app_components_codeterminalinspector",
+      "app_components_codeterminalinspector_codetab",
+      "app_components_codeterminalinspector_codeterminalinspector",
+      "app_components_codeterminalinspector_codeterminalinspectorprops",
+      "app_components_codeterminalinspector_default_code_tabs",
+      "app_components_interactivecomparisoncard",
+      "app_components_interactivecomparisoncard_interactivecomparisoncard",
+      "app_routes_index",
+      "app_routes_index_homepage",
+      "app_routes_index_route",
+      "app_routes_systems_auto",
+      "app_routes_systems_auto_route",
+      "app_routes_systems_auto_systems_faq",
+      "app_routes_systems_auto_systems_json_ld",
+      "app_routes_systems_auto_systemsautopage"
+    ],
+    "32": [
+      "src_routes",
+      "src_routes_about",
+      "src_routes_about_aboutpage",
+      "src_routes_about_route",
+      "src_routes_audit_route",
+      "src_routes_contact_route",
+      "src_routes_notfoundpage",
+      "src_routes_privacy_policy",
+      "src_routes_privacy_policy_privacypolicypage",
+      "src_routes_privacy_policy_route",
+      "src_routes_route",
+      "src_routes_terms",
+      "src_routes_terms_route",
+      "src_routes_terms_termspage",
+      "src_routetree_gen_fileroutesbypath"
+    ],
+    "33": [
       "agents_skills_brand_scripts_extract_colors",
       "agents_skills_brand_scripts_extract_colors_calculatecompliance",
       "agents_skills_brand_scripts_extract_colors_colordistance",
@@ -998,7 +1032,7 @@
       "agents_skills_brand_scripts_extract_colors_path",
       "agents_skills_brand_scripts_extract_colors_rgbtohex"
     ],
-    "32": [
+    "34": [
       "agents_skills_brand_scripts_validate_asset",
       "agents_skills_brand_scripts_validate_asset_checkmanifest",
       "agents_skills_brand_scripts_validate_asset_formatbytes",
@@ -1014,39 +1048,70 @@
       "agents_skills_brand_scripts_validate_asset_validatefilesize",
       "agents_skills_brand_scripts_validate_asset_validateformat"
     ],
-    "33": [
-      "agents_skills_ui_ux_pro_max_scripts_design_system_query_wants_dark",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_165",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_181",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_187",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_resolve_color_mode",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_style_is_dark_primary",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_dark_primary_style_detected",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_dual_mode_style_is_not_dark_primary",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_either_signal_resolves_dark",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_query_keywords",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_read_rows",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_setupclass"
-    ],
-    "34": [
-      "src_routes_about",
-      "src_routes_about_aboutpage",
-      "src_routes_about_route",
-      "src_routes_contact_route",
-      "src_routes_cookie_policy",
-      "src_routes_cookie_policy_cookiepolicypage",
-      "src_routes_cookie_policy_route",
-      "src_routes_privacy_policy",
-      "src_routes_privacy_policy_privacypolicypage",
-      "src_routes_privacy_policy_route",
-      "src_routes_terms",
-      "src_routes_terms_route",
-      "src_routes_terms_termspage",
-      "src_routetree_gen_fileroutesbypath"
-    ],
     "35": [
+      "app_components_navbar",
+      "app_components_navbar_navbar",
+      "app_components_navbar_navbar_handleclickoutside",
+      "app_components_navbar_navitem",
+      "app_components_navbar_service_items",
+      "app_components_themetoggle",
+      "app_components_themetoggle_themetoggle",
+      "app_components_themetoggle_themetoggleprops",
+      "app_lib_theme",
+      "app_lib_theme_applytheme",
+      "app_lib_theme_getinitialtheme",
+      "app_lib_theme_theme",
+      "app_lib_theme_usetheme",
+      "app_lib_theme_usetheme_handlestoragechange"
+    ],
+    "36": [
+      "src_components_codeterminalinspector",
+      "src_components_codeterminalinspector_codetab",
+      "src_components_codeterminalinspector_codeterminalinspector",
+      "src_components_codeterminalinspector_codeterminalinspectorprops",
+      "src_components_codeterminalinspector_default_code_tabs",
+      "src_components_interactivecomparisoncard",
+      "src_components_interactivecomparisoncard_interactivecomparisoncard",
+      "src_routes_index",
+      "src_routes_index_route",
+      "src_routes_systems_auto",
+      "src_routes_systems_auto_route",
+      "src_routes_systems_auto_systems_faq",
+      "src_routes_systems_auto_systems_json_ld",
+      "src_routes_systems_auto_systemsautopage"
+    ],
+    "37": [
+      "src_components_navbar",
+      "src_components_navbar_navbar",
+      "src_components_navbar_navbar_handleclickoutside",
+      "src_components_navbar_navitem",
+      "src_components_navbar_service_items",
+      "src_components_themetoggle",
+      "src_components_themetoggle_themetoggle",
+      "src_components_themetoggle_themetoggleprops",
+      "src_lib_theme",
+      "src_lib_theme_applytheme",
+      "src_lib_theme_getinitialtheme",
+      "src_lib_theme_theme",
+      "src_lib_theme_usetheme",
+      "src_lib_theme_usetheme_handlestoragechange"
+    ],
+    "38": [
+      "agents_skills_ui_ux_pro_max_scripts_design_system_contrast_ratio",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_derive_dark_palette",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_154",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_194",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_222",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_select_palette_for_mode",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence_test_generator_exports_every_semantic_foreground_pair",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_category_identity_wins_over_unrelated_dark_palette",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_dark_mode_falls_back_to_top_hit_when_no_dark_ramp_exists",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_dark_mode_skips_light_palettes",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_empty_results",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_light_mode_keeps_the_existing_top_hit_behaviour"
+    ],
+    "39": [
       "agents_skills_design_system_scripts_validate_tokens",
       "agents_skills_design_system_scripts_validate_tokens_extensions",
       "agents_skills_design_system_scripts_validate_tokens_formatreport",
@@ -1060,7 +1125,7 @@
       "agents_skills_design_system_scripts_validate_tokens_shouldskip",
       "agents_skills_design_system_scripts_validate_tokens_skippatterns"
     ],
-    "36": [
+    "40": [
       "agents_skills_ui_styling_scripts_shadcn_add",
       "agents_skills_ui_styling_scripts_shadcn_add_main",
       "agents_skills_ui_styling_scripts_shadcn_add_rationale_18",
@@ -1074,7 +1139,7 @@
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_get_installed_components_with_files",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_init_custom_project_root"
     ],
-    "37": [
+    "41": [
       "agents_skills_ui_styling_scripts_shadcn_add_rationale_147",
       "agents_skills_ui_styling_scripts_shadcn_add_rationale_193",
       "agents_skills_ui_styling_scripts_shadcn_add_rationale_33",
@@ -1088,7 +1153,7 @@
       "agents_skills_ui_styling_scripts_shadcn_add_shadcninstaller_get_shadcn_version",
       "agents_skills_ui_styling_scripts_shadcn_add_shadcninstaller_list_installed"
     ],
-    "38": [
+    "42": [
       "agents_skills_ui_styling_scripts_tailwind_config_gen_rationale_192",
       "agents_skills_ui_styling_scripts_tailwind_config_gen_rationale_203",
       "agents_skills_ui_styling_scripts_tailwind_config_gen_rationale_224",
@@ -1102,35 +1167,49 @@
       "agents_skills_ui_styling_scripts_tailwind_config_gen_tailwindconfiggenerator_indent_json",
       "agents_skills_ui_styling_scripts_tailwind_config_gen_tailwindconfiggenerator_write_config"
     ],
-    "39": [
-      "agents_skills_ui_ux_pro_max_scripts_design_system_contrast_ratio",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_derive_dark_palette",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_154",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_194",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_222",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_select_palette_for_mode",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_category_identity_wins_over_unrelated_dark_palette",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_dark_mode_falls_back_to_top_hit_when_no_dark_ramp_exists",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_dark_mode_skips_light_palettes",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_empty_results",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testpaletteselection_test_light_mode_keeps_the_existing_top_hit_behaviour"
+    "43": [
+      "agents_skills_ui_ux_pro_max_scripts_design_system_query_wants_dark",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_165",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_181",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_187",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_resolve_color_mode",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_style_is_dark_primary",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_dark_primary_style_detected",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_dual_mode_style_is_not_dark_primary",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_either_signal_resolves_dark",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution_test_query_keywords",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_style_taxonomy_teststyletaxonomy_test_claim_fields_use_controlled_non_guarantee_language"
     ],
-    "40": [
-      "app_components_footer",
-      "app_components_footer_footer",
-      "app_components_navbar",
-      "app_components_navbar_navbar",
-      "app_components_navbar_navbar_handleclickoutside",
-      "app_components_navbar_navitem",
-      "app_components_navbar_service_items",
-      "app_routes_root",
-      "app_routes_root_local_business_json_ld",
-      "app_routes_root_rootlayout",
-      "app_routes_root_route",
-      "app_routes_root_routercontext"
+    "44": [
+      "app_routes_audit",
+      "app_routes_audit_auditpage",
+      "app_routes_audit_route",
+      "app_routes_contact",
+      "app_routes_contact_contactpage",
+      "app_server_leads",
+      "app_server_leads_auditleadpayload",
+      "app_server_leads_contactleadpayload",
+      "app_server_leads_leadsubmissionresponse",
+      "app_server_leads_submitauditlead",
+      "app_server_leads_submitcontactlead",
+      "app_server_leads_validateemail"
     ],
-    "41": [
+    "45": [
+      "src_routes_audit",
+      "src_routes_audit_auditpage",
+      "src_routes_contact",
+      "src_routes_contact_contactpage",
+      "src_routes_index_homepage",
+      "src_server_leads",
+      "src_server_leads_auditleadpayload",
+      "src_server_leads_contactleadpayload",
+      "src_server_leads_leadsubmissionresponse",
+      "src_server_leads_submitauditlead",
+      "src_server_leads_submitcontactlead",
+      "src_server_leads_validateemail"
+    ],
+    "46": [
       "agents_skills_brand_scripts_inject_brand_context",
       "agents_skills_brand_scripts_inject_brand_context_extractcolorsfromtable",
       "agents_skills_brand_scripts_inject_brand_context_extractcoreattributes",
@@ -1143,7 +1222,7 @@
       "agents_skills_brand_scripts_inject_brand_context_main",
       "agents_skills_brand_scripts_inject_brand_context_path"
     ],
-    "42": [
+    "47": [
       "agents_skills_design_system_scripts_embed_tokens",
       "agents_skills_design_system_scripts_embed_tokens_args",
       "agents_skills_design_system_scripts_embed_tokens_extracttokens",
@@ -1156,7 +1235,7 @@
       "agents_skills_design_system_scripts_embed_tokens_tokenspath",
       "agents_skills_design_system_scripts_embed_tokens_wrapstyle"
     ],
-    "43": [
+    "48": [
       "agents_skills_design_system_templates_design_tokens_starter_duration_fast",
       "agents_skills_design_system_templates_design_tokens_starter_duration_normal",
       "agents_skills_design_system_templates_design_tokens_starter_duration_slow",
@@ -1169,7 +1248,7 @@
       "agents_skills_design_system_templates_design_tokens_starter_slow_type",
       "agents_skills_design_system_templates_design_tokens_starter_slow_value"
     ],
-    "44": [
+    "49": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_124",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_158",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_182",
@@ -1182,7 +1261,7 @@
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_add_components_with_overwrite",
       "patch"
     ],
-    "45": [
+    "50": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_1",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_342",
@@ -1195,7 +1274,33 @@
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testgeneratedconfigisvalidjs_test_property_before_plugins_is_comma_terminated",
       "parametrize"
     ],
-    "46": [
+    "51": [
+      "agents_skills_ui_ux_pro_max_scripts_design_system_format_markdown",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_generate_design_system",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_792",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_923",
+      "agents_skills_ui_ux_pro_max_scripts_search",
+      "agents_skills_ui_ux_pro_max_scripts_search_format_output",
+      "agents_skills_ui_ux_pro_max_scripts_search_rationale_45",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_concurrent_non_force_persist_has_one_writer",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_then_skip_then_force",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_writes_only_under_output_dir"
+    ],
+    "52": [
+      "app_routes_about",
+      "app_routes_about_aboutpage",
+      "app_routes_about_route",
+      "app_routes_contact_route",
+      "app_routes_privacy_policy",
+      "app_routes_privacy_policy_privacypolicypage",
+      "app_routes_privacy_policy_route",
+      "app_routes_work",
+      "app_routes_work_route",
+      "app_routes_work_workpage",
+      "app_routetree_gen_fileroutesbypath"
+    ],
+    "53": [
       "agents_skills_design_scripts_logo_generate",
       "agents_skills_design_scripts_logo_generate_enhance_prompt",
       "agents_skills_design_scripts_logo_generate_generate_batch",
@@ -1207,7 +1312,7 @@
       "agents_skills_design_scripts_logo_generate_rationale_231",
       "agents_skills_design_scripts_logo_generate_rationale_30"
     ],
-    "47": [
+    "54": [
       "agents_skills_design_system_scripts_generate_tokens",
       "agents_skills_design_system_scripts_generate_tokens_flattentokens",
       "agents_skills_design_system_scripts_generate_tokens_fs",
@@ -1219,7 +1324,7 @@
       "agents_skills_design_system_scripts_generate_tokens_resolvereference",
       "agents_skills_design_system_scripts_generate_tokens_tocssvarname"
     ],
-    "48": [
+    "55": [
       "agents_skills_ui_styling_scripts_tailwind_config_gen_py_path",
       "agents_skills_ui_styling_scripts_tailwind_config_gen_rationale_31",
       "agents_skills_ui_styling_scripts_tailwind_config_gen_rationale_45",
@@ -1231,19 +1336,7 @@
       "agents_skills_ui_styling_scripts_tailwind_config_gen_tailwindconfiggenerator_init",
       "any"
     ],
-    "49": [
-      "agents_skills_ui_ux_pro_max_scripts_design_system_palette_is_dark",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_130",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_148",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_relative_luminance",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_classifies_backgrounds_from_the_shipped_data",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_missing_background_is_not_dark",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_parses_six_and_three_digit_hex",
-      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testluminance_test_returns_none_for_unparseable"
-    ],
-    "50": [
+    "56": [
       "agents_skills_ui_ux_pro_max_scripts_tests_test_text_layout_resilience",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_text_layout_resilience_read_rows",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_text_layout_resilience_testtextlayoutdatacontracts",
@@ -1255,7 +1348,7 @@
       "agents_skills_ui_ux_pro_max_scripts_tests_test_text_layout_resilience_testtextlayoutretrieval_test_locked_queries_return_the_canonical_identity_first",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_text_layout_resilience_testtextlayoutretrieval_test_tailwind_query_returns_compact_label_layout_first"
     ],
-    "51": [
+    "57": [
       "agents_skills_brand_scripts_sync_brand_to_tokens",
       "agents_skills_brand_scripts_sync_brand_to_tokens_adjustbrightness",
       "agents_skills_brand_scripts_sync_brand_to_tokens_execfilesync",
@@ -1266,7 +1359,7 @@
       "agents_skills_brand_scripts_sync_brand_to_tokens_path",
       "agents_skills_brand_scripts_sync_brand_to_tokens_updatedesigntokens"
     ],
-    "52": [
+    "58": [
       "agents_skills_design_system_scripts_tests_test_validate_tokens",
       "agents_skills_design_system_scripts_tests_test_validate_tokens_py_path",
       "agents_skills_design_system_scripts_tests_test_validate_tokens_rationale_1",
@@ -1277,7 +1370,7 @@
       "agents_skills_design_system_scripts_tests_test_validate_tokens_test_token_only_line_reports_no_violation",
       "completedprocess"
     ],
-    "53": [
+    "59": [
       "agents_skills_ui_ux_pro_max_scripts_core_exact_match_diagnostic",
       "agents_skills_ui_ux_pro_max_scripts_core_legacy_successor_guidance",
       "agents_skills_ui_ux_pro_max_scripts_core_normalize",
@@ -1288,7 +1381,18 @@
       "agents_skills_ui_ux_pro_max_scripts_core_stack_query_requests_legacy",
       "agents_skills_ui_ux_pro_max_scripts_core_stack_row_filter"
     ],
-    "54": [
+    "60": [
+      "agents_skills_ui_ux_pro_max_scripts_design_system_format_master_md",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_persist_design_system",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_py_path",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1077",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_962",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_973",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_997",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_safe_slug",
+      "agents_skills_ui_ux_pro_max_scripts_design_system_write_persisted_file"
+    ],
+    "61": [
       "agents_skills_design_system_templates_design_tokens_starter_default_type",
       "agents_skills_design_system_templates_design_tokens_starter_default_value",
       "agents_skills_design_system_templates_design_tokens_starter_full_type",
@@ -1298,7 +1402,7 @@
       "agents_skills_design_system_templates_design_tokens_starter_radius_full",
       "agents_skills_design_system_templates_design_tokens_starter_shadow_default"
     ],
-    "55": [
+    "62": [
       "agents_skills_ui_ux_pro_max_scripts_core_exact_row_identity",
       "agents_skills_ui_ux_pro_max_scripts_core_rationale_505",
       "agents_skills_ui_ux_pro_max_scripts_core_rationale_526",
@@ -1308,36 +1412,17 @@
       "agents_skills_ui_ux_pro_max_scripts_core_style_identity",
       "agents_skills_ui_ux_pro_max_scripts_core_suggest_identities"
     ],
-    "56": [
-      "agents_skills_ui_ux_pro_max_scripts_design_system_ansi_ljust",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_format_ascii_box",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_hex_to_ansi",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_612",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_626",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_634",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_641",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_section_header"
-    ],
-    "57": [
-      "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_extract_results",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_generate",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_multi_domain_search",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_321",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_446",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_451",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_91",
-      "agents_skills_ui_ux_pro_max_scripts_design_system_resolve_dial"
-    ],
-    "58": [
+    "63": [
       "agents_skills_ui_ux_pro_max_scripts_design_system_filter_anti_patterns_for_mode",
       "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_247",
+      "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testantipatterngating",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testantipatterngating_test_dark_clause_dropped_others_kept",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testantipatterngating_test_empty_input",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testantipatterngating_test_light_mode_is_a_no_op",
       "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testantipatterngating_test_unrelated_anti_patterns_survive_dark_mode"
     ],
-    "59": [
+    "64": [
       "app_server_forms",
       "app_server_forms_auditsubmissiondata",
       "app_server_forms_contactsubmissiondata",
@@ -1346,7 +1431,7 @@
       "app_server_forms_submitauditrequest",
       "app_server_forms_submitcontactinquiry"
     ],
-    "60": [
+    "65": [
       "src_server_forms",
       "src_server_forms_auditsubmissiondata",
       "src_server_forms_contactsubmissiondata",
@@ -1355,7 +1440,7 @@
       "src_server_forms_submitauditrequest",
       "src_server_forms_submitcontactinquiry"
     ],
-    "61": [
+    "66": [
       "agents_skills_design_system_templates_design_tokens_starter_fontsize_sm",
       "agents_skills_design_system_templates_design_tokens_starter_primitive_shadow",
       "agents_skills_design_system_templates_design_tokens_starter_radius_sm",
@@ -1363,7 +1448,23 @@
       "agents_skills_design_system_templates_design_tokens_starter_sm_type",
       "agents_skills_design_system_templates_design_tokens_starter_sm_value"
     ],
-    "62": [
+    "67": [
+      "app_main",
+      "app_main_queryclient",
+      "app_main_register",
+      "app_main_router",
+      "app_main_tanstack_react_router",
+      "app_routetree_gen_routetree"
+    ],
+    "68": [
+      "app_routes_root",
+      "app_routes_root_local_business_json_ld",
+      "app_routes_root_rootlayout",
+      "app_routes_root_route",
+      "app_routes_root_routercontext",
+      "app_routetree_gen_fileroutesbyid"
+    ],
+    "69": [
       "src_main",
       "src_main_queryclient",
       "src_main_register",
@@ -1371,131 +1472,90 @@
       "src_main_tanstack_react_router",
       "src_routetree_gen_routetree"
     ],
-    "63": [
+    "70": [
       "agents_skills_design_system_templates_design_tokens_starter_fontsize_lg",
       "agents_skills_design_system_templates_design_tokens_starter_lg_type",
       "agents_skills_design_system_templates_design_tokens_starter_lg_value",
       "agents_skills_design_system_templates_design_tokens_starter_radius_lg",
       "agents_skills_design_system_templates_design_tokens_starter_shadow_lg"
     ],
-    "64": [
+    "71": [
       "app_routes_local_seo_gbp",
       "app_routes_local_seo_gbp_local_seo_faq",
       "app_routes_local_seo_gbp_local_seo_json_ld",
       "app_routes_local_seo_gbp_localseogbppage",
       "app_routes_local_seo_gbp_route"
     ],
-    "65": [
-      "app_routes_systems_auto",
-      "app_routes_systems_auto_route",
-      "app_routes_systems_auto_systems_faq",
-      "app_routes_systems_auto_systems_json_ld",
-      "app_routes_systems_auto_systemsautopage"
-    ],
-    "66": [
+    "72": [
       "app_routes_websites_care",
       "app_routes_websites_care_route",
       "app_routes_websites_care_websites_faq",
       "app_routes_websites_care_websites_json_ld",
       "app_routes_websites_care_websitescarepage"
     ],
-    "67": [
-      "src_components_navbar",
-      "src_components_navbar_navbar",
-      "src_components_navbar_navbar_handleclickoutside",
-      "src_components_navbar_navitem",
-      "src_components_navbar_service_items"
-    ],
-    "68": [
+    "73": [
       "src_routes_local_seo_gbp",
       "src_routes_local_seo_gbp_local_seo_faq",
       "src_routes_local_seo_gbp_local_seo_json_ld",
       "src_routes_local_seo_gbp_localseogbppage",
       "src_routes_local_seo_gbp_route"
     ],
-    "69": [
+    "74": [
       "src_routes_root",
       "src_routes_root_local_business_json_ld",
       "src_routes_root_rootlayout",
       "src_routes_root_route",
       "src_routes_root_routercontext"
     ],
-    "70": [
-      "src_routes_systems_auto",
-      "src_routes_systems_auto_route",
-      "src_routes_systems_auto_systems_faq",
-      "src_routes_systems_auto_systems_json_ld",
-      "src_routes_systems_auto_systemsautopage"
-    ],
-    "71": [
+    "75": [
       "src_routes_websites_care",
       "src_routes_websites_care_route",
       "src_routes_websites_care_websites_faq",
       "src_routes_websites_care_websites_json_ld",
       "src_routes_websites_care_websitescarepage"
     ],
-    "72": [
+    "76": [
       "agents_skills_design_system_templates_design_tokens_starter_fontsize_xl",
       "agents_skills_design_system_templates_design_tokens_starter_radius_xl",
       "agents_skills_design_system_templates_design_tokens_starter_xl_type",
       "agents_skills_design_system_templates_design_tokens_starter_xl_value"
     ],
-    "73": [
+    "77": [
       "agents_skills_design_system_templates_design_tokens_starter_md_type",
       "agents_skills_design_system_templates_design_tokens_starter_md_value",
       "agents_skills_design_system_templates_design_tokens_starter_radius_md",
       "agents_skills_design_system_templates_design_tokens_starter_shadow_md"
     ],
-    "74": [
+    "78": [
       "agents_skills_design_system_templates_design_tokens_starter_none_type",
       "agents_skills_design_system_templates_design_tokens_starter_none_value",
       "agents_skills_design_system_templates_design_tokens_starter_radius_none",
       "agents_skills_design_system_templates_design_tokens_starter_shadow_none"
     ],
-    "75": [
+    "79": [
       "agents_skills_brand_scripts_tests_test_sync_brand_to_tokens",
       "agents_skills_brand_scripts_tests_test_sync_brand_to_tokens_rationale_1",
       "agents_skills_brand_scripts_tests_test_sync_brand_to_tokens_test_sync_parses_bundled_starter_template"
     ],
-    "76": [
+    "80": [
       "agents_skills_design_system_scripts_slide_token_validator",
       "agents_skills_design_system_scripts_slide_token_validator_main",
       "agents_skills_design_system_scripts_slide_token_validator_rationale_21"
     ],
-    "77": [
+    "81": [
       "agents_skills_ui_styling_scripts_shadcn_add_py_path",
       "agents_skills_ui_styling_scripts_shadcn_add_rationale_21",
       "agents_skills_ui_styling_scripts_shadcn_add_shadcninstaller_init"
     ],
-    "78": [
+    "82": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_22",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_temp_project",
       "fixture"
     ],
-    "79": [
-      "app_routes",
-      "app_routes_notfoundpage",
-      "app_routes_route"
-    ],
-    "80": [
-      "app_routes_about",
-      "app_routes_about_aboutpage",
-      "app_routes_about_route"
-    ],
-    "81": [
+    "83": [
       "app_routes_cookie_policy",
       "app_routes_cookie_policy_cookiepolicypage",
       "app_routes_cookie_policy_route"
-    ],
-    "82": [
-      "app_routes_privacy_policy",
-      "app_routes_privacy_policy_privacypolicypage",
-      "app_routes_privacy_policy_route"
-    ],
-    "83": [
-      "app_routes_terms",
-      "app_routes_terms_route",
-      "app_routes_terms_termspage"
     ],
     "84": [
       "app_routes_thank_you",
@@ -1503,204 +1563,210 @@
       "app_routes_thank_you_thankyoupage"
     ],
     "85": [
-      "app_routes_work",
-      "app_routes_work_route",
-      "app_routes_work_workpage"
+      "src_routes_cookie_policy",
+      "src_routes_cookie_policy_cookiepolicypage",
+      "src_routes_cookie_policy_route"
     ],
     "86": [
-      "src_routes",
-      "src_routes_notfoundpage",
-      "src_routes_route"
-    ],
-    "87": [
       "tsconfig",
       "tsconfig_files",
       "tsconfig_references"
     ],
-    "88": [
+    "87": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_104",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_add_components_no_config"
     ],
-    "89": [
+    "88": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_256",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_list_installed_with_components"
     ],
-    "90": [
+    "89": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_45",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_init_default_project_root"
     ],
-    "91": [
+    "90": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_56",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_init_dry_run"
     ],
-    "92": [
+    "91": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_66",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_check_shadcn_config_not_exists"
     ],
-    "93": [
+    "92": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_71",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_get_installed_components_empty"
     ],
-    "94": [
+    "93": [
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_96",
       "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_add_components_no_components"
     ],
-    "95": [
+    "94": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_125",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_add_fonts"
     ],
-    "96": [
+    "95": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_182",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_recommend_plugins"
     ],
-    "97": [
+    "96": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_190",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_recommend_plugins_nextjs"
     ],
-    "98": [
+    "97": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_20",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_init_default_typescript"
     ],
-    "99": [
+    "98": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_206",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_generate_javascript_config"
     ],
-    "100": [
+    "99": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_214",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_generate_config_with_colors"
     ],
-    "101": [
+    "100": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_223",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_generate_config_with_plugins"
     ],
-    "102": [
+    "101": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_232",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_validate_config_valid"
     ],
-    "103": [
+    "102": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_239",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_validate_config_no_content"
     ],
-    "104": [
+    "103": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_270",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_write_config_creates_content"
     ],
-    "105": [
+    "104": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_282",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_write_config_invalid_path"
     ],
-    "106": [
+    "105": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_291",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_full_configuration_typescript"
     ],
-    "107": [
+    "106": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_37",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_default_output_path_typescript"
     ],
-    "108": [
+    "107": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_53",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_base_config_structure"
     ],
-    "109": [
+    "108": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_64",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_default_content_paths_react"
     ],
-    "110": [
+    "109": [
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_rationale_81",
       "agents_skills_ui_styling_scripts_tests_test_tailwind_config_gen_testtailwindconfiggenerator_test_default_content_paths_vue"
     ],
+    "110": [
+      "app_components_footer",
+      "app_components_footer_footer"
+    ],
     "111": [
+      "app_lib_utils",
+      "app_lib_utils_cn"
+    ],
+    "112": [
       "src_components_footer",
       "src_components_footer_footer"
     ],
-    "112": [
+    "113": [
       "src_lib_utils",
       "src_lib_utils_cn"
     ],
-    "113": [
+    "114": [
+      "app_vite_env_d"
+    ],
+    "115": [
       "src_vite_env_d"
     ],
-    "114": [
+    "116": [
       "vite_config"
     ]
   },
   "cohesion": {
-    "0": 0.05472636815920398,
+    "0": 0.05311676909569798,
     "1": 0.0780399274047187,
     "2": 0.05370101596516691,
-    "3": 0.0653061224489796,
-    "4": 0.041666666666666664,
-    "5": 0.0425531914893617,
-    "6": 0.0595959595959596,
-    "7": 0.08478513356562137,
-    "8": 0.07142857142857142,
-    "9": 0.058823529411764705,
-    "10": 0.10483870967741936,
-    "11": 0.06451612903225806,
+    "3": 0.041666666666666664,
+    "4": 0.0425531914893617,
+    "5": 0.0595959595959596,
+    "6": 0.08478513356562137,
+    "7": 0.08292682926829269,
+    "8": 0.058823529411764705,
+    "9": 0.06451612903225806,
+    "10": 0.08735632183908046,
+    "11": 0.11494252873563218,
     "12": 0.12698412698412698,
-    "13": 0.12615384615384614,
-    "14": 0.08307692307692308,
-    "15": 0.11,
-    "16": 0.12333333333333334,
-    "17": 0.08,
-    "18": 0.09523809523809523,
-    "19": 0.14736842105263157,
-    "20": 0.10526315789473684,
-    "21": 0.16993464052287582,
-    "22": 0.1323529411764706,
-    "23": 0.2,
-    "24": 0.125,
-    "25": 0.18333333333333332,
-    "26": 0.30833333333333335,
-    "27": 0.19166666666666668,
+    "13": 0.11375661375661375,
+    "14": 0.1168091168091168,
+    "15": 0.08307692307692308,
+    "16": 0.11,
+    "17": 0.08666666666666667,
+    "18": 0.08,
+    "19": 0.09523809523809523,
+    "20": 0.14736842105263157,
+    "21": 0.1695906432748538,
+    "22": 0.10526315789473684,
+    "23": 0.16993464052287582,
+    "24": 0.1323529411764706,
+    "25": 0.2,
+    "26": 0.125,
+    "27": 0.30833333333333335,
     "28": 0.14285714285714285,
-    "29": 0.22857142857142856,
-    "30": 0.20952380952380953,
-    "31": 0.21978021978021978,
-    "32": 0.25274725274725274,
-    "33": 0.17582417582417584,
-    "34": 0.14285714285714285,
-    "35": 0.24242424242424243,
-    "36": 0.19696969696969696,
-    "37": 0.21212121212121213,
-    "38": 0.19696969696969696,
+    "29": 0.18095238095238095,
+    "30": 0.18095238095238095,
+    "31": 0.1619047619047619,
+    "32": 0.13333333333333333,
+    "33": 0.21978021978021978,
+    "34": 0.25274725274725274,
+    "35": 0.1978021978021978,
+    "36": 0.17582417582417584,
+    "37": 0.1978021978021978,
+    "38": 0.21794871794871795,
     "39": 0.24242424242424243,
     "40": 0.19696969696969696,
-    "41": 0.3090909090909091,
-    "42": 0.18181818181818182,
-    "43": 0.18181818181818182,
-    "44": 0.18181818181818182,
-    "45": 0.21818181818181817,
-    "46": 0.28888888888888886,
-    "47": 0.35555555555555557,
-    "48": 0.2222222222222222,
-    "49": 0.3111111111111111,
-    "50": 0.2222222222222222,
-    "51": 0.3333333333333333,
-    "52": 0.2777777777777778,
-    "53": 0.25,
-    "54": 0.2857142857142857,
-    "55": 0.25,
-    "56": 0.25,
-    "57": 0.25,
-    "58": 0.42857142857142855,
-    "59": 0.38095238095238093,
-    "60": 0.38095238095238093,
-    "61": 0.4666666666666667,
-    "62": 0.3333333333333333,
-    "63": 0.6,
-    "64": 0.4,
-    "65": 0.4,
-    "66": 0.4,
-    "67": 0.4,
-    "68": 0.4,
-    "69": 0.4,
-    "70": 0.4,
+    "41": 0.21212121212121213,
+    "42": 0.19696969696969696,
+    "43": 0.21212121212121213,
+    "44": 0.25757575757575757,
+    "45": 0.25757575757575757,
+    "46": 0.3090909090909091,
+    "47": 0.18181818181818182,
+    "48": 0.18181818181818182,
+    "49": 0.18181818181818182,
+    "50": 0.21818181818181817,
+    "51": 0.2,
+    "52": 0.18181818181818182,
+    "53": 0.28888888888888886,
+    "54": 0.35555555555555557,
+    "55": 0.2222222222222222,
+    "56": 0.2222222222222222,
+    "57": 0.3333333333333333,
+    "58": 0.2777777777777778,
+    "59": 0.25,
+    "60": 0.25,
+    "61": 0.2857142857142857,
+    "62": 0.25,
+    "63": 0.39285714285714285,
+    "64": 0.38095238095238093,
+    "65": 0.38095238095238093,
+    "66": 0.4666666666666667,
+    "67": 0.3333333333333333,
+    "68": 0.3333333333333333,
+    "69": 0.3333333333333333,
+    "70": 0.6,
     "71": 0.4,
-    "72": 0.6666666666666666,
-    "73": 0.6666666666666666,
-    "74": 0.6666666666666666,
-    "75": 0.6666666666666666,
+    "72": 0.4,
+    "73": 0.4,
+    "74": 0.4,
+    "75": 0.4,
     "76": 0.6666666666666666,
     "77": 0.6666666666666666,
     "78": 0.6666666666666666,
@@ -1712,7 +1778,7 @@
     "84": 0.6666666666666666,
     "85": 0.6666666666666666,
     "86": 0.6666666666666666,
-    "87": 0.6666666666666666,
+    "87": 1.0,
     "88": 1.0,
     "89": 1.0,
     "90": 1.0,
@@ -1739,7 +1805,9 @@
     "111": 1.0,
     "112": 1.0,
     "113": 1.0,
-    "114": 1.0
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0
   },
   "gods": [
     {
@@ -1795,7 +1863,18 @@
   ],
   "surprises": [
     {
-      "source": "TestTailwindConfigGenerator",
+      "source": "TestEndToEndCoherence",
+      "target": "DesignSystemGenerator",
+      "source_files": [
+        ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
+        ".agents/skills/ui-ux-pro-max/scripts/design_system.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "TestGeneratedConfigIsValidJs",
       "target": "TailwindConfigGenerator",
       "source_files": [
         ".agents/skills/ui-styling/scripts/tests/test_tailwind_config_gen.py",
@@ -1806,7 +1885,7 @@
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "TestGeneratedConfigIsValidJs",
+      "source": "TestTailwindConfigGenerator",
       "target": "TailwindConfigGenerator",
       "source_files": [
         ".agents/skills/ui-styling/scripts/tests/test_tailwind_config_gen.py",
@@ -1828,26 +1907,15 @@
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "TestBm25CoreBehavior",
-      "target": "BM25",
+      "source": "HomePage()",
+      "target": "submitAuditLead()",
       "source_files": [
-        ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
-        ".agents/skills/design/scripts/cip/core.py"
+        "app/routes/index.tsx",
+        "app/server/leads.ts"
       ],
-      "confidence": "INFERRED",
-      "relation": "uses",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
-    },
-    {
-      "source": "TestTokenizer",
-      "target": "BM25",
-      "source_files": [
-        ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
-        ".agents/skills/design/scripts/cip/core.py"
-      ],
-      "confidence": "INFERRED",
-      "relation": "uses",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `HomePage()` unexpectedly reaches hub `submitAuditLead()`"
     }
   ],
   "tokens": {

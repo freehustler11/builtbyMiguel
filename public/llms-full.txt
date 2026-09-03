@@ -1,0 +1,21 @@
+# Built by Miguel
+
+> High-performance React web engineering, Google Business Profile (GBP) optimization, and automated dispatch workflows for local service contractors. Founded and led by Miguel Umbac.
+
+## Core Services & Technical Capabilities
+
+- [Local SEO & Google Business Profile Optimization](/local-seo-gbp): Surgical local search ranking systems designed to build durable Google Maps presence and AI search engine visibility (Perplexity, ChatGPT, Google AI Overviews) for high-intent local queries.
+- [Custom React Websites & 24/7 Care](/websites-care): Fast edge-hosted web applications built with TypeScript, React, and Tailwind CSS. Replaces bloated WordPress sites to maximize phone call conversions.
+- [Systems & Workflow Automation](/systems-auto): Automated lead dispatch pipelines that alert contractor phones via SMS, sync CRM records, and automate client intake.
+- [Case Studies & Technical Proof](/work): Verified ranking turnarounds, geo-grid heatmap expansions, and Core Web Vitals performance benchmarks.
+- [About Miguel Umbac](/about): Background, engineering philosophy, and direct founder promise.
+- [Free 5-Minute Video Audit](/audit): Personalized 24-hour video breakdown analyzing local Google Maps ranking, mobile speed bottlenecks, and competitor gap analysis.
+
+## Key Facts & Entity Data
+
+- Founder: Miguel Umbac
+- Specialization: Local SEO, Google Business Profile Optimization, React Web Development, Lead Dispatch Automation
+- Target Market: High-ticket local trade contractors (Plumbing, HVAC, Roofing, Electrical, Landscaping)
+- Service Delivery: Direct engineer-to-client collaboration (Zero junior account managers)
+- Free Audit: https://builtbymiguel.com/audit
+- Contact: miguel@builtbymiguel.com
