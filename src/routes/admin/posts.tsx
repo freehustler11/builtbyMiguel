@@ -113,6 +113,8 @@ function generateSlug(text: string): string {
     .replace(/[^\w\s-]/g, '')
     .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '')
+    .substring(0, 80)
+    .replace(/-+$/, '')
 }
 
 function calculateReadingTime(content: string): number {
@@ -1853,6 +1855,15 @@ function AdminPostsPage() {
   }
 
   const handleTitleChange = (val: string) => {
+    if (val.includes('\n') || (val.length > 120 && !editorContent)) {
+      const parsed = parseFullArticleDocument(val)
+      applyParsedDocument(parsed)
+      addToast(
+        '✨ Article Smart Imported!',
+        'Extracted Title, Excerpt, Key Summary, and formatted Markdown Headings.'
+      )
+      return
+    }
     setEditorTitle(val)
     if (!slugManuallyEdited) {
       setEditorSlug(generateSlug(val))
@@ -2019,15 +2030,46 @@ function AdminPostsPage() {
     e.preventDefault()
     setEditorError(null)
 
-    if (!editorTitle.trim()) {
+    let finalTitle = editorTitle.trim()
+    let finalSlug = editorSlug.trim()
+    let finalSummary = editorSummary.trim()
+    let finalExcerpt = editorExcerpt.trim()
+    let finalMetaDesc = editorMetaDesc.trim()
+    let finalKeyword = editorKeyword.trim()
+    let finalContent = editorContent.trim()
+
+    // Safety fallback: if title contains a full article draft or exceeds 160 chars
+    if (finalTitle.length > 160 || finalTitle.includes('\n') || /AI Image Prompt/i.test(finalTitle)) {
+      const parsed = parseFullArticleDocument(finalTitle)
+      if (parsed.title) {
+        finalTitle = parsed.title
+        if (!finalSlug || finalSlug.length > 80) finalSlug = parsed.slug
+        if (!finalSummary && parsed.summary) finalSummary = parsed.summary
+        if (!finalExcerpt && parsed.excerpt) finalExcerpt = parsed.excerpt
+        if (!finalMetaDesc && parsed.metaDescription) finalMetaDesc = parsed.metaDescription
+        if (!finalKeyword && parsed.keyword) finalKeyword = parsed.keyword
+        if (!finalContent && parsed.markdownContent) finalContent = parsed.markdownContent
+
+        // Update local state as well
+        setEditorTitle(finalTitle)
+        setEditorSlug(finalSlug)
+        if (finalSummary) setEditorSummary(finalSummary)
+        if (finalExcerpt) setEditorExcerpt(finalExcerpt)
+        if (finalMetaDesc) setEditorMetaDesc(finalMetaDesc)
+        if (finalKeyword) setEditorKeyword(finalKeyword)
+        if (finalContent) setEditorContent(finalContent)
+      }
+    }
+
+    if (!finalTitle) {
       setEditorError('Title is required')
       return
     }
-    if (!editorSlug.trim()) {
-      setEditorError('Slug is required')
-      return
+    if (!finalSlug) {
+      finalSlug = generateSlug(finalTitle)
+      setEditorSlug(finalSlug)
     }
-    if (!editorContent.trim()) {
+    if (!finalContent) {
       setEditorError('Article content is required')
       return
     }
@@ -2035,17 +2077,17 @@ function AdminPostsPage() {
     try {
       setIsSaving(true)
       const payload = {
-        title: editorTitle.trim(),
+        title: finalTitle,
         metaTitle: editorMetaTitle.trim() || undefined,
-        slug: editorSlug.trim(),
-        keyword: editorKeyword.trim() || undefined,
+        slug: finalSlug,
+        keyword: finalKeyword || undefined,
         category: editorCategory.trim() || undefined,
         tags: editorTags.trim() || undefined,
-        summary: editorSummary.trim() || undefined,
-        excerpt: editorExcerpt.trim() || undefined,
-        metaDescription: editorMetaDesc.trim() || undefined,
+        summary: finalSummary || undefined,
+        excerpt: finalExcerpt || undefined,
+        metaDescription: finalMetaDesc || undefined,
         featuredImage: editorCoverImage.trim() || undefined,
-        content: editorContent.trim(),
+        content: finalContent,
         status: editorStatus,
         scheduledAt: editorScheduledAt ? new Date(editorScheduledAt).toISOString() : null,
         schemaType: editorSchemaType,

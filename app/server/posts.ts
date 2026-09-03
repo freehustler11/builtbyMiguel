@@ -140,6 +140,8 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '')
+      .substring(0, 80)
+      .replace(/-+$/, '')
 
     // Check slug uniqueness
     const existing = await db
@@ -250,6 +252,8 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '')
+      .substring(0, 80)
+      .replace(/-+$/, '')
 
     // Check slug collision with other posts
     const existing = await db
