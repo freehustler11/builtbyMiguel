@@ -8,6 +8,7 @@ import {
 import type { QueryClient } from '@tanstack/react-query'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import appCss from '../index.css?url'
 
 export interface RouterContext {
   queryClient: QueryClient
@@ -135,6 +136,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     ],
     links: [
       {
+        rel: 'stylesheet',
+        href: appCss,
+      },
+      {
         rel: 'canonical',
         href: 'https://builtbymiguel.net',
       },
@@ -162,29 +167,24 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
     ],
   }),
-  component: RootLayout,
+  component: RootComponent,
 })
 
-function RootLayout() {
+function RootComponent() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#fafafc] dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 selection:bg-slate-900 selection:text-white dark:selection:bg-rose-500 antialiased font-sans transition-colors duration-200">
-      {/* SSR Head Injection */}
-      <HeadContent />
-
-      {/* Persistent Navbar */}
-      <Navbar />
-
-      {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <Outlet />
-      </main>
-
-      {/* Persistent Footer */}
-      <Footer />
-
-      {/* SSR Scripts & Scroll Restoration */}
-      <ScrollRestoration />
-      <Scripts />
-    </div>
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body className="bg-[#fafafc] dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 selection:bg-slate-900 selection:text-white dark:selection:bg-rose-500 antialiased font-sans transition-colors duration-200 min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <Outlet />
+        </main>
+        <Footer />
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   )
 }
