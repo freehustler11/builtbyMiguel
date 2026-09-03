@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and } from 'drizzle-orm'
+import { desc, eq, and, or, lte } from 'drizzle-orm'
 import { db, posts, type Post } from '../db'
 import { verifySessionToken } from '../lib/auth'
 import { getCookie } from '@tanstack/react-start/server'
@@ -10,9 +10,14 @@ const COOKIE_NAME = 'admin_session'
  * Server Function: Get all posts for Admin CMS
  */
 export const getAdminPostsServerFn = createServerFn({ method: 'GET' })
-  .validator((data?: { status?: 'all' | 'published' | 'draft'; search?: string }) => {
-    return data || {}
-  })
+  .validator(
+    (data?: {
+      status?: 'all' | 'published' | 'draft' | 'scheduled'
+      search?: string
+    }) => {
+      return data || {}
+    },
+  )
   .handler(async ({ data }) => {
     const token = getCookie(COOKIE_NAME)
     const isAuthenticated = await verifySessionToken(token)
@@ -52,6 +57,7 @@ export const getAdminPostsServerFn = createServerFn({ method: 'GET' })
       all: allPosts.length,
       published: allPosts.filter((p) => p.status === 'published').length,
       draft: allPosts.filter((p) => p.status === 'draft').length,
+      scheduled: allPosts.filter((p) => p.status === 'scheduled').length,
     }
 
     return {
@@ -94,7 +100,10 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
       keyword?: string
       metaDescription?: string
       featuredImage?: string
-      status: 'draft' | 'published'
+      status: 'draft' | 'published' | 'scheduled'
+      scheduledAt?: string | null
+      schemaType?: string
+      customSchema?: string
       sidebarCtaTitle?: string
       sidebarCtaText?: string
       sidebarCtaButtonText?: string
@@ -136,6 +145,8 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
     }
 
     const now = new Date()
+    const scheduledDate = data.scheduledAt ? new Date(data.scheduledAt) : null
+
     const [created] = await db
       .insert(posts)
       .values({
@@ -146,6 +157,9 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,
+        scheduledAt: scheduledDate,
+        schemaType: data.schemaType?.trim() || 'BlogPosting',
+        customSchema: data.customSchema?.trim() || null,
         sidebarCtaTitle: data.sidebarCtaTitle?.trim() || null,
         sidebarCtaText: data.sidebarCtaText?.trim() || null,
         sidebarCtaButtonText: data.sidebarCtaButtonText?.trim() || null,
@@ -176,7 +190,10 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
       keyword?: string
       metaDescription?: string
       featuredImage?: string
-      status: 'draft' | 'published'
+      status: 'draft' | 'published' | 'scheduled'
+      scheduledAt?: string | null
+      schemaType?: string
+      customSchema?: string
       sidebarCtaTitle?: string
       sidebarCtaText?: string
       sidebarCtaButtonText?: string
@@ -232,7 +249,11 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
     let publishedAt = current.publishedAt
     if (data.status === 'published' && !publishedAt) {
       publishedAt = now
+    } else if (data.status === 'draft') {
+      publishedAt = null
     }
+
+    const scheduledDate = data.scheduledAt ? new Date(data.scheduledAt) : null
 
     const [updated] = await db
       .update(posts)
@@ -244,6 +265,9 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,
+        scheduledAt: scheduledDate,
+        schemaType: data.schemaType?.trim() || 'BlogPosting',
+        customSchema: data.customSchema?.trim() || null,
         sidebarCtaTitle: data.sidebarCtaTitle?.trim() || null,
         sidebarCtaText: data.sidebarCtaText?.trim() || null,
         sidebarCtaButtonText: data.sidebarCtaButtonText?.trim() || null,
@@ -281,22 +305,28 @@ export const deletePostServerFn = createServerFn({ method: 'POST' })
   })
 
 /**
- * Public Server Function: Get all published posts for the public blog
+ * Public Server Function: Get all published/live posts for the public blog
  */
 export const getPublicPostsServerFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const published = await db
+    const now = new Date()
+    const allPosts = await db
       .select()
       .from(posts)
-      .where(eq(posts.status, 'published'))
+      .where(
+        or(
+          eq(posts.status, 'published'),
+          and(eq(posts.status, 'scheduled'), lte(posts.scheduledAt, now)),
+        ),
+      )
       .orderBy(desc(posts.publishedAt), desc(posts.createdAt))
 
-    return { posts: published }
+    return { posts: allPosts }
   },
 )
 
 /**
- * Public Server Function: Get a single published post by slug and fetch related articles
+ * Public Server Function: Get a single published/scheduled post by slug and fetch related articles
  */
 export const getPublicPostBySlugServerFn = createServerFn({ method: 'GET' })
   .validator((data: { slug: string }) => {
@@ -304,23 +334,37 @@ export const getPublicPostBySlugServerFn = createServerFn({ method: 'GET' })
     return data
   })
   .handler(async ({ data }) => {
+    const now = new Date()
     const [post] = await db
       .select()
       .from(posts)
-      .where(and(eq(posts.slug, data.slug), eq(posts.status, 'published')))
+      .where(
+        and(
+          eq(posts.slug, data.slug),
+          or(
+            eq(posts.status, 'published'),
+            and(eq(posts.status, 'scheduled'), lte(posts.scheduledAt, now)),
+          ),
+        ),
+      )
 
     if (!post) {
       return { post: null, relatedPosts: [] }
     }
 
     // Fetch up to 3 related published posts (excluding current)
-    const allPublished = await db
+    const allPublic = await db
       .select()
       .from(posts)
-      .where(eq(posts.status, 'published'))
+      .where(
+        or(
+          eq(posts.status, 'published'),
+          and(eq(posts.status, 'scheduled'), lte(posts.scheduledAt, now)),
+        ),
+      )
       .orderBy(desc(posts.publishedAt), desc(posts.createdAt))
 
-    const related = allPublished.filter((p) => p.id !== post.id).slice(0, 3)
+    const related = allPublic.filter((p) => p.id !== post.id).slice(0, 3)
 
     return { post, relatedPosts: related }
   })

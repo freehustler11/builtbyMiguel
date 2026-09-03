@@ -74,7 +74,7 @@ export const Route = createFileRoute('/blog/$slug')({
           type: 'application/ld+json',
           children: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'BlogPosting',
+            '@type': post.schemaType || 'BlogPosting',
             headline: post.title,
             description,
             url: canonical,
@@ -95,6 +95,14 @@ export const Route = createFileRoute('/blog/$slug')({
             },
           }),
         },
+        ...(post.customSchema
+          ? [
+              {
+                type: 'application/ld+json',
+                children: post.customSchema,
+              },
+            ]
+          : []),
       ],
     }
   },

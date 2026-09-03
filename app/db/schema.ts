@@ -35,9 +35,12 @@ export const posts = pgTable('posts', {
   metaDescription: text('meta_description'),
   featuredImage: text('featured_image'),
   content: text('content').notNull(),
-  status: text('status', { enum: ['draft', 'published'] })
+  status: text('status', { enum: ['draft', 'published', 'scheduled'] })
     .default('draft')
     .notNull(),
+  scheduledAt: timestamp('scheduled_at', { withTimezone: true }),
+  schemaType: text('schema_type').default('BlogPosting'),
+  customSchema: text('custom_schema'),
   // Customizable Call-to-Action (CTA) fields
   sidebarCtaTitle: text('sidebar_cta_title'),
   sidebarCtaText: text('sidebar_cta_text'),
