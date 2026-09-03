@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "node scripts/generate-sitemap.mjs && vite build",
     "preview": "vite preview",
-    "start": "node server.mjs",
+    "start": "node scripts/migrate.mjs && node server.mjs",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",

@@ -3,6 +3,7 @@ import http from 'node:http'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { runMigrations } from './scripts/migrate.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = __dirname
@@ -108,6 +109,9 @@ const server = http.createServer(async (req, res) => {
   }
 })
 
-server.listen(port, () => {
-  console.log(`🚀 TanStack Start Dynamic SSR Server listening on port ${port}`)
+// Initialize database tables & start listening
+runMigrations().finally(() => {
+  server.listen(port, () => {
+    console.log(`🚀 TanStack Start Dynamic SSR Server listening on port ${port}`)
+  })
 })
