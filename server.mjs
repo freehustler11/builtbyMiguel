@@ -122,7 +122,7 @@ const server = http.createServer(async (req, res) => {
 
 // Initialize database tables & start listening
 runMigrations().finally(() => {
-  server.listen(port, () => {
+  server.listen(port, '0.0.0.0', () => {
     console.log(`🚀 TanStack Start Dynamic SSR Server listening on port ${port}`)
   })
 })

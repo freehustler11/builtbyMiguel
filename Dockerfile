@@ -1,4 +1,4 @@
-# Stage 1: Build the React Application
+# Stage 1: Build the TanStack Start Application
 FROM node:22-alpine AS builder
 
 WORKDIR /app
@@ -12,20 +12,30 @@ RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 # Copy source code and configuration files
 COPY . .
 
-# Build static assets (runs TypeScript checks and Vite build)
+# Build application (runs TypeScript checks, sitemap generation, and Vite build)
+ENV NODE_ENV=production
 RUN npm run build
 
-# Stage 2: Serve with lightweight NGINX Alpine
-FROM nginx:alpine AS runner
+# Stage 2: Production Node.js 22 Runtime
+FROM node:22-alpine AS runner
 
-# Remove default nginx configs and add custom SPA-ready config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-# Copy compiled distribution files
-COPY --from=builder /app/dist /usr/share/nginx/html
+ENV NODE_ENV=production
+ENV PORT=3000
 
-# Expose standard container port
-EXPOSE 80
+# Copy dependency files and install production dependencies only
+COPY package.json package-lock.json* ./
+RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
 
-# Start NGINX
-CMD ["nginx", "-g", "daemon off;"]
+# Copy compiled bundles, public static files, server entry, and migration scripts
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/server.mjs ./server.mjs
+COPY --from=builder /app/scripts ./scripts
+
+# Expose container port
+EXPOSE 3000
+
+# Run database migrations on startup and start the TanStack Start SSR Server
+CMD ["node", "server.mjs"]
