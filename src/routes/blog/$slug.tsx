@@ -210,19 +210,185 @@ function renderInlineFormatting(text: string): React.ReactNode {
   return parts.length > 0 ? parts : text
 }
 
+interface MarkdownBlockItem {
+  type: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'hr' | 'image' | 'table' | 'blockquote' | 'ul' | 'ol' | 'code' | 'p'
+  content?: string
+  alt?: string
+  src?: string
+  headers?: string[]
+  rows?: string[][]
+  items?: string[]
+  lang?: string
+  id?: string
+}
+
+function parseMarkdownBlocks(rawContent: string): MarkdownBlockItem[] {
+  if (!rawContent) return []
+  const lines = rawContent.split(/\r?\n/)
+  const blocks: MarkdownBlockItem[] = []
+  let i = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+    const trimmed = line.trim()
+
+    if (!trimmed) {
+      i++
+      continue
+    }
+
+    if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      blocks.push({ type: 'hr' })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('![') && trimmed.includes('](')) {
+      const imgMatch = trimmed.match(/!\[(.*?)\]\((.*?)\)/)
+      if (imgMatch) {
+        blocks.push({ type: 'image', alt: imgMatch[1], src: imgMatch[2] })
+        i++
+        continue
+      }
+    }
+
+    if (trimmed.startsWith('# ')) {
+      blocks.push({ type: 'h1', content: trimmed.replace(/^#\s+/, '') })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('## ')) {
+      const text = trimmed.replace(/^##\s+/, '')
+      blocks.push({ type: 'h2', content: text, id: slugifyHeading(text) })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('### ')) {
+      const text = trimmed.replace(/^###\s+/, '')
+      blocks.push({ type: 'h3', content: text, id: slugifyHeading(text) })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('#### ')) {
+      const text = trimmed.replace(/^####\s+/, '')
+      blocks.push({ type: 'h4', content: text, id: slugifyHeading(text) })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('##### ')) {
+      blocks.push({ type: 'h5', content: trimmed.replace(/^#####\s+/, '') })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('###### ')) {
+      blocks.push({ type: 'h6', content: trimmed.replace(/^######\s+/, '') })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('```')) {
+      const lang = trimmed.replace(/^```/, '').trim()
+      const codeLines: string[] = []
+      i++
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        codeLines.push(lines[i])
+        i++
+      }
+      if (i < lines.length && lines[i].trim().startsWith('```')) {
+        i++
+      }
+      blocks.push({ type: 'code', lang, content: codeLines.join('\n') })
+      continue
+    }
+
+    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+      const tableLines: string[] = []
+      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
+        tableLines.push(lines[i].trim())
+        i++
+      }
+      if (tableLines.length >= 2) {
+        const rows = tableLines.map((row) =>
+          row
+            .split('|')
+            .map((c) => c.trim())
+            .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1)
+        )
+        const headers = rows[0]
+        const isDivider = rows[1]?.every((c) => /^[-:\s]+$/.test(c))
+        const dataRows = isDivider ? rows.slice(2) : rows.slice(1)
+        blocks.push({ type: 'table', headers, rows: dataRows })
+        continue
+      }
+    }
+
+    if (trimmed.startsWith('>')) {
+      const quoteLines: string[] = []
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        quoteLines.push(lines[i].trim().replace(/^>\s*/, ''))
+        i++
+      }
+      blocks.push({ type: 'blockquote', content: quoteLines.join('\n') })
+      continue
+    }
+
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      const listItems: string[] = []
+      while (i < lines.length && (lines[i].trim().startsWith('- ') || lines[i].trim().startsWith('* '))) {
+        listItems.push(lines[i].trim().replace(/^[-*]\s+/, ''))
+        i++
+      }
+      blocks.push({ type: 'ul', items: listItems })
+      continue
+    }
+
+    if (/^\d+\.\s/.test(trimmed)) {
+      const listItems: string[] = []
+      while (i < lines.length && /^\d+\.\s/.test(lines[i].trim())) {
+        listItems.push(lines[i].trim().replace(/^\d+\.\s+/, ''))
+        i++
+      }
+      blocks.push({ type: 'ol', items: listItems })
+      continue
+    }
+
+    const pLines: string[] = []
+    while (
+      i < lines.length &&
+      lines[i].trim().length > 0 &&
+      !lines[i].trim().startsWith('#') &&
+      !lines[i].trim().startsWith('![') &&
+      !lines[i].trim().startsWith('---') &&
+      !lines[i].trim().startsWith('***') &&
+      !lines[i].trim().startsWith('___') &&
+      !lines[i].trim().startsWith('```') &&
+      !lines[i].trim().startsWith('>') &&
+      !lines[i].trim().startsWith('- ') &&
+      !lines[i].trim().startsWith('* ') &&
+      !/^\d+\.\s/.test(lines[i].trim()) &&
+      !(lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|'))
+    ) {
+      pLines.push(lines[i].trim())
+      i++
+    }
+    if (pLines.length > 0) {
+      blocks.push({ type: 'p', content: pLines.join(' ') })
+    }
+  }
+
+  return blocks
+}
+
 /**
  * Enhanced Markdown renderer with smooth scroll-margin anchor IDs, H1-H6, tables, and images
  */
 function MarkdownRenderer({ content }: { content: string }) {
-  const paragraphs = content.split(/\n\n+/)
+  const blocks = parseMarkdownBlocks(content)
 
   return (
     <div className="space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 dark:text-slate-300">
-      {paragraphs.map((p, idx) => {
-        const trimmed = p.trim()
-
-        // Horizontal Rule
-        if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      {blocks.map((block, idx) => {
+        if (block.type === 'hr') {
           return (
             <hr
               key={idx}
@@ -231,239 +397,214 @@ function MarkdownRenderer({ content }: { content: string }) {
           )
         }
 
-        // Image Block (![alt](url))
-        if (trimmed.startsWith('![') && trimmed.includes('](')) {
-          const imgMatch = trimmed.match(/!\[(.*?)\]\((.*?)\)/)
-          if (imgMatch) {
-            const [, alt, src] = imgMatch
-            return (
-              <figure key={idx} className="my-8 space-y-2">
-                <div className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 shadow-sm">
-                  <img
-                    src={src}
-                    alt={alt || 'Article visual'}
-                    className="w-full max-h-[520px] object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                {alt && (
-                  <figcaption className="text-center text-xs text-slate-400 dark:text-slate-500 font-mono">
-                    {alt}
-                  </figcaption>
-                )}
-              </figure>
-            )
-          }
+        if (block.type === 'image' && block.src) {
+          return (
+            <figure key={idx} className="my-8 space-y-2">
+              <div className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 shadow-sm">
+                <img
+                  src={block.src}
+                  alt={block.alt || 'Article visual'}
+                  className="w-full max-h-[520px] object-cover"
+                  loading="lazy"
+                />
+              </div>
+              {block.alt && (
+                <figcaption className="text-center text-xs text-slate-400 dark:text-slate-500 font-mono">
+                  {block.alt}
+                </figcaption>
+              )}
+            </figure>
+          )
         }
 
-        // H2 Heading (Matches Table of Contents anchor IDs)
-        if (trimmed.startsWith('## ')) {
-          const title = trimmed.replace(/^##\s+/, '')
-          const id = slugifyHeading(title)
+        if (block.type === 'h1' && block.content) {
+          return (
+            <h1
+              key={idx}
+              className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white pt-8 pb-3 tracking-tight"
+            >
+              {renderInlineFormatting(block.content)}
+            </h1>
+          )
+        }
 
+        if (block.type === 'h2' && block.content) {
           return (
             <h2
               key={idx}
-              id={id}
+              id={block.id}
               className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white pt-8 pb-2 border-b border-slate-200/80 dark:border-slate-800 tracking-tight scroll-mt-28 flex items-center gap-2 group"
             >
-              <span>{renderInlineFormatting(title)}</span>
+              <span>{renderInlineFormatting(block.content)}</span>
             </h2>
           )
         }
 
-        // H3 Heading
-        if (trimmed.startsWith('### ')) {
-          const title = trimmed.replace(/^###\s+/, '')
-          const id = slugifyHeading(title)
-
+        if (block.type === 'h3' && block.content) {
           return (
             <h3
               key={idx}
-              id={id}
+              id={block.id}
               className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white pt-6 tracking-tight scroll-mt-28"
             >
-              {renderInlineFormatting(title)}
+              {renderInlineFormatting(block.content)}
             </h3>
           )
         }
 
-        // H4 Heading
-        if (trimmed.startsWith('#### ')) {
-          const title = trimmed.replace(/^####\s+/, '')
-          const id = slugifyHeading(title)
-
+        if (block.type === 'h4' && block.content) {
           return (
             <h4
               key={idx}
-              id={id}
+              id={block.id}
               className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white pt-4 tracking-tight scroll-mt-28"
             >
-              {renderInlineFormatting(title)}
+              {renderInlineFormatting(block.content)}
             </h4>
           )
         }
 
-        // H5 Heading
-        if (trimmed.startsWith('##### ')) {
-          const title = trimmed.replace(/^#####\s+/, '')
+        if (block.type === 'h5' && block.content) {
           return (
             <h5
               key={idx}
               className="text-base sm:text-lg font-bold text-slate-900 dark:text-white pt-3 tracking-tight"
             >
-              {renderInlineFormatting(title)}
+              {renderInlineFormatting(block.content)}
             </h5>
           )
         }
 
-        // H6 Heading
-        if (trimmed.startsWith('###### ')) {
-          const title = trimmed.replace(/^######\s+/, '')
+        if (block.type === 'h6' && block.content) {
           return (
             <h6
               key={idx}
               className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2 tracking-tight uppercase tracking-wider text-rose-600 dark:text-rose-400"
             >
-              {renderInlineFormatting(title)}
+              {renderInlineFormatting(block.content)}
             </h6>
           )
         }
 
-        // Markdown Table (| Col 1 | Col 2 |)
-        if (trimmed.includes('|') && trimmed.includes('\n')) {
-          const rows = trimmed.split('\n').map((row) =>
-            row
-              .split('|')
-              .map((c) => c.trim())
-              .filter((c, i, arr) => i > 0 && i < arr.length - 1)
-          )
-          const headerRow = rows[0]
-          const bodyRows = rows.slice(2) // Skip separator row
-
-          if (headerRow && headerRow.length > 0) {
-            return (
-              <div
-                key={idx}
-                className="my-6 overflow-x-auto rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs"
-              >
-                <table className="w-full text-left text-xs sm:text-sm border-collapse">
-                  <thead>
-                    <tr className="bg-slate-100/90 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700">
-                      {headerRow.map((cell, cIdx) => (
-                        <th
+        if (block.type === 'table' && block.headers && block.rows) {
+          return (
+            <div
+              key={idx}
+              className="my-8 overflow-x-auto rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm"
+            >
+              <table className="w-full text-left text-sm border-collapse">
+                <thead>
+                  <tr className="bg-slate-100/90 dark:bg-slate-800/90 border-b border-slate-200/80 dark:border-slate-700">
+                    {block.headers.map((cell, cIdx) => (
+                      <th
+                        key={cIdx}
+                        className="px-4 py-3.5 font-bold text-slate-900 dark:text-white font-mono text-xs uppercase tracking-wider"
+                      >
+                        {renderInlineFormatting(cell)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {block.rows.map((row, rIdx) => (
+                    <tr
+                      key={rIdx}
+                      className={
+                        rIdx % 2 === 0
+                          ? 'bg-white dark:bg-slate-900'
+                          : 'bg-slate-50/60 dark:bg-slate-850'
+                      }
+                    >
+                      {row.map((cell, cIdx) => (
+                        <td
                           key={cIdx}
-                          className="px-4 py-3 font-bold text-slate-900 dark:text-white font-mono"
+                          className="px-4 py-3 text-slate-700 dark:text-slate-300"
                         >
                           {renderInlineFormatting(cell)}
-                        </th>
+                        </td>
                       ))}
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {bodyRows.map((row, rIdx) => (
-                      <tr
-                        key={rIdx}
-                        className={
-                          rIdx % 2 === 0
-                            ? 'bg-white/60 dark:bg-slate-900/60'
-                            : 'bg-slate-50/50 dark:bg-slate-900/40'
-                        }
-                      >
-                        {row.map((cell, cIdx) => (
-                          <td
-                            key={cIdx}
-                            className="px-4 py-3 text-slate-700 dark:text-slate-300"
-                          >
-                            {renderInlineFormatting(cell)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )
-          }
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         }
 
-        // Blockquote
-        if (trimmed.startsWith('> ')) {
+        if (block.type === 'blockquote' && block.content) {
           return (
             <blockquote
               key={idx}
-              className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-rose-50/60 via-amber-50/30 to-transparent dark:from-rose-950/30 dark:via-slate-900/40 dark:to-transparent border-l-4 border-rose-500 text-slate-800 dark:text-slate-200 italic space-y-1 text-base sm:text-lg my-6 shadow-2xs"
+              className="p-5 sm:p-6 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border-l-4 border-rose-500 italic text-slate-800 dark:text-slate-200 my-6 text-base sm:text-lg"
             >
-              {trimmed
-                .replace(/^>\s+/, '')
-                .split('\n')
-                .map((line, lIdx) => (
-                  <p key={lIdx}>{renderInlineFormatting(line.replace(/^>\s*/, ''))}</p>
-                ))}
+              {block.content.split('\n').map((line, lIdx) => (
+                <p key={lIdx}>{renderInlineFormatting(line)}</p>
+              ))}
             </blockquote>
           )
         }
 
-        // Bullet List
-        if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-          const items = trimmed.split('\n').filter((l) => l.trim().length > 0)
+        if (block.type === 'ul' && block.items) {
           return (
-            <ul key={idx} className="space-y-2.5 my-4 pl-2">
-              {items.map((item, iIdx) => (
+            <ul key={idx} className="space-y-2 my-4 pl-2">
+              {block.items.map((item, iIdx) => (
                 <li
                   key={iIdx}
                   className="flex items-start gap-3 text-slate-700 dark:text-slate-300 text-base sm:text-lg"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-2.5 shrink-0" />
-                  <span>{renderInlineFormatting(item.replace(/^[-*]\s+/, ''))}</span>
+                  <span className="w-2 h-2 rounded-full bg-rose-500 mt-2.5 shrink-0" />
+                  <span>{renderInlineFormatting(item)}</span>
                 </li>
               ))}
             </ul>
           )
         }
 
-        // Numbered List
-        if (/^\d+\.\s/.test(trimmed)) {
-          const items = trimmed.split('\n').filter((l) => l.trim().length > 0)
+        if (block.type === 'ol' && block.items) {
           return (
             <ol key={idx} className="space-y-3 my-4 pl-2">
-              {items.map((item, iIdx) => (
+              {block.items.map((item, iIdx) => (
                 <li
                   key={iIdx}
                   className="flex items-start gap-3 text-slate-700 dark:text-slate-300 text-base sm:text-lg"
                 >
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-mono text-xs font-bold shrink-0 mt-0.5 border border-slate-200 dark:border-slate-700">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-mono text-xs font-bold shrink-0 mt-0.5 border border-slate-200/80 dark:border-slate-700">
                     {iIdx + 1}
                   </span>
-                  <span>{renderInlineFormatting(item.replace(/^\d+\.\s+/, ''))}</span>
+                  <span>{renderInlineFormatting(item)}</span>
                 </li>
               ))}
             </ol>
           )
         }
 
-        // Code Block
-        if (trimmed.startsWith('```')) {
-          const codeText = trimmed.replace(/^```[a-z]*\n?/, '').replace(/```$/, '')
+        if (block.type === 'code' && block.content) {
           return (
-            <pre
-              key={idx}
-              className="p-5 rounded-2xl bg-slate-900 text-slate-100 font-mono text-xs sm:text-sm overflow-x-auto my-6 border border-slate-800 shadow-xs"
-            >
-              <code>{codeText}</code>
-            </pre>
+            <div key={idx} className="my-6 rounded-2xl overflow-hidden border border-slate-800 bg-[#0d1117] text-slate-100 shadow-lg">
+              {block.lang && (
+                <div className="px-4 py-2 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between text-xs font-mono text-slate-400 uppercase">
+                  <span>{block.lang}</span>
+                </div>
+              )}
+              <pre className="p-4 sm:p-6 font-mono text-xs sm:text-sm overflow-x-auto leading-relaxed">
+                <code>{block.content}</code>
+              </pre>
+            </div>
           )
         }
 
-        // Standard Paragraph
-        return (
-          <p
-            key={idx}
-            className="text-base sm:text-lg leading-relaxed text-slate-700 dark:text-slate-300"
-          >
-            {renderInlineFormatting(trimmed)}
-          </p>
-        )
+        if (block.content) {
+          return (
+            <p
+              key={idx}
+              className="text-base sm:text-lg leading-relaxed text-slate-700 dark:text-slate-300"
+            >
+              {renderInlineFormatting(block.content)}
+            </p>
+          )
+        }
+
+        return null
       })}
     </div>
   )

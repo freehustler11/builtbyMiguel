@@ -185,170 +185,331 @@ function renderAdminInlineFormatting(text: string): React.ReactNode {
   return parts.length > 0 ? parts : text
 }
 
+interface AdminMarkdownBlockItem {
+  type: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'hr' | 'image' | 'table' | 'blockquote' | 'ul' | 'ol' | 'code' | 'p'
+  content?: string
+  alt?: string
+  src?: string
+  headers?: string[]
+  rows?: string[][]
+  items?: string[]
+  lang?: string
+}
+
+function parseAdminMarkdownBlocks(rawContent: string): AdminMarkdownBlockItem[] {
+  if (!rawContent) return []
+  const lines = rawContent.split(/\r?\n/)
+  const blocks: AdminMarkdownBlockItem[] = []
+  let i = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+    const trimmed = line.trim()
+
+    if (!trimmed) {
+      i++
+      continue
+    }
+
+    if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      blocks.push({ type: 'hr' })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('![') && trimmed.includes('](')) {
+      const imgMatch = trimmed.match(/!\[(.*?)\]\((.*?)\)/)
+      if (imgMatch) {
+        blocks.push({ type: 'image', alt: imgMatch[1], src: imgMatch[2] })
+        i++
+        continue
+      }
+    }
+
+    if (trimmed.startsWith('# ')) {
+      blocks.push({ type: 'h1', content: trimmed.replace(/^#\s+/, '') })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('## ')) {
+      blocks.push({ type: 'h2', content: trimmed.replace(/^##\s+/, '') })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('### ')) {
+      blocks.push({ type: 'h3', content: trimmed.replace(/^###\s+/, '') })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('#### ')) {
+      blocks.push({ type: 'h4', content: trimmed.replace(/^####\s+/, '') })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('##### ')) {
+      blocks.push({ type: 'h5', content: trimmed.replace(/^#####\s+/, '') })
+      i++
+      continue
+    }
+    if (trimmed.startsWith('###### ')) {
+      blocks.push({ type: 'h6', content: trimmed.replace(/^######\s+/, '') })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('```')) {
+      const lang = trimmed.replace(/^```/, '').trim()
+      const codeLines: string[] = []
+      i++
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        codeLines.push(lines[i])
+        i++
+      }
+      if (i < lines.length && lines[i].trim().startsWith('```')) {
+        i++
+      }
+      blocks.push({ type: 'code', lang, content: codeLines.join('\n') })
+      continue
+    }
+
+    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+      const tableLines: string[] = []
+      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
+        tableLines.push(lines[i].trim())
+        i++
+      }
+      if (tableLines.length >= 2) {
+        const rows = tableLines.map((row) =>
+          row
+            .split('|')
+            .map((c) => c.trim())
+            .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1)
+        )
+        const headers = rows[0]
+        const isDivider = rows[1]?.every((c) => /^[-:\s]+$/.test(c))
+        const dataRows = isDivider ? rows.slice(2) : rows.slice(1)
+        blocks.push({ type: 'table', headers, rows: dataRows })
+        continue
+      }
+    }
+
+    if (trimmed.startsWith('>')) {
+      const quoteLines: string[] = []
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        quoteLines.push(lines[i].trim().replace(/^>\s*/, ''))
+        i++
+      }
+      blocks.push({ type: 'blockquote', content: quoteLines.join('\n') })
+      continue
+    }
+
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      const listItems: string[] = []
+      while (i < lines.length && (lines[i].trim().startsWith('- ') || lines[i].trim().startsWith('* '))) {
+        listItems.push(lines[i].trim().replace(/^[-*]\s+/, ''))
+        i++
+      }
+      blocks.push({ type: 'ul', items: listItems })
+      continue
+    }
+
+    if (/^\d+\.\s/.test(trimmed)) {
+      const listItems: string[] = []
+      while (i < lines.length && /^\d+\.\s/.test(lines[i].trim())) {
+        listItems.push(lines[i].trim().replace(/^\d+\.\s+/, ''))
+        i++
+      }
+      blocks.push({ type: 'ol', items: listItems })
+      continue
+    }
+
+    const pLines: string[] = []
+    while (
+      i < lines.length &&
+      lines[i].trim().length > 0 &&
+      !lines[i].trim().startsWith('#') &&
+      !lines[i].trim().startsWith('![') &&
+      !lines[i].trim().startsWith('---') &&
+      !lines[i].trim().startsWith('***') &&
+      !lines[i].trim().startsWith('___') &&
+      !lines[i].trim().startsWith('```') &&
+      !lines[i].trim().startsWith('>') &&
+      !lines[i].trim().startsWith('- ') &&
+      !lines[i].trim().startsWith('* ') &&
+      !/^\d+\.\s/.test(lines[i].trim()) &&
+      !(lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|'))
+    ) {
+      pLines.push(lines[i].trim())
+      i++
+    }
+    if (pLines.length > 0) {
+      blocks.push({ type: 'p', content: pLines.join(' ') })
+    }
+  }
+
+  return blocks
+}
+
 function AdminMarkdownRenderer({ content }: { content: string }) {
-  const paragraphs = content.split(/\n\n+/)
+  const blocks = parseAdminMarkdownBlocks(content)
 
   return (
     <div className="space-y-6 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-      {paragraphs.map((p, idx) => {
-        const trimmed = p.trim()
-
-        if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      {blocks.map((block, idx) => {
+        if (block.type === 'hr') {
           return <hr key={idx} className="my-6 border-t border-slate-200 dark:border-slate-800" />
         }
 
-        if (trimmed.startsWith('![') && trimmed.includes('](')) {
-          const imgMatch = trimmed.match(/!\[(.*?)\]\((.*?)\)/)
-          if (imgMatch) {
-            const [, alt, src] = imgMatch
-            return (
-              <figure key={idx} className="my-6 space-y-1.5">
-                <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800">
-                  <img src={src} alt={alt || 'Visual'} className="w-full max-h-[450px] object-cover" />
-                </div>
-                {alt && <figcaption className="text-center text-xs text-slate-400 font-mono">{alt}</figcaption>}
-              </figure>
-            )
-          }
+        if (block.type === 'image' && block.src) {
+          return (
+            <figure key={idx} className="my-6 space-y-1.5">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800">
+                <img src={block.src} alt={block.alt || 'Visual'} className="w-full max-h-[450px] object-cover" />
+              </div>
+              {block.alt && <figcaption className="text-center text-xs text-slate-400 font-mono">{block.alt}</figcaption>}
+            </figure>
+          )
         }
 
-        if (trimmed.startsWith('## ')) {
+        if (block.type === 'h1' && block.content) {
+          return (
+            <h1 key={idx} className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white pt-6 pb-2">
+              {renderAdminInlineFormatting(block.content)}
+            </h1>
+          )
+        }
+
+        if (block.type === 'h2' && block.content) {
           return (
             <h2 key={idx} className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-slate-800">
-              {renderAdminInlineFormatting(trimmed.replace(/^##\s+/, ''))}
+              {renderAdminInlineFormatting(block.content)}
             </h2>
           )
         }
 
-        if (trimmed.startsWith('### ')) {
+        if (block.type === 'h3' && block.content) {
           return (
             <h3 key={idx} className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white pt-4">
-              {renderAdminInlineFormatting(trimmed.replace(/^###\s+/, ''))}
+              {renderAdminInlineFormatting(block.content)}
             </h3>
           )
         }
 
-        if (trimmed.startsWith('#### ')) {
+        if (block.type === 'h4' && block.content) {
           return (
             <h4 key={idx} className="text-base sm:text-lg font-bold text-slate-900 dark:text-white pt-3">
-              {renderAdminInlineFormatting(trimmed.replace(/^####\s+/, ''))}
+              {renderAdminInlineFormatting(block.content)}
             </h4>
           )
         }
 
-        if (trimmed.startsWith('##### ')) {
+        if (block.type === 'h5' && block.content) {
           return (
             <h5 key={idx} className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
-              {renderAdminInlineFormatting(trimmed.replace(/^#####\s+/, ''))}
+              {renderAdminInlineFormatting(block.content)}
             </h5>
           )
         }
 
-        if (trimmed.startsWith('###### ')) {
+        if (block.type === 'h6' && block.content) {
           return (
             <h6 key={idx} className="text-xs sm:text-sm font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 pt-2">
-              {renderAdminInlineFormatting(trimmed.replace(/^######\s+/, ''))}
+              {renderAdminInlineFormatting(block.content)}
             </h6>
           )
         }
 
-        if (trimmed.includes('|') && trimmed.includes('\n')) {
-          const rows = trimmed.split('\n').map((row) =>
-            row
-              .split('|')
-              .map((c) => c.trim())
-              .filter((c, i, arr) => i > 0 && i < arr.length - 1)
-          )
-          const headerRow = rows[0]
-          const bodyRows = rows.slice(2)
-
-          if (headerRow && headerRow.length > 0) {
-            return (
-              <div key={idx} className="my-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-                      {headerRow.map((cell, cIdx) => (
-                        <th key={cIdx} className="px-3 py-2 font-bold text-slate-900 dark:text-white font-mono">
+        if (block.type === 'table' && block.headers && block.rows) {
+          return (
+            <div key={idx} className="my-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                    {block.headers.map((cell, cIdx) => (
+                      <th key={cIdx} className="px-3 py-2 font-bold text-slate-900 dark:text-white font-mono">
+                        {renderAdminInlineFormatting(cell)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {block.rows.map((row, rIdx) => (
+                    <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50 dark:bg-slate-850'}>
+                      {row.map((cell, cIdx) => (
+                        <td key={cIdx} className="px-3 py-2 text-slate-700 dark:text-slate-300">
                           {renderAdminInlineFormatting(cell)}
-                        </th>
+                        </td>
                       ))}
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {bodyRows.map((row, rIdx) => (
-                      <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50 dark:bg-slate-850'}>
-                        {row.map((cell, cIdx) => (
-                          <td key={cIdx} className="px-3 py-2 text-slate-700 dark:text-slate-300">
-                            {renderAdminInlineFormatting(cell)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )
-          }
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         }
 
-        if (trimmed.startsWith('> ')) {
+        if (block.type === 'blockquote' && block.content) {
           return (
             <blockquote key={idx} className="p-4 rounded-xl bg-rose-50/50 dark:bg-rose-950/20 border-l-4 border-rose-500 italic text-slate-800 dark:text-slate-200 my-4 text-sm sm:text-base">
-              {trimmed
-                .replace(/^>\s+/, '')
-                .split('\n')
-                .map((line, lIdx) => (
-                  <p key={lIdx}>{renderAdminInlineFormatting(line.replace(/^>\s*/, ''))}</p>
-                ))}
+              {block.content.split('\n').map((line, lIdx) => (
+                <p key={lIdx}>{renderAdminInlineFormatting(line)}</p>
+              ))}
             </blockquote>
           )
         }
 
-        if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-          const items = trimmed.split('\n').filter((l) => l.trim().length > 0)
+        if (block.type === 'ul' && block.items) {
           return (
             <ul key={idx} className="space-y-1.5 my-3 pl-2">
-              {items.map((item, iIdx) => (
+              {block.items.map((item, iIdx) => (
                 <li key={iIdx} className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-sm sm:text-base">
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-2 shrink-0" />
-                  <span>{renderAdminInlineFormatting(item.replace(/^[-*]\s+/, ''))}</span>
+                  <span>{renderAdminInlineFormatting(item)}</span>
                 </li>
               ))}
             </ul>
           )
         }
 
-        if (/^\d+\.\s/.test(trimmed)) {
-          const items = trimmed.split('\n').filter((l) => l.trim().length > 0)
+        if (block.type === 'ol' && block.items) {
           return (
             <ol key={idx} className="space-y-2 my-3 pl-2">
-              {items.map((item, iIdx) => (
+              {block.items.map((item, iIdx) => (
                 <li key={iIdx} className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-sm sm:text-base">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-mono text-[11px] font-bold shrink-0 mt-0.5 border border-slate-200 dark:border-slate-700">
                     {iIdx + 1}
                   </span>
-                  <span>{renderAdminInlineFormatting(item.replace(/^\d+\.\s+/, ''))}</span>
+                  <span>{renderAdminInlineFormatting(item)}</span>
                 </li>
               ))}
             </ol>
           )
         }
 
-        if (trimmed.startsWith('```')) {
-          const codeText = trimmed.replace(/^```[a-z]*\n?/, '').replace(/```$/, '')
+        if (block.type === 'code' && block.content) {
           return (
-            <pre key={idx} className="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto my-4 border border-slate-800">
-              <code>{codeText}</code>
-            </pre>
+            <div key={idx} className="my-4 rounded-xl overflow-hidden border border-slate-800 bg-slate-950 text-slate-100">
+              {block.lang && (
+                <div className="px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-[11px] font-mono text-slate-400 uppercase">
+                  {block.lang}
+                </div>
+              )}
+              <pre className="p-4 font-mono text-xs overflow-x-auto">
+                <code>{block.content}</code>
+              </pre>
+            </div>
           )
         }
 
-        return (
-          <p key={idx} className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-            {renderAdminInlineFormatting(trimmed)}
-          </p>
-        )
+        if (block.content) {
+          return (
+            <p key={idx} className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+              {renderAdminInlineFormatting(block.content)}
+            </p>
+          )
+        }
+
+        return null
       })}
     </div>
   )
@@ -858,6 +1019,289 @@ export function convertHtmlOrSheetsToMarkdown(html: string, plainText: string): 
   }
 }
 
+export interface ParsedArticleDocument {
+  title: string
+  slug: string
+  excerpt: string
+  summary: string
+  metaDescription: string
+  keyword: string
+  coverImagePrompt: string
+  markdownContent: string
+}
+
+function isProbableMainHeading(line: string, index: number, allLines: string[]): boolean {
+  if (line.length > 90 || line.length < 4) return false
+  if (line.endsWith('.') || line.endsWith(',')) return false
+  if (/^[•●○▪\-\*]/.test(line)) return false
+  if (/^\d+\.\s+/.test(line)) return false
+
+  // Specific common section titles
+  if (
+    /^(Why|How|What|Where|When|The|Daily|Addressing|Frequently|Ready|Key|Final|Understanding|Building|Setting|Top|Essential|Benefits\s*of)\s+/i.test(
+      line
+    )
+  ) {
+    return true
+  }
+
+  // Check if all major words are capitalized
+  const words = line.split(/\s+/)
+  if (words.length >= 2 && words.length <= 10) {
+    const capitalizedWords = words.filter(
+      (w) =>
+        /^[A-Z]/.test(w) ||
+        /^(a|an|the|in|on|of|for|to|with|and|or|but|from|by|at|into)$/i.test(w)
+    )
+    if (capitalizedWords.length === words.length) {
+      if (index + 1 < allLines.length) {
+        const next = allLines[index + 1]
+        return next.length > 30 || next.endsWith('.') || /^[•●○▪\-\*]/.test(next)
+      }
+      return true
+    }
+  }
+
+  return false
+}
+
+function isProbableSubHeading(line: string, index: number, allLines: string[]): boolean {
+  if (line.length > 70 || line.length < 4) return false
+  if (line.endsWith('.') || line.endsWith(',')) return false
+  if (/^[•●○▪\-\*]/.test(line)) return false
+
+  const words = line.split(/\s+/)
+  if (words.length >= 2 && words.length <= 8) {
+    const capitalizedWords = words.filter(
+      (w) =>
+        /^[A-Z]/.test(w) ||
+        /^(a|an|the|in|on|of|for|to|with|and|or|but|from|by|at)$/i.test(w)
+    )
+    if (capitalizedWords.length === words.length) {
+      if (index + 1 < allLines.length) {
+        const next = allLines[index + 1]
+        return next.length > 35 || next.endsWith('.')
+      }
+      return true
+    }
+  }
+  return false
+}
+
+function isFaqQuestion(line: string): boolean {
+  return (
+    line.endsWith('?') &&
+    line.length < 130 &&
+    /^(How|What|Why|When|Where|Who|Can|Should|Is|Do|Does|Are)\s+/i.test(line)
+  )
+}
+
+export function parseFullArticleDocument(
+  rawInput: string,
+  rawHtml?: string
+): ParsedArticleDocument {
+  let sourceText = rawInput
+  if (rawHtml && rawHtml.trim()) {
+    sourceText = convertHtmlOrSheetsToMarkdown(rawHtml, rawInput)
+  }
+
+  const lines = sourceText
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0)
+
+  let coverImagePrompt = ''
+  let title = ''
+  let excerpt = ''
+  let summary = ''
+  let keyword = ''
+  const contentBlocks: string[] = []
+
+  let inKeyTakeaways = false
+  const takeawayBullets: string[] = []
+
+  let i = 0
+  while (i < lines.length) {
+    const line = lines[i]
+
+    // 1. Check for AI Image Prompt
+    if (
+      /^(?:text,\s*no\s*logos\.?\s*)?AI\s*Image\s*Prompt/i.test(line) ||
+      /^Cover\s*Image\s*Prompt/i.test(line)
+    ) {
+      let promptText = line
+        .replace(
+          /^(?:text,\s*no\s*logos\.?\s*)?(?:AI\s*Image\s*Prompt(?:\s*\(Cover\s*Image\))?:?|Cover\s*Image\s*Prompt:?)\s*/i,
+          ''
+        )
+        .trim()
+      if (!promptText && i + 1 < lines.length) {
+        i++
+        promptText = lines[i]
+      }
+      coverImagePrompt = promptText
+      i++
+      continue
+    }
+
+    if (line === 'text, no logos.' || line === 'no text, no logos.') {
+      i++
+      continue
+    }
+
+    // 2. Check for Title (if not yet found)
+    if (!title) {
+      if (line.startsWith('# ')) {
+        title = line.replace(/^#\s+/, '').trim()
+        i++
+        continue
+      }
+
+      if (
+        line.length < 120 &&
+        !line.startsWith('-') &&
+        !line.startsWith('•') &&
+        !/^(Key\s*Takeaways|Summary|Table\s*of\s*Contents)/i.test(line)
+      ) {
+        title = line.replace(/^[#\s]+/, '').trim()
+        i++
+        continue
+      }
+    }
+
+    // 3. Check for Key Takeaways / Summary
+    if (/^(?:##\s*)?(?:Key\s*Takeaways|Key\s*Summary|Summary|Highlights)[:\s]*$/i.test(line)) {
+      inKeyTakeaways = true
+      i++
+      continue
+    }
+
+    if (inKeyTakeaways) {
+      const isNextSection =
+        isProbableMainHeading(line, i, lines) ||
+        line.startsWith('## ') ||
+        line.startsWith('### ')
+      if (isNextSection) {
+        inKeyTakeaways = false
+      } else {
+        const bulletText = line
+          .replace(/^[•●○▪\-\*]\s*/, '')
+          .replace(/^\d+\.\s*/, '')
+          .trim()
+        if (bulletText) {
+          takeawayBullets.push(bulletText)
+        }
+        i++
+        continue
+      }
+    }
+
+    // 4. Headings
+    if (line.startsWith('## ')) {
+      contentBlocks.push(`\n## ${line.replace(/^##\s+/, '').trim()}\n`)
+      i++
+      continue
+    }
+    if (line.startsWith('### ')) {
+      contentBlocks.push(`\n### ${line.replace(/^###\s+/, '').trim()}\n`)
+      i++
+      continue
+    }
+    if (line.startsWith('#### ')) {
+      contentBlocks.push(`\n#### ${line.replace(/^####\s+/, '').trim()}\n`)
+      i++
+      continue
+    }
+
+    if (isProbableMainHeading(line, i, lines)) {
+      contentBlocks.push(`\n## ${line.replace(/^[#\s]+/, '').trim()}\n`)
+      i++
+      continue
+    }
+
+    if (isProbableSubHeading(line, i, lines)) {
+      contentBlocks.push(`\n### ${line.replace(/^[#\s]+/, '').trim()}\n`)
+      i++
+      continue
+    }
+
+    // 5. FAQ Question
+    if (isFaqQuestion(line)) {
+      contentBlocks.push(`\n### ${line.trim()}\n`)
+      i++
+      continue
+    }
+
+    // 6. Key-Value point (e.g. "Define Clear Responsibilities: ...")
+    const kvMatch = line.match(/^([A-Z][A-Za-z0-9\s]{2,40}):\s+(.*)$/)
+    if (kvMatch && !line.startsWith('http') && !line.startsWith('Note:')) {
+      contentBlocks.push(`- **${kvMatch[1].trim()}:** ${kvMatch[2].trim()}`)
+      i++
+      continue
+    }
+
+    // 7. Bullet / Numbered lists
+    if (/^[•●○▪\-\*]\s+/.test(line)) {
+      contentBlocks.push(`- ${line.replace(/^[•●○▪\-\*]\s+/, '')}`)
+      i++
+      continue
+    }
+    if (/^\d+\.\s+/.test(line)) {
+      contentBlocks.push(line)
+      i++
+      continue
+    }
+
+    // 8. Paragraph
+    if (!excerpt && contentBlocks.length === 0 && !inKeyTakeaways) {
+      excerpt = line
+    }
+
+    contentBlocks.push(line)
+    i++
+  }
+
+  if (takeawayBullets.length > 0) {
+    summary = takeawayBullets.map((b) => `- ${b}`).join('\n')
+  }
+
+  if (title) {
+    const colonSplit = title.split(':')
+    keyword = (colonSplit.length > 1 ? colonSplit[0] : title).trim()
+  }
+
+  const slug = title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/--+/g, '-')
+    .substring(0, 80)
+
+  let metaDescription = excerpt || ''
+  if (!metaDescription && contentBlocks.length > 0) {
+    metaDescription =
+      contentBlocks.find(
+        (b) => !b.startsWith('#') && !b.startsWith('-') && b.length > 50
+      ) || ''
+  }
+  if (metaDescription.length > 155) {
+    metaDescription = metaDescription.substring(0, 152) + '...'
+  }
+
+  const markdownContent = contentBlocks.join('\n\n')
+
+  return {
+    title,
+    slug,
+    excerpt,
+    summary,
+    metaDescription,
+    keyword,
+    coverImagePrompt,
+    markdownContent,
+  }
+}
+
 interface SeoCheck {
   id: string
   label: string
@@ -1279,6 +1723,8 @@ function AdminPostsPage() {
   const [codeLang, setCodeLang] = useState('typescript')
   const [codeSnippet, setCodeSnippet] = useState('')
   const [mediaPickerTarget, setMediaPickerTarget] = useState<'cover' | 'editor' | null>(null)
+  const [isSmartImportModalOpen, setIsSmartImportModalOpen] = useState(false)
+  const [smartImportInput, setSmartImportInput] = useState('')
 
   // Calculate high-level stats
   const totalPosts = counts.all
@@ -1469,42 +1915,103 @@ function AdminPostsPage() {
     addToast('Code Block Inserted', `Formatted for ${codeLang}.`)
   }
 
+  const applyParsedDocument = (parsed: ParsedArticleDocument) => {
+    if (parsed.title) {
+      setEditorTitle(parsed.title)
+      if (!slugManuallyEdited && parsed.slug) {
+        setEditorSlug(parsed.slug)
+      }
+    }
+    if (parsed.summary) {
+      setEditorSummary(parsed.summary)
+    }
+    if (parsed.excerpt) {
+      setEditorExcerpt(parsed.excerpt)
+    }
+    if (parsed.metaDescription && !editorMetaDesc) {
+      setEditorMetaDesc(parsed.metaDescription)
+    }
+    if (parsed.keyword && !editorKeyword) {
+      setEditorKeyword(parsed.keyword)
+    }
+    if (parsed.markdownContent) {
+      setEditorContent(parsed.markdownContent)
+    }
+  }
+
+  const handleTitlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const plainText = e.clipboardData.getData('text/plain')
+    const html = e.clipboardData.getData('text/html')
+
+    // If multi-line or long article is pasted into Title input
+    if (plainText.includes('\n') || plainText.length > 120) {
+      e.preventDefault()
+      const parsed = parseFullArticleDocument(plainText, html)
+      applyParsedDocument(parsed)
+      addToast(
+        '✨ Article Smart Imported!',
+        'Extracted Title, Excerpt, Key Summary, and formatted Markdown Headings.'
+      )
+    }
+  }
+
+  const handleRunSmartImport = () => {
+    if (!smartImportInput.trim()) return
+    const parsed = parseFullArticleDocument(smartImportInput)
+    applyParsedDocument(parsed)
+    setIsSmartImportModalOpen(false)
+    setSmartImportInput('')
+    addToast(
+      '✨ Document Imported Successfully!',
+      'Title, Key Summary, and H2/H3 Markdown Headings formatted.'
+    )
+  }
+
   const handleEditorPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const html = e.clipboardData.getData('text/html')
     const plainText = e.clipboardData.getData('text/plain')
 
-    // Detect HTML formatting, Google Sheets tables, tab-separated rows, or explicit heading markers
+    // If this is a full document draft
     if (
-      html ||
-      plainText.includes('\t') ||
-      /^(?:h[1-6]|heading\s*[1-6])[:\s\t-]/i.test(plainText) ||
-      /^#+\s/m.test(plainText)
+      /AI Image Prompt/i.test(plainText) ||
+      /Key Takeaways/i.test(plainText) ||
+      (plainText.split('\n').length > 10 && !editorTitle.trim())
     ) {
-      const converted = convertHtmlOrSheetsToMarkdown(html, plainText)
-      if (converted && converted.trim() !== plainText.trim()) {
-        e.preventDefault()
-        const textarea = e.currentTarget
-        const start = textarea.selectionStart || 0
-        const end = textarea.selectionEnd || 0
-        const currentValue = editorContent
-        const before = currentValue.substring(0, start)
-        const after = currentValue.substring(end)
+      e.preventDefault()
+      const parsed = parseFullArticleDocument(plainText, html)
+      applyParsedDocument(parsed)
+      addToast(
+        '✨ Google Doc Smart Imported!',
+        'Extracted Title, Summary, and structured Markdown with H2/H3 headings.'
+      )
+      return
+    }
 
-        const separatorBefore = before.length > 0 && !before.endsWith('\n') ? '\n\n' : ''
-        const insertion = `${separatorBefore}${converted}`
-        const newValue = before + insertion + after
+    // Otherwise convert headings and tables
+    const converted = convertHtmlOrSheetsToMarkdown(html, plainText)
+    if (converted && converted.trim() !== plainText.trim()) {
+      e.preventDefault()
+      const textarea = e.currentTarget
+      const start = textarea.selectionStart || 0
+      const end = textarea.selectionEnd || 0
+      const currentValue = editorContent
+      const before = currentValue.substring(0, start)
+      const after = currentValue.substring(end)
 
-        setEditorContent(newValue)
-        addToast(
-          'Google Sheets / Rich Text Converted',
-          'Retained headings (H2, H3, H4) and converted sheets formatting to Markdown.'
-        )
+      const separatorBefore = before.length > 0 && !before.endsWith('\n') ? '\n\n' : ''
+      const insertion = `${separatorBefore}${converted}`
+      const newValue = before + insertion + after
 
-        setTimeout(() => {
-          textarea.selectionStart = textarea.selectionEnd = start + insertion.length
-          textarea.focus()
-        }, 0)
-      }
+      setEditorContent(newValue)
+      addToast(
+        'Google Docs / Sheets Formatted',
+        'Retained headings (H2-H4), bold, and tables into Markdown.'
+      )
+
+      setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + insertion.length
+        textarea.focus()
+      }, 0)
     }
   }
 
@@ -2277,6 +2784,16 @@ function AdminPostsPage() {
 
               {/* Right: Settings Toggle & Actions */}
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsSmartImportModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200/80 dark:border-rose-900/80 transition cursor-pointer shadow-2xs"
+                  title="Import Google Doc, Outline, or Full Draft"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+                  <span className="hidden sm:inline">Import Doc</span>
+                </button>
+
                 {previewTab === 'write' && (
                   <button
                     type="button"
@@ -2359,6 +2876,7 @@ function AdminPostsPage() {
                       required
                       value={editorTitle}
                       onChange={(e) => handleTitleChange(e.target.value)}
+                      onPaste={handleTitlePaste}
                       placeholder="Article Title (H1 Heading)..."
                       className="w-full text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white bg-transparent border-0 focus:outline-none focus:ring-0 placeholder:text-slate-300 dark:placeholder:text-slate-600 px-0 leading-tight"
                     />
@@ -3319,6 +3837,93 @@ function AdminPostsPage() {
           setMediaPickerTarget(null)
         }}
       />
+
+      {/* Smart Import from Google Docs / Draft Modal */}
+      {isSmartImportModalOpen && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-3xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 shadow-2xl animate-in zoom-in-95 flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    Smart Import from Google Docs or Draft
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Paste your raw Google Doc or outline. Headings, Key Summary, and Title are separated automatically.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSmartImportModalOpen(false)
+                  setSmartImportInput('')
+                }}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-2 flex-1 min-h-0 flex flex-col">
+              <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                Paste Raw Article / Google Doc Content
+              </label>
+              <textarea
+                rows={10}
+                value={smartImportInput}
+                onChange={(e) => setSmartImportInput(e.target.value)}
+                placeholder="Paste your copied text from Google Docs here...&#10;&#10;Includes:&#10;• AI Cover Image Prompts (automatically parsed)&#10;• Article Title (auto-detected)&#10;• Key Takeaways / Summary (auto-extracted to callout)&#10;• Section Headings (auto-converted to H2 and H3)&#10;• Bullet points, numbered steps, and FAQs"
+                className="w-full flex-1 min-h-[220px] p-4 font-mono text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+              />
+            </div>
+
+            {smartImportInput.trim() && (
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 space-y-1 text-xs shrink-0">
+                <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                  Live Preview Detection
+                </span>
+                <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                    Title: {parseFullArticleDocument(smartImportInput).title || 'Untitled'}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+                    Summary: {parseFullArticleDocument(smartImportInput).summary ? 'Detected' : 'None'}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+                    {smartImportInput.trim().split(/\s+/).filter(Boolean).length} words
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-2.5 pt-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSmartImportModalOpen(false)
+                  setSmartImportInput('')
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={!smartImportInput.trim()}
+                onClick={handleRunSmartImport}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 transition shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Auto-Format & Apply to Editor</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
