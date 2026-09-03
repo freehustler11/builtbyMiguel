@@ -17,9 +17,9 @@ const LOCAL_BUSINESS_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: 'Built by Miguel',
-  url: 'https://builtbymiguel.com',
-  logo: 'https://builtbymiguel.com/logo.png',
-  image: 'https://builtbymiguel.com/og-image.png',
+  url: 'https://builtbymiguel.net',
+  logo: 'https://builtbymiguel.net/logo.png',
+  image: 'https://builtbymiguel.net/og-image.png',
   description:
     'Local SEO, high-speed websites, and custom business automation tools.',
   priceRange: '$$',
@@ -108,11 +108,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {
         property: 'og:url',
-        content: 'https://builtbymiguel.com',
+        content: 'https://builtbymiguel.net',
       },
       {
         property: 'og:image',
-        content: 'https://builtbymiguel.com/og-image.jpg',
+        content: 'https://builtbymiguel.net/og-image.jpg',
       },
       // Twitter Card
       {
@@ -130,13 +130,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {
         name: 'twitter:image',
-        content: 'https://builtbymiguel.com/og-image.jpg',
+        content: 'https://builtbymiguel.net/og-image.jpg',
       },
     ],
     links: [
       {
         rel: 'canonical',
-        href: 'https://builtbymiguel.com',
+        href: 'https://builtbymiguel.net',
       },
       {
         rel: 'preconnect',
@@ -158,7 +158,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         children: JSON.stringify(LOCAL_BUSINESS_JSON_LD),
       },
       {
-        children: `(function(){try{var t=localStorage.getItem('built_by_miguel_theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.classList.remove('dark');document.documentElement.setAttribute('data-theme','light');}}catch(e){}})()`,
+        children: `(function(){try{var t=localStorage.getItem('built_by_miguel_theme');if(t==='dark'){document.documentElement.classList.add('dark');document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.classList.remove('dark');document.documentElement.setAttribute('data-theme','light');}}catch(e){}})()`,
       },
     ],
   }),

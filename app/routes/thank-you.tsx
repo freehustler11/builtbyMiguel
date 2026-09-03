@@ -32,7 +32,13 @@ export const Route = createFileRoute('/thank-you')({
         content:
           'Your local search and speed audit has been queued for review by Miguel.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/thank-you' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/thank-you' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/thank-you',
+      },
     ],
   }),
   component: ThankYouPage,

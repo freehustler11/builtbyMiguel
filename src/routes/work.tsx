@@ -43,10 +43,16 @@ export const Route = createFileRoute('/work')({
         content:
           'A transparent look at the custom tools, automation engines, and high-performance websites I build and run.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/work' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/work' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/work',
+      },
     ],
   }),
   component: WorkPage,

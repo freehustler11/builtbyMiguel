@@ -48,10 +48,16 @@ export const Route = createFileRoute('/')({
         content:
           'High-speed React websites, verified local search optimization, and custom lead automation workflows.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net',
+      },
     ],
   }),
   component: HomePage,
@@ -317,7 +323,7 @@ function HomePage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                  <span>Client portal integration (`app.builtbymiguel.com`)</span>
+                  <span>Client portal integration (`app.builtbymiguel.net`)</span>
                 </li>
               </ul>
             </div>

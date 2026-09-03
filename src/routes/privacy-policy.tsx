@@ -14,6 +14,12 @@ export const Route = createFileRoute('/privacy-policy')({
         content: 'Privacy Policy and data protection terms for Built by Miguel. Zero data selling, strict form confidentiality, and minimal analytics.',
       },
     ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/privacy-policy',
+      },
+    ],
   }),
   component: PrivacyPolicyPage,
 })
@@ -91,7 +97,7 @@ function PrivacyPolicyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">5. Your Data Rights</h2>
           <p>
-            You have the right to request access to, correction of, or complete deletion of your personal data from our systems at any time. Simply contact us at <a href="mailto:privacy@builtbymiguel.com" className="text-rose-600 dark:text-rose-400 hover:underline font-mono">privacy@builtbymiguel.com</a>.
+            You have the right to request access to, correction of, or complete deletion of your personal data from our systems at any time. Simply contact us at <a href="mailto:privacy@builtbymiguel.net" className="text-rose-600 dark:text-rose-400 hover:underline font-mono">privacy@builtbymiguel.net</a>.
           </p>
         </section>
 
@@ -103,8 +109,8 @@ function PrivacyPolicyPage() {
           <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 font-mono text-xs text-slate-600 dark:text-slate-400 space-y-1 shadow-sm dark:shadow-none">
             <div className="font-bold text-slate-900 dark:text-white">Built by Miguel</div>
             <div>Attn: Privacy & Data Protection</div>
-            <div>Email: <a href="mailto:privacy@builtbymiguel.com" className="text-rose-600 dark:text-rose-400">privacy@builtbymiguel.com</a></div>
-            <div>Website: https://builtbymiguel.com</div>
+            <div>Email: <a href="mailto:privacy@builtbymiguel.net" className="text-rose-600 dark:text-rose-400">privacy@builtbymiguel.net</a></div>
+            <div>Website: https://builtbymiguel.net</div>
           </div>
         </section>
       </div>

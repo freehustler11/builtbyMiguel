@@ -44,7 +44,7 @@ const WEBSITES_JSON_LD = {
       provider: {
         '@type': 'LocalBusiness',
         name: 'Built by Miguel',
-        url: 'https://builtbymiguel.com',
+        url: 'https://builtbymiguel.net',
       },
       description:
         'Sub-second local business websites built with modern React, TanStack Start, and Tailwind CSS. Includes 24/7 care, edge hosting, and maintenance plans.',
@@ -95,10 +95,16 @@ export const Route = createFileRoute('/websites-care')({
         content:
           'Websites built strictly to convert visitors into booked phone calls. Sub-second speed and 24/7 care.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/websites-care' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/websites-care' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/websites-care',
+      },
     ],
     scripts: [
       {

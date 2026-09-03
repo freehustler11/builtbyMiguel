@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 export type Theme = 'light' | 'dark'
 
@@ -12,14 +12,11 @@ export function getInitialTheme(): Theme {
     if (savedTheme === 'light' || savedTheme === 'dark') {
       return savedTheme
     }
-
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
-    }
   } catch {
     // Ignore localStorage access errors
   }
 
+  // Default to light mode
   return 'light'
 }
 

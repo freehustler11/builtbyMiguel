@@ -40,10 +40,16 @@ export const Route = createFileRoute('/contact')({
         content:
           'Discuss your website, local search rankings, or automation stack directly with Miguel.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/contact' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/contact' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/contact',
+      },
     ],
   }),
   component: ContactPage,
@@ -288,10 +294,10 @@ function ContactPage() {
                     Direct Email
                   </div>
                   <a
-                    href="mailto:miguel@builtbymiguel.com"
-                    className="font-mono text-slate-900 dark:text-white hover:text-rose-600 dark:hover:text-rose-400 font-bold transition-colors"
+                    href="mailto:miguel@builtbymiguel.net"
+                    className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white hover:text-rose-600 dark:hover:text-rose-400 font-mono transition-colors"
                   >
-                    miguel@builtbymiguel.com
+                    miguel@builtbymiguel.net
                   </a>
                 </div>
               </div>

@@ -37,10 +37,16 @@ export const Route = createFileRoute('/about')({
         content:
           'Why combining local SEO with custom software engineering beats bloated agency retainers every time.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/about' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/about' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/about',
+      },
     ],
   }),
   component: AboutPage,

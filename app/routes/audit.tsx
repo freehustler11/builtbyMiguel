@@ -40,10 +40,16 @@ export const Route = createFileRoute('/audit')({
         content:
           'Personalized 5-minute video breakdown of your local ranking and site performance sent within 24 hours.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/audit' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/audit' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/audit',
+      },
     ],
   }),
   component: AuditPage,

@@ -32,7 +32,7 @@ const LOCAL_SEO_FAQ = [
   {
     question: 'Do I get access to live ranking reports and heatmaps?',
     answer:
-      'Yes. You receive access to your private client portal on app.builtbymiguel.com, featuring live geo-grid heatmaps showing your exact ranking position across your local service area.',
+      'Yes. You receive access to your private client portal on app.builtbymiguel.net, featuring live geo-grid heatmaps showing your exact ranking position across your local service area.',
   },
 ]
 
@@ -45,7 +45,7 @@ const LOCAL_SEO_JSON_LD = {
       provider: {
         '@type': 'LocalBusiness',
         name: 'Built by Miguel',
-        url: 'https://builtbymiguel.com',
+        url: 'https://builtbymiguel.net',
       },
       description:
         'Systematic Google Map Pack optimization, local citation cleanup, automated 5-star customer reviews, and local entity data for AI search engines.',
@@ -130,10 +130,16 @@ export const Route = createFileRoute('/local-seo-gbp')({
         content:
           'Turn Google Maps into a steady source of inbound customers with verified GBP setup, AI search entity architecture, and review workflows.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/local-seo-gbp' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/local-seo-gbp' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/local-seo-gbp',
+      },
     ],
     scripts: [
       {

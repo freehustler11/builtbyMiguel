@@ -14,6 +14,12 @@ export const Route = createFileRoute('/cookie-policy')({
         content: 'Cookie Policy for Built by Miguel. Minimal cookies, zero tracking ad pixels, and strict performance metrics.',
       },
     ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/cookie-policy',
+      },
+    ],
   }),
   component: CookiePolicyPage,
 })
@@ -58,7 +64,7 @@ function CookiePolicyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">2. Cookies We Use</h2>
           <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300 pl-2">
-            <li><strong className="text-slate-800 dark:text-slate-100">Essential Technical Cookies:</strong> Necessary to enable security, form submission validation, and client portal authentication (`app.builtbymiguel.com`).</li>
+            <li><strong className="text-slate-800 dark:text-slate-100">Essential Technical Cookies:</strong> Necessary to enable security, form submission validation, and client portal authentication (`app.builtbymiguel.net`).</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Diagnostic Performance Metrics:</strong> Privacy-friendly, aggregate analytics to measure page load speeds, Core Web Vitals, and server response times.</li>
           </ul>
         </section>
@@ -73,7 +79,7 @@ function CookiePolicyPage() {
         <section className="space-y-3 pt-6 border-t border-slate-200 dark:border-slate-800">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">4. Contact Us</h2>
           <p>
-            If you have questions regarding our cookie practices, email <a href="mailto:privacy@builtbymiguel.com" className="text-rose-600 dark:text-rose-400 font-mono">privacy@builtbymiguel.com</a>.
+            If you have questions regarding our cookie practices, email <a href="mailto:privacy@builtbymiguel.net" className="text-rose-600 dark:text-rose-400 font-mono">privacy@builtbymiguel.net</a>.
           </p>
         </section>
       </div>

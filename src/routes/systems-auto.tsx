@@ -26,7 +26,7 @@ const SYSTEMS_FAQ = [
       'Yes. We build custom API bridges and webhooks into Housecall Pro, Jobber, ServiceTitan, HubSpot, Zoho, HighLevel, Airtable, or custom SQL databases.',
   },
   {
-    question: 'What is the Client Portal on app.builtbymiguel.com?',
+    question: 'What is the Client Portal on app.builtbymiguel.net?',
     answer:
       'Every client receives private portal access where you can monitor live lead activity, search ranking heatmaps, site health metrics, monthly invoices, and submit new development requests with 1 click.',
   },
@@ -46,7 +46,7 @@ const SYSTEMS_JSON_LD = {
       provider: {
         '@type': 'LocalBusiness',
         name: 'Built by Miguel',
-        url: 'https://builtbymiguel.com',
+        url: 'https://builtbymiguel.net',
       },
       description:
         'Eliminate manual admin work with custom lead pipelines, instant SMS dispatch, client intake engines, and operational dashboards.',
@@ -97,10 +97,16 @@ export const Route = createFileRoute('/systems-auto')({
         content:
           'Eliminate repetitive busywork. Connect forms, CRMs, booking software, and client portals into one seamless engine.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.com/systems-auto' },
-      { property: 'og:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { property: 'og:url', content: 'https://builtbymiguel.net/systems-auto' },
+      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:image', content: 'https://builtbymiguel.com/og-image.png' },
+      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/systems-auto',
+      },
     ],
     scripts: [
       {
@@ -282,7 +288,7 @@ function SystemsAutoPage() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Secure client portal integration (`app.builtbymiguel.com`)</span>
+                <span>Secure client portal integration (`app.builtbymiguel.net`)</span>
               </li>
             </ul>
           </div>

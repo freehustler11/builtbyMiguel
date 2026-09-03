@@ -14,6 +14,12 @@ export const Route = createFileRoute('/terms')({
         content: 'Terms of Service for software development, Local SEO retainers, and care plan services provided by Built by Miguel.',
       },
     ],
+    links: [
+      {
+        rel: 'canonical',
+        href: 'https://builtbymiguel.net/terms',
+      },
+    ],
   }),
   component: TermsPage,
 })
@@ -43,7 +49,7 @@ function TermsPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">1. Agreement to Terms</h2>
           <p>
-            By accessing https://builtbymiguel.com or engaging Built by Miguel for software development, Local SEO, or care plans, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, please do not use our services.
+            By accessing https://builtbymiguel.net or engaging Built by Miguel for software development, Local SEO, or care plans, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, please do not use our services.
           </p>
         </section>
 
@@ -78,7 +84,7 @@ function TermsPage() {
         <section className="space-y-3 pt-6 border-t border-slate-200 dark:border-slate-800">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">6. Governing Law</h2>
           <p>
-            These terms are governed by and construed in accordance with the laws of the United States. For any inquiries regarding legal agreements, contact <a href="mailto:legal@builtbymiguel.com" className="text-rose-600 dark:text-rose-400 font-mono">legal@builtbymiguel.com</a>.
+            These terms are governed by and construed in accordance with the laws of the United States. For any inquiries regarding legal agreements, contact <a href="mailto:legal@builtbymiguel.net" className="text-rose-600 dark:text-rose-400 font-mono">legal@builtbymiguel.net</a>.
           </p>
         </section>
       </div>

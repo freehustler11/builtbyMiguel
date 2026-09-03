@@ -162,7 +162,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>
                 <a
-                  href="https://app.builtbymiguel.com"
+                  href="https://app.builtbymiguel.net"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-slate-800 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 font-semibold transition-colors group"
@@ -211,7 +211,7 @@ export function Footer() {
               Cookie Policy
             </Link>
             <a
-              href="https://app.builtbymiguel.com"
+              href="https://app.builtbymiguel.net"
               target="_blank"
               rel="noopener noreferrer"
               className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors inline-flex items-center gap-1"
