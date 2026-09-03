@@ -651,7 +651,7 @@
       "file_type": "code",
       "norm_label": "tocitem",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L134"
+      "source_location": "L135"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testmoderesolution",
@@ -5616,7 +5616,7 @@
       "file_type": "code",
       "norm_label": "blogpostpage()",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L338"
+      "source_location": "L323"
     },
     {
       "id": "src_routes_blog_slug_calculatereadingtime",
@@ -5628,7 +5628,7 @@
       "file_type": "code",
       "norm_label": "calculatereadingtime()",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L112"
+      "source_location": "L113"
     },
     {
       "id": "src_routes_blog_slug_formatdate",
@@ -5640,7 +5640,7 @@
       "file_type": "code",
       "norm_label": "formatdate()",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L117"
+      "source_location": "L118"
     },
     {
       "id": "src_routes_blog_slug_markdownrenderer",
@@ -5652,7 +5652,7 @@
       "file_type": "code",
       "norm_label": "markdownrenderer()",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L143"
+      "source_location": "L144"
     },
     {
       "id": "src_routes_blog_slug_slugifyheading",
@@ -5664,7 +5664,7 @@
       "file_type": "code",
       "norm_label": "slugifyheading()",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L127"
+      "source_location": "L128"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_detect_page_type",
@@ -65631,7 +65631,7 @@
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L26"
+      "source_location": "L27"
     },
     {
       "id": "agents_skills_ab_testing_skill_experiment_cadence",
@@ -97863,7 +97863,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L372",
+      "source_location": "L356",
       "weight": 1.0
     },
     {
@@ -97875,7 +97875,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L381",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -97887,7 +97887,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L481",
+      "source_location": "L452",
       "weight": 1.0
     },
     {
@@ -97899,7 +97899,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L161",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -97911,7 +97911,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -100203,7 +100203,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -100215,7 +100215,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -101140,7 +101140,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -101152,7 +101152,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "type_only": true,
       "weight": 1.0
     },
@@ -173619,7 +173619,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L112",
+      "source_location": "L113",
       "weight": 1.0
     },
     {
@@ -173630,7 +173630,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L117",
+      "source_location": "L118",
       "weight": 1.0
     },
     {
@@ -173641,7 +173641,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -173652,7 +173652,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L134",
+      "source_location": "L135",
       "weight": 1.0
     },
     {
@@ -173663,7 +173663,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L143",
+      "source_location": "L144",
       "weight": 1.0
     },
     {
@@ -173674,7 +173674,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -183154,7 +183154,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L109",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -183403,5 +183403,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "163b75bd118cab14ad0c36195e7065fede1cc52a"
+  "built_at_commit": "fe67f5924927e0910ef01093e2d8e1d60f307a76"
 }

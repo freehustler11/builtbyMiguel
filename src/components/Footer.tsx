@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import {
   ExternalLink,
   Sparkles,
@@ -8,37 +8,51 @@ import {
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
+  const location = useLocation()
+  const pathname = location.pathname
+
+  // Hide the global banner on blog reading pages, internal admin pages, and conversion form pages
+  const shouldHideBanner =
+    pathname.startsWith('/blog') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/messages') ||
+    pathname === '/login' ||
+    pathname === '/audit' ||
+    pathname === '/contact' ||
+    pathname === '/thank-you'
 
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0F17] text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
-      {/* Top Value Banner */}
-      <div className="border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-b from-[#fafafc] to-white dark:from-[#111827] dark:to-[#0B0F17] py-14 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-center md:text-left max-w-2xl">
-            <div className="mb-3.5 sm:mb-4">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
-                <Sparkles className="w-3.5 h-3.5" /> High-Performance Engineering
+      {/* Top Value Banner (Only shown on primary marketing overview pages) */}
+      {!shouldHideBanner && (
+        <div className="border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-b from-[#fafafc] to-white dark:from-[#111827] dark:to-[#0B0F17] py-14 sm:py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-center md:text-left max-w-2xl">
+              <div className="mb-3.5 sm:mb-4">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5" /> High-Performance Engineering
+                </div>
               </div>
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white tracking-tight leading-snug mb-2.5 sm:mb-3">
+                Ready to dominate local search and scale your business?
+              </h3>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                Get an in-depth audit of your local search presence, website speed, and conversion funnel.
+              </p>
             </div>
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white tracking-tight leading-snug mb-2.5 sm:mb-3">
-              Ready to dominate local search and scale your business?
-            </h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-              Get an in-depth audit of your local search presence, website speed, and conversion funnel.
-            </p>
-          </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <Link
-              to="/audit"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95"
-            >
-              <span>Get Free Growth Audit</span>
-              <ArrowUpRight className="w-4 h-4 text-rose-400 dark:text-white" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <Link
+                to="/audit"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95"
+              >
+                <span>Get Free Growth Audit</span>
+                <ArrowUpRight className="w-4 h-4 text-rose-400 dark:text-white" />
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Directory Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">

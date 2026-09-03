@@ -450,9 +450,9 @@
     "semantic_hash": "89ad5673f3febbe5f410b3372632c1f6"
   },
   "src/components/Footer.tsx": {
-    "mtime": 1788424776.3703806,
-    "seen": 1788429852.2757294,
-    "ast_hash": "5886c780dd7cc6a3c34655a8da0895e7",
+    "mtime": 1788433553.081875,
+    "seen": 1788433679.8659804,
+    "ast_hash": "61905d154cd5291ed3ac88a27bd85d44",
     "semantic_hash": ""
   },
   "src/routes/audit.tsx": {
@@ -1200,9 +1200,9 @@
     "semantic_hash": ""
   },
   "src/routes/blog/$slug.tsx": {
-    "mtime": 1788432196.4514835,
-    "seen": 1788432287.318096,
-    "ast_hash": "13af692d7cb13d1eccf4ff07999be32c",
+    "mtime": 1788433585.8702176,
+    "seen": 1788433679.8714724,
+    "ast_hash": "8a028917e493da45a879fba461afcaae",
     "semantic_hash": ""
   },
   "src/routes/blog/index.tsx": {
@@ -3012,8 +3012,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1788432785.3847735,
-    "seen": 1788432845.9805431,
+    "mtime": 1788433609.7652094,
+    "seen": 1788433680.0186472,
     "ast_hash": "e4223283dbb6d6e2ab58d43ec64f5475",
     "semantic_hash": ""
   },
