@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "node scripts/generate-sitemap.mjs && vite build",
     "preview": "vite preview",
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.67.2",
@@ -16,7 +20,9 @@
     "@tanstack/react-start": "^1.168.49",
     "@tanstack/router-devtools": "^1.114.15",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.16.0",
+    "postgres": "^3.4.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "serve": "^14.2.4",
@@ -29,6 +35,8 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.31.10",
     "tailwindcss": "^4.0.12",
     "typescript": "~5.7.3",
     "vite": "^6.2.1"
