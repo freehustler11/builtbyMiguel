@@ -38,7 +38,17 @@ export const posts = pgTable('posts', {
   status: text('status', { enum: ['draft', 'published'] })
     .default('draft')
     .notNull(),
+  // Customizable Call-to-Action (CTA) fields
+  sidebarCtaTitle: text('sidebar_cta_title'),
+  sidebarCtaText: text('sidebar_cta_text'),
+  sidebarCtaButtonText: text('sidebar_cta_button_text'),
+  sidebarCtaButtonUrl: text('sidebar_cta_button_url'),
+  bottomCtaTitle: text('bottom_cta_title'),
+  bottomCtaText: text('bottom_cta_text'),
+  bottomCtaButtonText: text('bottom_cta_button_text'),
+  bottomCtaButtonUrl: text('bottom_cta_button_url'),
 })
 
 export type Post = typeof posts.$inferSelect
 export type NewPost = typeof posts.$inferInsert
+

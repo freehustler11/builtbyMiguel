@@ -95,6 +95,14 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
       metaDescription?: string
       featuredImage?: string
       status: 'draft' | 'published'
+      sidebarCtaTitle?: string
+      sidebarCtaText?: string
+      sidebarCtaButtonText?: string
+      sidebarCtaButtonUrl?: string
+      bottomCtaTitle?: string
+      bottomCtaText?: string
+      bottomCtaButtonText?: string
+      bottomCtaButtonUrl?: string
     }) => {
       if (!data.title?.trim()) throw new Error('Title is required')
       if (!data.slug?.trim()) throw new Error('Slug is required')
@@ -138,6 +146,14 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,
+        sidebarCtaTitle: data.sidebarCtaTitle?.trim() || null,
+        sidebarCtaText: data.sidebarCtaText?.trim() || null,
+        sidebarCtaButtonText: data.sidebarCtaButtonText?.trim() || null,
+        sidebarCtaButtonUrl: data.sidebarCtaButtonUrl?.trim() || null,
+        bottomCtaTitle: data.bottomCtaTitle?.trim() || null,
+        bottomCtaText: data.bottomCtaText?.trim() || null,
+        bottomCtaButtonText: data.bottomCtaButtonText?.trim() || null,
+        bottomCtaButtonUrl: data.bottomCtaButtonUrl?.trim() || null,
         publishedAt: data.status === 'published' ? now : null,
         createdAt: now,
         updatedAt: now,
@@ -161,6 +177,14 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
       metaDescription?: string
       featuredImage?: string
       status: 'draft' | 'published'
+      sidebarCtaTitle?: string
+      sidebarCtaText?: string
+      sidebarCtaButtonText?: string
+      sidebarCtaButtonUrl?: string
+      bottomCtaTitle?: string
+      bottomCtaText?: string
+      bottomCtaButtonText?: string
+      bottomCtaButtonUrl?: string
     }) => {
       if (!data.id) throw new Error('Post ID is required')
       if (!data.title?.trim()) throw new Error('Title is required')
@@ -220,6 +244,14 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
         metaDescription: data.metaDescription?.trim() || null,
         featuredImage: data.featuredImage?.trim() || null,
         status: data.status,
+        sidebarCtaTitle: data.sidebarCtaTitle?.trim() || null,
+        sidebarCtaText: data.sidebarCtaText?.trim() || null,
+        sidebarCtaButtonText: data.sidebarCtaButtonText?.trim() || null,
+        sidebarCtaButtonUrl: data.sidebarCtaButtonUrl?.trim() || null,
+        bottomCtaTitle: data.bottomCtaTitle?.trim() || null,
+        bottomCtaText: data.bottomCtaText?.trim() || null,
+        bottomCtaButtonText: data.bottomCtaButtonText?.trim() || null,
+        bottomCtaButtonUrl: data.bottomCtaButtonUrl?.trim() || null,
         publishedAt,
         updatedAt: now,
       })
@@ -264,7 +296,7 @@ export const getPublicPostsServerFn = createServerFn({ method: 'GET' }).handler(
 )
 
 /**
- * Public Server Function: Get a single published post by slug
+ * Public Server Function: Get a single published post by slug and fetch related articles
  */
 export const getPublicPostBySlugServerFn = createServerFn({ method: 'GET' })
   .validator((data: { slug: string }) => {
@@ -278,7 +310,17 @@ export const getPublicPostBySlugServerFn = createServerFn({ method: 'GET' })
       .where(and(eq(posts.slug, data.slug), eq(posts.status, 'published')))
 
     if (!post) {
-      return { post: null }
+      return { post: null, relatedPosts: [] }
     }
-    return { post }
+
+    // Fetch up to 3 related published posts (excluding current)
+    const allPublished = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.status, 'published'))
+      .orderBy(desc(posts.publishedAt), desc(posts.createdAt))
+
+    const related = allPublished.filter((p) => p.id !== post.id).slice(0, 3)
+
+    return { post, relatedPosts: related }
   })

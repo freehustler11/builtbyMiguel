@@ -52,6 +52,16 @@ export async function runMigrations() {
       CREATE UNIQUE INDEX IF NOT EXISTS "posts_slug_unique" ON "posts" ("slug");
     `
 
+    // 4. Ensure CTA columns exist on posts table
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_title" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_text" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_button_text" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "sidebar_cta_button_url" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_title" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_text" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_button_text" text`
+    await sql`ALTER TABLE "posts" ADD COLUMN IF NOT EXISTS "bottom_cta_button_url" text`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

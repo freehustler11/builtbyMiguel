@@ -30,6 +30,9 @@ import {
   Link2,
   BookOpen,
   TrendingUp,
+  Megaphone,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react'
 import { requireAuth } from '../../lib/auth'
 import {
@@ -120,6 +123,17 @@ function AdminPostsPage() {
   const [previewTab, setPreviewTab] = useState<'write' | 'preview'>('write')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
 
+  // Custom CTA Section State
+  const [showCtaSettings, setShowCtaSettings] = useState(false)
+  const [sidebarCtaTitle, setSidebarCtaTitle] = useState('')
+  const [sidebarCtaText, setSidebarCtaText] = useState('')
+  const [sidebarCtaButtonText, setSidebarCtaButtonText] = useState('')
+  const [sidebarCtaButtonUrl, setSidebarCtaButtonUrl] = useState('')
+  const [bottomCtaTitle, setBottomCtaTitle] = useState('')
+  const [bottomCtaText, setBottomCtaText] = useState('')
+  const [bottomCtaButtonText, setBottomCtaButtonText] = useState('')
+  const [bottomCtaButtonUrl, setBottomCtaButtonUrl] = useState('')
+
   // Calculate high-level stats
   const totalPosts = counts.all
   const publishedPosts = counts.published
@@ -165,6 +179,15 @@ function AdminPostsPage() {
     setEditorCoverImage('')
     setEditorContent('')
     setEditorStatus('draft')
+    setSidebarCtaTitle('')
+    setSidebarCtaText('')
+    setSidebarCtaButtonText('')
+    setSidebarCtaButtonUrl('')
+    setBottomCtaTitle('')
+    setBottomCtaText('')
+    setBottomCtaButtonText('')
+    setBottomCtaButtonUrl('')
+    setShowCtaSettings(false)
     setEditorError(null)
     setSlugManuallyEdited(false)
     setPreviewTab('write')
@@ -180,6 +203,22 @@ function AdminPostsPage() {
     setEditorCoverImage(post.featuredImage || '')
     setEditorContent(post.content || '')
     setEditorStatus((post.status as 'draft' | 'published') || 'draft')
+    setSidebarCtaTitle(post.sidebarCtaTitle || '')
+    setSidebarCtaText(post.sidebarCtaText || '')
+    setSidebarCtaButtonText(post.sidebarCtaButtonText || '')
+    setSidebarCtaButtonUrl(post.sidebarCtaButtonUrl || '')
+    setBottomCtaTitle(post.bottomCtaTitle || '')
+    setBottomCtaText(post.bottomCtaText || '')
+    setBottomCtaButtonText(post.bottomCtaButtonText || '')
+    setBottomCtaButtonUrl(post.bottomCtaButtonUrl || '')
+    setShowCtaSettings(
+      Boolean(
+        post.sidebarCtaTitle ||
+          post.sidebarCtaText ||
+          post.bottomCtaTitle ||
+          post.bottomCtaText
+      )
+    )
     setEditorError(null)
     setSlugManuallyEdited(true)
     setPreviewTab('write')
@@ -236,30 +275,34 @@ function AdminPostsPage() {
 
     try {
       setIsSaving(true)
+      const payload = {
+        title: editorTitle.trim(),
+        slug: editorSlug.trim(),
+        keyword: editorKeyword.trim() || undefined,
+        metaDescription: editorMetaDesc.trim() || undefined,
+        featuredImage: editorCoverImage.trim() || undefined,
+        content: editorContent.trim(),
+        status: editorStatus,
+        sidebarCtaTitle: sidebarCtaTitle.trim() || undefined,
+        sidebarCtaText: sidebarCtaText.trim() || undefined,
+        sidebarCtaButtonText: sidebarCtaButtonText.trim() || undefined,
+        sidebarCtaButtonUrl: sidebarCtaButtonUrl.trim() || undefined,
+        bottomCtaTitle: bottomCtaTitle.trim() || undefined,
+        bottomCtaText: bottomCtaText.trim() || undefined,
+        bottomCtaButtonText: bottomCtaButtonText.trim() || undefined,
+        bottomCtaButtonUrl: bottomCtaButtonUrl.trim() || undefined,
+      }
+
       if (editingPost) {
         await updatePostServerFn({
           data: {
             id: editingPost.id,
-            title: editorTitle.trim(),
-            slug: editorSlug.trim(),
-            keyword: editorKeyword.trim() || undefined,
-            metaDescription: editorMetaDesc.trim() || undefined,
-            featuredImage: editorCoverImage.trim() || undefined,
-            content: editorContent.trim(),
-            status: editorStatus,
+            ...payload,
           },
         })
       } else {
         await createPostServerFn({
-          data: {
-            title: editorTitle.trim(),
-            slug: editorSlug.trim(),
-            keyword: editorKeyword.trim() || undefined,
-            metaDescription: editorMetaDesc.trim() || undefined,
-            featuredImage: editorCoverImage.trim() || undefined,
-            content: editorContent.trim(),
-            status: editorStatus,
-          },
+          data: payload,
         })
       }
 
@@ -285,6 +328,14 @@ function AdminPostsPage() {
           keyword: post.keyword || undefined,
           metaDescription: post.metaDescription || undefined,
           featuredImage: post.featuredImage || undefined,
+          sidebarCtaTitle: post.sidebarCtaTitle || undefined,
+          sidebarCtaText: post.sidebarCtaText || undefined,
+          sidebarCtaButtonText: post.sidebarCtaButtonText || undefined,
+          sidebarCtaButtonUrl: post.sidebarCtaButtonUrl || undefined,
+          bottomCtaTitle: post.bottomCtaTitle || undefined,
+          bottomCtaText: post.bottomCtaText || undefined,
+          bottomCtaButtonText: post.bottomCtaButtonText || undefined,
+          bottomCtaButtonUrl: post.bottomCtaButtonUrl || undefined,
           status: newStatus,
         },
       })
@@ -326,7 +377,7 @@ function AdminPostsPage() {
       <AdminNav
         activeTab="posts"
         title="Blog & SEO Content Engine"
-        description="Publish, manage, and optimize high-converting articles and local SEO playbooks."
+        description="Publish, manage, and optimize high-converting articles and customizable conversion CTAs."
         actions={
           <div className="flex items-center gap-2.5">
             <button
@@ -543,6 +594,7 @@ function AdminPostsPage() {
             const isMutating = mutatingId === post.id
             const isPublished = post.status === 'published'
             const readingTime = calculateReadingTime(post.content || '')
+            const hasCustomCta = Boolean(post.sidebarCtaTitle || post.bottomCtaTitle)
 
             return (
               <div
@@ -580,6 +632,14 @@ function AdminPostsPage() {
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50">
                         <Key className="w-3 h-3" />
                         <span>{post.keyword}</span>
+                      </span>
+                    )}
+
+                    {/* Custom CTA Indicator */}
+                    {hasCustomCta && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/50">
+                        <Megaphone className="w-3 h-3" />
+                        <span>Custom CTA</span>
                       </span>
                     )}
 
@@ -723,7 +783,7 @@ function AdminPostsPage() {
                     {editingPost ? 'Edit Blog Article' : 'Create New Article'}
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Write in Markdown with live SEO character meters and instant slug generator.
+                    Write in Markdown with live SEO character meters and custom CTA controls.
                   </p>
                 </div>
               </div>
@@ -810,7 +870,7 @@ function AdminPostsPage() {
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                    Cover Image URL
+                    Featured Hero Image URL
                   </label>
                   <input
                     type="url"
@@ -863,6 +923,151 @@ function AdminPostsPage() {
                   placeholder="Summarize the article in 1-2 compelling sentences with your target keyword for Google search results..."
                   className="w-full px-4 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50 leading-relaxed"
                 />
+              </div>
+
+              {/* Collapsible Custom CTA Banners Section */}
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-4 space-y-4">
+                <button
+                  type="button"
+                  onClick={() => setShowCtaSettings(!showCtaSettings)}
+                  className="flex items-center justify-between w-full text-left cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Megaphone className="w-4 h-4 text-rose-500" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                      🎯 Custom Call-To-Action (CTA) Banners (Sidebar & Bottom)
+                    </span>
+                  </div>
+                  {showCtaSettings ? (
+                    <ChevronUp className="w-4 h-4 text-slate-400" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
+                  )}
+                </button>
+
+                {showCtaSettings && (
+                  <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-5 animate-in fade-in duration-150">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Customize the sidebar and bottom conversion banners for this specific article. If left blank, the standard "5-Minute Free Audit" banners will be displayed automatically.
+                    </p>
+
+                    {/* Sidebar CTA Customization */}
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3">
+                      <div className="text-xs font-mono font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-rose-500" />
+                        <span>Sticky Sidebar CTA (Right / Left Column)</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Sidebar CTA Heading
+                          </label>
+                          <input
+                            type="text"
+                            value={sidebarCtaTitle}
+                            onChange={(e) => setSidebarCtaTitle(e.target.value)}
+                            placeholder="e.g. Free Local Rank Audit"
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Sidebar Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={sidebarCtaButtonText}
+                            onChange={(e) => setSidebarCtaButtonText(e.target.value)}
+                            placeholder="e.g. Claim Free Audit"
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Sidebar Subtitle / Copy
+                          </label>
+                          <input
+                            type="text"
+                            value={sidebarCtaText}
+                            onChange={(e) => setSidebarCtaText(e.target.value)}
+                            placeholder="e.g. See why competitors outrank you."
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Sidebar Button Destination URL
+                          </label>
+                          <input
+                            type="text"
+                            value={sidebarCtaButtonUrl}
+                            onChange={(e) => setSidebarCtaButtonUrl(e.target.value)}
+                            placeholder="e.g. /audit or /contact"
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Banner CTA Customization */}
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3">
+                      <div className="text-xs font-mono font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                        <span>Full-Width Bottom Banner CTA</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Bottom Banner Headline
+                          </label>
+                          <input
+                            type="text"
+                            value={bottomCtaTitle}
+                            onChange={(e) => setBottomCtaTitle(e.target.value)}
+                            placeholder="e.g. Never Scramble for Client Evidence Again"
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Bottom Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={bottomCtaButtonText}
+                            onChange={(e) => setBottomCtaButtonText(e.target.value)}
+                            placeholder="e.g. Get Started Today"
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Bottom Subtitle / Paragraph
+                          </label>
+                          <input
+                            type="text"
+                            value={bottomCtaText}
+                            onChange={(e) => setBottomCtaText(e.target.value)}
+                            placeholder="e.g. Claim your free 5-minute video breakdown of your local market."
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                            Bottom Button Destination URL
+                          </label>
+                          <input
+                            type="text"
+                            value={bottomCtaButtonUrl}
+                            onChange={(e) => setBottomCtaButtonUrl(e.target.value)}
+                            placeholder="e.g. /audit or https://..."
+                            className="w-full mt-1 px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Article Content Area with Markdown Toolbar */}
@@ -970,7 +1175,7 @@ function AdminPostsPage() {
                     required
                     value={editorContent}
                     onChange={(e) => setEditorContent(e.target.value)}
-                    placeholder="Write article in Markdown... (Supports ## Headings, lists, code blocks, and bold copy)"
+                    placeholder="Write article in Markdown... (Supports ## Headings, lists, tables, code blocks, and bold copy)"
                     className="w-full px-4 py-3 rounded-2xl text-xs sm:text-sm font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50 leading-relaxed"
                   />
                 ) : (
