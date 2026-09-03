@@ -194,10 +194,10 @@ function HomePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Card 1: Local SEO & Google Maps */}
-          <div className="group relative flex flex-col justify-between p-8 rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-emerald-500/40 dark:hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 shadow-sm dark:shadow-none">
+          <div className="group relative flex flex-col justify-between p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-emerald-500/40 dark:hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 shadow-sm dark:shadow-none">
             <div className="space-y-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
-                <Search className="w-6 h-6" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
+                <Search className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
 
               <div className="space-y-2">
@@ -244,10 +244,10 @@ function HomePage() {
           </div>
 
           {/* Card 2: High-Speed Websites & Care */}
-          <div className="group relative flex flex-col justify-between p-8 rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-cyan-500/40 dark:hover:border-cyan-500/50 hover:shadow-xl transition-all duration-300 shadow-sm dark:shadow-none">
+          <div className="group relative flex flex-col justify-between p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-cyan-500/40 dark:hover:border-cyan-500/50 hover:shadow-xl transition-all duration-300 shadow-sm dark:shadow-none">
             <div className="space-y-6">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform">
-                <Globe className="w-6 h-6" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform">
+                <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
 
               <div className="space-y-2">
@@ -294,10 +294,10 @@ function HomePage() {
           </div>
 
           {/* Card 3: Custom Systems & Workflows */}
-          <div className="group relative flex flex-col justify-between p-8 rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-orange-500/40 dark:hover:border-orange-500/50 hover:shadow-xl transition-all duration-300 shadow-sm dark:shadow-none">
+          <div className="group relative flex flex-col justify-between p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-orange-500/40 dark:hover:border-orange-500/50 hover:shadow-xl transition-all duration-300 shadow-sm dark:shadow-none">
             <div className="space-y-6">
-              <div className="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/40 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
-                <Cpu className="w-6 h-6" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/40 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
+                <Cpu className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
 
               <div className="space-y-2">

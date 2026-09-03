@@ -21,8 +21,8 @@ export const Route = createFileRoute('/$')({
 function NotFoundPage() {
   return (
     <div className="max-w-2xl mx-auto py-16 sm:py-24 text-center space-y-8">
-      <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-500 dark:text-amber-400 shadow-2xl shadow-amber-500/10">
-        <AlertCircle className="w-10 h-10" />
+      <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-500 dark:text-amber-400 shadow-xl sm:shadow-2xl shadow-amber-500/10">
+        <AlertCircle className="w-7 h-7 sm:w-10 sm:h-10" />
       </div>
 
       <div className="space-y-3">

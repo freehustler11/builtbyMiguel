@@ -53,8 +53,8 @@ function ThankYouPage() {
         <div className="absolute top-0 right-1/2 translate-x-1/2 -mt-16 w-80 h-80 rounded-full bg-rose-100/50 dark:bg-rose-900/20 blur-3xl pointer-events-none" />
 
         {/* Big Success Icon */}
-        <div className="mx-auto flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 shadow-md">
-          <CheckCircle2 className="w-10 h-10" />
+        <div className="mx-auto flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-2xl sm:rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 shadow-md">
+          <CheckCircle2 className="w-7 h-7 sm:w-10 sm:h-10" />
         </div>
 
         {/* Main Heading */}

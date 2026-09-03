@@ -40,7 +40,7 @@ export function ThemeToggle({ variant = 'pill', className = '' }: ThemeTogglePro
     <button
       type="button"
       onClick={toggleTheme}
-      className={`relative inline-flex items-center justify-center w-10 h-10 rounded-2xl border transition-all duration-200 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 active:scale-95 ${
+      className={`relative inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border transition-all duration-200 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 active:scale-95 ${
         isDark
           ? 'bg-slate-900 border-slate-800 text-amber-300 hover:text-amber-200 hover:border-slate-700 shadow-sm shadow-slate-950/50'
           : 'bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-sm'
@@ -50,9 +50,9 @@ export function ThemeToggle({ variant = 'pill', className = '' }: ThemeTogglePro
     >
       <span className="sr-only">Toggle theme</span>
       {isDark ? (
-        <Moon className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-12 fill-amber-300/20" />
+        <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:-rotate-12 fill-amber-300/20" />
       ) : (
-        <Sun className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45 text-amber-500 fill-amber-500/20" />
+        <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:rotate-45 text-amber-500 fill-amber-500/20" />
       )}
     </button>
   )
