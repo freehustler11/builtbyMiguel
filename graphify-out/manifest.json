@@ -1050,9 +1050,9 @@
     "semantic_hash": ""
   },
   "app/components/LogoutButton.tsx": {
-    "mtime": 1788420804.5651038,
-    "seen": 1788429852.259299,
-    "ast_hash": "29b07c74f7a122b12015eaf4826c48ea",
+    "mtime": 1788432756.702998,
+    "seen": 1788432845.8683634,
+    "ast_hash": "ebced149864bdf71143a11c2c2dbe329",
     "semantic_hash": ""
   },
   "app/db/index.ts": {
@@ -3012,8 +3012,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1788432218.3507206,
-    "seen": 1788432287.4722047,
+    "mtime": 1788432785.3847735,
+    "seen": 1788432845.9805431,
     "ast_hash": "e4223283dbb6d6e2ab58d43ec64f5475",
     "semantic_hash": ""
   },
