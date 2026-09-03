@@ -180,6 +180,19 @@ export function Navbar() {
             </Link>
 
             <Link
+              to="/blog"
+              activeProps={{
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
+              }}
+              inactiveProps={{
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
+            >
+              Blog
+            </Link>
+
+            <Link
               to="/about"
               activeProps={{
                 className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
@@ -299,6 +312,21 @@ export function Navbar() {
               className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium"
             >
               <span>Work / Case Studies</span>
+              <ArrowRight className="w-4 h-4 text-slate-400" />
+            </Link>
+
+            <Link
+              to="/blog"
+              onClick={() => setMobileMenuOpen(false)}
+              activeProps={{
+                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
+              }}
+              inactiveProps={{
+                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60',
+              }}
+              className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium"
+            >
+              <span>Blog & Playbooks</span>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
 

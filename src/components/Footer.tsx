@@ -137,6 +137,14 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  to="/blog"
+                  className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors inline-block"
+                >
+                  Blog & Playbooks
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/contact"
                   className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors inline-block"
                 >

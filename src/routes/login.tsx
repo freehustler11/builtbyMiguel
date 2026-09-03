@@ -17,7 +17,7 @@ export const Route = createFileRoute('/login')({
     const { isAuthenticated } = await checkAuthServerFn()
     if (isAuthenticated) {
       throw redirect({
-        to: search.redirect || '/messages',
+        to: search.redirect || '/admin',
       })
     }
   },
@@ -57,7 +57,7 @@ function LoginPage() {
 
       if (res.success) {
         await router.invalidate()
-        navigate({ to: redirectTo && redirectTo !== '/login' ? redirectTo : '/messages' })
+        navigate({ to: redirectTo && redirectTo !== '/login' ? redirectTo : '/admin' })
       } else {
         setError(res.error || 'Authentication failed. Please verify your password.')
         setIsSubmitting(false)

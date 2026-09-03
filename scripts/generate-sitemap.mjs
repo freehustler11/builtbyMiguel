@@ -27,6 +27,7 @@ const ROUTE_CONFIG = {
   'systems-auto': { priority: '0.9', changefreq: 'weekly' },
   'audit': { priority: '0.9', changefreq: 'weekly' },
   'work': { priority: '0.8', changefreq: 'weekly' },
+  'blog': { priority: '0.8', changefreq: 'daily' },
   'about': { priority: '0.8', changefreq: 'monthly' },
   'contact': { priority: '0.8', changefreq: 'monthly' },
   'privacy-policy': { priority: '0.3', changefreq: 'monthly' },
@@ -37,13 +38,20 @@ const ROUTE_CONFIG = {
 export function generateSitemap() {
   const currentDate = new Date().toISOString().split('T')[0]
   
-  // 1. Scan src/routes directory
-  const files = fs.readdirSync(routesDir)
+  // 1. Scan src/routes directory (root files and public folders)
+  const entries = fs.readdirSync(routesDir, { withFileTypes: true })
   const routes = []
 
-  for (const file of files) {
-    if (!file.endsWith('.tsx') && !file.endsWith('.ts')) continue
-    const routeName = path.basename(file, path.extname(file))
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      if (entry.name === 'blog') {
+        routes.push('blog')
+      }
+      continue
+    }
+
+    if (!entry.name.endsWith('.tsx') && !entry.name.endsWith('.ts')) continue
+    const routeName = path.basename(entry.name, path.extname(entry.name))
 
     if (EXCLUDED_ROUTES.has(routeName) || routeName.startsWith('_')) {
       continue
