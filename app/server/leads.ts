@@ -1,3 +1,6 @@
+import { createServerFn } from '@tanstack/react-start'
+import { db, messages } from '../db'
+
 export interface AuditLeadPayload {
   name: string
   businessName: string
@@ -31,83 +34,133 @@ function validateEmail(email: string): boolean {
 }
 
 /**
- * Server-side lead processor for Audit requests
+ * Server Function: Inbound Audit lead submission (inserts to PostgreSQL)
  */
-export async function submitAuditLead(
-  payload: AuditLeadPayload
-): Promise<LeadSubmissionResponse> {
-  const errors: Record<string, string> = {}
+export const submitAuditLead = createServerFn({ method: 'POST' })
+  .validator((data: AuditLeadPayload) => data)
+  .handler(async ({ data: payload }): Promise<LeadSubmissionResponse> => {
+    const errors: Record<string, string> = {}
 
-  if (!payload.name?.trim()) {
-    errors.name = 'Full name is required'
-  }
-
-  if (!payload.businessName?.trim()) {
-    errors.businessName = 'Business name is required'
-  }
-
-  if (!payload.email?.trim() || !validateEmail(payload.email)) {
-    errors.email = 'A valid work email address is required'
-  }
-
-  if (!payload.cityArea?.trim()) {
-    errors.cityArea = 'Primary service city/area is required'
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return {
-      success: false,
-      message: 'Validation failed. Please correct the errors above.',
-      errors,
+    if (!payload.name?.trim()) {
+      errors.name = 'Full name is required'
     }
-  }
 
-  // Generate unique lead ID and simulate low-latency server processing
-  const leadId = `lead_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
-  await new Promise((resolve) => setTimeout(resolve, 300))
+    if (!payload.businessName?.trim()) {
+      errors.businessName = 'Business name is required'
+    }
 
-  return {
-    success: true,
-    message: 'Audit request received. Video will be delivered within 24 hours.',
-    leadId,
-  }
-}
+    if (!payload.email?.trim() || !validateEmail(payload.email)) {
+      errors.email = 'A valid work email address is required'
+    }
+
+    if (!payload.cityArea?.trim()) {
+      errors.cityArea = 'Primary service city/area is required'
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        message: 'Validation failed. Please correct the errors above.',
+        errors,
+      }
+    }
+
+    try {
+      const [record] = await db
+        .insert(messages)
+        .values({
+          type: 'audit',
+          name: payload.name.trim(),
+          businessName: payload.businessName.trim(),
+          email: payload.email.trim().toLowerCase(),
+          location: payload.cityArea.trim(),
+          websiteUrl: payload.websiteUrl?.trim() || null,
+          message: payload.primaryGoal
+            ? `Primary Goal: ${payload.primaryGoal}`
+            : 'Google Map Pack & SEO Growth Audit',
+          status: 'new',
+        })
+        .returning()
+
+      return {
+        success: true,
+        message:
+          'Audit request received. Video will be delivered within 24 hours.',
+        leadId: record.id,
+      }
+    } catch (err) {
+      console.error('Database error in submitAuditLead:', err)
+      return {
+        success: false,
+        message:
+          'Database submission failed. Please try again or contact us directly.',
+      }
+    }
+  })
 
 /**
- * Server-side lead processor for direct Contact inquiries
+ * Server Function: Inbound Contact inquiry submission (inserts to PostgreSQL)
  */
-export async function submitContactLead(
-  payload: ContactLeadPayload
-): Promise<LeadSubmissionResponse> {
-  const errors: Record<string, string> = {}
+export const submitContactLead = createServerFn({ method: 'POST' })
+  .validator((data: ContactLeadPayload) => data)
+  .handler(async ({ data: payload }): Promise<LeadSubmissionResponse> => {
+    const errors: Record<string, string> = {}
 
-  if (!payload.name?.trim()) {
-    errors.name = 'Name is required'
-  }
-
-  if (!payload.email?.trim() || !validateEmail(payload.email)) {
-    errors.email = 'A valid email address is required'
-  }
-
-  if (!payload.message?.trim()) {
-    errors.message = 'Please provide details about your project or inquiry'
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return {
-      success: false,
-      message: 'Validation failed. Please correct the errors above.',
-      errors,
+    if (!payload.name?.trim()) {
+      errors.name = 'Name is required'
     }
-  }
 
-  // Generate unique inquiry ID and simulate low-latency server processing
-  const leadId = `inq_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
-  await new Promise((resolve) => setTimeout(resolve, 300))
+    if (!payload.email?.trim() || !validateEmail(payload.email)) {
+      errors.email = 'A valid email address is required'
+    }
 
-  return {
-    success: true,
-    message: 'Message received. Miguel will reply within 24 business hours.',
-    leadId,
-  }
-}
+    if (!payload.message?.trim()) {
+      errors.message = 'Please provide details about your project or inquiry'
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        message: 'Validation failed. Please correct the errors above.',
+        errors,
+      }
+    }
+
+    try {
+      const formattedMessage = [
+        payload.serviceInterest ? `[Interest: ${payload.serviceInterest}]` : '',
+        payload.phone ? `[Phone: ${payload.phone}]` : '',
+        payload.message.trim(),
+      ]
+        .filter(Boolean)
+        .join('\n\n')
+
+      const [record] = await db
+        .insert(messages)
+        .values({
+          type: 'contact',
+          name: payload.name.trim(),
+          businessName: payload.businessName?.trim() || 'Direct Inquiry',
+          email: payload.email.trim().toLowerCase(),
+          location: null,
+          websiteUrl: null,
+          message: formattedMessage,
+          status: 'new',
+        })
+        .returning()
+
+      return {
+        success: true,
+        message:
+          'Message received. Miguel will reply within 24 business hours.',
+        leadId: record.id,
+      }
+    } catch (err) {
+      console.error('Database error in submitContactLead:', err)
+      return {
+        success: false,
+        message:
+          'Database submission failed. Please try again or contact us directly.',
+      }
+    }
+  })

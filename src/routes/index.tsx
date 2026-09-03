@@ -87,7 +87,7 @@ function HomePage() {
     setIsSubmitting(true)
     setErrors({})
 
-    const result = await submitAuditLead(formData)
+    const result = await submitAuditLead({ data: formData })
 
     if (result.success) {
       navigate({ to: '/thank-you' })

@@ -9,13 +9,14 @@ const publicDir = path.resolve(rootDir, 'public')
 
 const SITE_URL = 'https://builtbymiguel.net'
 
-// Excluded from indexable sitemap (wildcards, 404, root layout, private thank-you pages, admin & login)
+// Excluded from indexable sitemap (wildcards, 404, root layout, private thank-you pages, admin, login, messages)
 const EXCLUDED_ROUTES = new Set([
   '__root',
   '$',
   'thank-you',
   'login',
   'admin',
+  'messages',
 ])
 
 // Custom priority & changefreq rules
@@ -93,6 +94,7 @@ Allow: /
 Disallow: /thank-you
 Disallow: /login
 Disallow: /admin
+Disallow: /messages
 Disallow: /api/
 
 Sitemap: ${SITE_URL}/sitemap.xml

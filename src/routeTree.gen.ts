@@ -17,6 +17,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as LocalSeoGbpRouteImport } from './routes/local-seo-gbp'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SystemsAutoRouteImport } from './routes/systems-auto'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -64,6 +65,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/cookie-policy': typeof CookiePolicyRoute
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/cookie-policy': typeof CookiePolicyRoute
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/cookie-policy': typeof CookiePolicyRoute
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/cookie-policy'
     | '/local-seo-gbp'
     | '/login'
+    | '/messages'
     | '/privacy-policy'
     | '/systems-auto'
     | '/terms'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/cookie-policy'
     | '/local-seo-gbp'
     | '/login'
+    | '/messages'
     | '/privacy-policy'
     | '/systems-auto'
     | '/terms'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/cookie-policy'
     | '/local-seo-gbp'
     | '/login'
+    | '/messages'
     | '/privacy-policy'
     | '/systems-auto'
     | '/terms'
@@ -204,6 +216,7 @@ export interface RootRouteChildren {
   CookiePolicyRoute: typeof CookiePolicyRoute
   LocalSeoGbpRoute: typeof LocalSeoGbpRoute
   LoginRoute: typeof LoginRoute
+  MessagesRoute: typeof MessagesRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SystemsAutoRoute: typeof SystemsAutoRoute
   TermsRoute: typeof TermsRoute
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy-policy': {
       id: '/privacy-policy'
       path: '/privacy-policy'
@@ -324,6 +344,7 @@ const rootRouteChildren: RootRouteChildren = {
   CookiePolicyRoute: CookiePolicyRoute,
   LocalSeoGbpRoute: LocalSeoGbpRoute,
   LoginRoute: LoginRoute,
+  MessagesRoute: MessagesRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SystemsAutoRoute: SystemsAutoRoute,
   TermsRoute: TermsRoute,

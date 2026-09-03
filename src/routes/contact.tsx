@@ -73,7 +73,7 @@ function ContactPage() {
     setIsSubmitting(true)
     setErrors({})
 
-    const result = await submitContactLead(formData)
+    const result = await submitContactLead({ data: formData })
 
     if (result.success) {
       navigate({ to: '/thank-you' })

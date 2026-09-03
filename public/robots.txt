@@ -3,6 +3,7 @@ Allow: /
 Disallow: /thank-you
 Disallow: /login
 Disallow: /admin
+Disallow: /messages
 Disallow: /api/
 
 Sitemap: https://builtbymiguel.net/sitemap.xml
