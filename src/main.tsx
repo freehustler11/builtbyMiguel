@@ -36,9 +36,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
-// Render root application
+// Render or hydrate root application
 const rootElement = document.getElementById('root')!
-if (!rootElement.innerHTML) {
+if (rootElement.innerHTML.trim().length > 0) {
+  ReactDOM.hydrateRoot(
+    rootElement,
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </StrictMode>,
+  )
+} else {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
