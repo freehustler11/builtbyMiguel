@@ -49,6 +49,7 @@ import {
   ShieldCheck,
   Tag,
   FolderOpen,
+  Lightbulb,
 } from 'lucide-react'
 import { requireAuth } from '../../lib/auth'
 import {
@@ -58,6 +59,8 @@ import {
   deletePostServerFn,
 } from '../../server/posts'
 import { AdminNav } from '../../components/AdminNav'
+import { ConfirmModal } from '../../components/ConfirmModal'
+import { ToastContainer, type ToastMessage } from '../../components/Toast'
 import type { Post } from '../../db/schema'
 
 interface AdminPostsSearch {
@@ -471,6 +474,20 @@ function AdminPostsPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [mutatingId, setMutatingId] = useState<string | null>(null)
   const [postToDelete, setPostToDelete] = useState<Post | null>(null)
+  const [showBeginnerTips, setShowBeginnerTips] = useState(true)
+  const [toasts, setToasts] = useState<ToastMessage[]>([])
+
+  const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
+    const id = Math.random().toString(36).substring(2, 9)
+    setToasts((prev) => [...prev, { id, title, message, type }])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 3500)
+  }
+
+  const dismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id))
+  }
 
   // Editor Modal State
   const [isEditorOpen, setIsEditorOpen] = useState(false)
@@ -561,6 +578,7 @@ function AdminPostsPage() {
     setIsRefreshing(true)
     await router.invalidate()
     setIsRefreshing(false)
+    addToast('CMS Refreshed', 'Articles list updated.')
   }
 
   const openNewPostModal = () => {
@@ -668,6 +686,7 @@ function AdminPostsPage() {
     setInsertImageUrl('')
     setInsertImageAlt('')
     setIsImageModalOpen(false)
+    addToast('Image Inserted', 'Image code added to editor.')
   }
 
   const handleInsertTable = () => {
@@ -682,12 +701,14 @@ function AdminPostsPage() {
     tableMd += '\n'
     insertMarkdown(tableMd)
     setIsTableModalOpen(false)
+    addToast('Table Inserted', 'Markdown table template generated.')
   }
 
   const handleInsertCode = () => {
     insertMarkdown(`\n\`\`\`${codeLang}\n${codeSnippet || '// code here'}\n\`\`\`\n`)
     setCodeSnippet('')
     setIsCodeModalOpen(false)
+    addToast('Code Block Inserted', `Formatted for ${codeLang}.`)
   }
 
   const handleSavePost = async (e: React.FormEvent) => {
@@ -739,10 +760,15 @@ function AdminPostsPage() {
             ...payload,
           },
         })
+        addToast('Article Updated', `"${editorTitle}" saved successfully.`)
       } else {
         await createPostServerFn({
           data: payload,
         })
+        addToast(
+          editorStatus === 'published' ? 'Article Published Live!' : 'Article Created',
+          `"${editorTitle}" is ready.`
+        )
       }
 
       setIsEditorOpen(false)
@@ -786,8 +812,13 @@ function AdminPostsPage() {
         },
       })
       await router.invalidate()
+      addToast(
+        newStatus === 'published' ? 'Article is now Live!' : 'Moved to Draft',
+        `"${post.title}" status updated.`
+      )
     } catch (err) {
       console.error('Failed to update status:', err)
+      addToast('Status Change Failed', 'Please try again.', 'error')
     } finally {
       setMutatingId(null)
     }
@@ -800,8 +831,10 @@ function AdminPostsPage() {
       await deletePostServerFn({ data: { id: postToDelete.id } })
       setPostToDelete(null)
       await router.invalidate()
+      addToast('Article Deleted', 'The article was permanently removed.')
     } catch (err) {
       console.error('Failed to delete post:', err)
+      addToast('Delete Failed', 'Could not delete article.', 'error')
     } finally {
       setMutatingId(null)
     }
@@ -819,6 +852,9 @@ function AdminPostsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      {/* Toast Notification Container */}
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+
       {/* Navigation Header */}
       <AdminNav
         activeTab="posts"
@@ -849,6 +885,82 @@ function AdminPostsPage() {
           </div>
         }
       />
+
+      {/* Beginner Friendly Quick Workflow Guide Banner (Dismissible / Collapsible) */}
+      <div className="rounded-3xl border border-rose-200/80 dark:border-rose-950/60 bg-gradient-to-br from-rose-50/60 via-white to-slate-50 dark:from-rose-950/20 dark:via-[#111827] dark:to-slate-900 p-6 shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5 text-rose-600 dark:text-rose-400">
+            <Lightbulb className="w-5 h-5" />
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+              Beginner's 4-Step Publishing Workflow
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowBeginnerTips(!showBeginnerTips)}
+            className="flex items-center gap-1 text-xs font-mono text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+          >
+            <span>{showBeginnerTips ? 'Hide Guide' : 'Show Guide'}</span>
+            {showBeginnerTips ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+
+        {showBeginnerTips && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2 border-t border-rose-100 dark:border-rose-900/30 text-xs text-slate-600 dark:text-slate-300">
+            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <span className="w-5 h-5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center font-mono text-[10px]">
+                  1
+                </span>
+                <span>Title & Category</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                Enter your headline, pick a category, and set a focus keyword for Google rank tracking.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-mono text-[10px]">
+                  2
+                </span>
+                <span>Rich Toolbar</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                Use 1-click toolbar buttons to quickly insert images, tables, code, and headings.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono text-[10px]">
+                  3
+                </span>
+                <span>Live SEO Gauge</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                Aim for a green score (80+) on the SEO tab to ensure full Google search visibility.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <span className="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center font-mono text-[10px]">
+                  4
+                </span>
+                <span>Publish or Schedule</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                Hit <strong>"Publish Live"</strong> to go live immediately, or schedule an auto-release date.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Top Bento Metrics Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1242,56 +1354,32 @@ function AdminPostsPage() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
-      {postToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-7 space-y-5">
-            <div className="flex items-center gap-3 text-rose-500">
-              <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/50">
-                <Trash2 className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                  Delete Article
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  This action cannot be undone.
-                </p>
-              </div>
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+      {/* Delete Confirmation Modal (Replaces browser confirm) */}
+      <ConfirmModal
+        isOpen={Boolean(postToDelete)}
+        onClose={() => setPostToDelete(null)}
+        onConfirm={confirmDeletePost}
+        title="Delete Blog Article"
+        description={
+          postToDelete ? (
+            <span>
               Are you sure you want to permanently delete{' '}
               <strong className="text-slate-900 dark:text-white">
                 "{postToDelete.title}"
               </strong>
-              ?
-            </p>
-
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setPostToDelete(null)}
-                className="px-4 py-2 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={confirmDeletePost}
-                className="px-4 py-2 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 transition cursor-pointer shadow-xs"
-              >
-                Delete Permanently
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              ? This action cannot be undone and will remove the live permalink.
+            </span>
+          ) : null
+        }
+        confirmText="Delete Permanently"
+        variant="danger"
+        isLoading={Boolean(mutatingId)}
+      />
 
       {/* Modern Full-Featured Post Editor & SEO Studio Modal */}
       {isEditorOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/75 backdrop-blur-md overflow-y-auto">
-          <div className="w-full max-w-5xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl my-6 overflow-hidden flex flex-col max-h-[94vh]">
+          <div className="w-full max-w-5xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl my-6 overflow-hidden flex flex-col max-h-[94vh] animate-in zoom-in-95">
             {/* Modal Top Bar */}
             <div className="p-5 sm:p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-900/70">
               <div className="flex items-center gap-3">
@@ -2094,8 +2182,8 @@ function AdminPostsPage() {
 
       {/* Quick Inserter Modal: Image */}
       {isImageModalOpen && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
             <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-rose-500" />
               <span>Insert Image into Article</span>
@@ -2138,7 +2226,7 @@ function AdminPostsPage() {
               <button
                 type="button"
                 onClick={handleInsertImage}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 cursor-pointer shadow-xs"
               >
                 Insert Image
               </button>
@@ -2149,8 +2237,8 @@ function AdminPostsPage() {
 
       {/* Quick Inserter Modal: Table */}
       {isTableModalOpen && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
             <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <TableIcon className="w-4 h-4 text-cyan-500" />
               <span>Insert Markdown Table</span>
@@ -2194,7 +2282,7 @@ function AdminPostsPage() {
               <button
                 type="button"
                 onClick={handleInsertTable}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-cyan-600 hover:bg-cyan-700 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-cyan-600 hover:bg-cyan-700 cursor-pointer shadow-xs"
               >
                 Insert Table Template
               </button>
@@ -2205,8 +2293,8 @@ function AdminPostsPage() {
 
       {/* Quick Inserter Modal: Code Snippet */}
       {isCodeModalOpen && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-lg bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
             <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Code className="w-4 h-4 text-indigo-500" />
               <span>Insert Code Block</span>
@@ -2255,7 +2343,7 @@ function AdminPostsPage() {
               <button
                 type="button"
                 onClick={handleInsertCode}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer shadow-xs"
               >
                 Insert Code Block
               </button>
