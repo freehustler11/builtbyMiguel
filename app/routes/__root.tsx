@@ -157,10 +157,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         href: appCss,
       },
       {
-        rel: 'canonical',
-        href: 'https://builtbymiguel.net',
-      },
-      {
         rel: 'preconnect',
         href: 'https://fonts.googleapis.com',
       },
