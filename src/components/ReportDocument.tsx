@@ -171,10 +171,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
   const gscPositionMoM = getMoMPositionChange(report.gscPosition, report.prevGscPosition)
 
   // GA4 Metrics & Comparisons
-  const gaEngagementRateNum = parseDecimal(report.gaEngagementRate)
-  const prevGaEngagementRateNum = parseDecimal(report.prevGaEngagementRate)
   const gaUsersMoM = getMoMChange(report.gaUsers, report.prevGaUsers)
-  const gaEngagementRateMoM = getMoMChange(gaEngagementRateNum, prevGaEngagementRateNum, { fallbackLabel: 'Baseline' })
   const gaNewUsersMoM = getMoMChange(report.gaNewUsers, report.prevGaNewUsers)
   const gaSessionsMoM = getMoMChange(report.gaSessions, report.prevGaSessions)
   const gaViewsMoM = getMoMChange(report.gaViews, report.prevGaViews)
@@ -648,19 +645,17 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                     </div>
                   </div>
 
-                  {/* Row 2: Engagement Rate / New Users */}
+                  {/* Row 2: New Users */}
                   <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Activity className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>{report.gaNewUsers ? 'New Users' : 'Engagement'}</span>
+                      <span>New Users</span>
                     </span>
                     <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
-                        {report.gaNewUsers
-                          ? report.gaNewUsers
-                          : `${gaEngagementRateNum.toFixed(1)}%`}
+                        {report.gaNewUsers || 0}
                       </span>
-                      {renderMoMBadge(report.gaNewUsers ? gaNewUsersMoM : gaEngagementRateMoM)}
+                      {renderMoMBadge(gaNewUsersMoM)}
                     </div>
                   </div>
 

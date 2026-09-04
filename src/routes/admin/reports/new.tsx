@@ -204,9 +204,7 @@ function AdminReportFormPage() {
   const [gscCtr, setGscCtr] = useState<number | string>(existingReport?.gscCtr !== undefined && existingReport?.gscCtr !== null ? existingReport.gscCtr : '')
   const [prevGscCtr, setPrevGscCtr] = useState<number | string>(existingReport?.prevGscCtr !== undefined && existingReport?.prevGscCtr !== null ? existingReport.prevGscCtr : '')
 
-  // GA4 Metrics - Engagement Rate & New Users
-  const [gaEngagementRate, setGaEngagementRate] = useState<number | string>(existingReport?.gaEngagementRate !== undefined && existingReport?.gaEngagementRate !== null ? existingReport.gaEngagementRate : '')
-  const [prevGaEngagementRate, setPrevGaEngagementRate] = useState<number | string>(existingReport?.prevGaEngagementRate !== undefined && existingReport?.prevGaEngagementRate !== null ? existingReport.prevGaEngagementRate : '')
+  // GA4 Metrics - New Users
   const [gaNewUsers, setGaNewUsers] = useState<number | string>(existingReport?.gaNewUsers !== undefined && existingReport?.gaNewUsers !== null ? existingReport.gaNewUsers : '')
   const [prevGaNewUsers, setPrevGaNewUsers] = useState<number | string>(existingReport?.prevGaNewUsers !== undefined && existingReport?.prevGaNewUsers !== null ? existingReport.prevGaNewUsers : '')
 
@@ -324,7 +322,6 @@ function AdminReportFormPage() {
       setPrevGaViews(p.gaViews ?? 0)
       setPrevGbpReviewsCount(p.gbpReviewsCount ?? p.gbpReviewCount ?? 0)
       setPrevGscCtr(p.gscCtr ?? 0)
-      setPrevGaEngagementRate(p.gaEngagementRate ?? 0)
       setPrevGaNewUsers(p.gaNewUsers ?? 0)
 
       addToast(
@@ -374,7 +371,6 @@ function AdminReportFormPage() {
     const prevUsersNum = Number(prevGaUsers) || 0
     const newUsersNum = Number(gaNewUsers) || 0
     const sessionsNum = Number(gaSessions) || 0
-    const engRateNum = Number(gaEngagementRate) || 0
 
     const calcDiff = (curr: number, prev: number) => {
       if (prev <= 0) return curr > 0 ? '+100%' : '0%'
@@ -403,8 +399,8 @@ function AdminReportFormPage() {
       if (dirNum > 0) actionsList.push(`${dirNum.toLocaleString()} direction requests`)
       if (gbpClicksNum > 0) actionsList.push(`${gbpClicksNum.toLocaleString()} website clicks`)
       bullet2 = `• High-Intent Conversion: Captured ${actionsList.join(', ')} from Google Business Profile, backed by a strong ${gbpRatingNum.toFixed(1)}★ rating across ${reviewsNum} verified reviews.`
-    } else if (engRateNum > 0 || sessionsNum > 0) {
-      bullet2 = `• On-Site Engagement: Sustained a solid ${engRateNum > 0 ? `${engRateNum.toFixed(1)}% engagement rate` : 'session depth'} across ${sessionsNum.toLocaleString()} visits, reflecting high commercial relevance among incoming visitors.`
+    } else if (sessionsNum > 0) {
+      bullet2 = `• On-Site Engagement: Sustained solid audience activity across ${sessionsNum.toLocaleString()} visits${newUsersNum > 0 ? ` (${newUsersNum.toLocaleString()} first-time visitors)` : ''}, reflecting high commercial relevance among incoming visitors.`
     } else {
       bullet2 = `• Local Authority & Trust: Maintained Google Business Profile visibility at ${gbpRatingNum.toFixed(1)}★ rating across ${reviewsNum} customer reviews to drive local search trust.`
     }
@@ -499,13 +495,13 @@ function AdminReportFormPage() {
         // GA4 Current
         gaUsers: Number(gaUsers) || 0,
         gaNewUsers: Number(gaNewUsers) || 0,
-        gaEngagementRate: parseDecimalValue(gaEngagementRate),
+        gaEngagementRate: 0,
         gaSessions: Number(gaSessions) || 0,
         gaViews: Number(gaViews) || 0,
         // GA4 Previous
         prevGaUsers: Number(prevGaUsers) || 0,
         prevGaNewUsers: Number(prevGaNewUsers) || 0,
-        prevGaEngagementRate: parseDecimalValue(prevGaEngagementRate),
+        prevGaEngagementRate: 0,
         prevGaSessions: Number(prevGaSessions) || 0,
         prevGaViews: Number(prevGaViews) || 0,
         // Deep Metric Tables
@@ -1123,38 +1119,6 @@ function AdminReportFormPage() {
                         min="0"
                         value={prevGaNewUsers}
                         onChange={(e) => setPrevGaNewUsers(e.target.value)}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Engagement Rate % */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Eng. Rate % (Current)
-                      </label>
-                      <ThemedNumberInput
-                        theme="indigo"
-                        step="0.1"
-                        min="0"
-                        placeholder="e.g. 58.4"
-                        value={gaEngagementRate}
-                        onChange={(e) => setGaEngagementRate(e.target.value)}
-                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
-                      </label>
-                      <ThemedNumberInput
-                        theme="indigo"
-                        step="0.1"
-                        min="0"
-                        placeholder="e.g. 52.1"
-                        value={prevGaEngagementRate}
-                        onChange={(e) => setPrevGaEngagementRate(e.target.value)}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
