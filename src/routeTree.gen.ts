@@ -26,10 +26,14 @@ import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as WebsitesCareRouteImport } from './routes/websites-care'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminClientsRouteImport } from './routes/admin/clients'
 import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/index'
+import { Route as AdminReportsIdRouteImport } from './routes/admin/reports/$id'
+import { Route as AdminReportsNewRouteImport } from './routes/admin/reports/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -116,6 +120,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminClientsRoute = AdminClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
   id: '/media',
   path: '/media',
@@ -136,6 +145,21 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminReportsIndexRoute = AdminReportsIndexRouteImport.update({
+  id: '/reports/',
+  path: '/reports/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsIdRoute = AdminReportsIdRouteImport.update({
+  id: '/reports/$id',
+  path: '/reports/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsNewRoute = AdminReportsNewRouteImport.update({
+  id: '/reports/new',
+  path: '/reports/new',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -154,11 +178,15 @@ export interface FileRoutesByFullPath {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/clients': typeof AdminClientsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/admin/reports/$id': typeof AdminReportsIdRoute
+  '/admin/reports/new': typeof AdminReportsNewRoute
+  '/admin/reports/': typeof AdminReportsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -176,11 +204,15 @@ export interface FileRoutesByTo {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/clients': typeof AdminClientsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
+  '/admin/reports/$id': typeof AdminReportsIdRoute
+  '/admin/reports/new': typeof AdminReportsNewRoute
+  '/admin/reports': typeof AdminReportsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -200,11 +232,15 @@ export interface FileRoutesById {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/clients': typeof AdminClientsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/admin/reports/$id': typeof AdminReportsIdRoute
+  '/admin/reports/new': typeof AdminReportsNewRoute
+  '/admin/reports/': typeof AdminReportsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -225,11 +261,15 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/clients'
     | '/admin/media'
     | '/admin/posts'
     | '/blog/$slug'
     | '/admin/'
     | '/blog/'
+    | '/admin/reports/$id'
+    | '/admin/reports/new'
+    | '/admin/reports/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -247,11 +287,15 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/clients'
     | '/admin/media'
     | '/admin/posts'
     | '/blog/$slug'
     | '/admin'
     | '/blog'
+    | '/admin/reports/$id'
+    | '/admin/reports/new'
+    | '/admin/reports'
   id:
     | '__root__'
     | '/'
@@ -270,11 +314,15 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/clients'
     | '/admin/media'
     | '/admin/posts'
     | '/blog/$slug'
     | '/admin/'
     | '/blog/'
+    | '/admin/reports/$id'
+    | '/admin/reports/new'
+    | '/admin/reports/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -419,6 +467,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/clients': {
+      id: '/admin/clients'
+      path: '/clients'
+      fullPath: '/admin/clients'
+      preLoaderRoute: typeof AdminClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/media': {
       id: '/admin/media'
       path: '/media'
@@ -447,19 +502,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/reports/': {
+      id: '/admin/reports/'
+      path: '/reports'
+      fullPath: '/admin/reports/'
+      preLoaderRoute: typeof AdminReportsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reports/$id': {
+      id: '/admin/reports/$id'
+      path: '/reports/$id'
+      fullPath: '/admin/reports/$id'
+      preLoaderRoute: typeof AdminReportsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reports/new': {
+      id: '/admin/reports/new'
+      path: '/reports/new'
+      fullPath: '/admin/reports/new'
+      preLoaderRoute: typeof AdminReportsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminClientsRoute: typeof AdminClientsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminReportsIdRoute: typeof AdminReportsIdRoute
+  AdminReportsNewRoute: typeof AdminReportsNewRoute
+  AdminReportsIndexRoute: typeof AdminReportsIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminClientsRoute: AdminClientsRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminReportsIdRoute: AdminReportsIdRoute,
+  AdminReportsNewRoute: AdminReportsNewRoute,
+  AdminReportsIndexRoute: AdminReportsIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

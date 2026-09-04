@@ -81,6 +81,43 @@ export async function runMigrations() {
       );
     `
 
+    // 6. Ensure clients table exists
+    await sql`
+      CREATE TABLE IF NOT EXISTS "clients" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "name" text NOT NULL,
+        "business_name" text NOT NULL,
+        "website_url" text,
+        "logo_url" text,
+        "primary_color" text DEFAULT '#2563eb',
+        "secondary_color" text DEFAULT '#1e293b',
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+
+    // 7. Ensure reports table exists
+    await sql`
+      CREATE TABLE IF NOT EXISTS "reports" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE CASCADE,
+        "title" text NOT NULL,
+        "report_month" text NOT NULL,
+        "gbp_calls" integer DEFAULT 0,
+        "gbp_directions" integer DEFAULT 0,
+        "gbp_views" integer DEFAULT 0,
+        "gsc_clicks" integer DEFAULT 0,
+        "gsc_impressions" integer DEFAULT 0,
+        "gsc_position" double precision DEFAULT 0,
+        "ga_users" integer DEFAULT 0,
+        "ga_sessions" integer DEFAULT 0,
+        "ga_views" integer DEFAULT 0,
+        "summary" text,
+        "work_completed" text,
+        "next_steps" text,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

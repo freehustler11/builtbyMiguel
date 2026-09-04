@@ -1,4 +1,4 @@
-import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { doublePrecision, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 /**
  * Messages table for storing Audit and Contact form inquiries
@@ -74,5 +74,55 @@ export const media = pgTable('media', {
 
 export type Media = typeof media.$inferSelect
 export type NewMedia = typeof media.$inferInsert
+
+/**
+ * Clients table for managing agency clients and their branding
+ */
+export const clients = pgTable('clients', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  businessName: text('business_name').notNull(),
+  websiteUrl: text('website_url'),
+  logoUrl: text('logo_url'),
+  primaryColor: text('primary_color').default('#2563eb'),
+  secondaryColor: text('secondary_color').default('#1e293b'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export type Client = typeof clients.$inferSelect
+export type NewClient = typeof clients.$inferInsert
+
+/**
+ * Reports table for monthly performance and analytics reports
+ */
+export const reports = pgTable('reports', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  clientId: uuid('client_id')
+    .notNull()
+    .references(() => clients.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  reportMonth: text('report_month').notNull(),
+  // GBP Metrics
+  gbpCalls: integer('gbp_calls').default(0),
+  gbpDirections: integer('gbp_directions').default(0),
+  gbpViews: integer('gbp_views').default(0),
+  // GSC Metrics
+  gscClicks: integer('gsc_clicks').default(0),
+  gscImpressions: integer('gsc_impressions').default(0),
+  gscPosition: doublePrecision('gsc_position').default(0),
+  // GA4 Metrics
+  gaUsers: integer('ga_users').default(0),
+  gaSessions: integer('ga_sessions').default(0),
+  gaViews: integer('ga_views').default(0),
+  // Narrative Fields
+  summary: text('summary'),
+  workCompleted: text('work_completed'),
+  nextSteps: text('next_steps'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export type Report = typeof reports.$inferSelect
+export type NewReport = typeof reports.$inferInsert
+
 
 

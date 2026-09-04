@@ -3,6 +3,8 @@ import {
   MessageSquare,
   FileText,
   ImageIcon,
+  Users,
+  BarChart3,
   ExternalLink,
   ShieldCheck,
   Activity,
@@ -11,7 +13,7 @@ import {
 import { LogoutButton } from './LogoutButton'
 
 interface AdminNavProps {
-  activeTab: 'messages' | 'posts' | 'media'
+  activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports'
   title: string
   description?: string
   actions?: React.ReactNode
@@ -65,6 +67,30 @@ export function AdminNav({ activeTab, title, description, actions }: AdminNavPro
             >
               <ImageIcon className="w-3.5 h-3.5" />
               <span>Media Library</span>
+            </Link>
+
+            <Link
+              to="/admin/clients"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'clients'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>Clients</span>
+            </Link>
+
+            <Link
+              to="/admin/reports"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'reports'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Reports</span>
             </Link>
           </nav>
         </div>
