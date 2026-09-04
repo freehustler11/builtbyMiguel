@@ -52,7 +52,7 @@ import {
   Lightbulb,
   Zap,
 } from 'lucide-react'
-import { requireAuth } from '../../lib/auth'
+import { requireSuperadmin } from '../../lib/auth'
 import {
   getAdminPostsServerFn,
   createPostServerFn,
@@ -81,8 +81,9 @@ export const Route = createFileRoute('/admin/posts')({
     }
   },
   beforeLoad: async ({ location }) => {
-    await requireAuth({ location })
+    await requireSuperadmin({ location })
   },
+
   loaderDeps: ({ search }) => ({
     status: search.status || 'all',
     q: search.q || '',

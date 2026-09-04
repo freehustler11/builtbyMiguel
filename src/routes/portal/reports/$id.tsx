@@ -1,4 +1,5 @@
 import { createFileRoute, redirect, Link } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { Printer, ArrowLeft } from 'lucide-react'
 import { checkAuthServerFn } from '../../../lib/auth'
 import { getReportByIdServerFn } from '../../../server/reports'
@@ -14,16 +15,23 @@ export const Route = createFileRoute('/portal/reports/$id')({
     }
   },
   loader: async ({ params }) => {
-    return await getReportByIdServerFn({ data: { id: params.id } })
+    try {
+      await checkAuthServerFn()
+      return await getReportByIdServerFn({ data: { id: params.id } })
+    } catch {
+      throw redirect({
+        to: '/portal',
+      })
+    }
   },
   head: ({ loaderData }) => {
-    const title = loaderData?.report?.title || 'Monthly Report'
     const clientName = loaderData?.client?.businessName || 'Client'
+    const reportMonth = loaderData?.report?.reportMonth || 'Monthly'
     return {
       meta: [
         { charSet: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-        { title: `${title} | ${clientName} Portal` },
+        { title: `${clientName} - ${reportMonth} Performance Report` },
         { name: 'robots', content: 'noindex, nofollow' },
       ],
     }
@@ -33,6 +41,12 @@ export const Route = createFileRoute('/portal/reports/$id')({
 
 function ClientPortalReportPage() {
   const { report, client } = Route.useLoaderData()
+
+  useEffect(() => {
+    if (client?.businessName && report?.reportMonth) {
+      document.title = `${client.businessName} - ${report.reportMonth} Performance Report`
+    }
+  }, [client?.businessName, report?.reportMonth])
 
   const handlePrint = () => {
     window.print()

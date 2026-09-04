@@ -97,15 +97,17 @@ export async function runMigrations() {
     await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "is_white_label" boolean DEFAULT false NOT NULL`
     await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "partner_name" text`
     await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "partner_logo_url" text`
+    await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "partner_id" uuid REFERENCES "users"("id") ON DELETE SET NULL`
+    await sql`CREATE INDEX IF NOT EXISTS "clients_partner_id_idx" ON "clients" ("partner_id")`
 
-    // 7. Ensure users table exists (RBAC: Admin vs Client Portal)
+    // 7. Ensure users table exists (RBAC: Superadmin vs Partner Agency)
     await sql`
       CREATE TABLE IF NOT EXISTS "users" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
         "email" text UNIQUE NOT NULL,
         "password_hash" text NOT NULL,
-        "role" text DEFAULT 'client' NOT NULL,
-        "client_id" uuid REFERENCES "clients"("id") ON DELETE CASCADE,
+        "role" text DEFAULT 'partner' NOT NULL,
+        "client_id" uuid,
         "name" text,
         "created_at" timestamp with time zone DEFAULT now() NOT NULL,
         "updated_at" timestamp with time zone DEFAULT now() NOT NULL
@@ -114,6 +116,8 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "users_client_id_idx" ON "users" ("client_id")`
     await sql`CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users" ("email")`
     await sql`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "is_active" boolean DEFAULT true NOT NULL`
+    await sql`UPDATE "users" SET "role" = 'superadmin' WHERE "role" = 'admin'`
+    await sql`ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'partner'`
 
     // 8. Ensure reports table exists
     await sql`
@@ -149,8 +153,45 @@ export async function runMigrations() {
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_ga_users" integer DEFAULT 0`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_ga_sessions" integer DEFAULT 0`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_ga_views" integer DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "gbp_reviews_count" integer DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_gbp_reviews_count" integer DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "gsc_ctr" double precision DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_gsc_ctr" double precision DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "ga_new_users" integer DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_ga_new_users" integer DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "ga_engagement_rate" double precision DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_ga_engagement_rate" double precision DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "display_options" jsonb DEFAULT '{"show_agency_info":false,"show_contact_person":true,"show_date_generated":false,"show_summary":true,"show_tables":true,"show_next_steps":true}'::jsonb`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "top_queries" jsonb DEFAULT '[]'::jsonb`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "top_pages" jsonb DEFAULT '[]'::jsonb`
+
+    // 9. Ensure media table isolation per partner
+    await sql`ALTER TABLE "media" ADD COLUMN IF NOT EXISTS "uploaded_by" uuid REFERENCES "users"("id") ON DELETE SET NULL`
+    await sql`ALTER TABLE "media" ADD COLUMN IF NOT EXISTS "partner_id" uuid REFERENCES "users"("id") ON DELETE CASCADE`
+    await sql`CREATE INDEX IF NOT EXISTS "media_partner_id_idx" ON "media" ("partner_id")`
+    await sql`CREATE INDEX IF NOT EXISTS "media_uploaded_by_idx" ON "media" ("uploaded_by")`
+
+    // 10. Ensure reports.client_id has ON DELETE CASCADE in PostgreSQL
+    await sql`
+      DO $$
+      DECLARE
+        r RECORD;
+      BEGIN
+        FOR r IN (
+          SELECT tc.constraint_name 
+          FROM information_schema.table_constraints AS tc 
+          JOIN information_schema.key_column_usage AS kcu
+            ON tc.constraint_name = kcu.constraint_name
+            AND tc.table_schema = kcu.table_schema
+          WHERE tc.constraint_type = 'FOREIGN KEY' 
+            AND tc.table_name = 'reports' 
+            AND kcu.column_name = 'client_id'
+        ) LOOP
+          EXECUTE 'ALTER TABLE "reports" DROP CONSTRAINT ' || quote_ident(r.constraint_name);
+        END LOOP;
+        ALTER TABLE "reports" ADD CONSTRAINT "reports_client_id_clients_id_fk" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE CASCADE;
+      END $$;
+    `
 
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {

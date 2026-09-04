@@ -30,7 +30,7 @@ import {
   Info,
   ArrowUpRight,
 } from 'lucide-react'
-import { requireAuth } from '../lib/auth'
+import { requireSuperadmin } from '../lib/auth'
 import {
   getMessagesServerFn,
   updateMessageStatusServerFn,
@@ -60,8 +60,9 @@ export const Route = createFileRoute('/messages')({
     }
   },
   beforeLoad: async ({ location }) => {
-    await requireAuth({ location })
+    await requireSuperadmin({ location })
   },
+
   loaderDeps: ({ search }) => ({
     status: search.status || 'all',
     type: search.type || 'all',

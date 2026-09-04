@@ -61,7 +61,25 @@ export type Post = typeof posts.$inferSelect
 export type NewPost = typeof posts.$inferInsert
 
 /**
- * Media table for storing uploaded images, documents, and assets
+ * Users table for role-based access control (Superadmin vs Partner Agency)
+ */
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: text('email').unique().notNull(),
+  passwordHash: text('password_hash').notNull(),
+  role: text('role', { enum: ['superadmin', 'partner'] }).default('partner').notNull(),
+  clientId: uuid('client_id'),
+  isActive: boolean('is_active').default(true).notNull(),
+  name: text('name'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export type User = typeof users.$inferSelect
+export type NewUser = typeof users.$inferInsert
+
+/**
+ * Media table for storing uploaded images, documents, and assets (isolated per partner)
  */
 export const media = pgTable('media', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -69,6 +87,8 @@ export const media = pgTable('media', {
   fileUrl: text('file_url').notNull(),
   mimeType: text('mime_type').notNull(),
   fileSize: integer('file_size').notNull(),
+  uploadedBy: uuid('uploaded_by').references(() => users.id, { onDelete: 'set null' }),
+  partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
@@ -90,29 +110,13 @@ export const clients = pgTable('clients', {
   isWhiteLabel: boolean('is_white_label').default(false).notNull(),
   partnerName: text('partner_name'),
   partnerLogoUrl: text('partner_logo_url'),
+  // Partner assignment (null = direct Superadmin client)
+  partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
 export type Client = typeof clients.$inferSelect
 export type NewClient = typeof clients.$inferInsert
-
-/**
- * Users table for role-based access control (Admin vs Client Portal)
- */
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  email: text('email').unique().notNull(),
-  passwordHash: text('password_hash').notNull(),
-  role: text('role', { enum: ['admin', 'client'] }).default('client').notNull(),
-  clientId: uuid('client_id').references(() => clients.id, { onDelete: 'cascade' }),
-  isActive: boolean('is_active').default(true).notNull(),
-  name: text('name'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-export type User = typeof users.$inferSelect
-export type NewUser = typeof users.$inferInsert
 
 /**
  * Reports table for monthly performance and analytics reports
@@ -137,22 +141,46 @@ export const reports = pgTable('reports', {
   // GBP Reputation
   gbpRating: doublePrecision('gbp_rating').default(5.0),
   gbpReviewCount: integer('gbp_review_count').default(0),
+  gbpReviewsCount: integer('gbp_reviews_count').default(0),
+  prevGbpReviewsCount: integer('prev_gbp_reviews_count').default(0),
   // GSC Metrics (Current)
   gscClicks: integer('gsc_clicks').default(0),
   gscImpressions: integer('gsc_impressions').default(0),
+  gscCtr: doublePrecision('gsc_ctr').default(0),
   gscPosition: doublePrecision('gsc_position').default(0),
   // GSC Metrics (Previous Month Comparison)
   prevGscClicks: integer('prev_gsc_clicks').default(0),
   prevGscImpressions: integer('prev_gsc_impressions').default(0),
+  prevGscCtr: doublePrecision('prev_gsc_ctr').default(0),
   prevGscPosition: doublePrecision('prev_gsc_position').default(0),
   // GA4 Metrics (Current)
   gaUsers: integer('ga_users').default(0),
+  gaNewUsers: integer('ga_new_users').default(0),
+  gaEngagementRate: doublePrecision('ga_engagement_rate').default(0),
   gaSessions: integer('ga_sessions').default(0),
   gaViews: integer('ga_views').default(0),
   // GA4 Metrics (Previous Month Comparison)
   prevGaUsers: integer('prev_ga_users').default(0),
+  prevGaNewUsers: integer('prev_ga_new_users').default(0),
+  prevGaEngagementRate: doublePrecision('prev_ga_engagement_rate').default(0),
   prevGaSessions: integer('prev_ga_sessions').default(0),
   prevGaViews: integer('prev_ga_views').default(0),
+  // Section Display Customizer Options (JSONB)
+  displayOptions: jsonb('display_options').$type<{
+    show_agency_info?: boolean
+    show_contact_person?: boolean
+    show_date_generated?: boolean
+    show_summary?: boolean
+    show_tables?: boolean
+    show_next_steps?: boolean
+  }>().default({
+    show_agency_info: false,
+    show_contact_person: true,
+    show_date_generated: false,
+    show_summary: true,
+    show_tables: true,
+    show_next_steps: true,
+  }),
   // Deep Metric Tables (JSONB)
   topQueries: jsonb('top_queries').$type<Array<{ query: string; clicks: number; impressions: number; position: number }>>().default([]),
   topPages: jsonb('top_pages').$type<Array<{ path: string; clicks: number; users: number }>>().default([]),

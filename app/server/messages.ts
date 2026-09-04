@@ -1,24 +1,18 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq } from 'drizzle-orm'
 import { db, messages, type Message } from '../db'
-import { verifySessionToken } from '../lib/auth'
-import { getCookie } from '@tanstack/react-start/server'
-
-const COOKIE_NAME = 'admin_session'
+import { assertSuperadminSession } from './auth'
 
 /**
- * Server Function: Fetch messages with optional status filter
+ * Server Function: Fetch messages with optional status filter (Superadmin only)
  */
 export const getMessagesServerFn = createServerFn({ method: 'GET' })
   .validator((data?: { status?: 'all' | 'new' | 'contacted' | 'archived'; search?: string }) => {
     return data || {}
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized access to messages')
-    }
+    await assertSuperadminSession()
+
 
     const { status = 'all', search } = data || {}
 
@@ -78,11 +72,7 @@ export const updateMessageStatusServerFn = createServerFn({ method: 'POST' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized')
-    }
+    await assertSuperadminSession()
 
     const [updated] = await db
       .update(messages)
@@ -94,7 +84,7 @@ export const updateMessageStatusServerFn = createServerFn({ method: 'POST' })
   })
 
 /**
- * Server Function: Delete a message permanently
+ * Server Function: Delete a message permanently (Superadmin only)
  */
 export const deleteMessageServerFn = createServerFn({ method: 'POST' })
   .validator((data: { id: string }) => {
@@ -104,12 +94,9 @@ export const deleteMessageServerFn = createServerFn({ method: 'POST' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized')
-    }
+    await assertSuperadminSession()
 
     await db.delete(messages).where(eq(messages.id, data.id))
     return { success: true }
   })
+

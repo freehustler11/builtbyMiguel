@@ -22,8 +22,9 @@ import {
   Loader2,
   Info,
   Layers,
+  Building2,
 } from 'lucide-react'
-import { checkAuthServerFn } from '../../lib/auth'
+import { checkAuthServerFn, requireAdmin } from '../../lib/auth'
 import { AdminNav } from '../../components/AdminNav'
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../components/Toast'
@@ -32,42 +33,45 @@ import {
   uploadMediaServerFn,
   deleteMediaServerFn,
 } from '../../server/media'
+import { getClientsServerFn } from '../../server/clients'
 import type { Media } from '../../db/schema'
 
 interface MediaSearch {
   type?: 'all' | 'images' | 'documents'
   q?: string
+  partnerId?: string
 }
 
 export const Route = createFileRoute('/admin/media')({
   validateSearch: (search: Record<string, unknown>): MediaSearch => {
+    const type = search.type as MediaSearch['type']
     return {
-      type:
-        search.type === 'images' || search.type === 'documents'
-          ? search.type
-          : 'all',
+      type: ['all', 'images', 'documents'].includes(type || '') ? type : 'all',
       q: typeof search.q === 'string' ? search.q : undefined,
+      partnerId: typeof search.partnerId === 'string' ? search.partnerId : undefined,
     }
   },
-  beforeLoad: async () => {
-    const { isAuthenticated } = await checkAuthServerFn()
-    if (!isAuthenticated) {
-      throw redirect({
-        to: '/login',
-        search: {
-          redirect: '/admin/media',
-        },
-      })
-    }
+  beforeLoad: async ({ location }) => {
+    await requireAdmin({ location })
   },
   loader: async ({ location }) => {
     const search = location.search as MediaSearch
-    return await getMediaServerFn({
-      data: {
-        type: search.type || 'all',
-        q: search.q,
-      },
-    })
+    const [mediaData, auth, clientsData] = await Promise.all([
+      getMediaServerFn({
+        data: {
+          type: search.type || 'all',
+          q: search.q,
+          partnerId: search.partnerId,
+        },
+      }),
+      checkAuthServerFn(),
+      getClientsServerFn(),
+    ])
+    return {
+      ...mediaData,
+      auth,
+      partners: clientsData.partners || [],
+    }
   },
   head: () => ({
     meta: [
@@ -112,8 +116,11 @@ function getFileIcon(mimeType: string) {
 function AdminMediaPage() {
   const router = useRouter()
   const navigate = Route.useNavigate()
-  const { type = 'all', q } = Route.useSearch()
-  const { media: mediaItems, storageInfo } = Route.useLoaderData()
+  const { type = 'all', q, partnerId } = Route.useSearch()
+  const { media: mediaItems, storageInfo, auth, partners } = Route.useLoaderData()
+
+  const isPartner = auth.role === 'partner'
+  const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
 
   // State
   const [searchInput, setSearchInput] = useState(q || '')
@@ -158,6 +165,7 @@ function AdminMediaPage() {
       search: {
         type,
         q: searchInput.trim() || undefined,
+        partnerId,
       },
     })
   }
@@ -168,6 +176,18 @@ function AdminMediaPage() {
       search: {
         type: newType,
         q: searchInput.trim() || undefined,
+        partnerId,
+      },
+    })
+  }
+
+  const handlePartnerFilter = (newPartnerId: string) => {
+    navigate({
+      to: '.',
+      search: {
+        type,
+        q: searchInput.trim() || undefined,
+        partnerId: newPartnerId === 'all' ? undefined : newPartnerId,
       },
     })
   }
@@ -196,6 +216,7 @@ function AdminMediaPage() {
             filename: file.name,
             mimeType: file.type || 'application/octet-stream',
             base64,
+            partnerId: partnerId || null,
           },
         })
         successful++
@@ -267,8 +288,13 @@ function AdminMediaPage() {
       {/* Navigation Header */}
       <AdminNav
         activeTab="media"
-        title="Media Library & File Manager"
-        description="Upload, organize, and manage image assets, case study attachments, and documents for blog posts and site components."
+        userRole={auth.role}
+        title={isPartner ? 'Partner Media Library' : 'Media Library & File Manager'}
+        description={
+          isPartner
+            ? 'Upload and manage image assets and documents for your agency and clients.'
+            : 'Upload, organize, and manage image assets, case study attachments, and documents for blog posts and site components.'
+        }
         actions={
           <div className="flex items-center gap-2.5">
             <button
@@ -466,47 +492,79 @@ function AdminMediaPage() {
         </div>
       </div>
 
-      {/* Filter Tabs, Search & Count */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Segmented Filter Switcher */}
-        <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-full md:w-auto">
-          <button
-            type="button"
-            onClick={() => handleTypeTab('all')}
-            className={`flex-1 md:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
-              type === 'all'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            All Files ({totalFiles})
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTypeTab('images')}
-            className={`flex-1 md:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
-              type === 'images'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Images ({imageCount})
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTypeTab('documents')}
-            className={`flex-1 md:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
-              type === 'documents'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Documents ({docCount})
-          </button>
+      {/* Filter Tabs, Partner Filter & Search Bar */}
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        {/* Left: Filter Switcher & Partner Filter */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Segmented Filter Switcher */}
+          <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => handleTypeTab('all')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                type === 'all'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              All ({totalFiles})
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTypeTab('images')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                type === 'images'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Images ({imageCount})
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTypeTab('documents')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                type === 'documents'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Docs ({docCount})
+            </button>
+          </div>
+
+          {/* Superadmin Partner Agency Filter Dropdown */}
+          {isSuperadmin && partners.length > 0 && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+              <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase">Agency:</span>
+              <select
+                value={partnerId || 'all'}
+                onChange={(e) => handlePartnerFilter(e.target.value)}
+                className="text-xs font-mono font-semibold bg-transparent text-slate-800 dark:text-white focus:outline-none cursor-pointer"
+              >
+                <option value="all">All Files (Global)</option>
+                <option value="direct">Direct Agency Only</option>
+                {partners.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name || p.email}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Partner Agency Indicator */}
+          {isPartner && (
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-xs font-mono font-semibold text-blue-700 dark:text-blue-300">
+              <Building2 className="w-3.5 h-3.5 text-blue-500" />
+              <span>Agency Media Workspace</span>
+            </div>
+          )}
         </div>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="relative w-full md:w-72">
+        <form onSubmit={handleSearchSubmit} className="relative w-full lg:w-72">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
@@ -591,6 +649,18 @@ function AdminMediaPage() {
                       <span>{formatFileSize(item.fileSize)}</span>
                       <span>{formatDate(item.createdAt)}</span>
                     </div>
+                    {isSuperadmin && item.partnerId && (
+                      <div className="pt-1">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-900/60 text-[10px] font-mono text-blue-600 dark:text-blue-400">
+                          <Building2 className="w-2.5 h-2.5" />
+                          <span>
+                            {partners.find((p) => p.id === item.partnerId)?.name ||
+                              partners.find((p) => p.id === item.partnerId)?.email ||
+                              'Partner File'}
+                          </span>
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Action Bar */}

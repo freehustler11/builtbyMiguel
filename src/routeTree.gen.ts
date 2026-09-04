@@ -37,6 +37,7 @@ import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/in
 import { Route as AdminReportsIdRouteImport } from './routes/admin/reports/$id'
 import { Route as AdminReportsNewRouteImport } from './routes/admin/reports/new'
 import { Route as PortalReportsIdRouteImport } from './routes/portal/reports/$id'
+import { Route as AdminReportsIdEditRouteImport } from './routes/admin/reports/$id.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -178,6 +179,11 @@ const PortalReportsIdRoute = PortalReportsIdRouteImport.update({
   path: '/reports/$id',
   getParentRoute: () => PortalRoute,
 } as any)
+const AdminReportsIdEditRoute = AdminReportsIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => AdminReportsIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -204,10 +210,11 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/admin/reports/$id': typeof AdminReportsIdRoute
+  '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
+  '/admin/reports/$id/edit': typeof AdminReportsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -232,10 +239,11 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/portal': typeof PortalIndexRoute
-  '/admin/reports/$id': typeof AdminReportsIdRoute
+  '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
   '/admin/reports': typeof AdminReportsIndexRoute
+  '/admin/reports/$id/edit': typeof AdminReportsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -263,10 +271,11 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
-  '/admin/reports/$id': typeof AdminReportsIdRoute
+  '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
+  '/admin/reports/$id/edit': typeof AdminReportsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -299,6 +308,7 @@ export interface FileRouteTypes {
     | '/admin/reports/new'
     | '/portal/reports/$id'
     | '/admin/reports/'
+    | '/admin/reports/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/admin/reports/new'
     | '/portal/reports/$id'
     | '/admin/reports'
+    | '/admin/reports/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -357,6 +368,7 @@ export interface FileRouteTypes {
     | '/admin/reports/new'
     | '/portal/reports/$id'
     | '/admin/reports/'
+    | '/admin/reports/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -579,15 +591,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalReportsIdRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/admin/reports/$id/edit': {
+      id: '/admin/reports/$id/edit'
+      path: '/edit'
+      fullPath: '/admin/reports/$id/edit'
+      preLoaderRoute: typeof AdminReportsIdEditRouteImport
+      parentRoute: typeof AdminReportsIdRoute
+    }
   }
 }
+
+interface AdminReportsIdRouteChildren {
+  AdminReportsIdEditRoute: typeof AdminReportsIdEditRoute
+}
+
+const AdminReportsIdRouteChildren: AdminReportsIdRouteChildren = {
+  AdminReportsIdEditRoute: AdminReportsIdEditRoute,
+}
+
+const AdminReportsIdRouteWithChildren = AdminReportsIdRoute._addFileChildren(
+  AdminReportsIdRouteChildren,
+)
 
 interface AdminRouteChildren {
   AdminClientsRoute: typeof AdminClientsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminIndexRoute: typeof AdminIndexRoute
-  AdminReportsIdRoute: typeof AdminReportsIdRoute
+  AdminReportsIdRoute: typeof AdminReportsIdRouteWithChildren
   AdminReportsNewRoute: typeof AdminReportsNewRoute
   AdminReportsIndexRoute: typeof AdminReportsIndexRoute
 }
@@ -597,7 +628,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMediaRoute: AdminMediaRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminIndexRoute: AdminIndexRoute,
-  AdminReportsIdRoute: AdminReportsIdRoute,
+  AdminReportsIdRoute: AdminReportsIdRouteWithChildren,
   AdminReportsNewRoute: AdminReportsNewRoute,
   AdminReportsIndexRoute: AdminReportsIndexRoute,
 }

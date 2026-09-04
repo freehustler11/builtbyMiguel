@@ -1,10 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq, and } from 'drizzle-orm'
 import { db, clients, reports, type Report, type Client } from '../db'
-import { getSessionData } from '../lib/auth'
-import { getCookie } from '@tanstack/react-start/server'
-
-const COOKIE_NAME = 'admin_session'
+import { assertActiveSession } from './auth'
 
 export interface QueryItem {
   query: string
@@ -17,6 +14,15 @@ export interface PageItem {
   path: string
   clicks: number
   users: number
+}
+
+export interface DisplayOptions {
+  show_agency_info?: boolean
+  show_contact_person?: boolean
+  show_date_generated?: boolean
+  show_summary?: boolean
+  show_tables?: boolean
+  show_next_steps?: boolean
 }
 
 export interface ReportWithClient extends Report {
@@ -39,10 +45,17 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
     return data || {}
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized access: Admin role required')
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized access: Admin or Partner role required')
+    }
+
+    const conditions = []
+    if (auth.role === 'partner') {
+      conditions.push(eq(clients.partnerId, auth.userId!))
+    }
+    if (data?.clientId) {
+      conditions.push(eq(reports.clientId, data.clientId))
     }
 
     let query = db
@@ -61,20 +74,30 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         prevGbpViews: reports.prevGbpViews,
         gbpRating: reports.gbpRating,
         gbpReviewCount: reports.gbpReviewCount,
+        gbpReviewsCount: reports.gbpReviewsCount,
+        prevGbpReviewsCount: reports.prevGbpReviewsCount,
         // GSC Metrics
         gscClicks: reports.gscClicks,
         gscImpressions: reports.gscImpressions,
+        gscCtr: reports.gscCtr,
         gscPosition: reports.gscPosition,
         prevGscClicks: reports.prevGscClicks,
         prevGscImpressions: reports.prevGscImpressions,
+        prevGscCtr: reports.prevGscCtr,
         prevGscPosition: reports.prevGscPosition,
         // GA4 Metrics
         gaUsers: reports.gaUsers,
+        gaNewUsers: reports.gaNewUsers,
+        gaEngagementRate: reports.gaEngagementRate,
         gaSessions: reports.gaSessions,
         gaViews: reports.gaViews,
         prevGaUsers: reports.prevGaUsers,
+        prevGaNewUsers: reports.prevGaNewUsers,
+        prevGaEngagementRate: reports.prevGaEngagementRate,
         prevGaSessions: reports.prevGaSessions,
         prevGaViews: reports.prevGaViews,
+        // Section Display Customizer
+        displayOptions: reports.displayOptions,
         // Deep Metric Tables
         topQueries: reports.topQueries,
         topPages: reports.topPages,
@@ -98,9 +121,12 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
       .innerJoin(clients, eq(reports.clientId, clients.id))
       .orderBy(desc(reports.createdAt))
 
-    if (data?.clientId) {
+    if (conditions.length === 1) {
       // @ts-expect-error drizzle query builder with where
-      query = query.where(eq(reports.clientId, data.clientId))
+      query = query.where(conditions[0])
+    } else if (conditions.length > 1) {
+      // @ts-expect-error drizzle query builder with where
+      query = query.where(and(...conditions))
     }
 
     const rows = await query
@@ -116,10 +142,19 @@ export const getLatestReportForClientServerFn = createServerFn({ method: 'GET' }
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized access')
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized access: Admin or Partner role required')
+    }
+
+    if (auth.role === 'partner') {
+      const [targetClient] = await db
+        .select()
+        .from(clients)
+        .where(and(eq(clients.id, data.clientId), eq(clients.partnerId, auth.userId!)))
+      if (!targetClient) {
+        throw new Error('Unauthorized: Client does not belong to your partner account')
+      }
     }
 
     const [latest] = await db
@@ -132,8 +167,10 @@ export const getLatestReportForClientServerFn = createServerFn({ method: 'GET' }
     return { report: latest || null }
   })
 
+
 /**
  * Server Function: Get a single report by ID with client branding
+ * IDOR Protection: Client users can only view reports where report.clientId === currentUser.clientId
  */
 export const getReportByIdServerFn = createServerFn({ method: 'GET' })
   .validator((data: { id: string }) => {
@@ -141,11 +178,7 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session) {
-      throw new Error('Unauthorized access')
-    }
+    const auth = await assertActiveSession()
 
     const [row] = await db
       .select({
@@ -160,8 +193,13 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
       throw new Error('Report not found')
     }
 
-    // Role-based security check
-    if (session.role === 'client' && session.clientId !== row.report.clientId) {
+    // Protection: Partner can ONLY view reports for their assigned clients
+    if (auth.role === 'partner' && row.client.partnerId !== auth.userId) {
+      throw new Error('Unauthorized: You do not have permission to view this report')
+    }
+
+    // IDOR Protection: Client users can ONLY view their own client's report
+    if (auth.role === 'client' && (!auth.clientId || auth.clientId !== row.report.clientId)) {
       throw new Error('Unauthorized: You do not have permission to view this report')
     }
 
@@ -173,16 +211,12 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
  */
 export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session) {
-      throw new Error('Unauthorized access: Please log in')
-    }
+    const auth = await assertActiveSession()
 
-    let targetClientId = session.clientId
+    let targetClientId = auth.clientId
 
     // If admin is viewing portal without specific clientId, pick the first client
-    if (session.role === 'admin' && !targetClientId) {
+    if (auth.role === 'admin' && !targetClientId) {
       const [firstClient] = await db.select().from(clients).limit(1)
       if (firstClient) {
         targetClientId = firstClient.id
@@ -212,7 +246,7 @@ export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handle
 )
 
 /**
- * Server Function: Create a new report (Admin only)
+ * Server Function: Create a new report (Admin or Partner)
  */
 export const createReportServerFn = createServerFn({ method: 'POST' })
   .validator(
@@ -229,18 +263,27 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       prevGbpViews?: number
       gbpRating?: number
       gbpReviewCount?: number
+      gbpReviewsCount?: number
+      prevGbpReviewsCount?: number
       gscClicks?: number
       gscImpressions?: number
+      gscCtr?: number
       gscPosition?: number
       prevGscClicks?: number
       prevGscImpressions?: number
+      prevGscCtr?: number
       prevGscPosition?: number
       gaUsers?: number
+      gaNewUsers?: number
+      gaEngagementRate?: number
       gaSessions?: number
       gaViews?: number
       prevGaUsers?: number
+      prevGaNewUsers?: number
+      prevGaEngagementRate?: number
       prevGaSessions?: number
       prevGaViews?: number
+      displayOptions?: DisplayOptions
       topQueries?: QueryItem[]
       topPages?: PageItem[]
       summary?: string
@@ -254,11 +297,22 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
     }
   )
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
     }
+
+    if (auth.role === 'partner') {
+      const [targetClient] = await db
+        .select()
+        .from(clients)
+        .where(and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, auth.userId!)))
+      if (!targetClient) {
+        throw new Error('Unauthorized: You can only create reports for your assigned clients')
+      }
+    }
+
+    const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
 
     const [created] = await db
       .insert(reports)
@@ -277,23 +331,40 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         prevGbpViews: Number(data.prevGbpViews) || 0,
         // GBP Reputation
         gbpRating: Number(data.gbpRating) || 5.0,
-        gbpReviewCount: Number(data.gbpReviewCount) || 0,
+        gbpReviewCount: reviewsCount,
+        gbpReviewsCount: reviewsCount,
+        prevGbpReviewsCount: Number(data.prevGbpReviewsCount) || 0,
         // GSC Current
         gscClicks: Number(data.gscClicks) || 0,
         gscImpressions: Number(data.gscImpressions) || 0,
+        gscCtr: Number(data.gscCtr) || 0,
         gscPosition: Number(data.gscPosition) || 0,
         // GSC Previous
         prevGscClicks: Number(data.prevGscClicks) || 0,
         prevGscImpressions: Number(data.prevGscImpressions) || 0,
+        prevGscCtr: Number(data.prevGscCtr) || 0,
         prevGscPosition: Number(data.prevGscPosition) || 0,
         // GA4 Current
         gaUsers: Number(data.gaUsers) || 0,
+        gaNewUsers: Number(data.gaNewUsers) || 0,
+        gaEngagementRate: Number(data.gaEngagementRate) || 0,
         gaSessions: Number(data.gaSessions) || 0,
         gaViews: Number(data.gaViews) || 0,
         // GA4 Previous
         prevGaUsers: Number(data.prevGaUsers) || 0,
+        prevGaNewUsers: Number(data.prevGaNewUsers) || 0,
+        prevGaEngagementRate: Number(data.prevGaEngagementRate) || 0,
         prevGaSessions: Number(data.prevGaSessions) || 0,
         prevGaViews: Number(data.prevGaViews) || 0,
+        // Display Options
+        displayOptions: data.displayOptions || {
+          show_agency_info: false,
+          show_contact_person: true,
+          show_date_generated: false,
+          show_summary: true,
+          show_tables: true,
+          show_next_steps: true,
+        },
         // Deep Metric Tables
         topQueries: Array.isArray(data.topQueries) ? data.topQueries : [],
         topPages: Array.isArray(data.topPages) ? data.topPages : [],
@@ -308,7 +379,7 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
   })
 
 /**
- * Server Function: Update an existing report (Admin only)
+ * Server Function: Update an existing report (Admin or Partner)
  */
 export const updateReportServerFn = createServerFn({ method: 'POST' })
   .validator(
@@ -326,18 +397,27 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       prevGbpViews?: number
       gbpRating?: number
       gbpReviewCount?: number
+      gbpReviewsCount?: number
+      prevGbpReviewsCount?: number
       gscClicks?: number
       gscImpressions?: number
+      gscCtr?: number
       gscPosition?: number
       prevGscClicks?: number
       prevGscImpressions?: number
+      prevGscCtr?: number
       prevGscPosition?: number
       gaUsers?: number
+      gaNewUsers?: number
+      gaEngagementRate?: number
       gaSessions?: number
       gaViews?: number
       prevGaUsers?: number
+      prevGaNewUsers?: number
+      prevGaEngagementRate?: number
       prevGaSessions?: number
       prevGaViews?: number
+      displayOptions?: DisplayOptions
       topQueries?: QueryItem[]
       topPages?: PageItem[]
       summary?: string
@@ -352,54 +432,85 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
     }
   )
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
+    }
+
+    if (auth.role === 'partner') {
+      const [targetReport] = await db
+        .select({ clientId: reports.clientId })
+        .from(reports)
+        .where(eq(reports.id, data.id))
+      if (!targetReport) throw new Error('Report not found')
+
+      const [targetClient] = await db
+        .select()
+        .from(clients)
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, auth.userId!)))
+      if (!targetClient) {
+        throw new Error('Unauthorized: You can only edit reports for your assigned clients')
+      }
+    }
+
+    const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
+
+    const updatePayload: Record<string, any> = {
+      clientId: data.clientId.trim(),
+      title: data.title.trim(),
+      reportMonth: data.reportMonth.trim(),
+      previousReportId: data.previousReportId || null,
+      // GBP Current
+      gbpCalls: Number(data.gbpCalls) || 0,
+      gbpDirections: Number(data.gbpDirections) || 0,
+      gbpViews: Number(data.gbpViews) || 0,
+      // GBP Previous
+      prevGbpCalls: Number(data.prevGbpCalls) || 0,
+      prevGbpDirections: Number(data.prevGbpDirections) || 0,
+      prevGbpViews: Number(data.prevGbpViews) || 0,
+      // GBP Reputation
+      gbpRating: Number(data.gbpRating) || 5.0,
+      gbpReviewCount: reviewsCount,
+      gbpReviewsCount: reviewsCount,
+      prevGbpReviewsCount: Number(data.prevGbpReviewsCount) || 0,
+      // GSC Current
+      gscClicks: Number(data.gscClicks) || 0,
+      gscImpressions: Number(data.gscImpressions) || 0,
+      gscCtr: Number(data.gscCtr) || 0,
+      gscPosition: Number(data.gscPosition) || 0,
+      // GSC Previous
+      prevGscClicks: Number(data.prevGscClicks) || 0,
+      prevGscImpressions: Number(data.prevGscImpressions) || 0,
+      prevGscCtr: Number(data.prevGscCtr) || 0,
+      prevGscPosition: Number(data.prevGscPosition) || 0,
+      // GA4 Current
+      gaUsers: Number(data.gaUsers) || 0,
+      gaNewUsers: Number(data.gaNewUsers) || 0,
+      gaEngagementRate: Number(data.gaEngagementRate) || 0,
+      gaSessions: Number(data.gaSessions) || 0,
+      gaViews: Number(data.gaViews) || 0,
+      // GA4 Previous
+      prevGaUsers: Number(data.prevGaUsers) || 0,
+      prevGaNewUsers: Number(data.prevGaNewUsers) || 0,
+      prevGaEngagementRate: Number(data.prevGaEngagementRate) || 0,
+      prevGaSessions: Number(data.prevGaSessions) || 0,
+      prevGaViews: Number(data.prevGaViews) || 0,
+      // Deep Metric Tables
+      topQueries: Array.isArray(data.topQueries) ? data.topQueries : [],
+      topPages: Array.isArray(data.topPages) ? data.topPages : [],
+      // Narrative Fields
+      summary: data.summary?.trim() || null,
+      workCompleted: data.workCompleted?.trim() || null,
+      nextSteps: data.nextSteps?.trim() || null,
+    }
+
+    if (data.displayOptions) {
+      updatePayload.displayOptions = data.displayOptions
     }
 
     const [updated] = await db
       .update(reports)
-      .set({
-        clientId: data.clientId.trim(),
-        title: data.title.trim(),
-        reportMonth: data.reportMonth.trim(),
-        previousReportId: data.previousReportId || null,
-        // GBP Current
-        gbpCalls: Number(data.gbpCalls) || 0,
-        gbpDirections: Number(data.gbpDirections) || 0,
-        gbpViews: Number(data.gbpViews) || 0,
-        // GBP Previous
-        prevGbpCalls: Number(data.prevGbpCalls) || 0,
-        prevGbpDirections: Number(data.prevGbpDirections) || 0,
-        prevGbpViews: Number(data.prevGbpViews) || 0,
-        // GBP Reputation
-        gbpRating: Number(data.gbpRating) || 5.0,
-        gbpReviewCount: Number(data.gbpReviewCount) || 0,
-        // GSC Current
-        gscClicks: Number(data.gscClicks) || 0,
-        gscImpressions: Number(data.gscImpressions) || 0,
-        gscPosition: Number(data.gscPosition) || 0,
-        // GSC Previous
-        prevGscClicks: Number(data.prevGscClicks) || 0,
-        prevGscImpressions: Number(data.prevGscImpressions) || 0,
-        prevGscPosition: Number(data.prevGscPosition) || 0,
-        // GA4 Current
-        gaUsers: Number(data.gaUsers) || 0,
-        gaSessions: Number(data.gaSessions) || 0,
-        gaViews: Number(data.gaViews) || 0,
-        // GA4 Previous
-        prevGaUsers: Number(data.prevGaUsers) || 0,
-        prevGaSessions: Number(data.prevGaSessions) || 0,
-        prevGaViews: Number(data.prevGaViews) || 0,
-        // Deep Metric Tables
-        topQueries: Array.isArray(data.topQueries) ? data.topQueries : [],
-        topPages: Array.isArray(data.topPages) ? data.topPages : [],
-        // Narrative Fields
-        summary: data.summary?.trim() || null,
-        workCompleted: data.workCompleted?.trim() || null,
-        nextSteps: data.nextSteps?.trim() || null,
-      })
+      .set(updatePayload)
       .where(eq(reports.id, data.id))
       .returning()
 
@@ -407,7 +518,60 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
   })
 
 /**
- * Server Function: Delete a report (Admin only)
+ * Server Function: Update report section display options in real-time
+ */
+export const updateReportDisplayOptionsServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { id: string; displayOptions: Partial<DisplayOptions> }) => {
+    if (!data.id) throw new Error('Report ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
+    }
+
+    const [targetReport] = await db
+      .select({ clientId: reports.clientId, displayOptions: reports.displayOptions })
+      .from(reports)
+      .where(eq(reports.id, data.id))
+
+    if (!targetReport) throw new Error('Report not found')
+
+    if (auth.role === 'partner') {
+      const [targetClient] = await db
+        .select()
+        .from(clients)
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, auth.userId!)))
+      if (!targetClient) {
+        throw new Error('Unauthorized: You can only edit reports for your assigned clients')
+      }
+    }
+
+    const mergedOptions = {
+      show_agency_info: false,
+      show_contact_person: true,
+      show_date_generated: false,
+      show_summary: true,
+      show_tables: true,
+      show_next_steps: true,
+      ...(targetReport.displayOptions || {}),
+      ...data.displayOptions,
+    }
+
+    const [updated] = await db
+      .update(reports)
+      .set({
+        displayOptions: mergedOptions,
+      })
+      .where(eq(reports.id, data.id))
+      .returning({ id: reports.id, displayOptions: reports.displayOptions })
+
+    return { success: true, displayOptions: updated?.displayOptions }
+  })
+
+/**
+ * Server Function: Delete a report (Admin or Partner)
  */
 export const deleteReportServerFn = createServerFn({ method: 'POST' })
   .validator((data: { id: string }) => {
@@ -415,13 +579,29 @@ export const deleteReportServerFn = createServerFn({ method: 'POST' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
+    }
+
+    if (auth.role === 'partner') {
+      const [targetReport] = await db
+        .select({ clientId: reports.clientId })
+        .from(reports)
+        .where(eq(reports.id, data.id))
+      if (!targetReport) throw new Error('Report not found')
+
+      const [targetClient] = await db
+        .select()
+        .from(clients)
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, auth.userId!)))
+      if (!targetClient) {
+        throw new Error('Unauthorized: You can only delete reports for your assigned clients')
+      }
     }
 
     await db.delete(reports).where(eq(reports.id, data.id))
     return { success: true }
   })
+
 

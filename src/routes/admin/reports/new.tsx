@@ -24,7 +24,7 @@ import {
   Search,
   FileSpreadsheet,
 } from 'lucide-react'
-import { checkAuthServerFn } from '../../../lib/auth'
+import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { ToastContainer, type ToastMessage } from '../../../components/Toast'
 import { getClientsServerFn } from '../../../server/clients'
 import {
@@ -48,22 +48,10 @@ export const Route = createFileRoute('/admin/reports/new')({
       editId: typeof search.editId === 'string' ? search.editId : undefined,
     }
   },
-  beforeLoad: async () => {
-    const { isAuthenticated, role } = await checkAuthServerFn()
-    if (!isAuthenticated) {
-      throw redirect({
-        to: '/login',
-        search: {
-          redirect: '/admin/reports/new',
-        },
-      })
-    }
-    if (role !== 'admin') {
-      throw redirect({
-        to: '/portal',
-      })
-    }
+  beforeLoad: async ({ location }) => {
+    await requireAdmin({ location })
   },
+
   loader: async ({ search }) => {
     const [{ clients }, existingReportData] = await Promise.all([
       getClientsServerFn(),
@@ -71,6 +59,16 @@ export const Route = createFileRoute('/admin/reports/new')({
         ? getReportByIdServerFn({ data: { id: search.editId } }).catch(() => null)
         : Promise.resolve(null),
     ])
+
+    if (search.editId && (!existingReportData || !existingReportData.report)) {
+      throw redirect({
+        to: '/admin/reports',
+        search: {
+          error: 'access_denied',
+        },
+      })
+    }
+
     return {
       clients,
       existingReport: existingReportData?.report || null,
@@ -145,7 +143,19 @@ function AdminReportFormPage() {
 
   // GBP Reputation
   const [gbpRating, setGbpRating] = useState<number | string>(existingReport?.gbpRating ?? 5.0)
-  const [gbpReviewCount, setGbpReviewCount] = useState<number | string>(existingReport?.gbpReviewCount ?? 0)
+  const [gbpReviewCount, setGbpReviewCount] = useState<number | string>(existingReport?.gbpReviewsCount ?? existingReport?.gbpReviewCount ?? 0)
+  const [gbpReviewsCount, setGbpReviewsCount] = useState<number | string>(existingReport?.gbpReviewsCount ?? existingReport?.gbpReviewCount ?? 0)
+  const [prevGbpReviewsCount, setPrevGbpReviewsCount] = useState<number | string>(existingReport?.prevGbpReviewsCount ?? 0)
+
+  // GSC Metrics - CTR
+  const [gscCtr, setGscCtr] = useState<number | string>(existingReport?.gscCtr ?? 0)
+  const [prevGscCtr, setPrevGscCtr] = useState<number | string>(existingReport?.prevGscCtr ?? 0)
+
+  // GA4 Metrics - Engagement Rate & New Users
+  const [gaEngagementRate, setGaEngagementRate] = useState<number | string>(existingReport?.gaEngagementRate ?? 0)
+  const [prevGaEngagementRate, setPrevGaEngagementRate] = useState<number | string>(existingReport?.prevGaEngagementRate ?? 0)
+  const [gaNewUsers, setGaNewUsers] = useState<number | string>(existingReport?.gaNewUsers ?? 0)
+  const [prevGaNewUsers, setPrevGaNewUsers] = useState<number | string>(existingReport?.prevGaNewUsers ?? 0)
 
   // GSC Metrics - Current
   const [gscClicks, setGscClicks] = useState<number | string>(existingReport?.gscClicks ?? 0)
@@ -255,6 +265,10 @@ function AdminReportFormPage() {
       setPrevGaUsers(p.gaUsers ?? 0)
       setPrevGaSessions(p.gaSessions ?? 0)
       setPrevGaViews(p.gaViews ?? 0)
+      setPrevGbpReviewsCount(p.gbpReviewsCount ?? p.gbpReviewCount ?? 0)
+      setPrevGscCtr(p.gscCtr ?? 0)
+      setPrevGaEngagementRate(p.gaEngagementRate ?? 0)
+      setPrevGaNewUsers(p.gaNewUsers ?? 0)
 
       addToast(
         'Prior Metrics Loaded',
@@ -282,6 +296,74 @@ function AdminReportFormPage() {
       next[idx] = { ...next[idx], [field]: value }
       return next
     })
+  }
+
+  const handleDraftSummaryFromMetrics = () => {
+    const callsNum = Number(gbpCalls) || 0
+    const prevCallsNum = Number(prevGbpCalls) || 0
+    const dirNum = Number(gbpDirections) || 0
+    const prevDirNum = Number(prevGbpDirections) || 0
+    const gbpRatingNum = Number(gbpRating) || 5.0
+    const reviewsNum = Number(gbpReviewsCount) || Number(gbpReviewCount) || 0
+
+    const clicksNum = Number(gscClicks) || 0
+    const prevClicksNum = Number(prevGscClicks) || 0
+    const impNum = Number(gscImpressions) || 0
+    const posNum = Number(gscPosition) || 0
+    const ctrNum = Number(gscCtr) || 0
+
+    const usersNum = Number(gaUsers) || 0
+    const prevUsersNum = Number(prevGaUsers) || 0
+    const newUsersNum = Number(gaNewUsers) || 0
+    const sessionsNum = Number(gaSessions) || 0
+    const engRateNum = Number(gaEngagementRate) || 0
+
+    const calcDiff = (curr: number, prev: number) => {
+      if (prev <= 0) return curr > 0 ? '+100%' : '0%'
+      const pct = Math.round(((curr - prev) / prev) * 100)
+      return pct >= 0 ? `+${pct}%` : `${pct}%`
+    }
+
+    // Bullet 1: Traffic & Organic Search Visibility
+    let bullet1 = ''
+    if (clicksNum > 0 || impNum > 0) {
+      const clickDiff = calcDiff(clicksNum, prevClicksNum)
+      bullet1 = `• Organic Search Visibility: Generated ${clicksNum.toLocaleString()} organic search clicks (${clickDiff} MoM) across ${impNum.toLocaleString()} search impressions, maintaining an average search ranking position of ${posNum > 0 ? posNum.toFixed(1) : 'top 10'}${ctrNum > 0 ? ` with a ${ctrNum.toFixed(1)}% CTR` : ''}.`
+    } else if (usersNum > 0) {
+      const userDiff = calcDiff(usersNum, prevUsersNum)
+      bullet1 = `• Website Audience Growth: Reached ${usersNum.toLocaleString()} total visitors (${userDiff} MoM)${newUsersNum > 0 ? ` including ${newUsersNum.toLocaleString()} first-time visitors` : ''} across ${sessionsNum.toLocaleString()} active browsing sessions.`
+    } else {
+      bullet1 = `• Digital Presence Baseline: Search and website tracking channels active for ${reportMonth}, monitoring ongoing search impressions and audience acquisition.`
+    }
+
+    // Bullet 2: Direct Inquiries & Engagement
+    let bullet2 = ''
+    if (callsNum > 0 || dirNum > 0) {
+      const callDiff = calcDiff(callsNum, prevCallsNum)
+      bullet2 = `• High-Intent Conversion: Captured ${callsNum.toLocaleString()} direct phone inquiries (${callDiff} MoM) and ${dirNum.toLocaleString()} map direction requests on Google Business Profile, backed by a strong ${gbpRatingNum.toFixed(1)}★ rating across ${reviewsNum} verified reviews.`
+    } else if (engRateNum > 0 || sessionsNum > 0) {
+      bullet2 = `• On-Site Engagement: Sustained a solid ${engRateNum > 0 ? `${engRateNum.toFixed(1)}% engagement rate` : 'session depth'} across ${sessionsNum.toLocaleString()} visits, reflecting high commercial relevance among incoming visitors.`
+    } else {
+      bullet2 = `• Local Authority & Trust: Maintained Google Business Profile visibility at ${gbpRatingNum.toFixed(1)}★ rating across ${reviewsNum} customer reviews to drive local search trust.`
+    }
+
+    // Bullet 3: Strategic Opportunity & Recommended Focus
+    let bullet3 = ''
+    if (prevClicksNum > 0 && clicksNum < prevClicksNum) {
+      bullet3 = `• Strategic Focus: Address slight dip in search clicks by expanding target keyword coverage, refreshing core landing page meta titles, and accelerating local link acquisition.`
+    } else if (prevCallsNum > 0 && callsNum < prevCallsNum) {
+      bullet3 = `• Strategic Focus: Boost local lead conversion with targeted call-to-actions, updated business hours/promotions on Google Maps, and review velocity campaigns.`
+    } else if (ctrNum > 0 && ctrNum < 2.5) {
+      bullet3 = `• Strategic Focus: Optimize title tags and meta descriptions for high-impression search queries to push organic CTR above 3.0% and capture untapped search demand.`
+    } else if (posNum > 15) {
+      bullet3 = `• Strategic Focus: Target striking-distance keyword rankings (positions 11-20) with technical schema updates and internal link optimization to move them onto page 1.`
+    } else {
+      bullet3 = `• Strategic Focus: Capitalize on positive momentum by scaling high-converting landing pages, building niche local citations, and capturing fresh client testimonials.`
+    }
+
+    const generated = `${bullet1}\n${bullet2}\n${bullet3}`
+    setSummary(generated)
+    addToast('Summary Drafted', 'Generated 3-bullet dynamic summary from current metrics!', 'success')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -337,21 +419,29 @@ function AdminReportFormPage() {
         prevGbpViews: Number(prevGbpViews) || 0,
         // GBP Reputation
         gbpRating: Number(gbpRating) || 5.0,
-        gbpReviewCount: Number(gbpReviewCount) || 0,
+        gbpReviewCount: Number(gbpReviewsCount || gbpReviewCount) || 0,
+        gbpReviewsCount: Number(gbpReviewsCount || gbpReviewCount) || 0,
+        prevGbpReviewsCount: Number(prevGbpReviewsCount) || 0,
         // GSC Current
         gscClicks: Number(gscClicks) || 0,
         gscImpressions: Number(gscImpressions) || 0,
+        gscCtr: Number(gscCtr) || 0,
         gscPosition: Number(gscPosition) || 0,
         // GSC Previous
         prevGscClicks: Number(prevGscClicks) || 0,
         prevGscImpressions: Number(prevGscImpressions) || 0,
+        prevGscCtr: Number(prevGscCtr) || 0,
         prevGscPosition: Number(prevGscPosition) || 0,
         // GA4 Current
         gaUsers: Number(gaUsers) || 0,
+        gaNewUsers: Number(gaNewUsers) || 0,
+        gaEngagementRate: Number(gaEngagementRate) || 0,
         gaSessions: Number(gaSessions) || 0,
         gaViews: Number(gaViews) || 0,
         // GA4 Previous
         prevGaUsers: Number(prevGaUsers) || 0,
+        prevGaNewUsers: Number(prevGaNewUsers) || 0,
+        prevGaEngagementRate: Number(prevGaEngagementRate) || 0,
         prevGaSessions: Number(prevGaSessions) || 0,
         prevGaViews: Number(prevGaViews) || 0,
         // Deep Metric Tables
@@ -658,6 +748,37 @@ function AdminReportFormPage() {
                       />
                     </div>
                   </div>
+
+                  {/* Reviews Count (Current vs Prior) */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                        Reviews (Current)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={gbpReviewsCount}
+                        onChange={(e) => {
+                          setGbpReviewsCount(e.target.value)
+                          setGbpReviewCount(e.target.value)
+                        }}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                        Prior Month
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={prevGbpReviewsCount}
+                        onChange={(e) => setPrevGbpReviewsCount(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Card 2: Google Search Console (GSC) */}
@@ -752,6 +873,36 @@ function AdminReportFormPage() {
                       />
                     </div>
                   </div>
+
+                  {/* Click-Through Rate (CTR %) */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                        CTR % (Current)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        value={gscCtr}
+                        onChange={(e) => setGscCtr(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                        Prior Month
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        value={prevGscCtr}
+                        onChange={(e) => setPrevGscCtr(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Card 3: Google Analytics 4 (GA4) */}
@@ -840,6 +991,64 @@ function AdminReportFormPage() {
                         min="0"
                         value={prevGaViews}
                         onChange={(e) => setPrevGaViews(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* New Users */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                        New Users (Current)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={gaNewUsers}
+                        onChange={(e) => setGaNewUsers(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                        Prior Month
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={prevGaNewUsers}
+                        onChange={(e) => setPrevGaNewUsers(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Engagement Rate % */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                        Eng. Rate % (Current)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        value={gaEngagementRate}
+                        onChange={(e) => setGaEngagementRate(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                        Prior Month
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        value={prevGaEngagementRate}
+                        onChange={(e) => setPrevGaEngagementRate(e.target.value)}
                         className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
                       />
                     </div>
@@ -972,9 +1181,20 @@ function AdminReportFormPage() {
 
               {/* Executive Summary */}
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                  Executive Summary
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    Executive Summary
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleDraftSummaryFromMetrics}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold font-mono text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition cursor-pointer shadow-2xs"
+                    title="Draft 3 structured bullet points based on live metrics"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+                    <span>⚡ Draft Summary from Metrics</span>
+                  </button>
+                </div>
                 <textarea
                   rows={4}
                   value={summary}

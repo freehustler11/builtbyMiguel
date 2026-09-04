@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   Activity,
   Database,
+  Building2,
 } from 'lucide-react'
 import { LogoutButton } from './LogoutButton'
 
@@ -17,45 +18,59 @@ interface AdminNavProps {
   title: string
   description?: string
   actions?: React.ReactNode
+  userRole?: 'superadmin' | 'partner' | 'admin' | string | null
 }
 
-export function AdminNav({ activeTab, title, description, actions }: AdminNavProps) {
+export function AdminNav({ activeTab, title, description, actions, userRole }: AdminNavProps) {
+  const isPartner = userRole === 'partner'
+
   return (
     <div className="space-y-6 pb-6 border-b border-slate-200 dark:border-slate-800">
       {/* Top Bar: Admin Branding, System Health, Tabs, and Logout */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Left: Brand Badge & Tabs */}
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-transparent dark:from-rose-950/50 dark:via-rose-950/20 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50 text-xs font-mono font-bold tracking-wide shadow-xs">
-            <ShieldCheck className="w-4 h-4 text-rose-500 shrink-0" />
-            <span>built by Miguel · Admin</span>
-          </div>
+          {isPartner ? (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-transparent dark:from-blue-950/50 dark:via-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-200/80 dark:border-blue-900/50 text-xs font-mono font-bold tracking-wide shadow-xs">
+              <Building2 className="w-4 h-4 text-blue-500 shrink-0" />
+              <span>Partner Agency Portal</span>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-transparent dark:from-rose-950/50 dark:via-rose-950/20 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50 text-xs font-mono font-bold tracking-wide shadow-xs">
+              <ShieldCheck className="w-4 h-4 text-rose-500 shrink-0" />
+              <span>built by Miguel · Superadmin</span>
+            </div>
+          )}
 
           {/* Navigation Segmented Switcher */}
           <nav className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-inner">
-            <Link
-              to="/messages"
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'messages'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>Inbound Leads</span>
-            </Link>
+            {!isPartner && (
+              <>
+                <Link
+                  to="/messages"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    activeTab === 'messages'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Inbound Leads</span>
+                </Link>
 
-            <Link
-              to="/admin/posts"
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'posts'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Blog CMS</span>
-            </Link>
+                <Link
+                  to="/admin/posts"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    activeTab === 'posts'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Blog CMS</span>
+                </Link>
+              </>
+            )}
 
             <Link
               to="/admin/media"
@@ -94,6 +109,7 @@ export function AdminNav({ activeTab, title, description, actions }: AdminNavPro
             </Link>
           </nav>
         </div>
+
 
         {/* Right: Live Connection Indicator, Public Preview & Logout */}
         <div className="flex items-center flex-wrap gap-2.5 sm:gap-3">

@@ -1,78 +1,92 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq } from 'drizzle-orm'
 import { db, clients, reports, users, type Client } from '../db'
-import { getSessionData, hashPassword } from '../lib/auth'
-import { getCookie } from '@tanstack/react-start/server'
-
-const COOKIE_NAME = 'admin_session'
+import { assertActiveSession } from './auth'
 
 export interface ClientWithReportCount extends Client {
   reportCount: number
-  portalUser?: {
+  partner?: {
     id: string
+    name: string | null
     email: string
-    isActive: boolean
-    createdAt: Date | string
   } | null
 }
 
+export interface PartnerSummary {
+  id: string
+  name: string | null
+  email: string
+  isActive: boolean
+}
+
 /**
- * Server Function: Get all clients with report counts and portal user logins
+ * Server Function: Get clients with report counts and partner info.
+ * If user is a partner, scopes results strictly to clients where partner_id === auth.userId.
  */
 export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
-  async () => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized access')
+  async (): Promise<{ clients: ClientWithReportCount[]; partners: PartnerSummary[] }> => {
+    const auth = await assertActiveSession()
+
+    // 1. If user is a partner, only fetch their assigned clients
+    if (auth.role === 'partner') {
+      const partnerClients = await db
+        .select()
+        .from(clients)
+        .where(eq(clients.partnerId, auth.userId!))
+        .orderBy(desc(clients.createdAt))
+
+      const allReports = await db.select({ clientId: reports.clientId }).from(reports)
+      const countMap: Record<string, number> = {}
+      for (const r of allReports) {
+        countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+      }
+
+      const clientList: ClientWithReportCount[] = partnerClients.map((c) => ({
+        ...c,
+        reportCount: countMap[c.id] || 0,
+        partner: null,
+      }))
+
+      return { clients: clientList, partners: [] }
     }
 
+    // 2. Superadmin / Admin: fetch all clients and partner list
     const allClients = await db
       .select()
       .from(clients)
       .orderBy(desc(clients.createdAt))
 
-    // Fetch report counts per client
     const allReports = await db.select({ clientId: reports.clientId }).from(reports)
     const countMap: Record<string, number> = {}
     for (const r of allReports) {
       countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
     }
 
-    // Fetch portal users per client
-    const allClientUsers = await db
+    const partnerUsers = await db
       .select({
         id: users.id,
+        name: users.name,
         email: users.email,
-        clientId: users.clientId,
         isActive: users.isActive,
-        createdAt: users.createdAt,
       })
       .from(users)
-      .where(eq(users.role, 'client'))
+      .where(eq(users.role, 'partner'))
 
-    const userMap: Record<
-      string,
-      { id: string; email: string; isActive: boolean; createdAt: Date | string }
-    > = {}
-    for (const u of allClientUsers) {
-      if (u.clientId) {
-        userMap[u.clientId] = {
-          id: u.id,
-          email: u.email,
-          isActive: u.isActive,
-          createdAt: u.createdAt,
-        }
-      }
+    const partnerMap: Record<string, { id: string; name: string | null; email: string }> = {}
+    for (const p of partnerUsers) {
+      partnerMap[p.id] = { id: p.id, name: p.name, email: p.email }
     }
 
     const clientList: ClientWithReportCount[] = allClients.map((c) => ({
       ...c,
       reportCount: countMap[c.id] || 0,
-      portalUser: userMap[c.id] || null,
+      partner: c.partnerId ? partnerMap[c.partnerId] || null : null,
     }))
 
-    return { clients: clientList }
+    return {
+      clients: clientList,
+      partners: partnerUsers,
+    }
   }
 )
 
@@ -85,20 +99,21 @@ export const getClientByIdServerFn = createServerFn({ method: 'GET' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session) {
-      throw new Error('Unauthorized access')
-    }
-
-    // If client role, ensure they only fetch their own record
-    if (session.role === 'client' && session.clientId !== data.id) {
-      throw new Error('Unauthorized access to client record')
-    }
+    const auth = await assertActiveSession()
 
     const [client] = await db.select().from(clients).where(eq(clients.id, data.id))
     if (!client) {
       throw new Error('Client not found')
+    }
+
+    // Protection: If partner role, ensure client belongs to this partner
+    if (auth.role === 'partner' && client.partnerId !== auth.userId) {
+      throw new Error('Unauthorized access to client record')
+    }
+
+    // IDOR Protection: If client role, ensure they only fetch their own record
+    if (auth.role === 'client' && auth.clientId !== data.id) {
+      throw new Error('Unauthorized access to client record')
     }
 
     const clientReports = await db
@@ -125,6 +140,7 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
       isWhiteLabel?: boolean
       partnerName?: string
       partnerLogoUrl?: string
+      partnerId?: string | null
     }) => {
       if (!data.name?.trim()) throw new Error('Contact name is required')
       if (!data.businessName?.trim()) throw new Error('Business name is required')
@@ -132,10 +148,14 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
     }
   )
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
+    const auth = await assertActiveSession()
+
+    let assignedPartnerId: string | null = null
+    if (auth.role === 'partner') {
+      // Partners can only create clients assigned to their own account
+      assignedPartnerId = auth.userId
+    } else {
+      assignedPartnerId = data.partnerId && data.partnerId.trim() ? data.partnerId.trim() : null
     }
 
     const [created] = await db
@@ -150,6 +170,7 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
         isWhiteLabel: !!data.isWhiteLabel,
         partnerName: data.partnerName?.trim() || null,
         partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
+        partnerId: assignedPartnerId,
       })
       .returning()
 
@@ -172,6 +193,7 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
       isWhiteLabel?: boolean
       partnerName?: string
       partnerLogoUrl?: string
+      partnerId?: string | null
     }) => {
       if (!data.id) throw new Error('Client ID is required')
       if (!data.name?.trim()) throw new Error('Contact name is required')
@@ -180,204 +202,42 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
     }
   )
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
+    const auth = await assertActiveSession()
+
+    const [existing] = await db.select().from(clients).where(eq(clients.id, data.id))
+    if (!existing) throw new Error('Client not found')
+
+    const updateFields: Record<string, any> = {
+      name: data.name.trim(),
+      businessName: data.businessName.trim(),
+      websiteUrl: data.websiteUrl?.trim() || null,
+      logoUrl: data.logoUrl?.trim() || null,
+      primaryColor: data.primaryColor?.trim() || '#2563eb',
+      secondaryColor: data.secondaryColor?.trim() || '#1e293b',
+      isWhiteLabel: !!data.isWhiteLabel,
+      partnerName: data.partnerName?.trim() || null,
+      partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
+    }
+
+    if (auth.role === 'partner') {
+      if (existing.partnerId !== auth.userId) {
+        throw new Error('Unauthorized: You can only edit your own assigned clients')
+      }
+      // Keep existing partnerId
+    } else {
+      // Superadmin can reassign partner
+      if (data.partnerId !== undefined) {
+        updateFields.partnerId = data.partnerId && data.partnerId.trim() ? data.partnerId.trim() : null
+      }
     }
 
     const [updated] = await db
       .update(clients)
-      .set({
-        name: data.name.trim(),
-        businessName: data.businessName.trim(),
-        websiteUrl: data.websiteUrl?.trim() || null,
-        logoUrl: data.logoUrl?.trim() || null,
-        primaryColor: data.primaryColor?.trim() || '#2563eb',
-        secondaryColor: data.secondaryColor?.trim() || '#1e293b',
-        isWhiteLabel: !!data.isWhiteLabel,
-        partnerName: data.partnerName?.trim() || null,
-        partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
-      })
+      .set(updateFields)
       .where(eq(clients.id, data.id))
       .returning()
 
     return { success: true, client: updated }
-  })
-
-/**
- * Server Function: Toggle active status for a client user (Admin only)
- */
-export const toggleClientUserActiveServerFn = createServerFn({ method: 'POST' })
-  .validator((data: { userId: string; isActive: boolean }) => {
-    if (!data.userId) throw new Error('User ID is required')
-    return {
-      userId: data.userId,
-      isActive: Boolean(data.isActive),
-    }
-  })
-  .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
-    }
-
-    const [targetUser] = await db.select().from(users).where(eq(users.id, data.userId))
-    if (!targetUser) throw new Error('User account not found')
-
-    // Block admins from toggling off their own superadmin account
-    if (session.userId === targetUser.id && !data.isActive) {
-      throw new Error('Action blocked: You cannot deactivate your own administrative account.')
-    }
-    if (
-      targetUser.role === 'admin' &&
-      !data.isActive &&
-      (session.email === targetUser.email || session.userId === targetUser.id)
-    ) {
-      throw new Error('Action blocked: You cannot deactivate your own administrative account.')
-    }
-
-    const [updated] = await db
-      .update(users)
-      .set({
-        isActive: data.isActive,
-        updatedAt: new Date(),
-      })
-      .where(eq(users.id, data.userId))
-      .returning()
-
-    return {
-      success: true,
-      user: {
-        id: updated.id,
-        email: updated.email,
-        isActive: updated.isActive,
-      },
-    }
-  })
-
-/**
- * Server Function: Create or update a client portal login account
- */
-export const createOrUpdateClientUserServerFn = createServerFn({ method: 'POST' })
-  .validator(
-    (data: {
-      clientId: string
-      email: string
-      password?: string
-      isActive?: boolean
-    }) => {
-      if (!data.clientId?.trim()) throw new Error('Client ID is required')
-      if (!data.email?.trim() || !data.email.includes('@')) throw new Error('A valid email address is required')
-      if (data.password && data.password.length < 6) throw new Error('Password must be at least 6 characters')
-      return {
-        clientId: data.clientId.trim(),
-        email: data.email.trim().toLowerCase(),
-        password: data.password ? data.password.trim() : undefined,
-        isActive: typeof data.isActive === 'boolean' ? data.isActive : true,
-      }
-    }
-  )
-  .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
-    }
-
-    // Verify client exists
-    const [client] = await db.select().from(clients).where(eq(clients.id, data.clientId))
-    if (!client) throw new Error('Client not found')
-
-    // Check if client already has a portal user
-    const [existingClientUser] = await db
-      .select()
-      .from(users)
-      .where(eq(users.clientId, data.clientId))
-
-    if (existingClientUser) {
-      // Check if email changed and is taken by another account
-      if (data.email !== existingClientUser.email) {
-        const [taken] = await db.select().from(users).where(eq(users.email, data.email))
-        if (taken) {
-          throw new Error('An account with this email address already exists.')
-        }
-      }
-
-      // Block admin from deactivating themselves if this user happens to be their account
-      if (session.userId === existingClientUser.id && !data.isActive) {
-        throw new Error('Action blocked: You cannot deactivate your own administrative account.')
-      }
-
-      const updateData: {
-        email: string
-        isActive: boolean
-        updatedAt: Date
-        passwordHash?: string
-      } = {
-        email: data.email,
-        isActive: data.isActive,
-        updatedAt: new Date(),
-      }
-
-      if (data.password) {
-        updateData.passwordHash = await hashPassword(data.password)
-      }
-
-      const [updated] = await db
-        .update(users)
-        .set(updateData)
-        .where(eq(users.id, existingClientUser.id))
-        .returning()
-
-      return {
-        success: true,
-        user: {
-          id: updated.id,
-          email: updated.email,
-          isActive: updated.isActive,
-        },
-      }
-    }
-
-    // Creating new user: password is required
-    if (!data.password) {
-      throw new Error('Password is required when creating a new portal login')
-    }
-
-    // Check if email is already taken by another account
-    const [existingWithEmail] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, data.email))
-
-    if (existingWithEmail) {
-      throw new Error('An account with this email address already exists.')
-    }
-
-    const passwordHash = await hashPassword(data.password)
-
-    // Insert new client user
-    const [created] = await db
-      .insert(users)
-      .values({
-        email: data.email,
-        passwordHash,
-        role: 'client',
-        clientId: data.clientId,
-        isActive: data.isActive,
-      })
-      .returning()
-
-    return {
-      success: true,
-      user: {
-        id: created.id,
-        email: created.email,
-        isActive: created.isActive,
-      },
-    }
   })
 
 /**
@@ -389,10 +249,13 @@ export const deleteClientServerFn = createServerFn({ method: 'POST' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const session = await getSessionData(token)
-    if (!session || session.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
+    const auth = await assertActiveSession()
+
+    const [existing] = await db.select().from(clients).where(eq(clients.id, data.id))
+    if (!existing) throw new Error('Client not found')
+
+    if (auth.role === 'partner' && existing.partnerId !== auth.userId) {
+      throw new Error('Unauthorized: You can only delete your own assigned clients')
     }
 
     await db.delete(clients).where(eq(clients.id, data.id))

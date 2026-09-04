@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useRouter, Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   BarChart3,
   Plus,
@@ -29,7 +29,16 @@ import { ToastContainer, type ToastMessage } from '../../../components/Toast'
 import { getReportsServerFn, deleteReportServerFn, type ReportWithClient } from '../../../server/reports'
 import { getClientsServerFn } from '../../../server/clients'
 
+interface ReportsSearch {
+  error?: string
+}
+
 export const Route = createFileRoute('/admin/reports/')({
+  validateSearch: (search: Record<string, unknown>): ReportsSearch => {
+    return {
+      error: typeof search.error === 'string' ? search.error : undefined,
+    }
+  },
   beforeLoad: async () => {
     const { isAuthenticated } = await checkAuthServerFn()
     if (!isAuthenticated) {
@@ -42,17 +51,18 @@ export const Route = createFileRoute('/admin/reports/')({
     }
   },
   loader: async () => {
-    const [{ reports }, { clients }] = await Promise.all([
+    const [{ reports }, { clients }, auth] = await Promise.all([
       getReportsServerFn(),
       getClientsServerFn(),
+      checkAuthServerFn(),
     ])
-    return { reports, clients }
+    return { reports, clients, auth }
   },
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { title: 'Performance Reports | Admin | built by Miguel' },
+      { title: 'Performance Reports | Admin' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -71,16 +81,16 @@ function formatDate(dateInput: string | Date | null) {
 
 function AdminReportsListPage() {
   const router = useRouter()
-  const { reports, clients } = Route.useLoaderData()
+  const search = Route.useSearch()
+  const { reports, clients, auth } = Route.useLoaderData()
 
-  // State
-  const [searchQuery, setSearchQuery] = useState('')
   const [selectedClientId, setSelectedClientId] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [toasts, setToasts] = useState<ToastMessage[]>([])
   const [reportToDelete, setReportToDelete] = useState<ReportWithClient | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [toasts, setToasts] = useState<ToastMessage[]>([])
 
-  const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
+  const addToast = (type: ToastMessage['type'], title: string, message?: string) => {
     const id = Math.random().toString(36).substring(2, 9)
     setToasts((prev) => [...prev, { id, title, message, type }])
     setTimeout(() => {
@@ -88,47 +98,61 @@ function AdminReportsListPage() {
     }, 3500)
   }
 
+  useEffect(() => {
+    if (search.error === 'access_denied') {
+      addToast('error', 'Access Denied', 'You do not have permission to edit or view that report.')
+    }
+  }, [search.error])
+
   const dismissToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id))
   }
+
+  const filteredReports = useMemo(() => {
+    return reports.filter((r) => {
+      const matchesClient = selectedClientId === 'all' || r.clientId === selectedClientId
+      const matchesSearch =
+        !searchQuery.trim() ||
+        r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.clientBusinessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.reportMonth.toLowerCase().includes(searchQuery.toLowerCase())
+      return matchesClient && matchesSearch
+    })
+  }, [reports, selectedClientId, searchQuery])
 
   const handleDeleteReport = async () => {
     if (!reportToDelete) return
     try {
       setIsDeleting(true)
       await deleteReportServerFn({ data: { id: reportToDelete.id } })
-      addToast('Report Deleted', `Report "${reportToDelete.title}" removed.`)
+      addToast('success', 'Report Deleted', `Report "${reportToDelete.title}" removed.`)
       setReportToDelete(null)
       await router.invalidate()
     } catch (err: any) {
-      addToast('Error Deleting', err?.message || 'Failed to delete report', 'error')
+      addToast('error', 'Error Deleting', err?.message || 'Failed to delete report')
     } finally {
       setIsDeleting(false)
     }
   }
 
-  const filteredReports = reports.filter((r) => {
-    if (selectedClientId !== 'all' && r.clientId !== selectedClientId) {
-      return false
-    }
-    if (!searchQuery.trim()) return true
-    const q = searchQuery.toLowerCase().trim()
-    return (
-      r.title.toLowerCase().includes(q) ||
-      r.reportMonth.toLowerCase().includes(q) ||
-      r.clientBusinessName.toLowerCase().includes(q) ||
-      r.clientName.toLowerCase().includes(q)
-    )
-  })
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0c111d] text-slate-900 dark:text-white p-4 sm:p-6 lg:p-8">
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+      
+      <ConfirmModal
+        isOpen={!!reportToDelete}
+        onClose={() => setReportToDelete(null)}
+        onConfirm={handleDeleteReport}
+        title="Delete Report"
+        message={`Are you sure you want to delete the report "${reportToDelete?.title}"? This action cannot be undone.`}
+        isProcessing={isDeleting}
+      />
 
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header & Navigation */}
         <AdminNav
           activeTab="reports"
+          userRole={auth?.role}
           title="Client Performance Reports"
           description="Create and generate professional monthly reports covering Google Business Profile, Search Console, and GA4 with client branding."
           actions={

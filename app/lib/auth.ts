@@ -8,13 +8,14 @@ const COOKIE_NAME = 'admin_session'
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 // 7 days in seconds
 
 export interface SessionUser {
-  role: 'admin' | 'client'
+  role: 'superadmin' | 'partner' | 'admin' | 'client'
   userId?: string
   clientId?: string
   email?: string
   isActive?: boolean
   exp: number
 }
+
 
 function getSecrets() {
   const adminPassword = process.env.ADMIN_PASSWORD || 'L0v3hurt$11290523'
@@ -103,7 +104,7 @@ export async function verifyPassword(password: string, combinedHash: string): Pr
  * Sign and serialize a session token with role, userId, and clientId using Web Crypto HMAC-SHA256
  */
 export async function createSessionToken(payloadData?: {
-  role?: 'admin' | 'client'
+  role?: 'superadmin' | 'partner' | 'admin' | 'client'
   userId?: string
   clientId?: string
   email?: string
@@ -111,7 +112,7 @@ export async function createSessionToken(payloadData?: {
 }): Promise<string> {
   const { sessionSecret } = getSecrets()
   const payload: SessionUser = {
-    role: payloadData?.role || 'admin',
+    role: payloadData?.role || 'superadmin',
     userId: payloadData?.userId,
     clientId: payloadData?.clientId,
     email: payloadData?.email,
@@ -189,12 +190,33 @@ export async function verifySessionToken(token?: string | null): Promise<boolean
   return !!session
 }
 
+export interface ActiveSessionResult {
+  isAuthenticated: boolean
+  role: 'superadmin' | 'partner' | 'admin' | 'client' | null
+  userId: string | null
+  clientId: string | null
+  email: string | null
+  isActive: boolean | null
+}
+
 /**
- * Server Function: Check if the current request has a valid session and return role metadata
+ * Server Function: Check if the current request has a valid session and return role metadata.
+ * Validates real-time active status against PostgreSQL. If deactivated, destroys cookie & redirects.
  */
 export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
-  async () => {
+  async (): Promise<ActiveSessionResult> => {
     const token = getCookie(COOKIE_NAME)
+    if (!token) {
+      return {
+        isAuthenticated: false,
+        role: null,
+        userId: null,
+        clientId: null,
+        email: null,
+        isActive: null,
+      }
+    }
+
     const session = await getSessionData(token)
     if (!session) {
       return {
@@ -207,8 +229,13 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
       }
     }
 
-    // If session has userId, verify real-time status and role in database
-    if (session.userId) {
+    const userFilter = session.userId
+      ? eq(users.id, session.userId)
+      : session.email
+      ? eq(users.email, session.email)
+      : null
+
+    if (userFilter) {
       const [dbUser] = await db
         .select({
           id: users.id,
@@ -218,10 +245,33 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
           email: users.email,
         })
         .from(users)
-        .where(eq(users.id, session.userId))
+        .where(userFilter)
 
-      if (!dbUser || !dbUser.isActive) {
-        // Kill session immediately and redirect to login
+      if (dbUser) {
+        if (!dbUser.isActive) {
+          deleteCookie(COOKIE_NAME, {
+            path: '/',
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+          })
+          throw redirect({
+            to: '/login',
+            search: {
+              error: 'account_disabled',
+            },
+          })
+        }
+
+        return {
+          isAuthenticated: true,
+          role: dbUser.role as 'superadmin' | 'partner',
+          userId: dbUser.id,
+          clientId: dbUser.clientId || null,
+          email: dbUser.email,
+          isActive: dbUser.isActive,
+        }
+      } else if (session.role === 'client') {
         deleteCookie(COOKIE_NAME, {
           path: '/',
           httpOnly: true,
@@ -235,20 +285,11 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
           },
         })
       }
-
-      return {
-        isAuthenticated: true,
-        role: dbUser.role as 'admin' | 'client',
-        userId: dbUser.id,
-        clientId: dbUser.clientId || null,
-        email: dbUser.email,
-        isActive: dbUser.isActive,
-      }
     }
 
     return {
       isAuthenticated: true,
-      role: session.role,
+      role: session.role === 'admin' ? 'superadmin' : session.role,
       userId: null,
       clientId: session.clientId || null,
       email: session.email || null,
@@ -258,7 +299,7 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
 )
 
 /**
- * Server Function: Authenticate user (Admin or Client) and issue secure cookie
+ * Server Function: Authenticate user (Superadmin or Partner Agency) and issue secure cookie
  */
 export const loginServerFn = createServerFn({ method: 'POST' })
   .validator((data: { email?: string; password: unknown }) => {
@@ -273,7 +314,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const { adminPassword } = getSecrets()
 
-    // 1. If email is provided, attempt client/admin login via the `users` table
+    // 1. If email is provided, attempt partner or superadmin login via the `users` table
     if (data.email) {
       const [dbUser] = await db
         .select()
@@ -294,7 +335,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
         }
 
         const token = await createSessionToken({
-          role: dbUser.role as 'admin' | 'client',
+          role: dbUser.role as 'superadmin' | 'partner',
           userId: dbUser.id,
           clientId: dbUser.clientId || undefined,
           email: dbUser.email,
@@ -317,7 +358,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
         (data.email === 'admin' || data.email === 'admin@builtbymiguel.net' || data.email === 'miguel@builtbymiguel.net') &&
         data.password === adminPassword
       ) {
-        const token = await createSessionToken({ role: 'admin', email: data.email })
+        const token = await createSessionToken({ role: 'superadmin', email: data.email })
         setCookie(COOKIE_NAME, token, {
           path: '/',
           httpOnly: true,
@@ -325,7 +366,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
           sameSite: 'lax',
           maxAge: SESSION_MAX_AGE,
         })
-        return { success: true, role: 'admin' }
+        return { success: true, role: 'superadmin' }
       }
 
       return { success: false, error: 'Account not found with this email address.' }
@@ -339,7 +380,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       }
     }
 
-    const token = await createSessionToken({ role: 'admin' })
+    const token = await createSessionToken({ role: 'superadmin' })
 
     setCookie(COOKIE_NAME, token, {
       path: '/',
@@ -349,7 +390,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       maxAge: SESSION_MAX_AGE,
     })
 
-    return { success: true, role: 'admin' }
+    return { success: true, role: 'superadmin' }
   })
 
 /**
@@ -368,8 +409,8 @@ export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
 )
 
 /**
- * Auth Route Guard: Require admin privileges.
- * Blocks non-admins and redirects clients to /portal.
+ * Auth Route Guard: Require admin / agency access (Superadmin or Partner).
+ * Blocks unauthenticated users and redirects clients to /portal.
  */
 export async function requireAdmin({
   location,
@@ -385,7 +426,38 @@ export async function requireAdmin({
       },
     })
   }
-  if (auth.role !== 'admin') {
+  if (auth.role === 'client') {
+    throw redirect({
+      to: '/portal',
+    })
+  }
+  return auth
+}
+
+/**
+ * Auth Route Guard: Require Superadmin privileges.
+ * Blocks partners and redirects them back to /admin/clients.
+ */
+export async function requireSuperadmin({
+  location,
+}: {
+  location: { href: string }
+}) {
+  const auth = await checkAuthServerFn()
+  if (!auth.isAuthenticated) {
+    throw redirect({
+      to: '/login',
+      search: {
+        redirect: location.href,
+      },
+    })
+  }
+  if (auth.role === 'partner') {
+    throw redirect({
+      to: '/admin/clients',
+    })
+  }
+  if (auth.role === 'client') {
     throw redirect({
       to: '/portal',
     })
@@ -414,12 +486,13 @@ export async function requireClient({
 }
 
 /**
- * Backward compatibility: Require authenticated session
+ * Backward compatibility: Require authenticated superadmin session
  */
 export async function requireAuth({
   location,
 }: {
   location: { href: string }
 }) {
-  return requireAdmin({ location })
+  return requireSuperadmin({ location })
 }
+

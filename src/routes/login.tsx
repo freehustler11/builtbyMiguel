@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Lock, KeyRound, Eye, EyeOff, AlertCircle, ArrowLeft, ShieldCheck, Loader2, Mail, Building2, User } from 'lucide-react'
+import { Lock, KeyRound, Eye, EyeOff, AlertCircle, ArrowLeft, ShieldCheck, Loader2, Mail, Building2, Briefcase } from 'lucide-react'
 import { loginServerFn, checkAuthServerFn } from '../lib/auth'
 
 interface LoginSearch {
@@ -23,6 +23,13 @@ export const Route = createFileRoute('/login')({
 
     const auth = await checkAuthServerFn()
     if (auth.isAuthenticated) {
+      if (auth.role === 'partner') {
+        throw redirect({
+          to: search.redirect && (search.redirect.startsWith('/admin/clients') || search.redirect.startsWith('/admin/reports'))
+            ? search.redirect
+            : '/admin/clients',
+        })
+      }
       if (auth.role === 'client') {
         throw redirect({
           to: search.redirect && search.redirect.startsWith('/portal') ? search.redirect : '/portal',
@@ -37,7 +44,7 @@ export const Route = createFileRoute('/login')({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { title: 'Sign In | Client Portal & Admin | built by Miguel' },
+      { title: 'Sign In | Partner Portal & Admin | built by Miguel' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -49,7 +56,7 @@ function LoginPage() {
   const navigate = useNavigate()
   const router = useRouter()
 
-  const [mode, setMode] = useState<'client' | 'admin'>('client')
+  const [mode, setMode] = useState<'partner' | 'admin'>('partner')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -60,8 +67,8 @@ function LoginPage() {
     e.preventDefault()
     setError(null)
 
-    if (mode === 'client' && !email.trim()) {
-      setError('Please enter your account email address.')
+    if (mode === 'partner' && !email.trim()) {
+      setError('Please enter your partner agency email address.')
       return
     }
     if (!password.trim()) {
@@ -74,14 +81,20 @@ function LoginPage() {
     try {
       const res = await loginServerFn({
         data: {
-          email: mode === 'client' ? email.trim() : undefined,
+          email: mode === 'partner' ? email.trim() : email.trim() || undefined,
           password: password.trim(),
         },
       })
 
       if (res.success) {
         await router.invalidate()
-        if (res.role === 'client') {
+        if (res.role === 'partner') {
+          navigate({
+            to: redirectTo && (redirectTo.startsWith('/admin/clients') || redirectTo.startsWith('/admin/reports'))
+              ? redirectTo
+              : '/admin/clients',
+          })
+        } else if (res.role === 'client') {
           navigate({ to: redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal' })
         } else {
           navigate({ to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin' })
@@ -121,17 +134,17 @@ function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                setMode('client')
+                setMode('partner')
                 setError(null)
               }}
               className={`flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                mode === 'client'
+                mode === 'partner'
                   ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Building2 className="w-3.5 h-3.5 text-blue-600" />
-              <span>Client Portal</span>
+              <Briefcase className="w-3.5 h-3.5 text-blue-600" />
+              <span>Partner Agency</span>
             </button>
             <button
               type="button"
@@ -146,23 +159,23 @@ function LoginPage() {
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
-              <span>Agency Admin</span>
+              <span>Superadmin</span>
             </button>
           </div>
 
           {/* Header */}
           <div className="text-center space-y-2 pb-6 border-b border-slate-100 dark:border-slate-800">
             <div className="mx-auto inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner">
-              {mode === 'client' ? <Building2 className="w-6 h-6 text-blue-600" /> : <Lock className="w-6 h-6 text-rose-500" />}
+              {mode === 'partner' ? <Briefcase className="w-6 h-6 text-blue-600" /> : <Lock className="w-6 h-6 text-rose-500" />}
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                {mode === 'client' ? 'Client Performance Portal' : 'Agency Administration'}
+                {mode === 'partner' ? 'Partner Agency Portal' : 'Agency Administration'}
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {mode === 'client'
-                  ? 'Sign in to access your company\'s live monthly SEO & growth reports'
-                  : 'Enter your administrator key to manage clients & systems'}
+                {mode === 'partner'
+                  ? 'Sign in to manage your assigned clients and monthly performance reports'
+                  : 'Enter your administrator key or master credentials'}
               </p>
             </div>
           </div>
@@ -172,8 +185,8 @@ function LoginPage() {
             <div className="mt-6 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-start gap-3 text-xs text-amber-800 dark:text-amber-200 animate-in fade-in duration-200">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
               <div>
-                <strong className="block font-bold">Portal Access Suspended</strong>
-                <span>Your client portal account has been deactivated. Please contact your account administrator.</span>
+                <strong className="block font-bold">Access Suspended</strong>
+                <span>Your account has been deactivated. Please contact your account administrator.</span>
               </div>
             </div>
           )}
@@ -188,13 +201,13 @@ function LoginPage() {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-            {mode === 'client' && (
+            {mode === 'partner' && (
               <div className="space-y-2">
                 <label
                   htmlFor="user-email"
                   className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
                 >
-                  Account Email
+                  Partner Email Address
                 </label>
 
                 <div className="relative">
@@ -207,7 +220,7 @@ function LoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="client@yourbusiness.com"
+                    placeholder="partner@youragency.com"
                     autoFocus
                     required
                     autoComplete="email"
@@ -223,7 +236,7 @@ function LoginPage() {
                 htmlFor="user-password"
                 className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
               >
-                {mode === 'client' ? 'Account Password' : 'Admin Key / Password'}
+                {mode === 'partner' ? 'Account Password' : 'Admin Key / Password'}
               </label>
 
               <div className="relative">
@@ -263,7 +276,7 @@ function LoginPage() {
               type="submit"
               disabled={isSubmitting}
               className={`w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-semibold text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
-                mode === 'client'
+                mode === 'partner'
                   ? 'bg-blue-600 hover:bg-blue-700'
                   : 'bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500'
               }`}
@@ -273,10 +286,10 @@ function LoginPage() {
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Verifying Credentials...</span>
                 </>
-              ) : mode === 'client' ? (
+              ) : mode === 'partner' ? (
                 <>
-                  <Building2 className="w-4 h-4 text-blue-200" />
-                  <span>Sign In to Client Portal</span>
+                  <Briefcase className="w-4 h-4 text-blue-200" />
+                  <span>Sign In to Partner Portal</span>
                 </>
               ) : (
                 <>
@@ -290,7 +303,7 @@ function LoginPage() {
           {/* Micro Footer */}
           <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
             <span className="text-[11px] font-mono text-slate-400">
-              🔒 Encrypted session · Protected with HMAC-SHA256
+              🔒 Encrypted session · Protected with Web Crypto PBKDF2 & HMAC-SHA256
             </span>
           </div>
         </div>

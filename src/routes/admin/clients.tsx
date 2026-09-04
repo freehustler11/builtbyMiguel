@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useRouter, Link } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   Users,
   Plus,
@@ -21,8 +21,11 @@ import {
   KeyRound,
   ShieldCheck,
   CheckCircle2,
+  Briefcase,
+  AlertCircle,
+  Lock,
 } from 'lucide-react'
-import { checkAuthServerFn } from '../../lib/auth'
+import { checkAuthServerFn, requireAdmin } from '../../lib/auth'
 import { AdminNav } from '../../components/AdminNav'
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../components/Toast'
@@ -32,30 +35,33 @@ import {
   createClientServerFn,
   updateClientServerFn,
   deleteClientServerFn,
-  createOrUpdateClientUserServerFn,
-  toggleClientUserActiveServerFn,
   type ClientWithReportCount,
+  type PartnerSummary,
 } from '../../server/clients'
+import {
+  getPartnersServerFn,
+  createPartnerServerFn,
+  updatePartnerServerFn,
+  togglePartnerActiveServerFn,
+  assignClientPartnerServerFn,
+  type PartnerItem,
+} from '../../server/partners'
 import type { Client } from '../../db/schema'
 
 export const Route = createFileRoute('/admin/clients')({
-  beforeLoad: async () => {
-    const { isAuthenticated } = await checkAuthServerFn()
-    if (!isAuthenticated) {
-      throw redirect({
-        to: '/login',
-        search: {
-          redirect: '/admin/clients',
-        },
-      })
-    }
+  beforeLoad: async ({ location }) => {
+    await requireAdmin({ location })
   },
   loader: async () => {
-    const [{ clients }, auth] = await Promise.all([
+    const [{ clients, partners }, auth] = await Promise.all([
       getClientsServerFn(),
       checkAuthServerFn(),
     ])
-    return { clients, currentAdmin: auth }
+    return {
+      clients,
+      partners: partners || [],
+      currentAdmin: auth,
+    }
   },
   head: () => ({
     meta: [
@@ -93,14 +99,21 @@ function formatDate(dateInput: string | Date | null) {
 
 function AdminClientsPage() {
   const router = useRouter()
-  const { clients: initialClients, currentAdmin } = Route.useLoaderData()
+  const { clients: initialClients, partners: initialPartners, currentAdmin } = Route.useLoaderData()
+  const isSuperadmin = currentAdmin?.role !== 'partner'
+
   const [clients, setClients] = useState(initialClients)
+  const [partnersList, setPartnersList] = useState<PartnerSummary[]>(initialPartners)
 
   useEffect(() => {
     setClients(initialClients)
   }, [initialClients])
 
-  // State
+  useEffect(() => {
+    setPartnersList(initialPartners)
+  }, [initialPartners])
+
+  // General State
   const [searchQuery, setSearchQuery] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingClient, setEditingClient] = useState<Client | null>(null)
@@ -109,7 +122,7 @@ function AdminClientsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
 
-  // Form State
+  // Form State for Clients
   const [name, setName] = useState('')
   const [businessName, setBusinessName] = useState('')
   const [websiteUrl, setWebsiteUrl] = useState('')
@@ -119,18 +132,28 @@ function AdminClientsPage() {
   const [isWhiteLabel, setIsWhiteLabel] = useState(false)
   const [partnerName, setPartnerName] = useState('')
   const [partnerLogoUrl, setPartnerLogoUrl] = useState('')
+  const [formPartnerId, setFormPartnerId] = useState<string>('')
   const [isPartnerLogoModalOpen, setIsPartnerLogoModalOpen] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
 
-  // Portal Account Modal State
-  const [isPortalModalOpen, setIsPortalModalOpen] = useState(false)
-  const [portalClient, setPortalClient] = useState<ClientWithReportCount | null>(null)
-  const [portalEmail, setPortalEmail] = useState('')
-  const [portalPassword, setPortalPassword] = useState('')
-  const [portalIsActive, setPortalIsActive] = useState(true)
-  const [portalIsSubmitting, setPortalIsSubmitting] = useState(false)
-  const [portalError, setPortalError] = useState<string | null>(null)
-  const [isTogglingId, setIsTogglingId] = useState<string | null>(null)
+  // Partner Assignment State
+  const [isAssigningId, setIsAssigningId] = useState<string | null>(null)
+
+  // Partners Management Modal State (Superadmin only)
+  const [isPartnersModalOpen, setIsPartnersModalOpen] = useState(false)
+  const [partnerAccounts, setPartnerAccounts] = useState<PartnerItem[]>([])
+  const [isLoadingPartners, setIsLoadingPartners] = useState(false)
+
+  // Partner Create / Edit Sub-Modal
+  const [isPartnerFormOpen, setIsPartnerFormOpen] = useState(false)
+  const [editingPartner, setEditingPartner] = useState<PartnerItem | null>(null)
+  const [partnerFormName, setPartnerFormName] = useState('')
+  const [partnerFormEmail, setPartnerFormEmail] = useState('')
+  const [partnerFormPassword, setPartnerFormPassword] = useState('')
+  const [partnerFormIsActive, setPartnerFormIsActive] = useState(true)
+  const [partnerFormError, setPartnerFormError] = useState<string | null>(null)
+  const [partnerFormSubmitting, setPartnerFormSubmitting] = useState(false)
+  const [togglingPartnerId, setTogglingPartnerId] = useState<string | null>(null)
 
   const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
     const id = Math.random().toString(36).substring(2, 9)
@@ -144,7 +167,34 @@ function AdminClientsPage() {
     setToasts((prev) => prev.filter((t) => t.id !== id))
   }
 
-  const openCreateModal = () => {
+  // Load full partner accounts with client counts
+  const loadPartnerAccounts = async () => {
+    if (!isSuperadmin) return
+    setIsLoadingPartners(true)
+    try {
+      const res = await getPartnersServerFn()
+      setPartnerAccounts(res.partners)
+      setPartnersList(
+        res.partners.map((p) => ({
+          id: p.id,
+          name: p.name,
+          email: p.email,
+          isActive: p.isActive,
+        }))
+      )
+    } catch (err: unknown) {
+      addToast('Error Loading Partners', err instanceof Error ? err.message : 'Could not fetch partners', 'error')
+    } finally {
+      setIsLoadingPartners(false)
+    }
+  }
+
+  const handleOpenPartnersModal = () => {
+    setIsPartnersModalOpen(true)
+    loadPartnerAccounts()
+  }
+
+  const openCreateClientModal = () => {
     setEditingClient(null)
     setName('')
     setBusinessName('')
@@ -155,11 +205,12 @@ function AdminClientsPage() {
     setIsWhiteLabel(false)
     setPartnerName('')
     setPartnerLogoUrl('')
+    setFormPartnerId('')
     setFormError(null)
     setIsModalOpen(true)
   }
 
-  const openEditModal = (client: Client) => {
+  const openEditClientModal = (client: ClientWithReportCount) => {
     setEditingClient(client)
     setName(client.name)
     setBusinessName(client.businessName)
@@ -170,40 +221,26 @@ function AdminClientsPage() {
     setIsWhiteLabel(Boolean(client.isWhiteLabel))
     setPartnerName(client.partnerName || '')
     setPartnerLogoUrl(client.partnerLogoUrl || '')
+    setFormPartnerId(client.partnerId || '')
     setFormError(null)
     setIsModalOpen(true)
   }
 
-  const openPortalModal = (client: ClientWithReportCount) => {
-    setPortalClient(client)
-    setPortalEmail(client.portalUser?.email || '')
-    setPortalPassword('')
-    setPortalIsActive(client.portalUser ? client.portalUser.isActive : true)
-    setPortalError(null)
-    setIsPortalModalOpen(true)
-  }
+  // Instant Partner Assignment via Dropdown on Client Card
+  const handleAssignPartner = async (clientId: string, newPartnerId: string) => {
+    setIsAssigningId(clientId)
+    const targetPartnerId = newPartnerId.trim() || null
 
-  const handleToggleUserActive = async (client: ClientWithReportCount) => {
-    if (!client.portalUser) return
-    const userId = client.portalUser.id
-    const targetActive = !client.portalUser.isActive
-
-    // Block admin from deactivating self
-    if (currentAdmin?.userId === userId && !targetActive) {
-      addToast('Action Blocked', 'You cannot deactivate your own administrative account.', 'error')
-      return
-    }
+    const matchedPartner = partnersList.find((p) => p.id === targetPartnerId)
 
     // Optimistic local update
     setClients((prev) =>
       prev.map((c) => {
-        if (c.id === client.id && c.portalUser) {
+        if (c.id === clientId) {
           return {
             ...c,
-            portalUser: {
-              ...c.portalUser,
-              isActive: targetActive,
-            },
+            partnerId: targetPartnerId,
+            partner: matchedPartner ? { id: matchedPartner.id, name: matchedPartner.name, email: matchedPartner.email } : null,
           }
         }
         return c
@@ -211,155 +248,199 @@ function AdminClientsPage() {
     )
 
     try {
-      setIsTogglingId(userId)
-      await toggleClientUserActiveServerFn({
+      await assignClientPartnerServerFn({
         data: {
-          userId,
-          isActive: targetActive,
+          clientId,
+          partnerId: targetPartnerId,
         },
       })
       addToast(
-        targetActive ? 'Access Enabled' : 'Access Suspended',
-        targetActive
-          ? `Portal access for "${client.businessName}" is now active.`
-          : `Portal access for "${client.businessName}" has been suspended.`,
-        targetActive ? 'success' : 'info'
+        'Assignment Updated',
+        matchedPartner
+          ? `Client assigned to ${matchedPartner.name || matchedPartner.email}.`
+          : 'Client set to Direct Agency Client (Superadmin).'
       )
-    } catch (err: any) {
-      // Rollback optimistic state
-      setClients((prev) =>
-        prev.map((c) => {
-          if (c.id === client.id && c.portalUser) {
-            return {
-              ...c,
-              portalUser: {
-                ...c.portalUser,
-                isActive: !targetActive,
-              },
-            }
-          }
-          return c
-        })
-      )
-      addToast('Action Failed', err?.message || 'Could not update access status', 'error')
+      await router.invalidate()
+    } catch (err: unknown) {
+      addToast('Assignment Failed', err instanceof Error ? err.message : 'Could not reassign partner', 'error')
+      await router.invalidate()
     } finally {
-      setIsTogglingId(null)
+      setIsAssigningId(null)
     }
   }
 
-  const handleSavePortalUser = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!portalClient) return
-    setPortalError(null)
+  // Toggle Partner active status
+  const handleTogglePartnerActive = async (partner: PartnerItem) => {
+    const nextActive = !partner.isActive
+    setTogglingPartnerId(partner.id)
 
-    if (!portalEmail.trim() || !portalEmail.includes('@')) {
-      setPortalError('Please enter a valid email address.')
-      return
-    }
-
-    const isNewUser = !portalClient.portalUser
-    if (isNewUser && (!portalPassword || portalPassword.length < 6)) {
-      setPortalError('Password must be at least 6 characters long.')
-      return
-    }
-    if (!isNewUser && portalPassword && portalPassword.length < 6) {
-      setPortalError('New password must be at least 6 characters long.')
-      return
-    }
+    // Optimistic update
+    setPartnerAccounts((prev) =>
+      prev.map((p) => (p.id === partner.id ? { ...p, isActive: nextActive } : p))
+    )
 
     try {
-      setPortalIsSubmitting(true)
-      const res = await createOrUpdateClientUserServerFn({
+      await togglePartnerActiveServerFn({
         data: {
-          clientId: portalClient.id,
-          email: portalEmail.trim(),
-          password: portalPassword.trim() || undefined,
-          isActive: portalIsActive,
+          id: partner.id,
+          isActive: nextActive,
         },
       })
-
-      // Update local clients state immediately
-      setClients((prev) =>
-        prev.map((c) => {
-          if (c.id === portalClient.id) {
-            return {
-              ...c,
-              portalUser: {
-                id: res.user.id,
-                email: res.user.email,
-                isActive: res.user.isActive,
-                createdAt: c.portalUser?.createdAt || new Date(),
-              },
-            }
-          }
-          return c
-        })
-      )
-
       addToast(
-        'Portal Credentials Saved',
-        `Access credentials for "${portalClient.businessName}" saved successfully.`
+        nextActive ? 'Partner Activated' : 'Partner Suspended',
+        `${partner.name || partner.email} account is now ${nextActive ? 'active' : 'suspended'}.`
       )
-      setIsPortalModalOpen(false)
-    } catch (err: any) {
-      setPortalError(err?.message || 'Failed to update portal account.')
+      await router.invalidate()
+    } catch (err: unknown) {
+      addToast('Status Update Failed', err instanceof Error ? err.message : 'Could not toggle partner status', 'error')
+      // Revert
+      setPartnerAccounts((prev) =>
+        prev.map((p) => (p.id === partner.id ? { ...p, isActive: partner.isActive } : p))
+      )
     } finally {
-      setPortalIsSubmitting(false)
+      setTogglingPartnerId(null)
     }
   }
 
+  const openCreatePartnerForm = () => {
+    setEditingPartner(null)
+    setPartnerFormName('')
+    setPartnerFormEmail('')
+    setPartnerFormPassword('')
+    setPartnerFormIsActive(true)
+    setPartnerFormError(null)
+    setIsPartnerFormOpen(true)
+  }
+
+  const openEditPartnerForm = (partner: PartnerItem) => {
+    setEditingPartner(partner)
+    setPartnerFormName(partner.name || '')
+    setPartnerFormEmail(partner.email)
+    setPartnerFormPassword('')
+    setPartnerFormIsActive(partner.isActive)
+    setPartnerFormError(null)
+    setIsPartnerFormOpen(true)
+  }
+
+  const handleSavePartner = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setPartnerFormError(null)
+
+    if (!partnerFormName.trim()) {
+      setPartnerFormError('Partner name is required.')
+      return
+    }
+    if (!partnerFormEmail.trim() || !partnerFormEmail.includes('@')) {
+      setPartnerFormError('A valid email address is required.')
+      return
+    }
+    if (!editingPartner && (!partnerFormPassword || partnerFormPassword.length < 6)) {
+      setPartnerFormError('A password of at least 6 characters is required.')
+      return
+    }
+    if (editingPartner && partnerFormPassword && partnerFormPassword.length < 6) {
+      setPartnerFormError('New password must be at least 6 characters.')
+      return
+    }
+
+    setPartnerFormSubmitting(true)
+    try {
+      if (editingPartner) {
+        await updatePartnerServerFn({
+          data: {
+            id: editingPartner.id,
+            name: partnerFormName.trim(),
+            email: partnerFormEmail.trim(),
+            password: partnerFormPassword.trim() || undefined,
+            isActive: partnerFormIsActive,
+          },
+        })
+        addToast('Partner Updated', `Updated account for ${partnerFormName}.`)
+      } else {
+        await createPartnerServerFn({
+          data: {
+            name: partnerFormName.trim(),
+            email: partnerFormEmail.trim(),
+            password: partnerFormPassword.trim(),
+            isActive: partnerFormIsActive,
+          },
+        })
+        addToast('Partner Created', `Created partner agency account for ${partnerFormName}.`)
+      }
+
+      setIsPartnerFormOpen(false)
+      await loadPartnerAccounts()
+      await router.invalidate()
+    } catch (err: unknown) {
+      setPartnerFormError(err instanceof Error ? err.message : 'Failed to save partner account.')
+    } finally {
+      setPartnerFormSubmitting(false)
+    }
+  }
+
+  // Client Create & Edit Submit
   const handleSaveClient = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError(null)
 
     if (!name.trim()) {
-      setFormError('Contact person name is required')
+      setFormError('Contact name is required.')
       return
     }
     if (!businessName.trim()) {
-      setFormError('Business name is required')
+      setFormError('Business name is required.')
       return
     }
 
+    setIsSubmitting(true)
+
     try {
-      setIsSubmitting(true)
       if (editingClient) {
-        await updateClientServerFn({
+        const res = await updateClientServerFn({
           data: {
             id: editingClient.id,
             name: name.trim(),
             businessName: businessName.trim(),
             websiteUrl: websiteUrl.trim() || undefined,
             logoUrl: logoUrl.trim() || undefined,
-            primaryColor: primaryColor.trim() || undefined,
-            secondaryColor: secondaryColor.trim() || undefined,
+            primaryColor,
+            secondaryColor,
             isWhiteLabel,
-            partnerName: isWhiteLabel ? partnerName.trim() || undefined : undefined,
-            partnerLogoUrl: isWhiteLabel ? partnerLogoUrl.trim() || undefined : undefined,
+            partnerName: partnerName.trim() || undefined,
+            partnerLogoUrl: partnerLogoUrl.trim() || undefined,
+            partnerId: isSuperadmin ? formPartnerId.trim() || null : undefined,
           },
         })
-        addToast('Client Updated', `"${businessName}" details updated successfully.`)
+
+        if (res.success && res.client) {
+          addToast('Client Updated', `Updated ${res.client.businessName}.`)
+          setIsModalOpen(false)
+          await router.invalidate()
+        }
       } else {
-        await createClientServerFn({
+        const res = await createClientServerFn({
           data: {
             name: name.trim(),
             businessName: businessName.trim(),
             websiteUrl: websiteUrl.trim() || undefined,
             logoUrl: logoUrl.trim() || undefined,
-            primaryColor: primaryColor.trim() || undefined,
-            secondaryColor: secondaryColor.trim() || undefined,
+            primaryColor,
+            secondaryColor,
             isWhiteLabel,
-            partnerName: isWhiteLabel ? partnerName.trim() || undefined : undefined,
-            partnerLogoUrl: isWhiteLabel ? partnerLogoUrl.trim() || undefined : undefined,
+            partnerName: partnerName.trim() || undefined,
+            partnerLogoUrl: partnerLogoUrl.trim() || undefined,
+            partnerId: isSuperadmin ? formPartnerId.trim() || null : undefined,
           },
         })
-        addToast('Client Created', `"${businessName}" has been added to your client portfolio.`)
-      }
 
-      setIsModalOpen(false)
-      await router.invalidate()
-    } catch (err: any) {
-      setFormError(err?.message || 'Failed to save client profile')
+        if (res.success && res.client) {
+          addToast('Client Created', `Created ${res.client.businessName}.`)
+          setIsModalOpen(false)
+          await router.invalidate()
+        }
+      }
+    } catch (err: unknown) {
+      setFormError(err instanceof Error ? err.message : 'An error occurred while saving client.')
     } finally {
       setIsSubmitting(false)
     }
@@ -367,28 +448,31 @@ function AdminClientsPage() {
 
   const handleDeleteClient = async () => {
     if (!clientToDelete) return
+
+    setIsSubmitting(true)
     try {
-      setIsSubmitting(true)
       await deleteClientServerFn({ data: { id: clientToDelete.id } })
-      addToast('Client Deleted', `"${clientToDelete.businessName}" and associated reports removed.`)
+      addToast('Client Deleted', `Removed ${clientToDelete.businessName} and associated reports.`)
       setClientToDelete(null)
       await router.invalidate()
-    } catch (err: any) {
-      addToast('Error Deleting', err?.message || 'Failed to delete client', 'error')
+    } catch (err: unknown) {
+      addToast('Delete Failed', err instanceof Error ? err.message : 'Could not delete client.', 'error')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const filteredClients = clients.filter((c) => {
-    if (!searchQuery.trim()) return true
-    const q = searchQuery.toLowerCase().trim()
-    return (
-      c.businessName.toLowerCase().includes(q) ||
-      c.name.toLowerCase().includes(q) ||
-      (c.websiteUrl && c.websiteUrl.toLowerCase().includes(q))
-    )
-  })
+  const filteredClients = useMemo(() => {
+    return clients.filter((c) => {
+      const q = searchQuery.toLowerCase().trim()
+      if (!q) return true
+      const matchName = c.name.toLowerCase().includes(q)
+      const matchBiz = c.businessName.toLowerCase().includes(q)
+      const matchWeb = c.websiteUrl?.toLowerCase().includes(q)
+      const matchPartner = c.partner?.name?.toLowerCase().includes(q) || c.partner?.email?.toLowerCase().includes(q)
+      return matchName || matchBiz || matchWeb || matchPartner
+    })
+  }, [clients, searchQuery])
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0c111d] text-slate-900 dark:text-white p-4 sm:p-6 lg:p-8">
@@ -398,65 +482,80 @@ function AdminClientsPage() {
         {/* Header & Navigation */}
         <AdminNav
           activeTab="clients"
-          title="Client Portfolio & Branding"
-          description="Manage client accounts, logos, and custom color themes used to dynamically render branded monthly reports."
+          userRole={currentAdmin?.role}
+          title={isSuperadmin ? 'Client & Partner Manager' : 'Agency Clients'}
+          description={
+            isSuperadmin
+              ? 'Manage agency clients, assign accounts to partner agencies, and configure white-label branding.'
+              : 'Manage your assigned agency clients and generate branded monthly performance reports.'
+          }
           actions={
-            <button
-              type="button"
-              onClick={openCreateModal}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition-all cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add New Client</span>
-            </button>
+            <div className="flex items-center gap-2.5">
+              {isSuperadmin && (
+                <button
+                  type="button"
+                  onClick={handleOpenPartnersModal}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-2xs transition-all cursor-pointer"
+                >
+                  <Briefcase className="w-4 h-4 text-blue-500" />
+                  <span>Manage Partners ({partnersList.length})</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={openCreateClientModal}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Client</span>
+              </button>
+            </div>
           }
         />
 
-        {/* Search Bar & Quick Stats */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs">
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+        {/* Search and Filters Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
+              placeholder={isSuperadmin ? 'Search clients, websites, partners...' : 'Search your assigned clients...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by business name, contact, or website..."
-              className="w-full pl-10 pr-4 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full pl-10 pr-4 py-2 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-mono">
             <span>
-              Total Clients: <strong className="text-slate-900 dark:text-white">{clients.length}</strong>
-            </span>
-            <span>•</span>
-            <span>
-              Showing: <strong className="text-rose-600 dark:text-rose-400">{filteredClients.length}</strong>
+              Showing <strong>{filteredClients.length}</strong> of <strong>{clients.length}</strong> clients
             </span>
           </div>
         </div>
 
-        {/* Clients Cards Grid */}
+        {/* Client Cards Grid */}
         {filteredClients.length === 0 ? (
-          <div className="p-12 text-center rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-4">
-            <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 inline-block">
-              <Users className="w-8 h-8" />
+          <div className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 p-12 text-center bg-white/50 dark:bg-slate-900/30 space-y-4">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-3xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900">
+              <Users className="w-7 h-7" />
             </div>
             <div className="space-y-1">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                {searchQuery ? 'No clients matched your search' : 'No clients added yet'}
+                {searchQuery ? 'No matching clients found' : 'No clients found'}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
                 {searchQuery
-                  ? 'Try adjusting your search query.'
-                  : 'Add your first agency client with their branding colors and logo to begin generating monthly reports.'}
+                  ? 'Try modifying your search keywords.'
+                  : isSuperadmin
+                  ? 'Add your first client or assign clients to partner agencies.'
+                  : 'You do not have any clients assigned to your partner account yet.'}
               </p>
             </div>
             {!searchQuery && (
               <button
                 type="button"
-                onClick={openCreateModal}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition"
+                onClick={openCreateClientModal}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Create Client</span>
@@ -472,13 +571,12 @@ function AdminClientsPage() {
               return (
                 <div
                   key={client.id}
-                  className="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 space-y-5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
+                  className="rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 p-6 shadow-2xs hover:shadow-md transition flex flex-col justify-between space-y-5 group"
                 >
-                  {/* Top Bar: Logo/Initials + Badges + Edit/Delete */}
                   <div className="space-y-4">
+                    {/* Card Header: Logo, Name, Edit / Delete */}
                     <div className="flex items-start justify-between gap-3">
-                      {/* Logo or Initials Avatar */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
                         {client.logoUrl ? (
                           <div className="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white p-1 flex items-center justify-center shrink-0">
                             <img
@@ -519,7 +617,7 @@ function AdminClientsPage() {
                       <div className="flex items-center gap-1 shrink-0">
                         <button
                           type="button"
-                          onClick={() => openEditModal(client)}
+                          onClick={() => openEditClientModal(client)}
                           className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                           title="Edit Client"
                         >
@@ -550,144 +648,107 @@ function AdminClientsPage() {
                       </a>
                     )}
 
-                    {/* Account Access Section */}
-                    <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <KeyRound className="w-3.5 h-3.5 text-slate-400" />
-                          <span className="text-[10px] font-mono uppercase font-bold text-slate-400 tracking-wider">
-                            Account Access
-                          </span>
-                        </div>
-                        {client.portalUser && (
-                          <div className="flex items-center gap-2">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${
-                                client.portalUser.isActive
-                                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
-                                  : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800'
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  client.portalUser.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
-                                }`}
-                              />
-                              {client.portalUser.isActive ? 'Active' : 'Suspended'}
+                    {/* Partner Agency Assignment Section */}
+                    {isSuperadmin ? (
+                      <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <Briefcase className="w-3.5 h-3.5 text-blue-500" />
+                            <span className="text-[10px] font-mono uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">
+                              Assigned Partner Agency
                             </span>
-
-                            {/* Instant Toggle Switch */}
-                            <button
-                              type="button"
-                              role="switch"
-                              aria-checked={client.portalUser.isActive}
-                              disabled={
-                                isTogglingId === client.portalUser.id ||
-                                currentAdmin?.userId === client.portalUser.id
-                              }
-                              onClick={() => handleToggleUserActive(client)}
-                              title={
-                                currentAdmin?.userId === client.portalUser.id
-                                  ? 'Cannot deactivate your own account'
-                                  : client.portalUser.isActive
-                                  ? 'Click to suspend portal access'
-                                  : 'Click to activate portal access'
-                              }
-                              className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                                client.portalUser.isActive
-                                  ? 'bg-emerald-500'
-                                  : 'bg-slate-300 dark:bg-slate-700'
-                              }`}
-                            >
-                              <span className="sr-only">Toggle client active access</span>
-                              <span
-                                aria-hidden="true"
-                                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                                  client.portalUser.isActive ? 'translate-x-4' : 'translate-x-0'
-                                }`}
-                              />
-                            </button>
                           </div>
-                        )}
+                          {client.partner ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                              Partner Client
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                              Direct Client
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Instant Assignment Dropdown */}
+                        <div className="relative">
+                          <select
+                            value={client.partnerId || ''}
+                            disabled={isAssigningId === client.id}
+                            onChange={(e) => handleAssignPartner(client.id, e.target.value)}
+                            className="w-full text-xs font-mono font-medium rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-1.5 px-2.5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer disabled:opacity-50"
+                          >
+                            <option value="">Direct Client (Superadmin)</option>
+                            {partnersList.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name || p.email} ({p.email})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-2.5 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="w-3.5 h-3.5 text-blue-500" />
+                          <span className="font-medium text-slate-700 dark:text-slate-300">Managed by Your Agency</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Branding Colors Preview & White-Label Details */}
+                    <div className="space-y-2 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-400 font-mono text-[11px]">Brand Theme</span>
+                        <div className="flex items-center gap-1.5">
+                          <div
+                            className="w-4 h-4 rounded-full border border-white dark:border-slate-800 shadow-xs"
+                            style={{ backgroundColor: primary }}
+                            title={`Primary: ${primary}`}
+                          />
+                          <div
+                            className="w-4 h-4 rounded-full border border-white dark:border-slate-800 shadow-xs"
+                            style={{ backgroundColor: secondary }}
+                            title={`Secondary: ${secondary}`}
+                          />
+                        </div>
                       </div>
 
-                      {client.portalUser ? (
-                        <div className="flex items-center justify-between gap-2 pt-0.5">
-                          <span
-                            className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate block"
-                            title={client.portalUser.email}
-                          >
-                            {client.portalUser.email}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => openPortalModal(client)}
-                            className="px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/80 dark:border-blue-900/50 transition shrink-0 cursor-pointer"
-                          >
-                            Edit Credentials
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between gap-2 pt-0.5">
-                          <span className="font-mono text-xs text-slate-400 italic">
-                            No credentials created
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => openPortalModal(client)}
-                            className="px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/80 dark:border-blue-900/50 transition shrink-0 cursor-pointer"
-                          >
-                            + Setup Access
-                          </button>
+                      {client.isWhiteLabel && client.partnerName && (
+                        <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
+                          Partner: <strong className="text-slate-700 dark:text-slate-300">{client.partnerName}</strong>
                         </div>
                       )}
                     </div>
-
-                    {/* Branding Color Palette Swatches */}
-                    <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-mono uppercase font-bold text-slate-400 tracking-wider">
-                          Brand Identity
-                        </span>
-                        {client.partnerName && (
-                          <span className="text-[10px] font-mono text-slate-400 truncate max-w-[130px]">
-                            via {client.partnerName}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-3 text-xs font-mono">
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className="w-4 h-4 rounded-full border border-black/10 shadow-2xs"
-                            style={{ backgroundColor: primary }}
-                          />
-                          <span className="text-slate-600 dark:text-slate-300 font-medium">{primary}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className="w-4 h-4 rounded-full border border-black/10 shadow-2xs"
-                            style={{ backgroundColor: secondary }}
-                          />
-                          <span className="text-slate-600 dark:text-slate-300 font-medium">{secondary}</span>
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
-                  {/* Bottom Stats & Create Report Link */}
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 text-xs">
-                    <div className="text-slate-500 dark:text-slate-400 font-mono text-[11px]">
-                      <span>{client.reportCount} {client.reportCount === 1 ? 'Report' : 'Reports'}</span>
+                  {/* Card Footer: Reports Count & Action Buttons */}
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-400 font-mono">Monthly Reports</span>
+                      <span className="font-bold text-slate-900 dark:text-white px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-mono">
+                        {client.reportCount} reports
+                      </span>
                     </div>
 
-                    <Link
-                      to="/admin/reports/new"
-                      search={{ clientId: client.id }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200/80 dark:border-rose-900/50 transition cursor-pointer"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>New Report</span>
-                    </Link>
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <Link
+                        to="/admin/reports/new"
+                        search={{ clientId: client.id }}
+                        className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition shadow-2xs"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>New Report</span>
+                      </Link>
+
+                      <Link
+                        to="/admin/reports"
+                        search={{ clientId: client.id }}
+                        className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                      >
+                        <FileSpreadsheet className="w-3.5 h-3.5" />
+                        <span>All Reports</span>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )
@@ -696,22 +757,322 @@ function AdminClientsPage() {
         )}
       </div>
 
-      {/* Add / Edit Client Modal */}
-      {isModalOpen && (
+      {/* ========================================================================= */}
+      {/* PARTNER AGENCIES MANAGEMENT MODAL (Superadmin only)                       */}
+      {/* ========================================================================= */}
+      {isPartnersModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-lg bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 shadow-2xl animate-in zoom-in-95 max-h-[92vh] overflow-y-auto">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-6 shadow-2xl animate-in zoom-in-95 max-h-[90vh] flex flex-col">
             {/* Modal Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/50">
+                  <Briefcase className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                    Partner Agencies Management
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Create partner login accounts and view their assigned client portfolios.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={openCreatePartnerForm}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Partner</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsPartnersModalOpen(false)}
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content: Partners List */}
+            <div className="overflow-y-auto space-y-3 pr-1 flex-1">
+              {isLoadingPartners ? (
+                <div className="py-12 flex flex-col items-center justify-center gap-2 text-xs text-slate-400 font-mono">
+                  <RefreshCw className="w-5 h-5 animate-spin text-blue-500" />
+                  <span>Loading partner agency accounts...</span>
+                </div>
+              ) : partnerAccounts.length === 0 ? (
+                <div className="py-12 text-center rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 p-8 space-y-3">
+                  <Briefcase className="w-8 h-8 text-slate-400 mx-auto" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold text-slate-900 dark:text-white">No partner accounts yet</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                      Create partner agency logins so they can access their assigned clients and reports without seeing your internal agency leads and CMS.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={openCreatePartnerForm}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Create First Partner</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {partnerAccounts.map((partner) => (
+                    <div
+                      key={partner.id}
+                      className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    >
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                            {partner.name || 'Unnamed Partner'}
+                          </h4>
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${
+                              partner.isActive
+                                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+                                : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800'
+                            }`}
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                partner.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                              }`}
+                            />
+                            {partner.isActive ? 'Active' : 'Suspended'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs font-mono text-slate-500 dark:text-slate-400">
+                          <span className="truncate">{partner.email}</span>
+                          <span>·</span>
+                          <span className="text-blue-600 dark:text-blue-400 font-bold">
+                            {partner.clientCount} assigned {partner.clientCount === 1 ? 'client' : 'clients'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Controls: Active Toggle & Edit */}
+                      <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[11px] font-mono text-slate-400">Status:</span>
+                          <button
+                            type="button"
+                            role="switch"
+                            aria-checked={partner.isActive}
+                            disabled={togglingPartnerId === partner.id}
+                            onClick={() => handleTogglePartnerActive(partner)}
+                            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${
+                              partner.isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
+                            }`}
+                          >
+                            <span className="sr-only">Toggle partner active status</span>
+                            <span
+                              aria-hidden="true"
+                              className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                                partner.isActive ? 'translate-x-4' : 'translate-x-0'
+                              }`}
+                            />
+                          </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => openEditPartnerForm(partner)}
+                          className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono shrink-0">
+              <span>Partners log in at <code>/login</code> using their email & password.</span>
+              <button
+                type="button"
+                onClick={() => setIsPartnersModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* PARTNER CREATE / EDIT SUB-MODAL                                           */}
+      {/* ========================================================================= */}
+      {isPartnerFormOpen && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 shadow-2xl animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50">
-                  <Building2 className="w-4 h-4" />
+                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/50">
+                  <Briefcase className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                    {editingClient ? 'Edit Client Profile' : 'Add New Agency Client'}
+                    {editingPartner ? 'Edit Partner Account' : 'New Partner Agency Account'}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Set up branding, logo, and colors used on reports.
+                    Set up credentials and dashboard access.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPartnerFormOpen(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {partnerFormError && (
+              <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-900 text-xs text-rose-600 dark:text-rose-400 font-semibold">
+                {partnerFormError}
+              </div>
+            )}
+
+            <form onSubmit={handleSavePartner} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  Agency Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={partnerFormName}
+                  onChange={(e) => setPartnerFormName(e.target.value)}
+                  placeholder="Apex Growth Agency"
+                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  Partner Login Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={partnerFormEmail}
+                  onChange={(e) => setPartnerFormEmail(e.target.value)}
+                  placeholder="partner@agency.com"
+                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    {editingPartner ? 'Reset Password (optional)' : 'Password *'}
+                  </label>
+                  {editingPartner && (
+                    <span className="text-[10px] font-mono text-slate-400">Leave blank to keep current</span>
+                  )}
+                </div>
+                <input
+                  type="password"
+                  required={!editingPartner}
+                  value={partnerFormPassword}
+                  onChange={(e) => setPartnerFormPassword(e.target.value)}
+                  placeholder={editingPartner ? '•••••••• (leave blank to keep)' : 'At least 6 characters'}
+                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="space-y-0.5">
+                  <span className="block text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Active Account Access
+                  </span>
+                  <span className="block text-[11px] text-slate-500 dark:text-slate-400">
+                    {partnerFormIsActive
+                      ? 'Partner can sign in and manage assigned clients.'
+                      : 'Account suspended. Sign-in attempts will be blocked.'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={partnerFormIsActive}
+                  onClick={() => setPartnerFormIsActive(!partnerFormIsActive)}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    partnerFormIsActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
+                  }`}
+                >
+                  <span className="sr-only">Toggle partner active access</span>
+                  <span
+                    aria-hidden="true"
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                      partnerFormIsActive ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsPartnerFormOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={partnerFormSubmitting}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition disabled:opacity-50 cursor-pointer"
+                >
+                  {partnerFormSubmitting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{editingPartner ? 'Save Changes' : 'Create Partner Account'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* CLIENT CREATE / EDIT MODAL                                                */}
+      {/* ========================================================================= */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-6 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                    {editingClient ? 'Edit Client Profile' : 'New Client Profile'}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Configure branding, contact details, and assigned agency.
                   </p>
                 </div>
               </div>
@@ -720,7 +1081,7 @@ function AdminClientsPage() {
                 onClick={() => setIsModalOpen(false)}
                 className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -730,36 +1091,63 @@ function AdminClientsPage() {
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleSaveClient} className="space-y-4">
-              {/* Business Name */}
-              <div className="space-y-1">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                  Business / Company Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="e.g. Apex Plumbing Solutions"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                />
-              </div>
+            <form onSubmit={handleSaveClient} className="space-y-5">
+              {/* Partner Assignment (Superadmin only) */}
+              {isSuperadmin && (
+                <div className="space-y-1.5 p-3.5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-900/50">
+                  <div className="flex items-center gap-1.5">
+                    <Briefcase className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    <label className="text-xs font-mono font-bold uppercase text-blue-900 dark:text-blue-300">
+                      Assigned Partner Agency
+                    </label>
+                  </div>
+                  <select
+                    value={formPartnerId}
+                    onChange={(e) => setFormPartnerId(e.target.value)}
+                    className="w-full text-xs font-mono rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  >
+                    <option value="">Direct Agency Client (Superadmin)</option>
+                    {partnersList.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name || p.email} ({p.email})
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    If assigned to a partner, only that partner agency and superadmins can view or generate reports for this client.
+                  </p>
+                </div>
+              )}
 
-              {/* Contact Person Name */}
-              <div className="space-y-1">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                  Primary Contact Person *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Michael Thorne (Founder / Director)"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                />
+              {/* Basic Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    Business Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    placeholder="e.g. Acme Roofing & Solar"
+                    className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    Contact Person Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. John Doe"
+                    className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                  />
+                </div>
               </div>
 
               {/* Website URL */}
@@ -771,351 +1159,216 @@ function AdminClientsPage() {
                   type="text"
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
-                  placeholder="e.g. https://apexplumbing.com"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  placeholder="https://acmeroofing.com"
+                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
                 />
               </div>
 
-              {/* Logo URL with Media Library Picker */}
-              <div className="space-y-1.5">
+              {/* Client Logo Picker */}
+              <div className="space-y-2">
                 <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                  Client Logo URL
+                  Client Logo
                 </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={logoUrl}
-                    onChange={(e) => setLogoUrl(e.target.value)}
-                    placeholder="https://... or choose from Media Library"
-                    className="flex-1 px-3.5 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setIsMediaModalOpen(true)}
-                    className="px-3 py-2 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition cursor-pointer shrink-0"
-                    title="Choose from media library"
-                  >
-                    <ImageIcon className="w-4 h-4" />
-                  </button>
-                </div>
-                {logoUrl && (
-                  <div className="mt-2 p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                    <img src={logoUrl} alt="Logo preview" className="h-8 max-w-[120px] object-contain" />
-                    <span className="text-[11px] text-slate-400 font-mono truncate">{logoUrl}</span>
+                <div className="flex items-center gap-3">
+                  {logoUrl ? (
+                    <div className="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 p-1 bg-white flex items-center justify-center shrink-0">
+                      <img src={logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center text-slate-400 shrink-0">
+                      <ImageIcon className="w-5 h-5" />
+                    </div>
+                  )}
+
+                  <div className="flex-1 flex gap-2">
+                    <input
+                      type="text"
+                      value={logoUrl}
+                      onChange={(e) => setLogoUrl(e.target.value)}
+                      placeholder="https://.../logo.png"
+                      className="flex-1 px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono truncate"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setIsMediaModalOpen(true)}
+                      className="px-3.5 py-2.5 rounded-2xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition shrink-0 cursor-pointer"
+                    >
+                      Media Library
+                    </button>
                   </div>
-                )}
+                </div>
+              </div>
+
+              {/* Color Customization */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="space-y-2">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    Primary Brand Color
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={primaryColor}
+                      onChange={(e) => setPrimaryColor(e.target.value)}
+                      className="w-9 h-9 rounded-xl border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800"
+                    />
+                    <input
+                      type="text"
+                      value={primaryColor}
+                      onChange={(e) => setPrimaryColor(e.target.value)}
+                      className="w-24 px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {COLOR_PRESETS.slice(0, 5).map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setPrimaryColor(color)}
+                        className="w-5 h-5 rounded-full border border-white dark:border-slate-800 shadow-xs cursor-pointer transition hover:scale-110"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    Secondary Accent Color
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={secondaryColor}
+                      onChange={(e) => setSecondaryColor(e.target.value)}
+                      className="w-9 h-9 rounded-xl border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800"
+                    />
+                    <input
+                      type="text"
+                      value={secondaryColor}
+                      onChange={(e) => setSecondaryColor(e.target.value)}
+                      className="w-24 px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {COLOR_PRESETS.slice(5).map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setSecondaryColor(color)}
+                        className="w-5 h-5 rounded-full border border-white dark:border-slate-800 shadow-xs cursor-pointer transition hover:scale-110"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* White-Label Settings */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
-                <label className="flex items-center justify-between cursor-pointer">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <span className="text-xs font-mono font-bold uppercase text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
-                      <span>White-Label Mode</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                      White-Label Report Branding
                     </span>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Hide all "built by Miguel" branding and contact info on this client's reports.
-                    </p>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
+                      Replace "built by Miguel" branding on client PDFs with custom partner agency details.
+                    </span>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={isWhiteLabel}
-                    onChange={(e) => setIsWhiteLabel(e.target.checked)}
-                    className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
-                  />
-                </label>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={isWhiteLabel}
+                    onClick={() => setIsWhiteLabel(!isWhiteLabel)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      isWhiteLabel ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span className="sr-only">Toggle white-label</span>
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                        isWhiteLabel ? 'translate-x-4' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
 
                 {isWhiteLabel && (
                   <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-800 animate-in fade-in">
                     <div className="space-y-1">
-                      <label className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                        Managing Partner / Agency Name (Optional)
+                      <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                        Partner Agency Name
                       </label>
                       <input
                         type="text"
                         value={partnerName}
                         onChange={(e) => setPartnerName(e.target.value)}
-                        placeholder="e.g. Apex Growth Partners"
-                        className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                        placeholder="e.g. Apex Marketing Co."
+                        className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
                       />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                        Partner Logo URL (Optional)
+                    <div className="space-y-2">
+                      <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                        Partner Agency Logo
                       </label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={partnerLogoUrl}
-                          onChange={(e) => setPartnerLogoUrl(e.target.value)}
-                          placeholder="https://... partner logo"
-                          className="flex-1 px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setIsPartnerLogoModalOpen(true)}
-                          className="px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 cursor-pointer"
-                          title="Choose partner logo from media library"
-                        >
-                          <ImageIcon className="w-3.5 h-3.5" />
-                        </button>
+                      <div className="flex items-center gap-3">
+                        {partnerLogoUrl ? (
+                          <div className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 p-1 bg-white flex items-center justify-center shrink-0">
+                            <img src={partnerLogoUrl} alt="Partner Logo" className="max-h-full max-w-full object-contain" />
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center text-slate-400 shrink-0">
+                            <ImageIcon className="w-4 h-4" />
+                          </div>
+                        )}
+
+                        <div className="flex-1 flex gap-2">
+                          <input
+                            type="text"
+                            value={partnerLogoUrl}
+                            onChange={(e) => setPartnerLogoUrl(e.target.value)}
+                            placeholder="https://.../partner-logo.png"
+                            className="flex-1 px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono truncate"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setIsPartnerLogoModalOpen(true)}
+                            className="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition shrink-0 cursor-pointer"
+                          >
+                            Browse
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Brand Colors (Primary and Secondary) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                {/* Primary Color */}
-                <div className="space-y-2 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                  <label className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center justify-between">
-                    <span>Primary Color</span>
-                    <span
-                      className="w-3.5 h-3.5 rounded-full border border-black/10"
-                      style={{ backgroundColor: primaryColor }}
-                    />
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={primaryColor}
-                      onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-9 h-9 rounded-xl border-0 p-0 cursor-pointer bg-transparent"
-                    />
-                    <input
-                      type="text"
-                      value={primaryColor}
-                      onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="flex-1 px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
-                    />
-                  </div>
-                  {/* Presets */}
-                  <div className="flex flex-wrap gap-1 pt-1">
-                    {COLOR_PRESETS.slice(0, 5).map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        onClick={() => setPrimaryColor(color)}
-                        className="w-5 h-5 rounded-md border border-black/10 cursor-pointer hover:scale-110 transition"
-                        style={{ backgroundColor: color }}
-                        title={color}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Secondary Color */}
-                <div className="space-y-2 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                  <label className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center justify-between">
-                    <span>Secondary Color</span>
-                    <span
-                      className="w-3.5 h-3.5 rounded-full border border-black/10"
-                      style={{ backgroundColor: secondaryColor }}
-                    />
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={secondaryColor}
-                      onChange={(e) => setSecondaryColor(e.target.value)}
-                      className="w-9 h-9 rounded-xl border-0 p-0 cursor-pointer bg-transparent"
-                    />
-                    <input
-                      type="text"
-                      value={secondaryColor}
-                      onChange={(e) => setSecondaryColor(e.target.value)}
-                      className="flex-1 px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
-                    />
-                  </div>
-                  {/* Presets */}
-                  <div className="flex flex-wrap gap-1 pt-1">
-                    {COLOR_PRESETS.slice(5, 10).map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        onClick={() => setSecondaryColor(color)}
-                        className="w-5 h-5 rounded-md border border-black/10 cursor-pointer hover:scale-110 transition"
-                        style={{ backgroundColor: color }}
-                        title={color}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Form Buttons */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+              {/* Form Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
+                  className="px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <RefreshCw className="w-4 h-4 animate-spin" />
                       <span>Saving...</span>
                     </>
                   ) : (
                     <>
-                      <Check className="w-3.5 h-3.5" />
+                      <Check className="w-4 h-4" />
                       <span>{editingClient ? 'Save Changes' : 'Create Client'}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Client Portal Account Modal */}
-      {isPortalModalOpen && portalClient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 shadow-2xl animate-in zoom-in-95">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/50">
-                  <KeyRound className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                    Client Portal Access
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {portalClient.businessName}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsPortalModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {portalError && (
-              <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-900 text-xs text-rose-600 dark:text-rose-400 font-semibold">
-                {portalError}
-              </div>
-            )}
-
-            <form onSubmit={handleSavePortalUser} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                  Client Login Email *
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={portalEmail}
-                  onChange={(e) => setPortalEmail(e.target.value)}
-                  placeholder="client@company.com"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                    {portalClient.portalUser ? 'Reset Password (optional)' : 'Password *'}
-                  </label>
-                  {portalClient.portalUser && (
-                    <span className="text-[10px] font-mono text-slate-400">
-                      Leave blank to keep current
-                    </span>
-                  )}
-                </div>
-                <input
-                  type="password"
-                  required={!portalClient.portalUser}
-                  value={portalPassword}
-                  onChange={(e) => setPortalPassword(e.target.value)}
-                  placeholder={
-                    portalClient.portalUser
-                      ? '•••••••• (leave blank to keep current)'
-                      : 'At least 6 characters'
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-                />
-              </div>
-
-              {/* Account Active Status in Modal */}
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                <div className="space-y-0.5">
-                  <span className="block text-xs font-bold text-slate-800 dark:text-slate-200">
-                    Account Status
-                  </span>
-                  <span className="block text-[11px] text-slate-500 dark:text-slate-400">
-                    {portalIsActive
-                      ? 'Account is active and can sign in.'
-                      : 'Account is suspended. Sign-in attempts will be blocked.'}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={portalIsActive}
-                  disabled={currentAdmin?.userId === portalClient.portalUser?.id}
-                  onClick={() => setPortalIsActive(!portalIsActive)}
-                  title={
-                    currentAdmin?.userId === portalClient.portalUser?.id
-                      ? 'Cannot deactivate your own account'
-                      : portalIsActive
-                      ? 'Click to suspend account'
-                      : 'Click to activate account'
-                  }
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                    portalIsActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
-                  }`}
-                >
-                  <span className="sr-only">Toggle client active access</span>
-                  <span
-                    aria-hidden="true"
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                      portalIsActive ? 'translate-x-4' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              <div className="p-3 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 text-[11px] text-blue-700 dark:text-blue-300">
-                <span>Clients sign in at <code>/login</code> and are immediately directed to their isolated <code>/portal</code> view.</span>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setIsPortalModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={portalIsSubmitting}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition disabled:opacity-50 cursor-pointer"
-                >
-                  {portalIsSubmitting ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Saving...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Save Portal Credentials</span>
                     </>
                   )}
                 </button>

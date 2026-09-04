@@ -1,13 +1,10 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq, and, or, lte } from 'drizzle-orm'
 import { db, posts, type Post } from '../db'
-import { verifySessionToken } from '../lib/auth'
-import { getCookie } from '@tanstack/react-start/server'
-
-const COOKIE_NAME = 'admin_session'
+import { assertSuperadminSession } from './auth'
 
 /**
- * Server Function: Get all posts for Admin CMS
+ * Server Function: Get all posts for Admin CMS (Superadmin only)
  */
 export const getAdminPostsServerFn = createServerFn({ method: 'GET' })
   .validator(
@@ -19,11 +16,8 @@ export const getAdminPostsServerFn = createServerFn({ method: 'GET' })
     },
   )
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized access')
-    }
+    await assertSuperadminSession()
+
 
     const { status = 'all', search } = data || {}
 
@@ -127,11 +121,8 @@ export const createPostServerFn = createServerFn({ method: 'POST' })
     },
   )
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized')
-    }
+    await assertSuperadminSession()
+
 
     // Clean slug
     const cleanSlug = data.slug
@@ -230,11 +221,7 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
     },
   )
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized')
-    }
+    await assertSuperadminSession()
 
     const [current] = await db
       .select()
@@ -312,7 +299,7 @@ export const updatePostServerFn = createServerFn({ method: 'POST' })
   })
 
 /**
- * Server Function: Delete a blog post
+ * Server Function: Delete a blog post (Superadmin only)
  */
 export const deletePostServerFn = createServerFn({ method: 'POST' })
   .validator((data: { id: string }) => {
@@ -320,15 +307,12 @@ export const deletePostServerFn = createServerFn({ method: 'POST' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized')
-    }
+    await assertSuperadminSession()
 
     await db.delete(posts).where(eq(posts.id, data.id))
     return { success: true }
   })
+
 
 /**
  * Public Server Function: Get all published/live posts for the public blog
