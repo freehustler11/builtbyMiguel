@@ -14,7 +14,7 @@ export function ThemeToggle({ variant = 'pill', className = '' }: ThemeTogglePro
       <button
         type="button"
         onClick={toggleTheme}
-        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium transition-colors cursor-pointer ${
+        className={`print:hidden w-full flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium transition-colors cursor-pointer ${
           isDark
             ? 'text-slate-200 bg-slate-800/80 hover:bg-slate-800'
             : 'text-slate-700 bg-slate-100 hover:bg-slate-200/80'
@@ -40,7 +40,7 @@ export function ThemeToggle({ variant = 'pill', className = '' }: ThemeTogglePro
     <button
       type="button"
       onClick={toggleTheme}
-      className={`relative inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border transition-all duration-200 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 active:scale-95 ${
+      className={`print:hidden relative inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl border transition-all duration-200 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 active:scale-95 ${
         isDark
           ? 'bg-slate-900 border-slate-800 text-amber-300 hover:text-amber-200 hover:border-slate-700 shadow-sm shadow-slate-950/50'
           : 'bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-sm'

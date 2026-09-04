@@ -2,6 +2,7 @@ import { createFileRoute, redirect, useNavigate, useRouter } from '@tanstack/rea
 import { useState } from 'react'
 import { Lock, KeyRound, Eye, EyeOff, AlertCircle, ArrowLeft, ShieldCheck, Loader2, Mail, Building2, Briefcase } from 'lucide-react'
 import { loginServerFn, checkAuthServerFn } from '../lib/auth'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 interface LoginSearch {
   redirect?: string
@@ -112,7 +113,12 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative bg-slate-50 dark:bg-[#0c111d] transition-colors">
+      {/* Top-Right Theme Toggle */}
+      <div className="fixed top-4 right-4 z-50 print:hidden">
+        <ThemeToggle variant="pill" />
+      </div>
+
       {/* Background Soft Glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-gradient-to-tr from-rose-500/10 via-blue-500/5 to-cyan-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 

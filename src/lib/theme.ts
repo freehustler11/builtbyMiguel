@@ -12,8 +12,13 @@ export function getInitialTheme(): Theme {
     if (savedTheme === 'light' || savedTheme === 'dark') {
       return savedTheme
     }
+
+    const match = document.cookie.match(new RegExp('(^| )' + THEME_STORAGE_KEY + '=([^;]+)'))
+    if (match && (match[2] === 'light' || match[2] === 'dark')) {
+      return match[2] as Theme
+    }
   } catch {
-    // Ignore localStorage access errors
+    // Ignore localStorage/cookie access errors
   }
 
   // Default to light mode
@@ -36,6 +41,12 @@ export function applyTheme(theme: Theme) {
     localStorage.setItem(THEME_STORAGE_KEY, theme)
   } catch {
     // Ignore localStorage write errors
+  }
+
+  try {
+    document.cookie = `${THEME_STORAGE_KEY}=${theme}; path=/; max-age=31536000; SameSite=Lax`
+  } catch {
+    // Ignore cookie write errors
   }
 }
 

@@ -187,8 +187,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
   const isIsolated =
+    currentPath === '/login' ||
+    currentPath.startsWith('/login/') ||
+    currentPath.startsWith('/admin') ||
     currentPath.startsWith('/portal') ||
-    (currentPath.startsWith('/admin/reports/') && currentPath !== '/admin/reports' && currentPath !== '/admin/reports/new')
+    currentPath.startsWith('/messages')
 
   if (isIsolated) {
     return (
@@ -196,7 +199,7 @@ function RootComponent() {
         <head>
           <HeadContent />
         </head>
-        <body className="bg-slate-100 dark:bg-[#070b14] print:bg-white text-slate-900 dark:text-white print:text-black antialiased font-sans min-h-screen">
+        <body className="bg-slate-50 dark:bg-[#0c111d] print:bg-white text-slate-900 dark:text-white print:text-black antialiased font-sans min-h-screen">
           <Outlet />
           <ScrollRestoration />
           <Scripts />

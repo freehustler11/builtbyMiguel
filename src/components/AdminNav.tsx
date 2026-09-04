@@ -12,6 +12,7 @@ import {
   Building2,
 } from 'lucide-react'
 import { LogoutButton } from './LogoutButton'
+import { ThemeToggle } from './ThemeToggle'
 
 interface AdminNavProps {
   activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports'
@@ -131,6 +132,8 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
             <span>Live Site</span>
             <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
           </Link>
+
+          <ThemeToggle variant="pill" />
 
           <LogoutButton />
         </div>

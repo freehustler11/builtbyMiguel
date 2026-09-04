@@ -8,7 +8,6 @@ import {
   Cpu,
   ArrowRight,
   Sparkles,
-  ExternalLink,
 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { ThemeToggle } from './ThemeToggle'
@@ -221,14 +220,6 @@ export function Navbar() {
 
           {/* Desktop Right Action Area */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link
-              to="/login"
-              className="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1 px-2 py-1"
-            >
-              Portal Login
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </Link>
-
             {/* Dark Mode Theme Toggle */}
             <ThemeToggle variant="pill" />
 
@@ -372,17 +363,6 @@ export function Navbar() {
               <Sparkles className="w-4 h-4 text-rose-400 dark:text-rose-200" />
               <span>Get Free Growth Audit</span>
             </Link>
-
-            <div className="flex items-center justify-center pt-1">
-              <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5"
-              >
-                <span>Client Portal Login</span>
-                <ExternalLink className="w-3 h-3 text-slate-400" />
-              </Link>
-            </div>
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, Link, useRouter, useNavigate } from '@tanstack
 import { useState } from 'react'
 import { FileText, LogOut, User } from 'lucide-react'
 import { requireClient, checkAuthServerFn, logoutServerFn } from '../lib/auth'
+import { ThemeToggle } from '../components/ThemeToggle'
 
 export const Route = createFileRoute('/portal')({
   beforeLoad: async ({ location }) => {
@@ -69,6 +70,8 @@ function PortalLayout() {
                 <span className="max-w-[200px] truncate">{auth.email}</span>
               </div>
             )}
+
+            <ThemeToggle variant="pill" />
 
             <button
               type="button"

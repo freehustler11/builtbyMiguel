@@ -760,12 +760,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             size: letter portrait;
             margin: 0;
           }
-          *, *::before, *::after {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            color-adjust: exact !important;
-          }
-          html, body {
+          :root, html, body {
+            color-scheme: light !important;
             background-color: white !important;
             color: #0f172a !important;
             margin: 0 !important;
@@ -773,11 +769,17 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             width: 8.5in !important;
             height: auto !important;
           }
+          *, *::before, *::after {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
           .report-root {
             display: block !important;
             margin: 0 !important;
             padding: 0 !important;
             width: 8.5in !important;
+            background-color: white !important;
           }
           .report-page {
             width: 8.5in !important;
@@ -790,6 +792,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             box-shadow: none !important;
             border: none !important;
             border-radius: 0 !important;
+            background-color: white !important;
+            color: #0f172a !important;
           }
           .report-page-1 {
             page-break-after: always !important;

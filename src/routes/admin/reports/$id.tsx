@@ -22,6 +22,7 @@ import {
   type DisplayOptions,
 } from '../../../server/reports'
 import { ReportDocument } from '../../../components/ReportDocument'
+import { ThemeToggle } from '../../../components/ThemeToggle'
 
 export const Route = createFileRoute('/admin/reports/$id')({
   beforeLoad: async ({ location }) => {
@@ -184,6 +185,8 @@ function BrandedReportViewPage() {
               <Edit3 className="w-3.5 h-3.5 text-slate-400" />
               <span>Edit Data</span>
             </Link>
+
+            <ThemeToggle variant="pill" />
 
             <button
               type="button"
