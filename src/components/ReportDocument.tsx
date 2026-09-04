@@ -20,7 +20,7 @@ import {
   Activity,
 } from 'lucide-react'
 import type { Report, Client } from '../db/schema'
-import type { DisplayOptions } from '../server/reports'
+import type { DisplayOptions, QueryItem, PageItem } from '../server/reports'
 
 interface ReportDocumentProps {
   report: Report
@@ -135,8 +135,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
   const completedBullets = parseBulletLines(report.workCompleted)
   const nextStepBullets = parseBulletLines(report.nextSteps)
 
-  const topQueries = Array.isArray(report.topQueries) ? report.topQueries : []
-  const topPages = Array.isArray(report.topPages) ? report.topPages : []
+  const topQueries = (Array.isArray(report.topQueries) ? report.topQueries : []) as QueryItem[]
+  const topPages = (Array.isArray(report.topPages) ? report.topPages : []) as PageItem[]
 
   // GBP Metrics & Comparisons
   const reviewsCount = report.gbpReviewsCount ?? report.gbpReviewCount ?? 0
@@ -579,7 +579,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {topQueries.slice(0, 5).map((item, idx) => (
+                        {topQueries.slice(0, 5).map((item: QueryItem, idx: number) => (
                           <tr key={idx} className="hover:bg-slate-50/50">
                             <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[150px]">
                               {item.query}
@@ -626,7 +626,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {topPages.slice(0, 5).map((item, idx) => (
+                        {topPages.slice(0, 5).map((item: PageItem, idx: number) => (
                           <tr key={idx} className="hover:bg-slate-50/50">
                             <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[170px]">
                               {item.path}

@@ -1,4 +1,14 @@
-import { boolean, doublePrecision, integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import {
+  type AnyPgColumn,
+  boolean,
+  doublePrecision,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core'
 
 /**
  * Messages table for storing Audit and Contact form inquiries
@@ -128,8 +138,7 @@ export const reports = pgTable('reports', {
     .references(() => clients.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
   reportMonth: text('report_month').notNull(),
-  // Prior Month Relation
-  previousReportId: uuid('previous_report_id').references(() => reports.id, { onDelete: 'set null' }),
+  previousReportId: uuid('previous_report_id').references((): AnyPgColumn => reports.id, { onDelete: 'set null' }),
   // GBP Metrics (Current)
   gbpCalls: integer('gbp_calls').default(0),
   gbpDirections: integer('gbp_directions').default(0),

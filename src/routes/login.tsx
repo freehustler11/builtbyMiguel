@@ -88,13 +88,14 @@ function LoginPage() {
 
       if (res.success) {
         await router.invalidate()
-        if (res.role === 'partner') {
+        const userRole = res.role as string
+        if (userRole === 'partner') {
           navigate({
             to: redirectTo && (redirectTo.startsWith('/admin/clients') || redirectTo.startsWith('/admin/reports'))
               ? redirectTo
               : '/admin/clients',
           })
-        } else if (res.role === 'client') {
+        } else if (userRole === 'client') {
           navigate({ to: redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal' })
         } else {
           navigate({ to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin' })

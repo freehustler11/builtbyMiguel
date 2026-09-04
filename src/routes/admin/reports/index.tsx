@@ -31,12 +31,14 @@ import { getClientsServerFn } from '../../../server/clients'
 
 interface ReportsSearch {
   error?: string
+  clientId?: string
 }
 
 export const Route = createFileRoute('/admin/reports/')({
   validateSearch: (search: Record<string, unknown>): ReportsSearch => {
     return {
       error: typeof search.error === 'string' ? search.error : undefined,
+      clientId: typeof search.clientId === 'string' ? search.clientId : undefined,
     }
   },
   beforeLoad: async () => {
@@ -144,8 +146,8 @@ function AdminReportsListPage() {
         onClose={() => setReportToDelete(null)}
         onConfirm={handleDeleteReport}
         title="Delete Report"
-        message={`Are you sure you want to delete the report "${reportToDelete?.title}"? This action cannot be undone.`}
-        isProcessing={isDeleting}
+        description={`Are you sure you want to delete the report "${reportToDelete?.title}"? This action cannot be undone.`}
+        isLoading={isDeleting}
       />
 
       <div className="max-w-7xl mx-auto space-y-6">

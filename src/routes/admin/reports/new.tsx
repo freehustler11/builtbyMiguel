@@ -52,15 +52,19 @@ export const Route = createFileRoute('/admin/reports/new')({
     await requireAdmin({ location })
   },
 
-  loader: async ({ search }) => {
+  loaderDeps: ({ search }) => ({
+    clientId: search.clientId,
+    editId: search.editId,
+  }),
+  loader: async ({ deps }) => {
     const [{ clients }, existingReportData] = await Promise.all([
       getClientsServerFn(),
-      search.editId
-        ? getReportByIdServerFn({ data: { id: search.editId } }).catch(() => null)
+      deps.editId
+        ? getReportByIdServerFn({ data: { id: deps.editId } }).catch(() => null)
         : Promise.resolve(null),
     ])
 
-    if (search.editId && (!existingReportData || !existingReportData.report)) {
+    if (deps.editId && (!existingReportData || !existingReportData.report)) {
       throw redirect({
         to: '/admin/reports',
         search: {

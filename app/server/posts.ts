@@ -71,11 +71,7 @@ export const getPostByIdServerFn = createServerFn({ method: 'GET' })
     return data
   })
   .handler(async ({ data }) => {
-    const token = getCookie(COOKIE_NAME)
-    const isAuthenticated = await verifySessionToken(token)
-    if (!isAuthenticated) {
-      throw new Error('Unauthorized access')
-    }
+    await assertSuperadminSession()
 
     const [post] = await db.select().from(posts).where(eq(posts.id, data.id))
     if (!post) {
