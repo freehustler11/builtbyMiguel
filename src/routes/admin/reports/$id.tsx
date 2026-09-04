@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { useEffect, useState, useTransition } from 'react'
 import {
-  Printer,
+  Download,
   ArrowLeft,
   Building2,
   Edit3,
@@ -110,7 +110,10 @@ function BrandedReportViewPage() {
     })
   }
 
-  const handlePrint = () => {
+  const handleDownloadPdf = () => {
+    if (client?.businessName && report?.reportMonth) {
+      document.title = `${client.businessName} - ${report.reportMonth} Performance Report`
+    }
     window.print()
   }
 
@@ -190,11 +193,12 @@ function BrandedReportViewPage() {
 
             <button
               type="button"
-              onClick={handlePrint}
+              onClick={handleDownloadPdf}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-sm transition-all cursor-pointer"
+              title="Download clean 2-page PDF report"
             >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print / Save PDF</span>
+              <Download className="w-3.5 h-3.5" />
+              <span>Download PDF</span>
             </button>
           </div>
         </div>

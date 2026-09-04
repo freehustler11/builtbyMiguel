@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
-import { Printer, ArrowLeft } from 'lucide-react'
+import { Download, ArrowLeft } from 'lucide-react'
 import { checkAuthServerFn } from '../../../lib/auth'
 import { getReportByIdServerFn } from '../../../server/reports'
 import { ReportDocument } from '../../../components/ReportDocument'
@@ -49,7 +49,10 @@ function ClientPortalReportPage() {
     }
   }, [client?.businessName, report?.reportMonth])
 
-  const handlePrint = () => {
+  const handleDownloadPdf = () => {
+    if (client?.businessName && report?.reportMonth) {
+      document.title = `${client.businessName} - ${report.reportMonth} Performance Report`
+    }
     window.print()
   }
 
@@ -69,11 +72,12 @@ function ClientPortalReportPage() {
           <ThemeToggle variant="pill" />
           <button
             type="button"
-            onClick={handlePrint}
+            onClick={handleDownloadPdf}
             className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-sm transition-all cursor-pointer"
+            title="Download clean 2-page PDF report"
           >
-            <Printer className="w-4 h-4" />
-            <span>Print / Save as PDF</span>
+            <Download className="w-4 h-4" />
+            <span>Download PDF</span>
           </button>
         </div>
       </div>
