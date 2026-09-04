@@ -143,10 +143,12 @@ export const reports = pgTable('reports', {
   gbpCalls: integer('gbp_calls').default(0),
   gbpDirections: integer('gbp_directions').default(0),
   gbpViews: integer('gbp_views').default(0),
+  gbpWebsiteClicks: integer('gbp_website_clicks').default(0),
   // GBP Metrics (Previous Month Comparison)
   prevGbpCalls: integer('prev_gbp_calls').default(0),
   prevGbpDirections: integer('prev_gbp_directions').default(0),
   prevGbpViews: integer('prev_gbp_views').default(0),
+  prevGbpWebsiteClicks: integer('prev_gbp_website_clicks').default(0),
   // GBP Reputation
   gbpRating: doublePrecision('gbp_rating').default(5.0),
   gbpReviewCount: integer('gbp_review_count').default(0),
@@ -194,6 +196,7 @@ export const reports = pgTable('reports', {
   topQueries: jsonb('top_queries').$type<Array<{ query: string; clicks: number; impressions: number; position: number }>>().default([]),
   topPages: jsonb('top_pages').$type<Array<{ path: string; clicks: number; users: number }>>().default([]),
   // Narrative Fields
+  summaryTitle: text('summary_title').default('Performance Highlights & Strategic Updates'),
   summary: text('summary'),
   workCompleted: text('work_completed'),
   nextSteps: text('next_steps'),

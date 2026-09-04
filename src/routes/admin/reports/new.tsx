@@ -140,11 +140,17 @@ function AdminReportFormPage() {
   const [gbpCalls, setGbpCalls] = useState<number | string>(existingReport?.gbpCalls ?? 0)
   const [gbpDirections, setGbpDirections] = useState<number | string>(existingReport?.gbpDirections ?? 0)
   const [gbpViews, setGbpViews] = useState<number | string>(existingReport?.gbpViews ?? 0)
+  const [gbpWebsiteClicks, setGbpWebsiteClicks] = useState<number | string>(
+    (existingReport as any)?.gbpWebsiteClicks ?? existingReport?.gbpViews ?? 0
+  )
 
   // GBP Metrics - Previous Month
   const [prevGbpCalls, setPrevGbpCalls] = useState<number | string>(existingReport?.prevGbpCalls ?? 0)
   const [prevGbpDirections, setPrevGbpDirections] = useState<number | string>(existingReport?.prevGbpDirections ?? 0)
   const [prevGbpViews, setPrevGbpViews] = useState<number | string>(existingReport?.prevGbpViews ?? 0)
+  const [prevGbpWebsiteClicks, setPrevGbpWebsiteClicks] = useState<number | string>(
+    (existingReport as any)?.prevGbpWebsiteClicks ?? existingReport?.prevGbpViews ?? 0
+  )
 
   // GBP Reputation
   const [gbpRating, setGbpRating] = useState<number | string>(existingReport?.gbpRating ?? 5.0)
@@ -206,6 +212,9 @@ function AdminReportFormPage() {
   })
 
   // Narrative Text
+  const [summaryTitle, setSummaryTitle] = useState(
+    (existingReport as any)?.summaryTitle || 'Performance Highlights & Strategic Updates'
+  )
   const [summary, setSummary] = useState(existingReport?.summary || '')
   const [workCompleted, setWorkCompleted] = useState(existingReport?.workCompleted || '')
   const [nextSteps, setNextSteps] = useState(existingReport?.nextSteps || '')
@@ -264,6 +273,7 @@ function AdminReportFormPage() {
       setPrevGbpCalls(p.gbpCalls ?? 0)
       setPrevGbpDirections(p.gbpDirections ?? 0)
       setPrevGbpViews(p.gbpViews ?? 0)
+      setPrevGbpWebsiteClicks((p as any).gbpWebsiteClicks ?? p.gbpViews ?? 0)
       setPrevGscClicks(p.gscClicks ?? 0)
       setPrevGscImpressions(p.gscImpressions ?? 0)
       setPrevGscPosition(p.gscPosition ?? 0)
@@ -308,6 +318,7 @@ function AdminReportFormPage() {
     const prevCallsNum = Number(prevGbpCalls) || 0
     const dirNum = Number(gbpDirections) || 0
     const prevDirNum = Number(prevGbpDirections) || 0
+    const gbpClicksNum = Number(gbpWebsiteClicks) || 0
     const gbpRatingNum = Number(gbpRating) || 5.0
     const reviewsNum = Number(gbpReviewsCount) || Number(gbpReviewCount) || 0
 
@@ -343,9 +354,13 @@ function AdminReportFormPage() {
 
     // Bullet 2: Direct Inquiries & Engagement
     let bullet2 = ''
-    if (callsNum > 0 || dirNum > 0) {
+    if (callsNum > 0 || dirNum > 0 || gbpClicksNum > 0) {
       const callDiff = calcDiff(callsNum, prevCallsNum)
-      bullet2 = `• High-Intent Conversion: Captured ${callsNum.toLocaleString()} direct phone inquiries (${callDiff} MoM) and ${dirNum.toLocaleString()} map direction requests on Google Business Profile, backed by a strong ${gbpRatingNum.toFixed(1)}★ rating across ${reviewsNum} verified reviews.`
+      const actionsList = []
+      if (callsNum > 0) actionsList.push(`${callsNum.toLocaleString()} phone calls (${callDiff} MoM)`)
+      if (dirNum > 0) actionsList.push(`${dirNum.toLocaleString()} direction requests`)
+      if (gbpClicksNum > 0) actionsList.push(`${gbpClicksNum.toLocaleString()} website clicks`)
+      bullet2 = `• High-Intent Conversion: Captured ${actionsList.join(', ')} from Google Business Profile, backed by a strong ${gbpRatingNum.toFixed(1)}★ rating across ${reviewsNum} verified reviews.`
     } else if (engRateNum > 0 || sessionsNum > 0) {
       bullet2 = `• On-Site Engagement: Sustained a solid ${engRateNum > 0 ? `${engRateNum.toFixed(1)}% engagement rate` : 'session depth'} across ${sessionsNum.toLocaleString()} visits, reflecting high commercial relevance among incoming visitors.`
     } else {
@@ -417,11 +432,13 @@ function AdminReportFormPage() {
         // GBP Current
         gbpCalls: Number(gbpCalls) || 0,
         gbpDirections: Number(gbpDirections) || 0,
-        gbpViews: Number(gbpViews) || 0,
+        gbpViews: Number(gbpWebsiteClicks || gbpViews) || 0,
+        gbpWebsiteClicks: Number(gbpWebsiteClicks) || 0,
         // GBP Previous
         prevGbpCalls: Number(prevGbpCalls) || 0,
         prevGbpDirections: Number(prevGbpDirections) || 0,
-        prevGbpViews: Number(prevGbpViews) || 0,
+        prevGbpViews: Number(prevGbpWebsiteClicks || prevGbpViews) || 0,
+        prevGbpWebsiteClicks: Number(prevGbpWebsiteClicks) || 0,
         // GBP Reputation
         gbpRating: Number(gbpRating) || 5.0,
         gbpReviewCount: Number(gbpReviewsCount || gbpReviewCount) || 0,
@@ -453,6 +470,7 @@ function AdminReportFormPage() {
         topQueries: cleanedQueries,
         topPages: cleanedPages,
         // Narrative
+        summaryTitle: summaryTitle.trim() || 'Performance Highlights & Strategic Updates',
         summary: summary.trim() || undefined,
         workCompleted: workCompleted.trim() || undefined,
         nextSteps: nextSteps.trim() || undefined,
@@ -731,17 +749,20 @@ function AdminReportFormPage() {
                     </div>
                   </div>
 
-                  {/* Views */}
+                  {/* Website Clicks */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Views (Current)
+                        Website Clicks (Current)
                       </label>
                       <input
                         type="number"
                         min="0"
-                        value={gbpViews}
-                        onChange={(e) => setGbpViews(e.target.value)}
+                        value={gbpWebsiteClicks}
+                        onChange={(e) => {
+                          setGbpWebsiteClicks(e.target.value)
+                          setGbpViews(e.target.value)
+                        }}
                         className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -752,8 +773,11 @@ function AdminReportFormPage() {
                       <input
                         type="number"
                         min="0"
-                        value={prevGbpViews}
-                        onChange={(e) => setPrevGbpViews(e.target.value)}
+                        value={prevGbpWebsiteClicks}
+                        onChange={(e) => {
+                          setPrevGbpWebsiteClicks(e.target.value)
+                          setPrevGbpViews(e.target.value)
+                        }}
                         className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
                       />
                     </div>
@@ -1190,14 +1214,28 @@ function AdminReportFormPage() {
             <div className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-5">
               <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                 <FileText className="w-4 h-4 text-rose-500" />
-                <span>Executive Summary & Strategic Updates</span>
+                <span>{summaryTitle || 'Performance Highlights & Strategic Updates'}</span>
               </div>
 
-              {/* Executive Summary */}
+              {/* Customizable Summary Heading / Title */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  Summary Section Heading / Title
+                </label>
+                <input
+                  type="text"
+                  value={summaryTitle}
+                  onChange={(e) => setSummaryTitle(e.target.value)}
+                  placeholder="e.g. Performance Highlights & Strategic Updates"
+                  className="w-full px-4 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-semibold"
+                />
+              </div>
+
+              {/* Summary Body */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                    Executive Summary
+                    Summary Content
                   </label>
                   <button
                     type="button"

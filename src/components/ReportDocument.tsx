@@ -161,7 +161,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
   const gbpReviewsMoM = getMoMChange(reviewsCount, prevReviewsCount, { fallbackLabel: 'Baseline' })
   const gbpCallsMoM = getMoMChange(report.gbpCalls, report.prevGbpCalls)
   const gbpDirectionsMoM = getMoMChange(report.gbpDirections, report.prevGbpDirections)
-  const gbpViewsMoM = getMoMChange(report.gbpViews, report.prevGbpViews)
+  const websiteClicks = report.gbpWebsiteClicks ?? (report as any).gbpViews ?? 0
+  const prevWebsiteClicks = report.prevGbpWebsiteClicks ?? (report as any).prevGbpViews ?? 0
+  const gbpWebsiteClicksMoM = getMoMChange(websiteClicks, prevWebsiteClicks)
+  const gbpViewsMoM = gbpWebsiteClicksMoM
 
   // GSC Metrics & Comparisons
   const gscCtrNum = parseDecimal(report.gscCtr)
@@ -406,7 +409,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-800">
                   <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                  <span>Executive Summary & Performance Highlights</span>
+                  <span>{report.summaryTitle || 'Performance Highlights & Strategic Updates'}</span>
                 </div>
                 <span className="text-[10px] font-mono text-slate-400 font-semibold uppercase">Monthly Review</span>
               </div>
@@ -503,17 +506,17 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                     </div>
                   </div>
 
-                  {/* Row 4: Profile Views */}
+                  {/* Row 4: Website Clicks */}
                   <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Profile Views</span>
+                      <Globe className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                      <span>Website Clicks</span>
                     </span>
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
-                        {report.gbpViews || 0}
+                        {websiteClicks || 0}
                       </span>
-                      {renderMoMBadge(gbpViewsMoM)}
+                      {renderMoMBadge(gbpWebsiteClicksMoM)}
                     </div>
                   </div>
                 </div>

@@ -469,7 +469,7 @@
       "file_type": "code",
       "norm_label": "reportdocumentprops",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L25"
+      "source_location": "L28"
     },
     {
       "id": "src_routes_admin_reports_new_newreportsearch",
@@ -4571,7 +4571,7 @@
       "file_type": "code",
       "norm_label": "formatdate()",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L31"
+      "source_location": "L34"
     },
     {
       "id": "src_components_reportdocument_getmomchange",
@@ -4583,7 +4583,7 @@
       "file_type": "code",
       "norm_label": "getmomchange()",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L62"
+      "source_location": "L65"
     },
     {
       "id": "src_components_reportdocument_getmompositionchange",
@@ -4595,7 +4595,7 @@
       "file_type": "code",
       "norm_label": "getmompositionchange()",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L102"
+      "source_location": "L105"
     },
     {
       "id": "src_components_reportdocument_parsebulletlines",
@@ -4607,7 +4607,7 @@
       "file_type": "code",
       "norm_label": "parsebulletlines()",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L41"
+      "source_location": "L44"
     },
     {
       "id": "src_components_reportdocument_parsedecimal",
@@ -4619,7 +4619,7 @@
       "file_type": "code",
       "norm_label": "parsedecimal()",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L49"
+      "source_location": "L52"
     },
     {
       "id": "src_components_reportdocument_rendermombadge",
@@ -4631,7 +4631,7 @@
       "file_type": "code",
       "norm_label": "rendermombadge()",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L939"
+      "source_location": "L1097"
     },
     {
       "id": "src_components_reportdocument_reportdocument",
@@ -4643,7 +4643,7 @@
       "file_type": "code",
       "norm_label": "reportdocument()",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L132"
+      "source_location": "L135"
     },
     {
       "id": "src_routes_admin_reports_id_brandedreportviewpage",
@@ -100777,7 +100777,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L67",
+      "source_location": "L70",
       "weight": 1.0
     },
     {
@@ -100789,7 +100789,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L106",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -100801,7 +100801,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L149",
+      "source_location": "L152",
       "weight": 1.0
     },
     {
@@ -100813,7 +100813,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L158",
+      "source_location": "L161",
       "weight": 1.0
     },
     {
@@ -100825,7 +100825,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L164",
+      "source_location": "L167",
       "weight": 1.0
     },
     {
@@ -100837,7 +100837,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L169",
+      "source_location": "L172",
       "weight": 1.0
     },
     {
@@ -100849,7 +100849,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L264",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -100861,7 +100861,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L365",
+      "source_location": "L325",
       "weight": 1.0
     },
     {
@@ -102529,7 +102529,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L26",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -102541,7 +102541,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L27",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -102553,7 +102553,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -104785,7 +104785,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -104797,7 +104797,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -104809,7 +104809,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -104821,7 +104821,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -104833,7 +104833,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -107102,7 +107102,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L22",
+      "source_location": "L25",
       "type_only": true,
       "weight": 1.0
     },
@@ -107115,7 +107115,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L23",
+      "source_location": "L26",
       "type_only": true,
       "weight": 1.0
     },
@@ -181174,73 +181174,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L102",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_reportdocument",
-      "target": "src_components_reportdocument_reportdocument",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L132",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_reportdocument",
-      "target": "src_components_reportdocument_reportdocumentprops",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L25",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_reportdocument",
-      "target": "src_components_reportdocument_formatdate",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L31",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_reportdocument",
-      "target": "src_components_reportdocument_parsebulletlines",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L41",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_reportdocument",
-      "target": "src_components_reportdocument_parsedecimal",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L49",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_reportdocument",
-      "target": "src_components_reportdocument_getmomchange",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L62",
+      "source_location": "L105",
       "weight": 1.0
     },
     {
@@ -181251,7 +181185,73 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L939",
+      "source_location": "L1097",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_reportdocument",
+      "target": "src_components_reportdocument_reportdocument",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ReportDocument.tsx",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_reportdocument",
+      "target": "src_components_reportdocument_reportdocumentprops",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ReportDocument.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_reportdocument",
+      "target": "src_components_reportdocument_formatdate",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ReportDocument.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_reportdocument",
+      "target": "src_components_reportdocument_parsebulletlines",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ReportDocument.tsx",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_reportdocument",
+      "target": "src_components_reportdocument_parsedecimal",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ReportDocument.tsx",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_reportdocument",
+      "target": "src_components_reportdocument_getmomchange",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ReportDocument.tsx",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -192187,5 +192187,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e5e7facb104932a3cb1965d8c7a849ba86f2eeee"
+  "built_at_commit": "a85aeb8052ef61c60bf0e65324d4955b7c7dc13e"
 }

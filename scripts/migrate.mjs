@@ -164,6 +164,9 @@ export async function runMigrations() {
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "display_options" jsonb DEFAULT '{"show_agency_info":false,"show_contact_person":true,"show_date_generated":false,"show_summary":true,"show_tables":true,"show_next_steps":true}'::jsonb`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "top_queries" jsonb DEFAULT '[]'::jsonb`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "top_pages" jsonb DEFAULT '[]'::jsonb`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "gbp_website_clicks" integer DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_gbp_website_clicks" integer DEFAULT 0`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "summary_title" text DEFAULT 'Performance Highlights & Strategic Updates'`
 
     // 9. Ensure media table isolation per partner
     await sql`ALTER TABLE "media" ADD COLUMN IF NOT EXISTS "uploaded_by" uuid REFERENCES "users"("id") ON DELETE SET NULL`

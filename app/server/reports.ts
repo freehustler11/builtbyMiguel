@@ -80,9 +80,11 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         gbpCalls: reports.gbpCalls,
         gbpDirections: reports.gbpDirections,
         gbpViews: reports.gbpViews,
+        gbpWebsiteClicks: reports.gbpWebsiteClicks,
         prevGbpCalls: reports.prevGbpCalls,
         prevGbpDirections: reports.prevGbpDirections,
         prevGbpViews: reports.prevGbpViews,
+        prevGbpWebsiteClicks: reports.prevGbpWebsiteClicks,
         gbpRating: reports.gbpRating,
         gbpReviewCount: reports.gbpReviewCount,
         gbpReviewsCount: reports.gbpReviewsCount,
@@ -113,6 +115,7 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         topQueries: reports.topQueries,
         topPages: reports.topPages,
         // Narrative Fields
+        summaryTitle: reports.summaryTitle,
         summary: reports.summary,
         workCompleted: reports.workCompleted,
         nextSteps: reports.nextSteps,
@@ -269,9 +272,11 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       gbpCalls?: number
       gbpDirections?: number
       gbpViews?: number
+      gbpWebsiteClicks?: number
       prevGbpCalls?: number
       prevGbpDirections?: number
       prevGbpViews?: number
+      prevGbpWebsiteClicks?: number
       gbpRating?: number
       gbpReviewCount?: number
       gbpReviewsCount?: number
@@ -297,6 +302,7 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       displayOptions?: DisplayOptions
       topQueries?: QueryItem[]
       topPages?: PageItem[]
+      summaryTitle?: string
       summary?: string
       workCompleted?: string
       nextSteps?: string
@@ -336,10 +342,12 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         gbpCalls: Number(data.gbpCalls) || 0,
         gbpDirections: Number(data.gbpDirections) || 0,
         gbpViews: Number(data.gbpViews) || 0,
+        gbpWebsiteClicks: Number(data.gbpWebsiteClicks ?? data.gbpViews) || 0,
         // GBP Previous
         prevGbpCalls: Number(data.prevGbpCalls) || 0,
         prevGbpDirections: Number(data.prevGbpDirections) || 0,
         prevGbpViews: Number(data.prevGbpViews) || 0,
+        prevGbpWebsiteClicks: Number(data.prevGbpWebsiteClicks ?? data.prevGbpViews) || 0,
         // GBP Reputation
         gbpRating: parseDecimalValue(data.gbpRating || 5.0),
         gbpReviewCount: reviewsCount,
@@ -380,6 +388,7 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         topQueries: Array.isArray(data.topQueries) ? data.topQueries : [],
         topPages: Array.isArray(data.topPages) ? data.topPages : [],
         // Narrative Fields
+        summaryTitle: data.summaryTitle?.trim() || 'Performance Highlights & Strategic Updates',
         summary: data.summary?.trim() || null,
         workCompleted: data.workCompleted?.trim() || null,
         nextSteps: data.nextSteps?.trim() || null,
@@ -403,9 +412,11 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       gbpCalls?: number
       gbpDirections?: number
       gbpViews?: number
+      gbpWebsiteClicks?: number
       prevGbpCalls?: number
       prevGbpDirections?: number
       prevGbpViews?: number
+      prevGbpWebsiteClicks?: number
       gbpRating?: number
       gbpReviewCount?: number
       gbpReviewsCount?: number
@@ -431,6 +442,7 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       displayOptions?: DisplayOptions
       topQueries?: QueryItem[]
       topPages?: PageItem[]
+      summaryTitle?: string
       summary?: string
       workCompleted?: string
       nextSteps?: string
@@ -475,10 +487,12 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       gbpCalls: Number(data.gbpCalls) || 0,
       gbpDirections: Number(data.gbpDirections) || 0,
       gbpViews: Number(data.gbpViews) || 0,
+      gbpWebsiteClicks: Number(data.gbpWebsiteClicks ?? data.gbpViews) || 0,
       // GBP Previous
       prevGbpCalls: Number(data.prevGbpCalls) || 0,
       prevGbpDirections: Number(data.prevGbpDirections) || 0,
       prevGbpViews: Number(data.prevGbpViews) || 0,
+      prevGbpWebsiteClicks: Number(data.prevGbpWebsiteClicks ?? data.prevGbpViews) || 0,
       // GBP Reputation
       gbpRating: parseDecimalValue(data.gbpRating || 5.0),
       gbpReviewCount: reviewsCount,
@@ -510,6 +524,7 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       topQueries: Array.isArray(data.topQueries) ? data.topQueries : [],
       topPages: Array.isArray(data.topPages) ? data.topPages : [],
       // Narrative Fields
+      summaryTitle: data.summaryTitle?.trim() || 'Performance Highlights & Strategic Updates',
       summary: data.summary?.trim() || null,
       workCompleted: data.workCompleted?.trim() || null,
       nextSteps: data.nextSteps?.trim() || null,

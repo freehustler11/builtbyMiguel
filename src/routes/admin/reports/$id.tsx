@@ -261,7 +261,7 @@ function BrandedReportViewPage() {
                   ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
                   : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800 opacity-60'
               }`}
-              title="Toggle Executive Summary Block"
+              title="Toggle Summary / Highlights Block"
             >
               <FileText className="w-3 h-3" />
               <span>Summary</span>
