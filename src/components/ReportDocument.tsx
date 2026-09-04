@@ -209,9 +209,9 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           pageBreakAfter: 'always',
         }}
       >
-        <div className="flex-1 flex flex-col justify-start space-y-6 print:space-y-4">
+        <div className="flex-1 flex flex-col justify-start gap-8 sm:gap-9 print:gap-6">
           {/* Top Slim Executive Brand Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 print:border-slate-300">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 mb-2 border-b border-slate-200/80 print:border-slate-300">
             {/* Left: Client Logo & Business Identity */}
             <div className="flex items-center gap-3.5 min-w-0">
               {client.logoUrl ? (
@@ -304,10 +304,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           </div>
 
           {/* Executive KPI Snapshot Grid (4 Hero Metric Cards) */}
-          <div className="grid grid-cols-4 gap-2.5 print:gap-2">
+          <div className="grid grid-cols-4 gap-3.5 print:gap-2.5 pt-1">
             {/* KPI 1: Impressions */}
             <div
-              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              className="p-3 sm:p-3.5 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
               style={{
                 borderTop: `3px solid ${primaryColor}`,
                 WebkitPrintColorAdjust: 'exact',
@@ -318,10 +318,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Impressions</span>
                 <Eye className="w-3.5 h-3.5" style={{ color: primaryColor }} />
               </div>
-              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+              <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
                 {report.gscImpressions?.toLocaleString() || 0}
               </div>
-              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Total Visibility</span>
                 {renderMoMBadge(gscImpressionsMoM)}
               </div>
@@ -329,7 +329,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
             {/* KPI 2: Organic Clicks */}
             <div
-              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              className="p-3 sm:p-3.5 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
               style={{
                 borderTop: `3px solid ${primaryColor}`,
                 WebkitPrintColorAdjust: 'exact',
@@ -340,10 +340,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Organic Clicks</span>
                 <MousePointerClick className="w-3.5 h-3.5 text-emerald-600" />
               </div>
-              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+              <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
                 {report.gscClicks?.toLocaleString() || 0}
               </div>
-              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Search Traffic</span>
                 {renderMoMBadge(gscClicksMoM)}
               </div>
@@ -351,7 +351,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
             {/* KPI 3: Direct Customer Actions */}
             <div
-              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              className="p-3 sm:p-3.5 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
               style={{
                 borderTop: `3px solid ${primaryColor}`,
                 WebkitPrintColorAdjust: 'exact',
@@ -362,10 +362,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Direct Actions</span>
                 <Zap className="w-3.5 h-3.5 text-amber-500" />
               </div>
-              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+              <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
                 {customerActions.toLocaleString()}
               </div>
-              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Calls & Directions</span>
                 {renderMoMBadge(customerActionsMoM)}
               </div>
@@ -373,7 +373,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
             {/* KPI 4: Average Rank / Position */}
             <div
-              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              className="p-3 sm:p-3.5 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
               style={{
                 borderTop: `3px solid ${primaryColor}`,
                 WebkitPrintColorAdjust: 'exact',
@@ -384,10 +384,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Avg. Position</span>
                 <Target className="w-3.5 h-3.5 text-indigo-600" />
               </div>
-              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+              <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
                 {report.gscPosition ? parseDecimal(report.gscPosition).toFixed(1) : '—'}
               </div>
-              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Search Rank</span>
                 {renderMoMBadge(gscPositionMoM)}
               </div>
@@ -397,7 +397,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           {/* Executive Summary Card with Brand Accent Border */}
           {options.show_summary && report.summary && (
             <div
-              className="p-3 sm:p-3.5 rounded-xl bg-slate-50/70 print:bg-slate-50/50 border border-slate-200/90 print:border-slate-300 space-y-1.5 print:break-inside-avoid shadow-2xs"
+              className="p-4 sm:p-5 rounded-xl bg-slate-50/70 print:bg-slate-50/50 border border-slate-200/90 print:border-slate-300 space-y-2 print:break-inside-avoid shadow-2xs"
               style={{
                 borderLeft: `4px solid ${primaryColor}`,
                 WebkitPrintColorAdjust: 'exact',
@@ -411,14 +411,14 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 </div>
                 <span className="text-[10px] font-mono text-slate-400 font-semibold uppercase">Monthly Review</span>
               </div>
-              <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+              <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-normal whitespace-pre-line pt-0.5">
                 {report.summary}
               </p>
             </div>
           )}
 
           {/* Balanced 3-Column Platform KPI Grid */}
-          <div className="space-y-2">
+          <div className="space-y-3 pt-1">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
                 <TrendingUp className="w-3.5 h-3.5 text-slate-600" />
@@ -429,7 +429,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 print:grid-cols-3 print:gap-2.5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 print:grid-cols-3 print:gap-2.5">
               {/* Card 1: Google Business Profile (GBP) */}
               <div
                 className="rounded-xl border p-3 space-y-2.5 bg-slate-50/50 print:bg-white print:border-slate-300 print:break-inside-avoid shadow-2xs"
@@ -738,9 +738,9 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           pageBreakInside: 'avoid',
         }}
       >
-        <div className="flex-1 flex flex-col justify-start space-y-6 print:space-y-4">
+        <div className="flex-1 flex flex-col justify-start gap-8 sm:gap-9 print:gap-6">
           {/* Section Header for Page 2 */}
-          <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+          <div className="flex items-center justify-between border-b border-slate-200/80 print:border-slate-300 pb-4 mb-2">
             <div className="flex items-center gap-2">
               <FileSpreadsheet className="w-4 h-4" style={{ color: primaryColor }} />
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
@@ -754,7 +754,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
           {/* Row 1: Deep Metric Tables - Side-by-Side 2-Column Grid (Hidden if both empty) */}
           {options.show_tables && (topQueries.length > 0 || topPages.length > 0) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 print:grid-cols-2 print:gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-3 pt-1">
               {/* Table 1: Top 5 Search Queries */}
               {topQueries.length > 0 && (
                 <div
@@ -863,7 +863,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
           {/* Row 2: Work Completed & Next Steps - Side-by-Side 2-Column Grid (Hidden if both empty) */}
           {options.show_next_steps && (completedBullets.length > 0 || nextStepBullets.length > 0) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 print:grid-cols-2 print:gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-3 pt-1">
               {/* Work Completed */}
               {completedBullets.length > 0 && (
                 <div
@@ -942,7 +942,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
           {/* Row 3: Campaign Focus Areas */}
           <div
-            className="p-3.5 rounded-xl border border-slate-200/90 bg-slate-50/70 print:bg-white print:border-slate-300 space-y-2.5 print:break-inside-avoid shadow-2xs"
+            className="p-4 rounded-xl border border-slate-200/90 bg-slate-50/70 print:bg-white print:border-slate-300 space-y-3 print:break-inside-avoid shadow-2xs"
             style={{
               borderLeft: `4px solid ${primaryColor}`,
               WebkitPrintColorAdjust: 'exact',

@@ -1153,114 +1153,188 @@ function AdminReportFormPage() {
 
             {/* Section 3: Deep Metric Tables */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
-                <span>Deep Metric Tables (Top 5 Queries & Top 5 Pages)</span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
+                  <span>Deep Metric Tables (Top 5 Queries &amp; Top 5 Pages)</span>
+                </div>
+                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                  Detailed search queries and landing pages for Page 2 of the report
+                </span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {/* Table 1: Top 5 Search Queries */}
                 <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-600">
-                      <Search className="w-3.5 h-3.5" />
-                      <span>Top 5 Search Keywords (GSC)</span>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        <Search className="w-3.5 h-3.5" />
+                        <span>Top 5 Search Keywords (Google Search Console)</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md font-semibold border border-emerald-200 dark:border-emerald-800">
+                        GSC Performance
+                      </span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400">Query, Clicks, Impr, Pos</span>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                      Where to find: In <strong className="text-slate-700 dark:text-slate-300">GSC &gt; Performance &gt; Queries</strong> tab. Enter the top 5 search terms driving impressions and clicks.
+                    </p>
+                  </div>
+
+                  {/* Header labels row */}
+                  <div className="grid grid-cols-12 gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2 py-1.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 rounded-xl">
+                    <div className="col-span-6 flex items-center gap-1">
+                      <span>#</span>
+                      <span className="ml-1">Search Query / Keyword</span>
+                    </div>
+                    <div className="col-span-2 text-right" title="Organic Clicks from Google Search">
+                      Clicks
+                    </div>
+                    <div className="col-span-2 text-right" title="Search Impressions in Google Results">
+                      Impressions
+                    </div>
+                    <div className="col-span-2 text-right" title="Average Ranking Position on Google">
+                      Avg. Pos
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    {topQueries.map((q, idx) => (
-                      <div key={idx} className="grid grid-cols-12 gap-1.5 items-center">
-                        <div className="col-span-6">
-                          <input
-                            type="text"
-                            placeholder={`Keyword #${idx + 1}`}
-                            value={q.query}
-                            onChange={(e) => handleQueryChange(idx, 'query', e.target.value)}
-                            className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white"
-                          />
+                    {topQueries.map((q, idx) => {
+                      const queryPlaceholders = [
+                        'e.g. weed dispensary near me',
+                        'e.g. cannabis delivery service',
+                        'e.g. dispensaries open late',
+                        'e.g. best weed deals near me',
+                        'e.g. thc edibles and vapes',
+                      ]
+                      return (
+                        <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                          <div className="col-span-6 flex items-center gap-1.5">
+                            <span className="w-5 text-center text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                              #{idx + 1}
+                            </span>
+                            <input
+                              type="text"
+                              placeholder={queryPlaceholders[idx] || `Keyword #${idx + 1}`}
+                              value={q.query}
+                              onChange={(e) => handleQueryChange(idx, 'query', e.target.value)}
+                              className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="0"
+                              value={q.clicks === 0 ? '' : q.clicks}
+                              onChange={(e) => handleQueryChange(idx, 'clicks', e.target.value === '' ? 0 : Number(e.target.value))}
+                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="0"
+                              value={q.impressions === 0 ? '' : q.impressions}
+                              onChange={(e) => handleQueryChange(idx, 'impressions', e.target.value === '' ? 0 : Number(e.target.value))}
+                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <input
+                              type="number"
+                              step="0.1"
+                              min="1.0"
+                              placeholder="1.0"
+                              value={q.position === 1 ? '1.0' : (q.position || '')}
+                              onChange={(e) => handleQueryChange(idx, 'position', e.target.value === '' ? 1.0 : Number(e.target.value))}
+                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                          </div>
                         </div>
-                        <div className="col-span-2">
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="Clicks"
-                            value={q.clicks}
-                            onChange={(e) => handleQueryChange(idx, 'clicks', e.target.value)}
-                            className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white"
-                          />
-                        </div>
-                        <div className="col-span-2">
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="Impr"
-                            value={q.impressions}
-                            onChange={(e) => handleQueryChange(idx, 'impressions', e.target.value)}
-                            className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white"
-                          />
-                        </div>
-                        <div className="col-span-2">
-                          <input
-                            type="number"
-                            step="0.1"
-                            min="1.0"
-                            placeholder="Pos"
-                            value={q.position}
-                            onChange={(e) => handleQueryChange(idx, 'position', e.target.value)}
-                            className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white"
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 </div>
 
                 {/* Table 2: Top 5 High-Value Pages */}
                 <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold text-indigo-600">
-                      <Globe className="w-3.5 h-3.5" />
-                      <span>Top 5 Landing Pages (GA4/GSC)</span>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        <Globe className="w-3.5 h-3.5" />
+                        <span>Top 5 Landing Pages (GA4 &amp; GSC)</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-md font-semibold border border-indigo-200 dark:border-indigo-800">
+                        GA4 Engagement
+                      </span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400">Path, Clicks, Users</span>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                      Where to find: In <strong className="text-slate-700 dark:text-slate-300">GA4 &gt; Reports &gt; Engagement &gt; Pages and screens</strong>. Enter the top URLs by organic traffic.
+                    </p>
+                  </div>
+
+                  {/* Header labels row */}
+                  <div className="grid grid-cols-12 gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2 py-1.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 rounded-xl">
+                    <div className="col-span-6 flex items-center gap-1">
+                      <span>#</span>
+                      <span className="ml-1">Page URL / Path</span>
+                    </div>
+                    <div className="col-span-3 text-right" title="Organic Clicks to this URL">
+                      Clicks (GSC)
+                    </div>
+                    <div className="col-span-3 text-right" title="Active Visitors on this Page">
+                      Visitors (GA4)
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    {topPages.map((p, idx) => (
-                      <div key={idx} className="grid grid-cols-12 gap-1.5 items-center">
-                        <div className="col-span-7">
-                          <input
-                            type="text"
-                            placeholder={idx === 0 ? '/' : `/service-${idx}`}
-                            value={p.path}
-                            onChange={(e) => handlePageChange(idx, 'path', e.target.value)}
-                            className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white"
-                          />
+                    {topPages.map((p, idx) => {
+                      const pagePlaceholders = [
+                        '/ (Homepage)',
+                        '/menu or /products',
+                        '/deals or /specials',
+                        '/about-us or /locations',
+                        '/contact-us',
+                      ]
+                      return (
+                        <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                          <div className="col-span-6 flex items-center gap-1.5">
+                            <span className="w-5 text-center text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                              #{idx + 1}
+                            </span>
+                            <input
+                              type="text"
+                              placeholder={pagePlaceholders[idx] || (idx === 0 ? '/' : `/service-${idx}`)}
+                              value={p.path}
+                              onChange={(e) => handlePageChange(idx, 'path', e.target.value)}
+                              className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                          </div>
+                          <div className="col-span-3">
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="0"
+                              value={p.clicks === 0 ? '' : p.clicks}
+                              onChange={(e) => handlePageChange(idx, 'clicks', e.target.value === '' ? 0 : Number(e.target.value))}
+                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                          </div>
+                          <div className="col-span-3">
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="0"
+                              value={p.users === 0 ? '' : p.users}
+                              onChange={(e) => handlePageChange(idx, 'users', e.target.value === '' ? 0 : Number(e.target.value))}
+                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                          </div>
                         </div>
-                        <div className="col-span-2">
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="Clicks"
-                            value={p.clicks}
-                            onChange={(e) => handlePageChange(idx, 'clicks', e.target.value)}
-                            className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white"
-                          />
-                        </div>
-                        <div className="col-span-3">
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="Users"
-                            value={p.users}
-                            onChange={(e) => handlePageChange(idx, 'users', e.target.value)}
-                            className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white"
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 </div>
               </div>
