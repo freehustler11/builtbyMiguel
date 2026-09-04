@@ -1,10 +1,13 @@
 import { eq } from 'drizzle-orm'
-import { getCookie, deleteCookie } from '@tanstack/react-start/server'
 import { redirect } from '@tanstack/react-router'
 import { db, users } from '../db'
 import { getSessionData, getSessionCookieOptions } from '../lib/auth'
 
 const COOKIE_NAME = 'admin_session'
+
+async function getServerUtils() {
+  return await import(/* @vite-ignore */ '@tanstack/react-start/server')
+}
 
 export interface ActiveSession {
   role: 'superadmin' | 'partner' | 'admin' | 'client'
@@ -19,6 +22,7 @@ export interface ActiveSession {
  * If user is deactivated or missing, immediately destroys the cookie and redirects to /login?error=account_disabled.
  */
 export async function assertActiveSession(): Promise<ActiveSession> {
+  const { getCookie, deleteCookie } = await getServerUtils()
   const token = getCookie(COOKIE_NAME)
   const session = await getSessionData(token)
   if (!session) {
@@ -45,7 +49,8 @@ export async function assertActiveSession(): Promise<ActiveSession> {
 
     if (dbUser) {
       if (!dbUser.isActive) {
-        deleteCookie(COOKIE_NAME, getSessionCookieOptions())
+        const cookieOpts = await getSessionCookieOptions()
+        deleteCookie(COOKIE_NAME, cookieOpts)
         throw redirect({
           to: '/login',
           search: {
@@ -62,7 +67,8 @@ export async function assertActiveSession(): Promise<ActiveSession> {
         isActive: dbUser.isActive,
       }
     } else if (session.role === 'client') {
-      deleteCookie(COOKIE_NAME, getSessionCookieOptions())
+      const cookieOpts = await getSessionCookieOptions()
+      deleteCookie(COOKIE_NAME, cookieOpts)
       throw redirect({
         to: '/login',
         search: {

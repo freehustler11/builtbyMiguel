@@ -25,6 +25,17 @@ export interface DisplayOptions {
   show_next_steps?: boolean
 }
 
+/**
+ * Safely parse integer or decimal strings/numbers (e.g. 2.6, '2.6%', ' 2.6 ') into a clean float
+ */
+export function parseDecimalValue(val: unknown): number {
+  if (val === null || val === undefined || val === '') return 0
+  if (typeof val === 'number') return isNaN(val) ? 0 : val
+  const cleaned = String(val).replace(/[^0-9.-]/g, '')
+  const num = parseFloat(cleaned)
+  return isNaN(num) ? 0 : num
+}
+
 export interface ReportWithClient extends Report {
   clientName: string
   clientBusinessName: string
@@ -267,20 +278,20 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       prevGbpReviewsCount?: number
       gscClicks?: number
       gscImpressions?: number
-      gscCtr?: number
-      gscPosition?: number
+      gscCtr?: number | string
+      gscPosition?: number | string
       prevGscClicks?: number
       prevGscImpressions?: number
-      prevGscCtr?: number
-      prevGscPosition?: number
+      prevGscCtr?: number | string
+      prevGscPosition?: number | string
       gaUsers?: number
       gaNewUsers?: number
-      gaEngagementRate?: number
+      gaEngagementRate?: number | string
       gaSessions?: number
       gaViews?: number
       prevGaUsers?: number
       prevGaNewUsers?: number
-      prevGaEngagementRate?: number
+      prevGaEngagementRate?: number | string
       prevGaSessions?: number
       prevGaViews?: number
       displayOptions?: DisplayOptions
@@ -330,30 +341,30 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         prevGbpDirections: Number(data.prevGbpDirections) || 0,
         prevGbpViews: Number(data.prevGbpViews) || 0,
         // GBP Reputation
-        gbpRating: Number(data.gbpRating) || 5.0,
+        gbpRating: parseDecimalValue(data.gbpRating || 5.0),
         gbpReviewCount: reviewsCount,
         gbpReviewsCount: reviewsCount,
         prevGbpReviewsCount: Number(data.prevGbpReviewsCount) || 0,
         // GSC Current
         gscClicks: Number(data.gscClicks) || 0,
         gscImpressions: Number(data.gscImpressions) || 0,
-        gscCtr: Number(data.gscCtr) || 0,
-        gscPosition: Number(data.gscPosition) || 0,
+        gscCtr: parseDecimalValue(data.gscCtr),
+        gscPosition: parseDecimalValue(data.gscPosition),
         // GSC Previous
         prevGscClicks: Number(data.prevGscClicks) || 0,
         prevGscImpressions: Number(data.prevGscImpressions) || 0,
-        prevGscCtr: Number(data.prevGscCtr) || 0,
-        prevGscPosition: Number(data.prevGscPosition) || 0,
+        prevGscCtr: parseDecimalValue(data.prevGscCtr),
+        prevGscPosition: parseDecimalValue(data.prevGscPosition),
         // GA4 Current
         gaUsers: Number(data.gaUsers) || 0,
         gaNewUsers: Number(data.gaNewUsers) || 0,
-        gaEngagementRate: Number(data.gaEngagementRate) || 0,
+        gaEngagementRate: parseDecimalValue(data.gaEngagementRate),
         gaSessions: Number(data.gaSessions) || 0,
         gaViews: Number(data.gaViews) || 0,
         // GA4 Previous
         prevGaUsers: Number(data.prevGaUsers) || 0,
         prevGaNewUsers: Number(data.prevGaNewUsers) || 0,
-        prevGaEngagementRate: Number(data.prevGaEngagementRate) || 0,
+        prevGaEngagementRate: parseDecimalValue(data.prevGaEngagementRate),
         prevGaSessions: Number(data.prevGaSessions) || 0,
         prevGaViews: Number(data.prevGaViews) || 0,
         // Display Options
@@ -401,20 +412,20 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       prevGbpReviewsCount?: number
       gscClicks?: number
       gscImpressions?: number
-      gscCtr?: number
-      gscPosition?: number
+      gscCtr?: number | string
+      gscPosition?: number | string
       prevGscClicks?: number
       prevGscImpressions?: number
-      prevGscCtr?: number
-      prevGscPosition?: number
+      prevGscCtr?: number | string
+      prevGscPosition?: number | string
       gaUsers?: number
       gaNewUsers?: number
-      gaEngagementRate?: number
+      gaEngagementRate?: number | string
       gaSessions?: number
       gaViews?: number
       prevGaUsers?: number
       prevGaNewUsers?: number
-      prevGaEngagementRate?: number
+      prevGaEngagementRate?: number | string
       prevGaSessions?: number
       prevGaViews?: number
       displayOptions?: DisplayOptions
@@ -469,30 +480,30 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       prevGbpDirections: Number(data.prevGbpDirections) || 0,
       prevGbpViews: Number(data.prevGbpViews) || 0,
       // GBP Reputation
-      gbpRating: Number(data.gbpRating) || 5.0,
+      gbpRating: parseDecimalValue(data.gbpRating || 5.0),
       gbpReviewCount: reviewsCount,
       gbpReviewsCount: reviewsCount,
       prevGbpReviewsCount: Number(data.prevGbpReviewsCount) || 0,
       // GSC Current
       gscClicks: Number(data.gscClicks) || 0,
       gscImpressions: Number(data.gscImpressions) || 0,
-      gscCtr: Number(data.gscCtr) || 0,
-      gscPosition: Number(data.gscPosition) || 0,
+      gscCtr: parseDecimalValue(data.gscCtr),
+      gscPosition: parseDecimalValue(data.gscPosition),
       // GSC Previous
       prevGscClicks: Number(data.prevGscClicks) || 0,
       prevGscImpressions: Number(data.prevGscImpressions) || 0,
-      prevGscCtr: Number(data.prevGscCtr) || 0,
-      prevGscPosition: Number(data.prevGscPosition) || 0,
+      prevGscCtr: parseDecimalValue(data.prevGscCtr),
+      prevGscPosition: parseDecimalValue(data.prevGscPosition),
       // GA4 Current
       gaUsers: Number(data.gaUsers) || 0,
       gaNewUsers: Number(data.gaNewUsers) || 0,
-      gaEngagementRate: Number(data.gaEngagementRate) || 0,
+      gaEngagementRate: parseDecimalValue(data.gaEngagementRate),
       gaSessions: Number(data.gaSessions) || 0,
       gaViews: Number(data.gaViews) || 0,
       // GA4 Previous
       prevGaUsers: Number(data.prevGaUsers) || 0,
       prevGaNewUsers: Number(data.prevGaNewUsers) || 0,
-      prevGaEngagementRate: Number(data.prevGaEngagementRate) || 0,
+      prevGaEngagementRate: parseDecimalValue(data.prevGaEngagementRate),
       prevGaSessions: Number(data.prevGaSessions) || 0,
       prevGaViews: Number(data.prevGaViews) || 0,
       // Deep Metric Tables

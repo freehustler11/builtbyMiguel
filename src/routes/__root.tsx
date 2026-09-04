@@ -10,7 +10,7 @@ import {
 import type { QueryClient } from '@tanstack/react-query'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
-import { checkHostnameRoutingServerFn, isInternalPath, isMarketingPath } from '../lib/hostname'
+import { isInternalPath, isMarketingPath } from '../lib/hostname'
 import appCss from '../index.css?url'
 
 export interface RouterContext {
@@ -92,26 +92,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         if (isMarketingPath(location.pathname)) {
           window.location.href = `https://builtbymiguel.net${location.pathname}${location.searchStr || ''}`
           return
-        }
-      }
-    } else {
-      // Server-side (SSR) check
-      try {
-        const res = await checkHostnameRoutingServerFn({
-          data: {
-            pathname: location.pathname,
-            search: location.searchStr || '',
-          },
-        })
-        if (res?.redirectUrl) {
-          throw redirect({
-            href: res.redirectUrl,
-            statusCode: 302,
-          })
-        }
-      } catch (err) {
-        if (err && typeof err === 'object' && ('statusCode' in err || 'href' in err)) {
-          throw err
         }
       }
     }

@@ -32,6 +32,7 @@ import {
   updateReportServerFn,
   getReportByIdServerFn,
   getLatestReportForClientServerFn,
+  parseDecimalValue,
   type QueryItem,
   type PageItem,
 } from '../../../server/reports'
@@ -152,14 +153,14 @@ function AdminReportFormPage() {
   const [prevGbpReviewsCount, setPrevGbpReviewsCount] = useState<number | string>(existingReport?.prevGbpReviewsCount ?? 0)
 
   // GSC Metrics - CTR
-  const [gscCtr, setGscCtr] = useState<number | string>(existingReport?.gscCtr ?? 0)
-  const [prevGscCtr, setPrevGscCtr] = useState<number | string>(existingReport?.prevGscCtr ?? 0)
+  const [gscCtr, setGscCtr] = useState<number | string>(existingReport?.gscCtr !== undefined && existingReport?.gscCtr !== null ? existingReport.gscCtr : '')
+  const [prevGscCtr, setPrevGscCtr] = useState<number | string>(existingReport?.prevGscCtr !== undefined && existingReport?.prevGscCtr !== null ? existingReport.prevGscCtr : '')
 
   // GA4 Metrics - Engagement Rate & New Users
-  const [gaEngagementRate, setGaEngagementRate] = useState<number | string>(existingReport?.gaEngagementRate ?? 0)
-  const [prevGaEngagementRate, setPrevGaEngagementRate] = useState<number | string>(existingReport?.prevGaEngagementRate ?? 0)
-  const [gaNewUsers, setGaNewUsers] = useState<number | string>(existingReport?.gaNewUsers ?? 0)
-  const [prevGaNewUsers, setPrevGaNewUsers] = useState<number | string>(existingReport?.prevGaNewUsers ?? 0)
+  const [gaEngagementRate, setGaEngagementRate] = useState<number | string>(existingReport?.gaEngagementRate !== undefined && existingReport?.gaEngagementRate !== null ? existingReport.gaEngagementRate : '')
+  const [prevGaEngagementRate, setPrevGaEngagementRate] = useState<number | string>(existingReport?.prevGaEngagementRate !== undefined && existingReport?.prevGaEngagementRate !== null ? existingReport.prevGaEngagementRate : '')
+  const [gaNewUsers, setGaNewUsers] = useState<number | string>(existingReport?.gaNewUsers !== undefined && existingReport?.gaNewUsers !== null ? existingReport.gaNewUsers : '')
+  const [prevGaNewUsers, setPrevGaNewUsers] = useState<number | string>(existingReport?.prevGaNewUsers !== undefined && existingReport?.prevGaNewUsers !== null ? existingReport.prevGaNewUsers : '')
 
   // GSC Metrics - Current
   const [gscClicks, setGscClicks] = useState<number | string>(existingReport?.gscClicks ?? 0)
@@ -429,23 +430,23 @@ function AdminReportFormPage() {
         // GSC Current
         gscClicks: Number(gscClicks) || 0,
         gscImpressions: Number(gscImpressions) || 0,
-        gscCtr: Number(gscCtr) || 0,
-        gscPosition: Number(gscPosition) || 0,
+        gscCtr: parseDecimalValue(gscCtr),
+        gscPosition: parseDecimalValue(gscPosition),
         // GSC Previous
         prevGscClicks: Number(prevGscClicks) || 0,
         prevGscImpressions: Number(prevGscImpressions) || 0,
-        prevGscCtr: Number(prevGscCtr) || 0,
-        prevGscPosition: Number(prevGscPosition) || 0,
+        prevGscCtr: parseDecimalValue(prevGscCtr),
+        prevGscPosition: parseDecimalValue(prevGscPosition),
         // GA4 Current
         gaUsers: Number(gaUsers) || 0,
         gaNewUsers: Number(gaNewUsers) || 0,
-        gaEngagementRate: Number(gaEngagementRate) || 0,
+        gaEngagementRate: parseDecimalValue(gaEngagementRate),
         gaSessions: Number(gaSessions) || 0,
         gaViews: Number(gaViews) || 0,
         // GA4 Previous
         prevGaUsers: Number(prevGaUsers) || 0,
         prevGaNewUsers: Number(prevGaNewUsers) || 0,
-        prevGaEngagementRate: Number(prevGaEngagementRate) || 0,
+        prevGaEngagementRate: parseDecimalValue(prevGaEngagementRate),
         prevGaSessions: Number(prevGaSessions) || 0,
         prevGaViews: Number(prevGaViews) || 0,
         // Deep Metric Tables
@@ -891,8 +892,9 @@ function AdminReportFormPage() {
                       </label>
                       <input
                         type="number"
-                        step="0.1"
+                        step="any"
                         min="0"
+                        placeholder="e.g. 2.6"
                         value={gscCtr}
                         onChange={(e) => setGscCtr(e.target.value)}
                         className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -904,8 +906,9 @@ function AdminReportFormPage() {
                       </label>
                       <input
                         type="number"
-                        step="0.1"
+                        step="any"
                         min="0"
+                        placeholder="e.g. 2.2"
                         value={prevGscCtr}
                         onChange={(e) => setPrevGscCtr(e.target.value)}
                         className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
@@ -1041,8 +1044,9 @@ function AdminReportFormPage() {
                       </label>
                       <input
                         type="number"
-                        step="0.1"
+                        step="any"
                         min="0"
+                        placeholder="e.g. 58.4"
                         value={gaEngagementRate}
                         onChange={(e) => setGaEngagementRate(e.target.value)}
                         className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -1054,8 +1058,9 @@ function AdminReportFormPage() {
                       </label>
                       <input
                         type="number"
-                        step="0.1"
+                        step="any"
                         min="0"
+                        placeholder="e.g. 52.1"
                         value={prevGaEngagementRate}
                         onChange={(e) => setPrevGaEngagementRate(e.target.value)}
                         className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"

@@ -1,5 +1,4 @@
 import { createServerFn } from '@tanstack/react-start'
-import { getCookie, setCookie, deleteCookie } from '@tanstack/react-start/server'
 import { redirect } from '@tanstack/react-router'
 import { eq } from 'drizzle-orm'
 import { db, users } from '../db'
@@ -7,11 +6,33 @@ import { db, users } from '../db'
 const COOKIE_NAME = 'admin_session'
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 // 7 days in seconds
 
-const isProd = process.env.NODE_ENV === 'production'
-const cookieDomain = isProd ? (process.env.COOKIE_DOMAIN || '.builtbymiguel.net') : undefined
-const isSecure = isProd || process.env.SECURE_COOKIES === 'true'
+async function getServerUtils() {
+  return await import(/* @vite-ignore */ '@tanstack/react-start/server')
+}
 
-export function getSessionCookieOptions() {
+export async function getSessionCookieOptions(rawHost?: string, rawProto?: string) {
+  let host = rawHost || ''
+  let proto = rawProto || ''
+  if (!host) {
+    try {
+      const { getRequestHeader } = await getServerUtils()
+      host = getRequestHeader('host') || ''
+      proto = getRequestHeader('x-forwarded-proto') || ''
+    } catch {
+      // Context unavailable
+    }
+  }
+
+  const isProd = process.env.NODE_ENV === 'production'
+  const isBuiltByMiguelHost = host.toLowerCase().includes('builtbymiguel.net')
+  const cookieDomain = isBuiltByMiguelHost ? (process.env.COOKIE_DOMAIN || '.builtbymiguel.net') : undefined
+
+  // Secure cookie check:
+  // Must be false if testing over unencrypted HTTP (e.g. raw IP 2.29.45.40:3000 or localhost),
+  // otherwise browsers reject and drop the cookie.
+  const isHttps = proto.toLowerCase() === 'https' || (!host.includes('localhost') && !host.match(/^\d+\.\d+\.\d+\.\d+/) && isProd && isBuiltByMiguelHost)
+  const isSecure = process.env.SECURE_COOKIES === 'true' || isHttps
+
   return {
     path: '/',
     httpOnly: true,
@@ -219,6 +240,7 @@ export interface ActiveSessionResult {
  */
 export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
   async (): Promise<ActiveSessionResult> => {
+    const { getCookie, deleteCookie } = await getServerUtils()
     const token = getCookie(COOKIE_NAME)
     if (!token) {
       return {
@@ -263,7 +285,8 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
 
       if (dbUser) {
         if (!dbUser.isActive) {
-          deleteCookie(COOKIE_NAME, getSessionCookieOptions())
+          const cookieOpts = await getSessionCookieOptions()
+          deleteCookie(COOKIE_NAME, cookieOpts)
           throw redirect({
             to: '/login',
             search: {
@@ -281,7 +304,8 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
           isActive: dbUser.isActive,
         }
       } else if (session.role === 'client') {
-        deleteCookie(COOKIE_NAME, getSessionCookieOptions())
+        const cookieOpts = await getSessionCookieOptions()
+        deleteCookie(COOKIE_NAME, cookieOpts)
         throw redirect({
           to: '/login',
           search: {
@@ -316,9 +340,21 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     }
   })
   .handler(async ({ data }) => {
+    const { setCookie } = await getServerUtils()
     const { adminPassword } = getSecrets()
+    const cookieOpts = await getSessionCookieOptions()
 
-    // 1. If email is provided, attempt partner or superadmin login via the `users` table
+    // 1. If password matches master admin password, grant superadmin immediately
+    if (data.password === adminPassword) {
+      const token = await createSessionToken({ role: 'superadmin', email: data.email || undefined })
+      setCookie(COOKIE_NAME, token, {
+        ...cookieOpts,
+        maxAge: SESSION_MAX_AGE,
+      })
+      return { success: true, role: 'superadmin' }
+    }
+
+    // 2. If email is provided, attempt partner login via the `users` table
     if (data.email) {
       const [dbUser] = await db
         .select()
@@ -347,45 +383,21 @@ export const loginServerFn = createServerFn({ method: 'POST' })
         })
 
         setCookie(COOKIE_NAME, token, {
-          ...getSessionCookieOptions(),
+          ...cookieOpts,
           maxAge: SESSION_MAX_AGE,
         })
 
         return { success: true, role: dbUser.role }
       }
 
-      // Check fallback admin email + master admin password
-      if (
-        (data.email === 'admin' || data.email === 'admin@builtbymiguel.net' || data.email === 'miguel@builtbymiguel.net') &&
-        data.password === adminPassword
-      ) {
-        const token = await createSessionToken({ role: 'superadmin', email: data.email })
-        setCookie(COOKIE_NAME, token, {
-          ...getSessionCookieOptions(),
-          maxAge: SESSION_MAX_AGE,
-        })
-        return { success: true, role: 'superadmin' }
-      }
-
       return { success: false, error: 'Account not found with this email address.' }
     }
 
-    // 2. If password-only provided, validate against master admin password
-    if (data.password !== adminPassword) {
-      return {
-        success: false,
-        error: 'Incorrect administrative password. Please try again.',
-      }
+    // 3. If password-only provided and did not match master admin password
+    return {
+      success: false,
+      error: 'Incorrect administrative password. Please try again.',
     }
-
-    const token = await createSessionToken({ role: 'superadmin' })
-
-    setCookie(COOKIE_NAME, token, {
-      ...getSessionCookieOptions(),
-      maxAge: SESSION_MAX_AGE,
-    })
-
-    return { success: true, role: 'superadmin' }
   })
 
 /**
@@ -393,7 +405,9 @@ export const loginServerFn = createServerFn({ method: 'POST' })
  */
 export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
   async () => {
-    deleteCookie(COOKIE_NAME, getSessionCookieOptions())
+    const { deleteCookie } = await getServerUtils()
+    const cookieOpts = await getSessionCookieOptions()
+    deleteCookie(COOKIE_NAME, cookieOpts)
     return { success: true }
   },
 )
