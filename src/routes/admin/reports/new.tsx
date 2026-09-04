@@ -25,6 +25,7 @@ import {
   FileSpreadsheet,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
+import { ThemedNumberInput } from '../../../components/ThemedNumberInput'
 import { ToastContainer, type ToastMessage } from '../../../components/Toast'
 import { getClientsServerFn } from '../../../server/clients'
 import {
@@ -694,14 +695,14 @@ function AdminReportFormPage() {
                     <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                     <span>GBP Star Rating (e.g. 4.9 or 5.0)</span>
                   </label>
-                  <input
-                    type="number"
+                  <ThemedNumberInput
+                    theme="blue"
                     step="0.1"
                     min="1.0"
                     max="5.0"
                     value={gbpRating}
                     onChange={(e) => setGbpRating(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-2xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    inputClassName="rounded-2xl px-3.5 py-2 focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
@@ -710,12 +711,12 @@ function AdminReportFormPage() {
                     <Users className="w-3.5 h-3.5 text-amber-500" />
                     <span>Total Review Count</span>
                   </label>
-                  <input
-                    type="number"
+                  <ThemedNumberInput
+                    theme="blue"
                     min="0"
                     value={gbpReviewCount}
                     onChange={(e) => setGbpReviewCount(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-2xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    inputClassName="rounded-2xl px-3.5 py-2 focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -755,24 +756,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Calls (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={gbpCalls}
                         onChange={(e) => setGbpCalls(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={prevGbpCalls}
                         onChange={(e) => setPrevGbpCalls(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -783,24 +784,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Directions (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={gbpDirections}
                         onChange={(e) => setGbpDirections(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={prevGbpDirections}
                         onChange={(e) => setPrevGbpDirections(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -811,30 +812,30 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Website Clicks (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={gbpWebsiteClicks}
                         onChange={(e) => {
                           setGbpWebsiteClicks(e.target.value)
                           setGbpViews(e.target.value)
                         }}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={prevGbpWebsiteClicks}
                         onChange={(e) => {
                           setPrevGbpWebsiteClicks(e.target.value)
                           setPrevGbpViews(e.target.value)
                         }}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -845,27 +846,27 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Reviews (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={gbpReviewsCount}
                         onChange={(e) => {
                           setGbpReviewsCount(e.target.value)
                           setGbpReviewCount(e.target.value)
                         }}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="blue"
                         min="0"
                         value={prevGbpReviewsCount}
                         onChange={(e) => setPrevGbpReviewsCount(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -884,24 +885,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Clicks (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="emerald"
                         min="0"
                         value={gscClicks}
                         onChange={(e) => setGscClicks(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="emerald"
                         min="0"
                         value={prevGscClicks}
                         onChange={(e) => setPrevGscClicks(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -912,24 +913,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Impr. (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="emerald"
                         min="0"
                         value={gscImpressions}
                         onChange={(e) => setGscImpressions(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="emerald"
                         min="0"
                         value={prevGscImpressions}
                         onChange={(e) => setPrevGscImpressions(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -940,26 +941,26 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Avg Pos (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="emerald"
                         step="0.1"
                         min="0"
                         value={gscPosition}
                         onChange={(e) => setGscPosition(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="emerald"
                         step="0.1"
                         min="0"
                         value={prevGscPosition}
                         onChange={(e) => setPrevGscPosition(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -970,28 +971,28 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         CTR % (Current)
                       </label>
-                      <input
-                        type="number"
-                        step="any"
+                      <ThemedNumberInput
+                        theme="emerald"
+                        step="0.1"
                         min="0"
                         placeholder="e.g. 2.6"
                         value={gscCtr}
                         onChange={(e) => setGscCtr(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
-                        step="any"
+                      <ThemedNumberInput
+                        theme="emerald"
+                        step="0.1"
                         min="0"
                         placeholder="e.g. 2.2"
                         value={prevGscCtr}
                         onChange={(e) => setPrevGscCtr(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -1010,24 +1011,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Users (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={gaUsers}
                         onChange={(e) => setGaUsers(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={prevGaUsers}
                         onChange={(e) => setPrevGaUsers(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -1038,24 +1039,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Sessions (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={gaSessions}
                         onChange={(e) => setGaSessions(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={prevGaSessions}
                         onChange={(e) => setPrevGaSessions(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -1066,24 +1067,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Views (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={gaViews}
                         onChange={(e) => setGaViews(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={prevGaViews}
                         onChange={(e) => setPrevGaViews(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -1094,24 +1095,24 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         New Users (Current)
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={gaNewUsers}
                         onChange={(e) => setGaNewUsers(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
+                      <ThemedNumberInput
+                        theme="indigo"
                         min="0"
                         value={prevGaNewUsers}
                         onChange={(e) => setPrevGaNewUsers(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -1122,28 +1123,28 @@ function AdminReportFormPage() {
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
                         Eng. Rate % (Current)
                       </label>
-                      <input
-                        type="number"
-                        step="any"
+                      <ThemedNumberInput
+                        theme="indigo"
+                        step="0.1"
                         min="0"
                         placeholder="e.g. 58.4"
                         value={gaEngagementRate}
                         onChange={(e) => setGaEngagementRate(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
                         Prior Month
                       </label>
-                      <input
-                        type="number"
-                        step="any"
+                      <ThemedNumberInput
+                        theme="indigo"
+                        step="0.1"
                         min="0"
                         placeholder="e.g. 52.1"
                         value={prevGaEngagementRate}
                         onChange={(e) => setPrevGaEngagementRate(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 focus:outline-none"
+                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -1222,34 +1223,34 @@ function AdminReportFormPage() {
                             />
                           </div>
                           <div className="col-span-2">
-                            <input
-                              type="number"
+                            <ThemedNumberInput
+                              theme="emerald"
                               min="0"
                               placeholder="0"
                               value={q.clicks === 0 ? '' : q.clicks}
                               onChange={(e) => handleQueryChange(idx, 'clicks', e.target.value === '' ? 0 : Number(e.target.value))}
-                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                              inputClassName="text-right focus:ring-2 focus:ring-emerald-500"
                             />
                           </div>
                           <div className="col-span-2">
-                            <input
-                              type="number"
+                            <ThemedNumberInput
+                              theme="emerald"
                               min="0"
                               placeholder="0"
                               value={q.impressions === 0 ? '' : q.impressions}
                               onChange={(e) => handleQueryChange(idx, 'impressions', e.target.value === '' ? 0 : Number(e.target.value))}
-                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                              inputClassName="text-right focus:ring-2 focus:ring-emerald-500"
                             />
                           </div>
                           <div className="col-span-2">
-                            <input
-                              type="number"
+                            <ThemedNumberInput
+                              theme="emerald"
                               step="0.1"
                               min="1.0"
                               placeholder="1.0"
-                              value={q.position === 1 ? '1.0' : (q.position || '')}
+                              value={!q.query && (q.position === 1 || !q.position) ? '' : (q.position === 1 ? '1.0' : (q.position || ''))}
                               onChange={(e) => handleQueryChange(idx, 'position', e.target.value === '' ? 1.0 : Number(e.target.value))}
-                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                              inputClassName="text-right focus:ring-2 focus:ring-emerald-500"
                             />
                           </div>
                         </div>
@@ -1313,23 +1314,23 @@ function AdminReportFormPage() {
                             />
                           </div>
                           <div className="col-span-3">
-                            <input
-                              type="number"
+                            <ThemedNumberInput
+                              theme="indigo"
                               min="0"
                               placeholder="0"
                               value={p.clicks === 0 ? '' : p.clicks}
                               onChange={(e) => handlePageChange(idx, 'clicks', e.target.value === '' ? 0 : Number(e.target.value))}
-                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
                             />
                           </div>
                           <div className="col-span-3">
-                            <input
-                              type="number"
+                            <ThemedNumberInput
+                              theme="indigo"
                               min="0"
                               placeholder="0"
                               value={p.users === 0 ? '' : p.users}
                               onChange={(e) => handlePageChange(idx, 'users', e.target.value === '' ? 0 : Number(e.target.value))}
-                              className="w-full px-2 py-1.5 rounded-xl text-xs font-mono text-right border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
                             />
                           </div>
                         </div>

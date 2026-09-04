@@ -322,7 +322,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": "testmoderesolution",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
@@ -706,6 +706,19 @@
       "source_location": "L94"
     },
     {
+      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence",
+      "label": "TestPersistence",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "testpersistence",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
+      "source_location": "L252"
+    },
+    {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode_testendtoendcoherence",
       "label": "TestEndToEndCoherence",
       "_callable": true,
@@ -797,6 +810,19 @@
       "source_location": "L63"
     },
     {
+      "id": "app_components_logoutbutton_logoutbuttonprops",
+      "label": "LogoutButtonProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 39,
+      "community_name": "src/components/AdminNav.tsx",
+      "file_type": "code",
+      "norm_label": "logoutbuttonprops",
+      "source_file": "app/components/LogoutButton.tsx",
+      "source_location": "L6"
+    },
+    {
       "id": "src_components_adminnav_adminnavprops",
       "label": "AdminNavProps",
       "_callable": true,
@@ -849,117 +875,13 @@
       "source_location": "L3"
     },
     {
-      "id": "app_db_schema_newclient",
-      "label": "NewClient",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "newclient",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L129"
-    },
-    {
-      "id": "app_db_schema_newmedia",
-      "label": "NewMedia",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "newmedia",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L106"
-    },
-    {
-      "id": "app_db_schema_newmessage",
-      "label": "NewMessage",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "newmessage",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L32"
-    },
-    {
-      "id": "app_db_schema_newpost",
-      "label": "NewPost",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "newpost",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L71"
-    },
-    {
-      "id": "app_db_schema_newreport",
-      "label": "NewReport",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "newreport",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L207"
-    },
-    {
-      "id": "app_db_schema_newuser",
-      "label": "NewUser",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "newuser",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L89"
-    },
-    {
-      "id": "app_db_schema_post",
-      "label": "Post",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "post",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L70"
-    },
-    {
-      "id": "app_db_schema_user",
-      "label": "User",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "user",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L88"
-    },
-    {
       "id": "src_routes_blog_slug_markdownblockitem",
       "label": "MarkdownBlockItem",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "markdownblockitem",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -972,24 +894,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "tocitem",
       "source_file": "src/routes/blog/$slug.tsx",
       "source_location": "L137"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence",
-      "label": "TestPersistence",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 408,
-      "community_name": "generate_design_system",
-      "file_type": "code",
-      "norm_label": "testpersistence",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
-      "source_location": "L252"
     },
     {
       "id": "app_lib_hostname_hostnameroutingresult",
@@ -1185,6 +1094,19 @@
       "norm_label": "testtailwindconfiggenerator",
       "source_file": ".agents/skills/ui-styling/scripts/tests/test_tailwind_config_gen.py",
       "source_location": "L16"
+    },
+    {
+      "id": "app_db_schema_post",
+      "label": "Post",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 66,
+      "community_name": "src/routes/admin/posts.tsx",
+      "file_type": "code",
+      "norm_label": "post",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L70"
     },
     {
       "id": "src_routes_admin_posts_adminmarkdownblockitem",
@@ -1395,6 +1317,123 @@
       "source_location": "L128"
     },
     {
+      "id": "app_db_schema_newclient",
+      "label": "NewClient",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "newclient",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "app_db_schema_newmedia",
+      "label": "NewMedia",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "newmedia",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L106"
+    },
+    {
+      "id": "app_db_schema_newmessage",
+      "label": "NewMessage",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "newmessage",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "app_db_schema_newpost",
+      "label": "NewPost",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "newpost",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "app_db_schema_newreport",
+      "label": "NewReport",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "newreport",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L207"
+    },
+    {
+      "id": "app_db_schema_newuser",
+      "label": "NewUser",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "newuser",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L89"
+    },
+    {
+      "id": "app_db_schema_user",
+      "label": "User",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "user",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L88"
+    },
+    {
+      "id": "app_lib_auth_activesessionresult",
+      "label": "ActiveSessionResult",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "activesessionresult",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L228"
+    },
+    {
+      "id": "app_lib_auth_sessionuser",
+      "label": "SessionUser",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "sessionuser",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L45"
+    },
+    {
       "id": "app_server_auth_activesession",
       "label": "ActiveSession",
       "_callable": true,
@@ -1471,45 +1510,6 @@
       "norm_label": "testwebstackfreshness",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_web_stack_freshness.py",
       "source_location": "L37"
-    },
-    {
-      "id": "app_components_logoutbutton_logoutbuttonprops",
-      "label": "LogoutButtonProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "logoutbuttonprops",
-      "source_file": "app/components/LogoutButton.tsx",
-      "source_location": "L6"
-    },
-    {
-      "id": "app_lib_auth_activesessionresult",
-      "label": "ActiveSessionResult",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "activesessionresult",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L228"
-    },
-    {
-      "id": "app_lib_auth_sessionuser",
-      "label": "SessionUser",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "sessionuser",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L45"
     },
     {
       "id": "src_routes_login_loginsearch",
@@ -1860,6 +1860,18 @@
       "norm_label": "_check_react_contract()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/validate_data.py",
       "source_location": "L743"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_validate_data_check_reasoning_contract",
+      "label": "_check_reasoning_contract()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "validate_data.py",
+      "file_type": "code",
+      "norm_label": "_check_reasoning_contract()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/validate_data.py",
+      "source_location": "L331"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_validate_data_check_stack_freshness_contract",
@@ -2570,18 +2582,6 @@
       "source_location": "L721"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_core_exact_stack_identifier",
-      "label": "_exact_stack_identifier()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "scripts/core.py",
-      "file_type": "code",
-      "norm_label": "_exact_stack_identifier()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/core.py",
-      "source_location": "L925"
-    },
-    {
       "id": "agents_skills_ui_ux_pro_max_scripts_core_file_signature",
       "label": "_file_signature()",
       "_callable": true,
@@ -3242,18 +3242,6 @@
       "source_location": "L4"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_apply_reasoning",
-      "label": "._apply_reasoning()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "DesignSystemGenerator",
-      "file_type": "code",
-      "norm_label": "._apply_reasoning()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L365"
-    },
-    {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_build_style_lookup",
       "label": "._build_style_lookup()",
       "_callable": true,
@@ -3264,18 +3252,6 @@
       "norm_label": "._build_style_lookup()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L297"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_find_reasoning_rule",
-      "label": "._find_reasoning_rule()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "DesignSystemGenerator",
-      "file_type": "code",
-      "norm_label": "._find_reasoning_rule()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L357"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_init",
@@ -3326,30 +3302,6 @@
       "source_location": "L275"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_resolve_style",
-      "label": "._resolve_style()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "DesignSystemGenerator",
-      "file_type": "code",
-      "norm_label": "._resolve_style()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L307"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_select_best_match",
-      "label": "._select_best_match()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "DesignSystemGenerator",
-      "file_type": "code",
-      "norm_label": "._select_best_match()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L408"
-    },
-    {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testreasoningmatch_test_known_category_matches_exactly",
       "label": ".test_known_category_matches_exactly()",
       "_callable": true,
@@ -3396,6 +3348,18 @@
       "norm_label": ".test_constraints_reach_domain_queries()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_data_contracts.py",
       "source_location": "L187"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testreasoningcontract_test_duplicate_semantic_reasoning_labels_fail_validation",
+      "label": ".test_duplicate_semantic_reasoning_labels_fail_validation()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "DesignSystemGenerator",
+      "file_type": "code",
+      "norm_label": ".test_duplicate_semantic_reasoning_labels_fail_validation()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_data_contracts.py",
+      "source_location": "L218"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testreasoningcontract_test_every_exact_product_label_resolves_to_itself",
@@ -3758,60 +3722,12 @@
       "source_location": "L172"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_ansi_ljust",
-      "label": "ansi_ljust()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "code",
-      "norm_label": "ansi_ljust()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L625"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_format_ascii_box",
-      "label": "format_ascii_box()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "code",
-      "norm_label": "format_ascii_box()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L640"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_format_markdown",
-      "label": "format_markdown()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "code",
-      "norm_label": "format_markdown()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L791"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_hex_to_ansi",
-      "label": "hex_to_ansi()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "code",
-      "norm_label": "hex_to_ansi()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L611"
-    },
-    {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_query_wants_dark",
       "label": "_query_wants_dark()",
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": "_query_wants_dark()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -3823,23 +3739,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": "_resolve_color_mode()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L186"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_section_header",
-      "label": "section_header()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "code",
-      "norm_label": "section_header()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L633"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_style_is_dark_primary",
@@ -3847,7 +3751,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": "_style_is_dark_primary()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -3859,7 +3763,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": ".test_dark_primary_style_detected()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
@@ -3871,7 +3775,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": ".test_dual_mode_style_is_not_dark_primary()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
@@ -3883,7 +3787,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": ".test_either_signal_resolves_dark()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
@@ -3895,7 +3799,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": ".test_query_keywords()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
@@ -3907,7 +3811,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": ".test_claim_fields_use_controlled_non_guarantee_language()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_style_taxonomy.py",
@@ -4646,18 +4550,6 @@
       "source_location": "L131"
     },
     {
-      "id": "src_routes_admin_reports_id_brandedreportviewpage",
-      "label": "BrandedReportViewPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "brandedreportviewpage()",
-      "source_file": "src/routes/admin/reports/$id.tsx",
-      "source_location": "L60"
-    },
-    {
       "id": "src_routes_admin_reports_new_adminreportformpage",
       "label": "AdminReportFormPage()",
       "_callable": true,
@@ -4692,30 +4584,6 @@
       "norm_label": "parsemonthyear()",
       "source_file": "src/routes/admin/reports/new.tsx",
       "source_location": "L105"
-    },
-    {
-      "id": "src_routes_portal_index_formatdate",
-      "label": "formatDate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "formatdate()",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L36"
-    },
-    {
-      "id": "src_routes_portal_index_portaldashboardpage",
-      "label": "PortalDashboardPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "portaldashboardpage()",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L46"
     },
     {
       "id": "agents_skills_design_scripts_icon_generate_apply_color",
@@ -5666,6 +5534,18 @@
       "source_location": "L270"
     },
     {
+      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testreasoningcontract_test_decision_rules_use_closed_array_grammar",
+      "label": ".test_decision_rules_use_closed_array_grammar()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "read_rows",
+      "file_type": "code",
+      "norm_label": ".test_decision_rules_use_closed_array_grammar()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_data_contracts.py",
+      "source_location": "L101"
+    },
+    {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testreasoningcontract_test_known_product_sets_match_exactly",
       "label": ".test_known_product_sets_match_exactly()",
       "_callable": true,
@@ -6386,16 +6266,52 @@
       "source_location": "L103"
     },
     {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_ansi_ljust",
+      "label": "ansi_ljust()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "ansi_ljust()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L625"
+    },
+    {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_detect_page_type",
       "label": "_detect_page_type()",
       "_callable": true,
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "_detect_page_type()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L1596"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_format_ascii_box",
+      "label": "format_ascii_box()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "format_ascii_box()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L640"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_format_markdown",
+      "label": "format_markdown()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "format_markdown()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L791"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_format_master_md",
@@ -6403,7 +6319,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "format_master_md()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -6415,11 +6331,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "format_page_override_md()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L1381"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_generate_design_system",
+      "label": "generate_design_system()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "generate_design_system()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L919"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_generate_intelligent_overrides",
@@ -6427,11 +6355,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "_generate_intelligent_overrides()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L1490"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_hex_to_ansi",
+      "label": "hex_to_ansi()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "hex_to_ansi()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L611"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_persist_design_system",
@@ -6439,7 +6379,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "persist_design_system()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -6451,11 +6391,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "safe_slug()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L961"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_section_header",
+      "label": "section_header()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "section_header()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L633"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_write_persisted_file",
@@ -6463,11 +6415,59 @@
       "_callable": true,
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "_write_persisted_file()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L972"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_search_format_output",
+      "label": "format_output()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "format_output()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/search.py",
+      "source_location": "L44"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_concurrent_non_force_persist_has_one_writer",
+      "label": ".test_concurrent_non_force_persist_has_one_writer()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": ".test_concurrent_non_force_persist_has_one_writer()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
+      "source_location": "L253"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_then_skip_then_force",
+      "label": ".test_persist_then_skip_then_force()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": ".test_persist_then_skip_then_force()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
+      "source_location": "L271"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_writes_only_under_output_dir",
+      "label": ".test_persist_writes_only_under_output_dir()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": ".test_persist_writes_only_under_output_dir()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
+      "source_location": "L306"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_palette_is_dark",
@@ -6698,6 +6698,18 @@
       "source_location": "L121"
     },
     {
+      "id": "app_components_logoutbutton_logoutbutton",
+      "label": "LogoutButton()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 39,
+      "community_name": "src/components/AdminNav.tsx",
+      "file_type": "code",
+      "norm_label": "logoutbutton()",
+      "source_file": "app/components/LogoutButton.tsx",
+      "source_location": "L12"
+    },
+    {
       "id": "src_components_adminnav_adminnav",
       "label": "AdminNav()",
       "_callable": true,
@@ -6799,7 +6811,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "blogpostpage()",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -6811,7 +6823,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "calculatereadingtime()",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -6823,7 +6835,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "formatdate()",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -6835,7 +6847,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "markdownrenderer()",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -6847,7 +6859,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "parsemarkdownblocks()",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -6859,7 +6871,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "renderinlineformatting()",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -6871,71 +6883,59 @@
       "_callable": true,
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "slugifyheading()",
       "source_file": "src/routes/blog/$slug.tsx",
       "source_location": "L130"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_generate_design_system",
-      "label": "generate_design_system()",
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_apply_reasoning",
+      "label": "._apply_reasoning()",
       "_callable": true,
       "_origin": "ast",
-      "community": 408,
-      "community_name": "generate_design_system",
+      "community": 411,
+      "community_name": "parse_decision_rules",
       "file_type": "code",
-      "norm_label": "generate_design_system()",
+      "norm_label": "._apply_reasoning()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L919"
+      "source_location": "L365"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_search_format_output",
-      "label": "format_output()",
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_find_reasoning_rule",
+      "label": "._find_reasoning_rule()",
       "_callable": true,
       "_origin": "ast",
-      "community": 408,
-      "community_name": "generate_design_system",
+      "community": 411,
+      "community_name": "parse_decision_rules",
       "file_type": "code",
-      "norm_label": "format_output()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/search.py",
-      "source_location": "L44"
+      "norm_label": "._find_reasoning_rule()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L357"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_concurrent_non_force_persist_has_one_writer",
-      "label": ".test_concurrent_non_force_persist_has_one_writer()",
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_resolve_style",
+      "label": "._resolve_style()",
       "_callable": true,
       "_origin": "ast",
-      "community": 408,
-      "community_name": "generate_design_system",
+      "community": 411,
+      "community_name": "parse_decision_rules",
       "file_type": "code",
-      "norm_label": ".test_concurrent_non_force_persist_has_one_writer()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
-      "source_location": "L253"
+      "norm_label": "._resolve_style()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L307"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_then_skip_then_force",
-      "label": ".test_persist_then_skip_then_force()",
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_select_best_match",
+      "label": "._select_best_match()",
       "_callable": true,
       "_origin": "ast",
-      "community": 408,
-      "community_name": "generate_design_system",
+      "community": 411,
+      "community_name": "parse_decision_rules",
       "file_type": "code",
-      "norm_label": ".test_persist_then_skip_then_force()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
-      "source_location": "L271"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core_testpersistence_test_persist_writes_only_under_output_dir",
-      "label": ".test_persist_writes_only_under_output_dir()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 408,
-      "community_name": "generate_design_system",
-      "file_type": "code",
-      "norm_label": ".test_persist_writes_only_under_output_dir()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
-      "source_location": "L306"
+      "norm_label": "._select_best_match()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L408"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_reasoning_contract_apply_decision_rules",
@@ -6986,30 +6986,6 @@
       "source_location": "L87"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testreasoningcontract_test_decision_rules_use_closed_array_grammar",
-      "label": ".test_decision_rules_use_closed_array_grammar()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 411,
-      "community_name": "parse_decision_rules",
-      "file_type": "code",
-      "norm_label": ".test_decision_rules_use_closed_array_grammar()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_data_contracts.py",
-      "source_location": "L101"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testreasoningcontract_test_duplicate_semantic_reasoning_labels_fail_validation",
-      "label": ".test_duplicate_semantic_reasoning_labels_fail_validation()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 411,
-      "community_name": "parse_decision_rules",
-      "file_type": "code",
-      "norm_label": ".test_duplicate_semantic_reasoning_labels_fail_validation()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_data_contracts.py",
-      "source_location": "L218"
-    },
-    {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testreasoningcontract_test_duplicate_unknown_keys_and_unknown_actions_fail_closed",
       "label": ".test_duplicate_unknown_keys_and_unknown_actions_fail_closed()",
       "_callable": true,
@@ -7032,18 +7008,6 @@
       "norm_label": ".test_must_have_and_explicit_signals_are_applied_and_reported()",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_data_contracts.py",
       "source_location": "L119"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_validate_data_check_reasoning_contract",
-      "label": "_check_reasoning_contract()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 411,
-      "community_name": "parse_decision_rules",
-      "file_type": "code",
-      "norm_label": "_check_reasoning_contract()",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/validate_data.py",
-      "source_location": "L331"
     },
     {
       "id": "app_lib_hostname_getserverutils",
@@ -7788,6 +7752,30 @@
       "norm_label": "tocssvarname()",
       "source_file": ".agents/skills/design-system/scripts/generate-tokens.cjs",
       "source_location": "L73"
+    },
+    {
+      "id": "src_routes_portal_index_formatdate",
+      "label": "formatDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 569,
+      "community_name": "portal/index.tsx",
+      "file_type": "code",
+      "norm_label": "formatdate()",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L36"
+    },
+    {
+      "id": "src_routes_portal_index_portaldashboardpage",
+      "label": "PortalDashboardPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 569,
+      "community_name": "portal/index.tsx",
+      "file_type": "code",
+      "norm_label": "portaldashboardpage()",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L46"
     },
     {
       "id": "agents_skills_ui_styling_scripts_tailwind_config_gen_tailwindconfiggenerator_base_config",
@@ -9014,6 +9002,66 @@
       "source_location": "L86"
     },
     {
+      "id": "app_lib_auth_createsessiontoken",
+      "label": "createSessionToken()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "createsessiontoken()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L141"
+    },
+    {
+      "id": "app_lib_auth_getsecrets",
+      "label": "getSecrets()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "getsecrets()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "app_lib_auth_getserverutils",
+      "label": "getServerUtils()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "getserverutils()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "app_lib_auth_getsessioncookieoptions",
+      "label": "getSessionCookieOptions()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "getsessioncookieoptions()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "app_lib_auth_getsessiondata",
+      "label": "getSessionData()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "getsessiondata()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L181"
+    },
+    {
       "id": "app_lib_auth_hashpassword",
       "label": "hashPassword()",
       "_callable": true,
@@ -9024,6 +9072,30 @@
       "norm_label": "hashpassword()",
       "source_file": "app/lib/auth.ts",
       "source_location": "L66"
+    },
+    {
+      "id": "app_lib_auth_verifypassword",
+      "label": "verifyPassword()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "verifypassword()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "app_lib_auth_verifysessiontoken",
+      "label": "verifySessionToken()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "verifysessiontoken()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L223"
     },
     {
       "id": "app_server_auth_assertactivesession",
@@ -9062,6 +9134,30 @@
       "source_location": "L8"
     },
     {
+      "id": "scripts_simulate_runsimulations",
+      "label": "runSimulations()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "runsimulations()",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "scripts_simulate_runsimulations_assert",
+      "label": "assert()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "assert()",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L18"
+    },
+    {
       "id": "src_routes_admin_clients_adminclientspage",
       "label": "AdminClientsPage()",
       "_callable": true,
@@ -9084,6 +9180,18 @@
       "norm_label": "formatdate()",
       "source_file": "src/routes/admin/clients.tsx",
       "source_location": "L90"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_core_exact_stack_identifier",
+      "label": "_exact_stack_identifier()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "search_stack",
+      "file_type": "code",
+      "norm_label": "_exact_stack_identifier()",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/core.py",
+      "source_location": "L925"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_core_search_stack",
@@ -9386,78 +9494,6 @@
       "source_location": "L38"
     },
     {
-      "id": "app_components_logoutbutton_logoutbutton",
-      "label": "LogoutButton()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "logoutbutton()",
-      "source_file": "app/components/LogoutButton.tsx",
-      "source_location": "L12"
-    },
-    {
-      "id": "app_lib_auth_createsessiontoken",
-      "label": "createSessionToken()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "createsessiontoken()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L141"
-    },
-    {
-      "id": "app_lib_auth_getsecrets",
-      "label": "getSecrets()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "getsecrets()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L55"
-    },
-    {
-      "id": "app_lib_auth_getserverutils",
-      "label": "getServerUtils()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "getserverutils()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L9"
-    },
-    {
-      "id": "app_lib_auth_getsessioncookieoptions",
-      "label": "getSessionCookieOptions()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "getsessioncookieoptions()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L13"
-    },
-    {
-      "id": "app_lib_auth_getsessiondata",
-      "label": "getSessionData()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "getsessiondata()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L181"
-    },
-    {
       "id": "app_lib_auth_requireadmin",
       "label": "requireAdmin()",
       "_callable": true,
@@ -9482,30 +9518,6 @@
       "source_location": "L480"
     },
     {
-      "id": "app_lib_auth_verifypassword",
-      "label": "verifyPassword()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "verifypassword()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L103"
-    },
-    {
-      "id": "app_lib_auth_verifysessiontoken",
-      "label": "verifySessionToken()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "verifysessiontoken()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L223"
-    },
-    {
       "id": "src_routes_admin_adminlayout",
       "label": "AdminLayout()",
       "_callable": true,
@@ -9516,6 +9528,18 @@
       "norm_label": "adminlayout()",
       "source_file": "src/routes/admin.tsx",
       "source_location": "L15"
+    },
+    {
+      "id": "src_routes_admin_reports_id_brandedreportviewpage",
+      "label": "BrandedReportViewPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "FileRoutesByPath",
+      "file_type": "code",
+      "norm_label": "brandedreportviewpage()",
+      "source_file": "src/routes/admin/reports/$id.tsx",
+      "source_location": "L60"
     },
     {
       "id": "src_routes_login_loginpage",
@@ -12568,6 +12592,42 @@
       "source_location": "L68"
     },
     {
+      "id": "agents_skills_sms_references_sequence_templates_abandoned_cart_highest_roi_flow_for_ecom",
+      "label": "Abandoned Cart (highest-ROI flow for ecom)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "abandoned cart (highest-roi flow for ecom)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L35"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_account_alert",
+      "label": "Account alert",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "account alert",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L206"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_auth_code_2fa",
+      "label": "Auth code (2FA)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "auth code (2fa)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L200"
+    },
+    {
       "id": "agents_skills_sms_references_sequence_templates_browse_abandonment",
       "label": "Browse Abandonment",
       "_origin": "ast",
@@ -12578,6 +12638,18 @@
       "norm_label": "browse abandonment",
       "source_file": ".agents/skills/sms/references/sequence-templates.md",
       "source_location": "L65"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_delivery_confirmation",
+      "label": "Delivery confirmation",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "delivery confirmation",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L194"
     },
     {
       "id": "agents_skills_sms_references_sequence_templates_early_access",
@@ -12640,6 +12712,30 @@
       "source_location": "L267"
     },
     {
+      "id": "agents_skills_sms_references_sequence_templates_order_confirmation",
+      "label": "Order confirmation",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "order confirmation",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L182"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_post_purchase_flow",
+      "label": "Post-Purchase Flow",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "post-purchase flow",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L80"
+    },
+    {
       "id": "agents_skills_sms_references_sequence_templates_promotional_campaign_sends",
       "label": "Promotional / Campaign Sends",
       "_origin": "ast",
@@ -12700,6 +12796,30 @@
       "source_location": "L67"
     },
     {
+      "id": "agents_skills_sms_references_sequence_templates_send_1_30_minutes_after_abandon",
+      "label": "Send 1 \u2014 30 minutes after abandon",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 1 \u2014 30 minutes after abandon",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L37"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_1_60_90_days_after_last_purchase",
+      "label": "Send 1 \u2014 60-90 days after last purchase",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 1 \u2014 60-90 days after last purchase",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L121"
+    },
+    {
       "id": "agents_skills_sms_references_sequence_templates_send_1_at_expected_reorder_window_e_g_28_days_for_a_30_day_supply",
       "label": "Send 1 \u2014 At expected reorder window (e.g., 28 days for a 30-day supply)",
       "_origin": "ast",
@@ -12712,6 +12832,30 @@
       "source_location": "L240"
     },
     {
+      "id": "agents_skills_sms_references_sequence_templates_send_1_immediate_after_opt_in",
+      "label": "Send 1 \u2014 Immediate (after opt-in)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 1 \u2014 immediate (after opt-in)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L11"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_1_immediately_after_purchase_transactional_separate_consent",
+      "label": "Send 1 \u2014 Immediately after purchase (transactional, separate consent)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 1 \u2014 immediately after purchase (transactional, separate consent)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L82"
+    },
+    {
       "id": "agents_skills_sms_references_sequence_templates_send_1_soft_reactivation",
       "label": "Send 1 \u2014 Soft reactivation",
       "_origin": "ast",
@@ -12722,6 +12866,42 @@
       "norm_label": "send 1 \u2014 soft reactivation",
       "source_file": ".agents/skills/sms/references/sequence-templates.md",
       "source_location": "L218"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_2_14_days_later_if_no_purchase",
+      "label": "Send 2 \u2014 14 days later (if no purchase)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 2 \u2014 14 days later (if no purchase)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L128"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_2_24_hours_later_optional",
+      "label": "Send 2 \u2014 24 hours later (optional)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 2 \u2014 24 hours later (optional)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L19"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_2_4_hours_after_abandon_if_no_purchase",
+      "label": "Send 2 \u2014 4 hours after abandon (if no purchase)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 2 \u2014 4 hours after abandon (if no purchase)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L44"
     },
     {
       "id": "agents_skills_sms_references_sequence_templates_send_2_7_days_later_if_no_purchase",
@@ -12748,6 +12928,102 @@
       "source_location": "L225"
     },
     {
+      "id": "agents_skills_sms_references_sequence_templates_send_2_day_of_shipment",
+      "label": "Send 2 \u2014 Day of shipment",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 2 \u2014 day of shipment",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L89"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_3_14_days_after_send_2_final_if_no_purchase",
+      "label": "Send 3 \u2014 14 days after Send 2 (final, if no purchase)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 3 \u2014 14 days after send 2 (final, if no purchase)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L135"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_3_24_hours_after_abandon_if_no_purchase_discount_allowed",
+      "label": "Send 3 \u2014 24 hours after abandon (if no purchase, discount allowed)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 3 \u2014 24 hours after abandon (if no purchase, discount allowed)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L51"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_3_7_days_later_optional_conditional_on_no_purchase",
+      "label": "Send 3 \u2014 7 days later (optional, conditional on no purchase)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 3 \u2014 7 days later (optional, conditional on no purchase)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L26"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_3_day_of_delivery",
+      "label": "Send 3 \u2014 Day of delivery",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 3 \u2014 day of delivery",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L96"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_4_2_days_after_delivery_marketing_consent_required",
+      "label": "Send 4 \u2014 2 days after delivery (marketing consent required)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 4 \u2014 2 days after delivery (marketing consent required)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L103"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_send_5_14_days_after_delivery_cross_sell_marketing_consent",
+      "label": "Send 5 \u2014 14 days after delivery (cross-sell, marketing consent)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "send 5 \u2014 14 days after delivery (cross-sell, marketing consent)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L110"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_shipping_update",
+      "label": "Shipping update",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "shipping update",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L188"
+    },
+    {
       "id": "agents_skills_sms_references_sequence_templates_sms_sequence_templates",
       "label": "SMS Sequence Templates",
       "_origin": "ast",
@@ -12760,6 +13036,18 @@
       "source_location": "L1"
     },
     {
+      "id": "agents_skills_sms_references_sequence_templates_transactional_account_notifications",
+      "label": "Transactional / Account Notifications",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "transactional / account notifications",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L180"
+    },
+    {
       "id": "agents_skills_sms_references_sequence_templates_vip_loyalty_members",
       "label": "VIP / Loyalty Members",
       "_origin": "ast",
@@ -12770,6 +13058,30 @@
       "norm_label": "vip / loyalty members",
       "source_file": ".agents/skills/sms/references/sequence-templates.md",
       "source_location": "L256"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_welcome_opt_in_confirmation",
+      "label": "Welcome / Opt-In Confirmation",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "welcome / opt-in confirmation",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L9"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates_win_back_lapsed_customers",
+      "label": "Win-Back (Lapsed Customers)",
+      "_origin": "ast",
+      "community": 104,
+      "community_name": "SMS Sequence Templates",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "win-back (lapsed customers)",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L119"
     },
     {
       "id": "agents_skills_marketing_plan_references_client_types",
@@ -17020,17 +17332,6 @@
       "source_location": "L889"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_core_rationale_926",
-      "label": "Resolve a standalone API identifier even when its BM25 IDF is low.",
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "scripts/core.py",
-      "file_type": "rationale",
-      "norm_label": "resolve a standalone api identifier even when its bm25 idf is low.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/core.py",
-      "source_location": "L926"
-    },
-    {
       "id": "agents_skills_ui_ux_pro_max_scripts_core_rationale_939",
       "label": "Prefer the explicit successor row for a brand-new app on legacy-only stacks.",
       "_origin": "ast",
@@ -17628,26 +17929,100 @@
       "source_location": "L1"
     },
     {
-      "id": "package_dependencies_react",
-      "label": "react",
+      "id": "agents_skills_sms_skill_abandoned_cart_highest_roi_flow_for_ecom",
+      "label": "Abandoned Cart (highest-ROI flow for ecom)",
       "_origin": "ast",
       "community": 136,
-      "community_name": "react",
-      "file_type": "code",
-      "norm_label": "react",
-      "source_file": "package.json",
-      "source_location": "L26"
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "abandoned cart (highest-roi flow for ecom)",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L143"
     },
     {
-      "id": "react",
-      "label": "react",
+      "id": "agents_skills_sms_skill_browse_abandonment",
+      "label": "Browse Abandonment",
       "_origin": "ast",
       "community": 136,
-      "community_name": "react",
-      "file_type": "concept",
-      "norm_label": "react",
-      "source_file": "package.json",
-      "source_location": "L26"
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "browse abandonment",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L151"
+    },
+    {
+      "id": "agents_skills_sms_skill_post_purchase",
+      "label": "Post-Purchase",
+      "_origin": "ast",
+      "community": 136,
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "post-purchase",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L155"
+    },
+    {
+      "id": "agents_skills_sms_skill_promotional_campaign_sends",
+      "label": "Promotional / Campaign Sends",
+      "_origin": "ast",
+      "community": 136,
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "promotional / campaign sends",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L166"
+    },
+    {
+      "id": "agents_skills_sms_skill_sms_sequence_types",
+      "label": "SMS Sequence Types",
+      "_origin": "ast",
+      "community": 136,
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "sms sequence types",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L134"
+    },
+    {
+      "id": "agents_skills_sms_skill_transactional_separate_compliance_bucket",
+      "label": "Transactional (separate compliance bucket)",
+      "_origin": "ast",
+      "community": 136,
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "transactional (separate compliance bucket)",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L172"
+    },
+    {
+      "id": "agents_skills_sms_skill_welcome_opt_in_confirmation_immediate",
+      "label": "Welcome / Opt-In Confirmation (immediate)",
+      "_origin": "ast",
+      "community": 136,
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "welcome / opt-in confirmation (immediate)",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L136"
+    },
+    {
+      "id": "agents_skills_sms_skill_win_back_lapsed",
+      "label": "Win-Back (lapsed)",
+      "_origin": "ast",
+      "community": 136,
+      "community_name": "SMS Sequence Types",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "win-back (lapsed)",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L160"
     },
     {
       "id": "agents_skills_marketing_plan_references_team_and_agency_model",
@@ -18406,26 +18781,88 @@
       "source_location": "L63"
     },
     {
-      "id": "package_devdependencies_types_react",
-      "label": "@types/react",
+      "id": "agents_skills_sms_skill_1_every_send_has_a_real_cost",
+      "label": "1. Every send has a real cost",
       "_origin": "ast",
       "community": 139,
-      "community_name": "@types/react",
-      "file_type": "code",
-      "norm_label": "@types/react",
-      "source_file": "package.json",
-      "source_location": "L35"
+      "community_name": "Core Principles",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "1. every send has a real cost",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L114"
     },
     {
-      "id": "types_react",
-      "label": "@types/react",
+      "id": "agents_skills_sms_skill_2_opt_in_is_your_most_valuable_asset",
+      "label": "2. Opt-in is your most valuable asset",
       "_origin": "ast",
       "community": 139,
-      "community_name": "@types/react",
-      "file_type": "concept",
-      "norm_label": "@types/react",
-      "source_file": "package.json",
-      "source_location": "L35"
+      "community_name": "Core Principles",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2. opt-in is your most valuable asset",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L117"
+    },
+    {
+      "id": "agents_skills_sms_skill_3_each_message_must_justify_itself",
+      "label": "3. Each message must justify itself",
+      "_origin": "ast",
+      "community": 139,
+      "community_name": "Core Principles",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "3. each message must justify itself",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L120"
+    },
+    {
+      "id": "agents_skills_sms_skill_4_brevity_clarity",
+      "label": "4. Brevity + clarity",
+      "_origin": "ast",
+      "community": 139,
+      "community_name": "Core Principles",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "4. brevity + clarity",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L123"
+    },
+    {
+      "id": "agents_skills_sms_skill_5_one_cta_one_link",
+      "label": "5. One CTA, one link",
+      "_origin": "ast",
+      "community": 139,
+      "community_name": "Core Principles",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "5. one cta, one link",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L126"
+    },
+    {
+      "id": "agents_skills_sms_skill_6_sender_identity_every_send",
+      "label": "6. Sender identity, every send",
+      "_origin": "ast",
+      "community": 139,
+      "community_name": "Core Principles",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "6. sender identity, every send",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L129"
+    },
+    {
+      "id": "agents_skills_sms_skill_core_principles",
+      "label": "Core Principles",
+      "_origin": "ast",
+      "community": 139,
+      "community_name": "Core Principles",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "core principles",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L112"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_259",
@@ -18448,39 +18885,6 @@
       "norm_label": "load reasoning rules from csv.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L268"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_358",
-      "label": "Find matching reasoning rule for a category.",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "DesignSystemGenerator",
-      "file_type": "rationale",
-      "norm_label": "find matching reasoning rule for a category.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L358"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_366",
-      "label": "Apply reasoning rules to search results.",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "DesignSystemGenerator",
-      "file_type": "rationale",
-      "norm_label": "apply reasoning rules to search results.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L366"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_409",
-      "label": "Select best matching result based on priority keywords.",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "DesignSystemGenerator",
-      "file_type": "rationale",
-      "norm_label": "select best matching result based on priority keywords.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L409"
     },
     {
       "id": "app_components_footer",
@@ -29644,22 +30048,11 @@
       "source_location": "L28"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system",
-      "label": "design_system.py",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "code",
-      "norm_label": "design_system.py",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L1"
-    },
-    {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_design_system_mode",
       "label": "test_design_system_mode.py",
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "code",
       "norm_label": "test_design_system_mode.py",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
@@ -29670,7 +30063,7 @@
       "label": "True when a styles.csv row describes itself as dark-first.",
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "rationale",
       "norm_label": "true when a styles.csv row describes itself as dark-first.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -29681,7 +30074,7 @@
       "label": "True when the query explicitly asks for a dark theme.",
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "rationale",
       "norm_label": "true when the query explicitly asks for a dark theme.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -29692,66 +30085,11 @@
       "label": "Resolve the mode the rest of the output has to agree with.",
       "_origin": "ast",
       "community": 18,
-      "community_name": "design_system.py",
+      "community_name": "test_design_system_mode.py",
       "file_type": "rationale",
       "norm_label": "resolve the mode the rest of the output has to agree with.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L187"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_612",
-      "label": "Convert hex color to ANSI True Color swatch (\u2588\u2588) with fallback.",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "rationale",
-      "norm_label": "convert hex color to ansi true color swatch (\u2588\u2588) with fallback.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L612"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_626",
-      "label": "Like str.ljust but accounts for zero-width ANSI escape sequences.",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "rationale",
-      "norm_label": "like str.ljust but accounts for zero-width ansi escape sequences.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L626"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_634",
-      "label": "Create a Unicode section separator: \u251c\u2500\u2500\u2500 NAME \u2500\u2500\u2500...\u2524",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "rationale",
-      "norm_label": "create a unicode section separator: \u251c\u2500\u2500\u2500 name \u2500\u2500\u2500...\u2524",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L634"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_641",
-      "label": "Format design system as Unicode box with ANSI color swatches.",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "rationale",
-      "norm_label": "format design system as unicode box with ansi color swatches.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L641"
-    },
-    {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_792",
-      "label": "Format design system as markdown.",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "design_system.py",
-      "file_type": "rationale",
-      "norm_label": "format design system as markdown.",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L792"
     },
     {
       "id": "agents_skills_design_references_design_routing",
@@ -36901,162 +37239,6 @@
       "source_location": "L198"
     },
     {
-      "id": "agents_skills_sms_skill_1_business_type",
-      "label": "1. Business Type",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "1. business type",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L19"
-    },
-    {
-      "id": "agents_skills_sms_skill_1_every_send_has_a_real_cost",
-      "label": "1. Every send has a real cost",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "1. every send has a real cost",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L114"
-    },
-    {
-      "id": "agents_skills_sms_skill_2_current_state",
-      "label": "2. Current State",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "2. current state",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L24"
-    },
-    {
-      "id": "agents_skills_sms_skill_2_opt_in_is_your_most_valuable_asset",
-      "label": "2. Opt-in is your most valuable asset",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "2. opt-in is your most valuable asset",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L117"
-    },
-    {
-      "id": "agents_skills_sms_skill_3_compliance_posture",
-      "label": "3. Compliance Posture",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "3. compliance posture",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L29"
-    },
-    {
-      "id": "agents_skills_sms_skill_3_each_message_must_justify_itself",
-      "label": "3. Each message must justify itself",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "3. each message must justify itself",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L120"
-    },
-    {
-      "id": "agents_skills_sms_skill_4_brevity_clarity",
-      "label": "4. Brevity + clarity",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "4. brevity + clarity",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L123"
-    },
-    {
-      "id": "agents_skills_sms_skill_4_goal",
-      "label": "4. Goal",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "4. goal",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L34"
-    },
-    {
-      "id": "agents_skills_sms_skill_5_one_cta_one_link",
-      "label": "5. One CTA, one link",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "5. one cta, one link",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L126"
-    },
-    {
-      "id": "agents_skills_sms_skill_6_sender_identity_every_send",
-      "label": "6. Sender identity, every send",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "6. sender identity, every send",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L129"
-    },
-    {
-      "id": "agents_skills_sms_skill_abandoned_cart_highest_roi_flow_for_ecom",
-      "label": "Abandoned Cart (highest-ROI flow for ecom)",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "abandoned cart (highest-roi flow for ecom)",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L143"
-    },
-    {
-      "id": "agents_skills_sms_skill_before_starting",
-      "label": "Before Starting",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "before starting",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L12"
-    },
-    {
-      "id": "agents_skills_sms_skill_browse_abandonment",
-      "label": "Browse Abandonment",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "browse abandonment",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L151"
-    },
-    {
       "id": "agents_skills_sms_skill_canada_casl",
       "label": "Canada \u2014 CASL",
       "_origin": "ast",
@@ -37093,18 +37275,6 @@
       "source_location": "L61"
     },
     {
-      "id": "agents_skills_sms_skill_core_principles",
-      "label": "Core Principles",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "core principles",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L112"
-    },
-    {
       "id": "agents_skills_sms_skill_eu_uk_gdpr_derived_consent",
       "label": "EU/UK \u2014 GDPR-derived consent",
       "_origin": "ast",
@@ -37127,18 +37297,6 @@
       "norm_label": "key metrics",
       "source_file": ".agents/skills/sms/SKILL.md",
       "source_location": "L240"
-    },
-    {
-      "id": "agents_skills_sms_skill_length",
-      "label": "Length",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "length",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L191"
     },
     {
       "id": "agents_skills_sms_skill_measurement",
@@ -37165,18 +37323,6 @@
       "source_location": "L270"
     },
     {
-      "id": "agents_skills_sms_skill_personalization",
-      "label": "Personalization",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "personalization",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L205"
-    },
-    {
       "id": "agents_skills_sms_skill_phone_number_types_us",
       "label": "Phone Number Types (US)",
       "_origin": "ast",
@@ -37201,30 +37347,6 @@
       "source_location": "L216"
     },
     {
-      "id": "agents_skills_sms_skill_post_purchase",
-      "label": "Post-Purchase",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "post-purchase",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L155"
-    },
-    {
-      "id": "agents_skills_sms_skill_promotional_campaign_sends",
-      "label": "Promotional / Campaign Sends",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "promotional / campaign sends",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L166"
-    },
-    {
       "id": "agents_skills_sms_skill_related_skills",
       "label": "Related Skills",
       "_origin": "ast",
@@ -37237,18 +37359,6 @@
       "source_location": "L329"
     },
     {
-      "id": "agents_skills_sms_skill_sms_copy_guidelines",
-      "label": "SMS Copy Guidelines",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "sms copy guidelines",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L182"
-    },
-    {
       "id": "agents_skills_sms_skill_sms_marketing",
       "label": "SMS Marketing",
       "_origin": "ast",
@@ -37259,30 +37369,6 @@
       "norm_label": "sms marketing",
       "source_file": ".agents/skills/sms/SKILL.md",
       "source_location": "L8"
-    },
-    {
-      "id": "agents_skills_sms_skill_sms_sequence_types",
-      "label": "SMS Sequence Types",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "sms sequence types",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L134"
-    },
-    {
-      "id": "agents_skills_sms_skill_structure",
-      "label": "Structure",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "structure",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L184"
     },
     {
       "id": "agents_skills_sms_skill_task_specific_questions",
@@ -37309,18 +37395,6 @@
       "source_location": "L312"
     },
     {
-      "id": "agents_skills_sms_skill_transactional_separate_compliance_bucket",
-      "label": "Transactional (separate compliance bucket)",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "transactional (separate compliance bucket)",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L172"
-    },
-    {
       "id": "agents_skills_sms_skill_us_a2p_10dlc_registration_required_since_2022",
       "label": "US \u2014 A2P 10DLC Registration (required since 2022)",
       "_origin": "ast",
@@ -37343,30 +37417,6 @@
       "norm_label": "us \u2014 tcpa (telephone consumer protection act)",
       "source_file": ".agents/skills/sms/SKILL.md",
       "source_location": "L65"
-    },
-    {
-      "id": "agents_skills_sms_skill_voice",
-      "label": "Voice",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "voice",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L198"
-    },
-    {
-      "id": "agents_skills_sms_skill_welcome_opt_in_confirmation_immediate",
-      "label": "Welcome / Opt-In Confirmation (immediate)",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "welcome / opt-in confirmation (immediate)",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L136"
     },
     {
       "id": "agents_skills_sms_skill_what_to_a_b_test",
@@ -37403,18 +37453,6 @@
       "norm_label": "when sms beats email",
       "source_file": ".agents/skills/sms/SKILL.md",
       "source_location": "L41"
-    },
-    {
-      "id": "agents_skills_sms_skill_win_back_lapsed",
-      "label": "Win-Back (lapsed)",
-      "_origin": "ast",
-      "community": 209,
-      "community_name": "SMS Marketing",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "win-back (lapsed)",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L160"
     },
     {
       "id": "tsconfig_node",
@@ -40389,34 +40427,6 @@
       "source_location": "L319"
     },
     {
-      "id": "agents_skills_sms_skill",
-      "label": "sms/SKILL.md",
-      "_origin": "ast",
-      "community": 222,
-      "community_name": "SMS Compliance Reference",
-      "file_type": "document",
-      "frontmatter": {
-        "name": "sms",
-        "description": "When the user wants to plan, build, or optimize SMS or MMS marketing \u2014 including welcome flows, abandoned cart texts, post-purchase, win-back, promotional sends, or transactional/auth SMS. Also use when the user mentions &quot;SMS marketing,&quot; &quot;text message campaigns,&quot; &quot;SMS sequence,&quot; &quot;SMS automation,&quot; &quot;abandoned cart text,&quot; &quot;post-purchase SMS,&quot; &quot;Klaviyo SMS,&quot; &quot;Postscript,&quot; &quot;Attentive,&quot; &quot;Twilio,&quot; &quot;A2P 10DLC,&q"
-      },
-      "node_kind": "page",
-      "norm_label": "sms/skill.md",
-      "source_file": ".agents/skills/sms/SKILL.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "agents_skills_sms_references_compliance",
-      "label": "sms/references/compliance.md",
-      "_origin": "ast",
-      "community": 222,
-      "community_name": "SMS Compliance Reference",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "sms/references/compliance.md",
-      "source_file": ".agents/skills/sms/references/compliance.md",
-      "source_location": "L1"
-    },
-    {
       "id": "agents_skills_sms_references_compliance_audit_ready_compliance_checklist",
       "label": "Audit-ready compliance checklist",
       "_origin": "ast",
@@ -40451,6 +40461,18 @@
       "norm_label": "canada \u2014 casl",
       "source_file": ".agents/skills/sms/references/compliance.md",
       "source_location": "L148"
+    },
+    {
+      "id": "agents_skills_sms_references_compliance_common_rejections",
+      "label": "Common rejections",
+      "_origin": "ast",
+      "community": 222,
+      "community_name": "SMS Compliance Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "common rejections",
+      "source_file": ".agents/skills/sms/references/compliance.md",
+      "source_location": "L114"
     },
     {
       "id": "agents_skills_sms_references_compliance_consent",
@@ -40549,6 +40571,18 @@
       "source_location": "L162"
     },
     {
+      "id": "agents_skills_sms_references_compliance_registration_components",
+      "label": "Registration components",
+      "_origin": "ast",
+      "community": 222,
+      "community_name": "SMS Compliance Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "registration components",
+      "source_file": ".agents/skills/sms/references/compliance.md",
+      "source_location": "L89"
+    },
+    {
       "id": "agents_skills_sms_references_compliance_sms_compliance_reference",
       "label": "SMS Compliance Reference",
       "_origin": "ast",
@@ -40561,28 +40595,40 @@
       "source_location": "L1"
     },
     {
-      "id": "agents_skills_sms_references_platforms",
-      "label": "sms/references/platforms.md",
+      "id": "agents_skills_sms_references_compliance_throughput_tiers_varies_by_carrier_and_trust_score",
+      "label": "Throughput tiers (varies by carrier and trust score)",
       "_origin": "ast",
       "community": 222,
       "community_name": "SMS Compliance Reference",
       "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "sms/references/platforms.md",
-      "source_file": ".agents/skills/sms/references/platforms.md",
-      "source_location": "L1"
+      "node_kind": "heading",
+      "norm_label": "throughput tiers (varies by carrier and trust score)",
+      "source_file": ".agents/skills/sms/references/compliance.md",
+      "source_location": "L106"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates",
-      "label": "sms/references/sequence-templates.md",
+      "id": "agents_skills_sms_references_compliance_united_states_a2p_10dlc",
+      "label": "United States \u2014 A2P 10DLC",
       "_origin": "ast",
       "community": 222,
       "community_name": "SMS Compliance Reference",
       "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "sms/references/sequence-templates.md",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L1"
+      "node_kind": "heading",
+      "norm_label": "united states \u2014 a2p 10dlc",
+      "source_file": ".agents/skills/sms/references/compliance.md",
+      "source_location": "L83"
+    },
+    {
+      "id": "agents_skills_sms_references_compliance_what_it_is_85",
+      "label": "What it is",
+      "_origin": "ast",
+      "community": 222,
+      "community_name": "SMS Compliance Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "what it is",
+      "source_file": ".agents/skills/sms/references/compliance.md",
+      "source_location": "L85"
     },
     {
       "id": "agents_skills_ad_creative_references_imessage_video_ads_airdrop_reveal",
@@ -43876,7 +43922,7 @@
       "file_type": "code",
       "norm_label": "dependencies",
       "source_file": "package.json",
-      "source_location": "L16"
+      "source_location": "L17"
     },
     {
       "id": "package_dependencies_clsx",
@@ -43887,18 +43933,18 @@
       "file_type": "code",
       "norm_label": "clsx",
       "source_file": "package.json",
-      "source_location": "L22"
+      "source_location": "L23"
     },
     {
-      "id": "package_dependencies_drizzle_orm",
-      "label": "drizzle-orm",
+      "id": "package_dependencies_lucide_react",
+      "label": "lucide-react",
       "_origin": "ast",
       "community": 24,
       "community_name": "dependencies",
       "file_type": "code",
-      "norm_label": "drizzle-orm",
+      "norm_label": "lucide-react",
       "source_file": "package.json",
-      "source_location": "L23"
+      "source_location": "L25"
     },
     {
       "id": "package_dependencies_postgres",
@@ -43909,7 +43955,18 @@
       "file_type": "code",
       "norm_label": "postgres",
       "source_file": "package.json",
-      "source_location": "L25"
+      "source_location": "L26"
+    },
+    {
+      "id": "package_dependencies_react",
+      "label": "react",
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "react",
+      "source_file": "package.json",
+      "source_location": "L27"
     },
     {
       "id": "package_dependencies_react_dom",
@@ -43920,18 +43977,7 @@
       "file_type": "code",
       "norm_label": "react-dom",
       "source_file": "package.json",
-      "source_location": "L27"
-    },
-    {
-      "id": "package_dependencies_tailwind_merge",
-      "label": "tailwind-merge",
-      "_origin": "ast",
-      "community": 24,
-      "community_name": "dependencies",
-      "file_type": "code",
-      "norm_label": "tailwind-merge",
-      "source_file": "package.json",
-      "source_location": "L29"
+      "source_location": "L28"
     },
     {
       "id": "package_dependencies_tanstack_react_query",
@@ -43942,7 +43988,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/react-query",
       "source_file": "package.json",
-      "source_location": "L17"
+      "source_location": "L18"
     },
     {
       "id": "package_dependencies_tanstack_react_query_devtools",
@@ -43953,7 +43999,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/react-query-devtools",
       "source_file": "package.json",
-      "source_location": "L18"
+      "source_location": "L19"
     },
     {
       "id": "package_dependencies_tanstack_react_router",
@@ -43964,7 +44010,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/react-router",
       "source_file": "package.json",
-      "source_location": "L19"
+      "source_location": "L20"
     },
     {
       "id": "package_dependencies_tanstack_react_start",
@@ -43975,7 +44021,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/react-start",
       "source_file": "package.json",
-      "source_location": "L20"
+      "source_location": "L21"
     },
     {
       "id": "package_dependencies_tanstack_router_devtools",
@@ -43986,7 +44032,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/router-devtools",
       "source_file": "package.json",
-      "source_location": "L21"
+      "source_location": "L22"
     },
     {
       "id": "clsx",
@@ -43997,18 +44043,18 @@
       "file_type": "concept",
       "norm_label": "clsx",
       "source_file": "package.json",
-      "source_location": "L22"
+      "source_location": "L23"
     },
     {
-      "id": "drizzle_orm",
-      "label": "drizzle-orm",
+      "id": "lucide_react",
+      "label": "lucide-react",
       "_origin": "ast",
       "community": 24,
       "community_name": "dependencies",
       "file_type": "concept",
-      "norm_label": "drizzle-orm",
+      "norm_label": "lucide-react",
       "source_file": "package.json",
-      "source_location": "L23"
+      "source_location": "L25"
     },
     {
       "id": "postgres",
@@ -44019,7 +44065,18 @@
       "file_type": "concept",
       "norm_label": "postgres",
       "source_file": "package.json",
-      "source_location": "L25"
+      "source_location": "L26"
+    },
+    {
+      "id": "react",
+      "label": "react",
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "dependencies",
+      "file_type": "concept",
+      "norm_label": "react",
+      "source_file": "package.json",
+      "source_location": "L27"
     },
     {
       "id": "react_dom",
@@ -44030,18 +44087,7 @@
       "file_type": "concept",
       "norm_label": "react-dom",
       "source_file": "package.json",
-      "source_location": "L27"
-    },
-    {
-      "id": "tailwind_merge",
-      "label": "tailwind-merge",
-      "_origin": "ast",
-      "community": 24,
-      "community_name": "dependencies",
-      "file_type": "concept",
-      "norm_label": "tailwind-merge",
-      "source_file": "package.json",
-      "source_location": "L29"
+      "source_location": "L28"
     },
     {
       "id": "tanstack_react_query",
@@ -44052,7 +44098,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/react-query",
       "source_file": "package.json",
-      "source_location": "L17"
+      "source_location": "L18"
     },
     {
       "id": "tanstack_react_query_devtools",
@@ -44063,7 +44109,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/react-query-devtools",
       "source_file": "package.json",
-      "source_location": "L18"
+      "source_location": "L19"
     },
     {
       "id": "tanstack_react_router",
@@ -44074,7 +44120,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/react-router",
       "source_file": "package.json",
-      "source_location": "L19"
+      "source_location": "L20"
     },
     {
       "id": "tanstack_react_start",
@@ -44085,7 +44131,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/react-start",
       "source_file": "package.json",
-      "source_location": "L20"
+      "source_location": "L21"
     },
     {
       "id": "tanstack_router_devtools",
@@ -44096,7 +44142,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/router-devtools",
       "source_file": "package.json",
-      "source_location": "L21"
+      "source_location": "L22"
     },
     {
       "id": "agents_skills_emails_references_copy_guidelines_by_behavior",
@@ -45907,7 +45953,7 @@
       "file_type": "code",
       "norm_label": "devdependencies",
       "source_file": "package.json",
-      "source_location": "L31"
+      "source_location": "L32"
     },
     {
       "id": "package_devdependencies_dotenv",
@@ -45918,7 +45964,7 @@
       "file_type": "code",
       "norm_label": "dotenv",
       "source_file": "package.json",
-      "source_location": "L38"
+      "source_location": "L39"
     },
     {
       "id": "package_devdependencies_drizzle_kit",
@@ -45929,7 +45975,7 @@
       "file_type": "code",
       "norm_label": "drizzle-kit",
       "source_file": "package.json",
-      "source_location": "L39"
+      "source_location": "L40"
     },
     {
       "id": "package_devdependencies_tailwindcss",
@@ -45940,7 +45986,7 @@
       "file_type": "code",
       "norm_label": "tailwindcss",
       "source_file": "package.json",
-      "source_location": "L40"
+      "source_location": "L41"
     },
     {
       "id": "package_devdependencies_tailwindcss_vite",
@@ -45951,7 +45997,7 @@
       "file_type": "code",
       "norm_label": "@tailwindcss/vite",
       "source_file": "package.json",
-      "source_location": "L32"
+      "source_location": "L33"
     },
     {
       "id": "package_devdependencies_tanstack_router_plugin",
@@ -45962,7 +46008,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/router-plugin",
       "source_file": "package.json",
-      "source_location": "L33"
+      "source_location": "L34"
     },
     {
       "id": "package_devdependencies_types_node",
@@ -45973,7 +46019,18 @@
       "file_type": "code",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L34"
+      "source_location": "L35"
+    },
+    {
+      "id": "package_devdependencies_types_react",
+      "label": "@types/react",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "devDependencies",
+      "file_type": "code",
+      "norm_label": "@types/react",
+      "source_file": "package.json",
+      "source_location": "L36"
     },
     {
       "id": "package_devdependencies_types_react_dom",
@@ -45984,7 +46041,7 @@
       "file_type": "code",
       "norm_label": "@types/react-dom",
       "source_file": "package.json",
-      "source_location": "L36"
+      "source_location": "L37"
     },
     {
       "id": "package_devdependencies_typescript",
@@ -45995,7 +46052,7 @@
       "file_type": "code",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L41"
+      "source_location": "L42"
     },
     {
       "id": "package_devdependencies_vite",
@@ -46006,7 +46063,7 @@
       "file_type": "code",
       "norm_label": "vite",
       "source_file": "package.json",
-      "source_location": "L42"
+      "source_location": "L43"
     },
     {
       "id": "package_devdependencies_vitejs_plugin_react",
@@ -46017,7 +46074,7 @@
       "file_type": "code",
       "norm_label": "@vitejs/plugin-react",
       "source_file": "package.json",
-      "source_location": "L37"
+      "source_location": "L38"
     },
     {
       "id": "dotenv",
@@ -46028,7 +46085,7 @@
       "file_type": "concept",
       "norm_label": "dotenv",
       "source_file": "package.json",
-      "source_location": "L38"
+      "source_location": "L39"
     },
     {
       "id": "drizzle_kit",
@@ -46039,7 +46096,7 @@
       "file_type": "concept",
       "norm_label": "drizzle-kit",
       "source_file": "package.json",
-      "source_location": "L39"
+      "source_location": "L40"
     },
     {
       "id": "tailwindcss",
@@ -46050,7 +46107,7 @@
       "file_type": "concept",
       "norm_label": "tailwindcss",
       "source_file": "package.json",
-      "source_location": "L40"
+      "source_location": "L41"
     },
     {
       "id": "tailwindcss_vite",
@@ -46061,7 +46118,7 @@
       "file_type": "concept",
       "norm_label": "@tailwindcss/vite",
       "source_file": "package.json",
-      "source_location": "L32"
+      "source_location": "L33"
     },
     {
       "id": "tanstack_router_plugin",
@@ -46072,7 +46129,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/router-plugin",
       "source_file": "package.json",
-      "source_location": "L33"
+      "source_location": "L34"
     },
     {
       "id": "types_node",
@@ -46083,7 +46140,18 @@
       "file_type": "concept",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L34"
+      "source_location": "L35"
+    },
+    {
+      "id": "types_react",
+      "label": "@types/react",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "devDependencies",
+      "file_type": "concept",
+      "norm_label": "@types/react",
+      "source_file": "package.json",
+      "source_location": "L36"
     },
     {
       "id": "types_react_dom",
@@ -46094,7 +46162,7 @@
       "file_type": "concept",
       "norm_label": "@types/react-dom",
       "source_file": "package.json",
-      "source_location": "L36"
+      "source_location": "L37"
     },
     {
       "id": "typescript",
@@ -46105,7 +46173,7 @@
       "file_type": "concept",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L41"
+      "source_location": "L42"
     },
     {
       "id": "vite",
@@ -46116,7 +46184,7 @@
       "file_type": "concept",
       "norm_label": "vite",
       "source_file": "package.json",
-      "source_location": "L42"
+      "source_location": "L43"
     },
     {
       "id": "vitejs_plugin_react",
@@ -46127,7 +46195,7 @@
       "file_type": "concept",
       "norm_label": "@vitejs/plugin-react",
       "source_file": "package.json",
-      "source_location": "L37"
+      "source_location": "L38"
     },
     {
       "id": "agents_skills_revops_references_routing_rules_abm_routing_rules",
@@ -46703,26 +46771,15 @@
       "source_location": "L153"
     },
     {
-      "id": "app_server_reports_getportalreportsserverfn",
-      "label": "getPortalReportsServerFn",
+      "id": "app_server_reports_getreportsserverfn",
+      "label": "getReportsServerFn",
       "_origin": "ast",
       "community": 253,
       "community_name": "new.tsx",
       "file_type": "code",
-      "norm_label": "getportalreportsserverfn",
+      "norm_label": "getreportsserverfn",
       "source_file": "app/server/reports.ts",
-      "source_location": "L226"
-    },
-    {
-      "id": "app_server_reports_updatereportdisplayoptionsserverfn",
-      "label": "updateReportDisplayOptionsServerFn",
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "updatereportdisplayoptionsserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L549"
+      "source_location": "L54"
     },
     {
       "id": "app_server_reports_updatereportserverfn",
@@ -46744,17 +46801,6 @@
       "file_type": "code",
       "norm_label": "reportdocument.tsx",
       "source_file": "src/components/ReportDocument.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_admin_reports_id",
-      "label": "admin/reports/$id.tsx",
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "admin/reports/$id.tsx",
-      "source_file": "src/routes/admin/reports/$id.tsx",
       "source_location": "L1"
     },
     {
@@ -46811,39 +46857,6 @@
       "norm_label": "years",
       "source_file": "src/routes/admin/reports/new.tsx",
       "source_location": "L103"
-    },
-    {
-      "id": "src_routes_portal_index",
-      "label": "portal/index.tsx",
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "portal/index.tsx",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_portal_index_route",
-      "label": "Route",
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L18"
-    },
-    {
-      "id": "src_server_reports",
-      "label": "src/server/reports.ts",
-      "_origin": "ast",
-      "community": 253,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "src/server/reports.ts",
-      "source_file": "src/server/reports.ts",
-      "source_location": "L1"
     },
     {
       "id": "agents_skills_customer_research_skill",
@@ -52063,11 +52076,63 @@
       "source_location": "L104"
     },
     {
+      "id": "agents_skills_sms_skill",
+      "label": "sms/SKILL.md",
+      "_origin": "ast",
+      "community": 284,
+      "community_name": "SMS Platform Reference",
+      "file_type": "document",
+      "frontmatter": {
+        "name": "sms",
+        "description": "When the user wants to plan, build, or optimize SMS or MMS marketing \u2014 including welcome flows, abandoned cart texts, post-purchase, win-back, promotional sends, or transactional/auth SMS. Also use when the user mentions &quot;SMS marketing,&quot; &quot;text message campaigns,&quot; &quot;SMS sequence,&quot; &quot;SMS automation,&quot; &quot;abandoned cart text,&quot; &quot;post-purchase SMS,&quot; &quot;Klaviyo SMS,&quot; &quot;Postscript,&quot; &quot;Attentive,&quot; &quot;Twilio,&quot; &quot;A2P 10DLC,&q"
+      },
+      "node_kind": "page",
+      "norm_label": "sms/skill.md",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_skills_sms_references_compliance",
+      "label": "sms/references/compliance.md",
+      "_origin": "ast",
+      "community": 284,
+      "community_name": "SMS Platform Reference",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "sms/references/compliance.md",
+      "source_file": ".agents/skills/sms/references/compliance.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_skills_sms_references_platforms",
+      "label": "sms/references/platforms.md",
+      "_origin": "ast",
+      "community": 284,
+      "community_name": "SMS Platform Reference",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "sms/references/platforms.md",
+      "source_file": ".agents/skills/sms/references/platforms.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_skills_sms_references_platforms_a2p_10dlc_what_your_platform_should_handle",
+      "label": "A2P 10DLC: what your platform should handle",
+      "_origin": "ast",
+      "community": 284,
+      "community_name": "SMS Platform Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "a2p 10dlc: what your platform should handle",
+      "source_file": ".agents/skills/sms/references/platforms.md",
+      "source_location": "L304"
+    },
+    {
       "id": "agents_skills_sms_references_platforms_compliance_186",
       "label": "Compliance",
       "_origin": "ast",
       "community": 284,
-      "community_name": "SimpleTexting",
+      "community_name": "SMS Platform Reference",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "compliance",
@@ -52079,7 +52144,7 @@
       "label": "Integration paths",
       "_origin": "ast",
       "community": 284,
-      "community_name": "SimpleTexting",
+      "community_name": "SMS Platform Reference",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "integration paths",
@@ -52091,7 +52156,7 @@
       "label": "Key features",
       "_origin": "ast",
       "community": 284,
-      "community_name": "SimpleTexting",
+      "community_name": "SMS Platform Reference",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "key features",
@@ -52103,7 +52168,7 @@
       "label": "Pricing",
       "_origin": "ast",
       "community": 284,
-      "community_name": "SimpleTexting",
+      "community_name": "SMS Platform Reference",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "pricing",
@@ -52111,11 +52176,23 @@
       "source_location": "L178"
     },
     {
+      "id": "agents_skills_sms_references_platforms_quick_selection_table",
+      "label": "Quick selection table",
+      "_origin": "ast",
+      "community": 284,
+      "community_name": "SMS Platform Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "quick selection table",
+      "source_file": ".agents/skills/sms/references/platforms.md",
+      "source_location": "L288"
+    },
+    {
       "id": "agents_skills_sms_references_platforms_simpletexting",
       "label": "SimpleTexting",
       "_origin": "ast",
       "community": 284,
-      "community_name": "SimpleTexting",
+      "community_name": "SMS Platform Reference",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "simpletexting",
@@ -52123,16 +52200,40 @@
       "source_location": "L168"
     },
     {
+      "id": "agents_skills_sms_references_platforms_sms_platform_reference",
+      "label": "SMS Platform Reference",
+      "_origin": "ast",
+      "community": 284,
+      "community_name": "SMS Platform Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "sms platform reference",
+      "source_file": ".agents/skills/sms/references/platforms.md",
+      "source_location": "L1"
+    },
+    {
       "id": "agents_skills_sms_references_platforms_watch_out_for_190",
       "label": "Watch out for",
       "_origin": "ast",
       "community": 284,
-      "community_name": "SimpleTexting",
+      "community_name": "SMS Platform Reference",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "watch out for",
       "source_file": ".agents/skills/sms/references/platforms.md",
       "source_location": "L190"
+    },
+    {
+      "id": "agents_skills_sms_references_sequence_templates",
+      "label": "sms/references/sequence-templates.md",
+      "_origin": "ast",
+      "community": 284,
+      "community_name": "SMS Platform Reference",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "sms/references/sequence-templates.md",
+      "source_file": ".agents/skills/sms/references/sequence-templates.md",
+      "source_location": "L1"
     },
     {
       "id": "agents_skills_ab_testing_skill",
@@ -63278,22 +63379,44 @@
       "source_location": "L222"
     },
     {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system",
+      "label": "design_system.py",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "design_system.py",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L1"
+    },
+    {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_py_path",
       "label": "Path",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "code",
       "norm_label": "path",
       "source_file": "",
       "source_location": ""
     },
     {
+      "id": "agents_skills_ui_ux_pro_max_scripts_search",
+      "label": "scripts/search.py",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "code",
+      "norm_label": "scripts/search.py",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/search.py",
+      "source_location": "L1"
+    },
+    {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_1077",
       "label": "Format design system as MASTER.md with hierarchical override logic.",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "rationale",
       "norm_label": "format design system as master.md with hierarchical override logic.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -63304,7 +63427,7 @@
       "label": "Format a page-specific override file with intelligent AI-generated content.",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "rationale",
       "norm_label": "format a page-specific override file with intelligent ai-generated content.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -63315,7 +63438,7 @@
       "label": "Generate intelligent overrides based on page type using layered search. Uses\u2026",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "rationale",
       "norm_label": "generate intelligent overrides based on page type using layered search. uses...",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -63326,18 +63449,84 @@
       "label": "Detect page type from context and search results.",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "rationale",
       "norm_label": "detect page type from context and search results.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L1597"
     },
     {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_612",
+      "label": "Convert hex color to ANSI True Color swatch (\u2588\u2588) with fallback.",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "rationale",
+      "norm_label": "convert hex color to ansi true color swatch (\u2588\u2588) with fallback.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L612"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_626",
+      "label": "Like str.ljust but accounts for zero-width ANSI escape sequences.",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "rationale",
+      "norm_label": "like str.ljust but accounts for zero-width ansi escape sequences.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L626"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_634",
+      "label": "Create a Unicode section separator: \u251c\u2500\u2500\u2500 NAME \u2500\u2500\u2500...\u2524",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "rationale",
+      "norm_label": "create a unicode section separator: \u251c\u2500\u2500\u2500 name \u2500\u2500\u2500...\u2524",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L634"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_641",
+      "label": "Format design system as Unicode box with ANSI color swatches.",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "rationale",
+      "norm_label": "format design system as unicode box with ansi color swatches.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L641"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_792",
+      "label": "Format design system as markdown.",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "rationale",
+      "norm_label": "format design system as markdown.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L792"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_923",
+      "label": "Main entry point for design system generation. Args: query: Search query (e.g.,\u2026",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "rationale",
+      "norm_label": "main entry point for design system generation. args: query: search query (e.g.,...",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L923"
+    },
+    {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_962",
       "label": "Slugify a name into a single safe path segment. Only [a-z0-9_-] survives; every\u2026",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "rationale",
       "norm_label": "slugify a name into a single safe path segment. only [a-z0-9_-] survives; every...",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -63348,7 +63537,7 @@
       "label": "Write fully to a temp file, then publish atomically.",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "rationale",
       "norm_label": "write fully to a temp file, then publish atomically.",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
@@ -63359,11 +63548,22 @@
       "label": "Persist design system to design-system/<project>/ folder using Master +\u2026",
       "_origin": "ast",
       "community": 369,
-      "community_name": "persist_design_system",
+      "community_name": "design_system.py",
       "file_type": "rationale",
       "norm_label": "persist design system to design-system/<project>/ folder using master +...",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
       "source_location": "L997"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_search_rationale_45",
+      "label": "Format results for Claude consumption (token-optimized)",
+      "_origin": "ast",
+      "community": 369,
+      "community_name": "design_system.py",
+      "file_type": "rationale",
+      "norm_label": "format results for claude consumption (token-optimized)",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/search.py",
+      "source_location": "L45"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_130",
@@ -65598,6 +65798,17 @@
       "source_location": "L1"
     },
     {
+      "id": "app_components_logoutbutton",
+      "label": "app/components/LogoutButton.tsx",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": "src/components/AdminNav.tsx",
+      "file_type": "code",
+      "norm_label": "app/components/logoutbutton.tsx",
+      "source_file": "app/components/LogoutButton.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "app_components_navbar",
       "label": "app/components/Navbar.tsx",
       "_origin": "ast",
@@ -65617,6 +65828,17 @@
       "file_type": "code",
       "norm_label": "src/components/adminnav.tsx",
       "source_file": "src/components/AdminNav.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_logoutbutton",
+      "label": "src/components/LogoutButton.tsx",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": "src/components/AdminNav.tsx",
+      "file_type": "code",
+      "norm_label": "src/components/logoutbutton.tsx",
+      "source_file": "src/components/LogoutButton.tsx",
       "source_location": "L1"
     },
     {
@@ -67836,33 +68058,11 @@
       "source_location": "L145"
     },
     {
-      "id": "app_db_schema",
-      "label": "app/db/schema.ts",
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "app/db/schema.ts",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "app_db_schema_posts",
-      "label": "posts",
-      "_origin": "ast",
-      "community": 406,
-      "community_name": "app/db/schema.ts",
-      "file_type": "code",
-      "norm_label": "posts",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L37"
-    },
-    {
       "id": "app_routes_blog_slug",
       "label": "app/routes/blog/$slug.tsx",
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "app/routes/blog/$slug.tsx",
       "source_file": "app/routes/blog/$slug.tsx",
@@ -67873,7 +68073,7 @@
       "label": "getPublicPostBySlugServerFn",
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "getpublicpostbyslugserverfn",
       "source_file": "app/server/posts.ts",
@@ -67884,7 +68084,7 @@
       "label": "src/db/schema.ts",
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "src/db/schema.ts",
       "source_file": "src/db/schema.ts",
@@ -67895,7 +68095,7 @@
       "label": "src/routes/blog/$slug.tsx",
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "src/routes/blog/$slug.tsx",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -67906,7 +68106,7 @@
       "label": "Route",
       "_origin": "ast",
       "community": 406,
-      "community_name": "app/db/schema.ts",
+      "community_name": "src/routes/blog/$slug.tsx",
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/routes/blog/$slug.tsx",
@@ -67997,37 +68197,64 @@
       "source_location": "L287"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_search",
-      "label": "scripts/search.py",
+      "id": "agents_skills_sms_skill_1_business_type",
+      "label": "1. Business Type",
       "_origin": "ast",
       "community": 408,
-      "community_name": "generate_design_system",
-      "file_type": "code",
-      "norm_label": "scripts/search.py",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/search.py",
-      "source_location": "L1"
+      "community_name": "Before Starting",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "1. business type",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L19"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_923",
-      "label": "Main entry point for design system generation. Args: query: Search query (e.g.,\u2026",
+      "id": "agents_skills_sms_skill_2_current_state",
+      "label": "2. Current State",
       "_origin": "ast",
       "community": 408,
-      "community_name": "generate_design_system",
-      "file_type": "rationale",
-      "norm_label": "main entry point for design system generation. args: query: search query (e.g.,...",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
-      "source_location": "L923"
+      "community_name": "Before Starting",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2. current state",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L24"
     },
     {
-      "id": "agents_skills_ui_ux_pro_max_scripts_search_rationale_45",
-      "label": "Format results for Claude consumption (token-optimized)",
+      "id": "agents_skills_sms_skill_3_compliance_posture",
+      "label": "3. Compliance Posture",
       "_origin": "ast",
       "community": 408,
-      "community_name": "generate_design_system",
-      "file_type": "rationale",
-      "norm_label": "format results for claude consumption (token-optimized)",
-      "source_file": ".agents/skills/ui-ux-pro-max/scripts/search.py",
-      "source_location": "L45"
+      "community_name": "Before Starting",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "3. compliance posture",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L29"
+    },
+    {
+      "id": "agents_skills_sms_skill_4_goal",
+      "label": "4. Goal",
+      "_origin": "ast",
+      "community": 408,
+      "community_name": "Before Starting",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "4. goal",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L34"
+    },
+    {
+      "id": "agents_skills_sms_skill_before_starting",
+      "label": "Before Starting",
+      "_origin": "ast",
+      "community": 408,
+      "community_name": "Before Starting",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "before starting",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L12"
     },
     {
       "id": "agents_skills_ad_creative_references_creative_roadmap_failure_modes",
@@ -68350,6 +68577,39 @@
       "norm_label": "reasoning_contract.py",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/reasoning_contract.py",
       "source_location": "L1"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_358",
+      "label": "Find matching reasoning rule for a category.",
+      "_origin": "ast",
+      "community": 411,
+      "community_name": "parse_decision_rules",
+      "file_type": "rationale",
+      "norm_label": "find matching reasoning rule for a category.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L358"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_366",
+      "label": "Apply reasoning rules to search results.",
+      "_origin": "ast",
+      "community": 411,
+      "community_name": "parse_decision_rules",
+      "file_type": "rationale",
+      "norm_label": "apply reasoning rules to search results.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L366"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_409",
+      "label": "Select best matching result based on priority keywords.",
+      "_origin": "ast",
+      "community": 411,
+      "community_name": "parse_decision_rules",
+      "file_type": "rationale",
+      "norm_label": "select best matching result based on priority keywords.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "source_location": "L409"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_reasoning_contract_rationale_102",
@@ -75090,23 +75350,11 @@
       "source_location": "L96"
     },
     {
-      "id": "agents_skills_sms_references_platforms_a2p_10dlc_what_your_platform_should_handle",
-      "label": "A2P 10DLC: what your platform should handle",
-      "_origin": "ast",
-      "community": 492,
-      "community_name": "SMS Platform Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "a2p 10dlc: what your platform should handle",
-      "source_file": ".agents/skills/sms/references/platforms.md",
-      "source_location": "L304"
-    },
-    {
       "id": "agents_skills_sms_references_platforms_audiencetap",
       "label": "AudienceTap",
       "_origin": "ast",
       "community": 492,
-      "community_name": "SMS Platform Reference",
+      "community_name": "AudienceTap",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "audiencetap",
@@ -75118,7 +75366,7 @@
       "label": "Compliance",
       "_origin": "ast",
       "community": 492,
-      "community_name": "SMS Platform Reference",
+      "community_name": "AudienceTap",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "compliance",
@@ -75130,7 +75378,7 @@
       "label": "Integration paths",
       "_origin": "ast",
       "community": 492,
-      "community_name": "SMS Platform Reference",
+      "community_name": "AudienceTap",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "integration paths",
@@ -75142,7 +75390,7 @@
       "label": "Key features",
       "_origin": "ast",
       "community": 492,
-      "community_name": "SMS Platform Reference",
+      "community_name": "AudienceTap",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "key features",
@@ -75154,7 +75402,7 @@
       "label": "Pricing",
       "_origin": "ast",
       "community": 492,
-      "community_name": "SMS Platform Reference",
+      "community_name": "AudienceTap",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "pricing",
@@ -75162,35 +75410,11 @@
       "source_location": "L241"
     },
     {
-      "id": "agents_skills_sms_references_platforms_quick_selection_table",
-      "label": "Quick selection table",
-      "_origin": "ast",
-      "community": 492,
-      "community_name": "SMS Platform Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "quick selection table",
-      "source_file": ".agents/skills/sms/references/platforms.md",
-      "source_location": "L288"
-    },
-    {
-      "id": "agents_skills_sms_references_platforms_sms_platform_reference",
-      "label": "SMS Platform Reference",
-      "_origin": "ast",
-      "community": 492,
-      "community_name": "SMS Platform Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "sms platform reference",
-      "source_file": ".agents/skills/sms/references/platforms.md",
-      "source_location": "L1"
-    },
-    {
       "id": "agents_skills_sms_references_platforms_watch_out_for_254",
       "label": "Watch out for",
       "_origin": "ast",
       "community": 492,
-      "community_name": "SMS Platform Reference",
+      "community_name": "AudienceTap",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "watch out for",
@@ -79563,52 +79787,64 @@
       "source_location": "L12"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_send_1_60_90_days_after_last_purchase",
-      "label": "Send 1 \u2014 60-90 days after last purchase",
+      "id": "agents_skills_sms_skill_length",
+      "label": "Length",
       "_origin": "ast",
       "community": 554,
-      "community_name": "Win-Back (Lapsed Customers)",
+      "community_name": "SMS Copy Guidelines",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "send 1 \u2014 60-90 days after last purchase",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L121"
+      "norm_label": "length",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L191"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_send_2_14_days_later_if_no_purchase",
-      "label": "Send 2 \u2014 14 days later (if no purchase)",
+      "id": "agents_skills_sms_skill_personalization",
+      "label": "Personalization",
       "_origin": "ast",
       "community": 554,
-      "community_name": "Win-Back (Lapsed Customers)",
+      "community_name": "SMS Copy Guidelines",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "send 2 \u2014 14 days later (if no purchase)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L128"
+      "norm_label": "personalization",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L205"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_send_3_14_days_after_send_2_final_if_no_purchase",
-      "label": "Send 3 \u2014 14 days after Send 2 (final, if no purchase)",
+      "id": "agents_skills_sms_skill_sms_copy_guidelines",
+      "label": "SMS Copy Guidelines",
       "_origin": "ast",
       "community": 554,
-      "community_name": "Win-Back (Lapsed Customers)",
+      "community_name": "SMS Copy Guidelines",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "send 3 \u2014 14 days after send 2 (final, if no purchase)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L135"
+      "norm_label": "sms copy guidelines",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L182"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_win_back_lapsed_customers",
-      "label": "Win-Back (Lapsed Customers)",
+      "id": "agents_skills_sms_skill_structure",
+      "label": "Structure",
       "_origin": "ast",
       "community": 554,
-      "community_name": "Win-Back (Lapsed Customers)",
+      "community_name": "SMS Copy Guidelines",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "win-back (lapsed customers)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L119"
+      "norm_label": "structure",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L184"
+    },
+    {
+      "id": "agents_skills_sms_skill_voice",
+      "label": "Voice",
+      "_origin": "ast",
+      "community": 554,
+      "community_name": "SMS Copy Guidelines",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "voice",
+      "source_file": ".agents/skills/sms/SKILL.md",
+      "source_location": "L198"
     },
     {
       "id": "agents_skills_public_relations_references_journalist_pitching_finding_journalist_contact_info",
@@ -80573,52 +80809,37 @@
       "source_location": "L261"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_send_1_immediate_after_opt_in",
-      "label": "Send 1 \u2014 Immediate (after opt-in)",
+      "id": "app_server_reports_getportalreportsserverfn",
+      "label": "getPortalReportsServerFn",
       "_origin": "ast",
       "community": 569,
-      "community_name": "Welcome / Opt-In Confirmation",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 1 \u2014 immediate (after opt-in)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L11"
+      "community_name": "portal/index.tsx",
+      "file_type": "code",
+      "norm_label": "getportalreportsserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L226"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_send_2_24_hours_later_optional",
-      "label": "Send 2 \u2014 24 hours later (optional)",
+      "id": "src_routes_portal_index",
+      "label": "portal/index.tsx",
       "_origin": "ast",
       "community": 569,
-      "community_name": "Welcome / Opt-In Confirmation",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 2 \u2014 24 hours later (optional)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L19"
+      "community_name": "portal/index.tsx",
+      "file_type": "code",
+      "norm_label": "portal/index.tsx",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L1"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_send_3_7_days_later_optional_conditional_on_no_purchase",
-      "label": "Send 3 \u2014 7 days later (optional, conditional on no purchase)",
+      "id": "src_routes_portal_index_route",
+      "label": "Route",
       "_origin": "ast",
       "community": 569,
-      "community_name": "Welcome / Opt-In Confirmation",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 3 \u2014 7 days later (optional, conditional on no purchase)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L26"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_welcome_opt_in_confirmation",
-      "label": "Welcome / Opt-In Confirmation",
-      "_origin": "ast",
-      "community": 569,
-      "community_name": "Welcome / Opt-In Confirmation",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "welcome / opt-in confirmation",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L9"
+      "community_name": "portal/index.tsx",
+      "file_type": "code",
+      "norm_label": "route",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L18"
     },
     {
       "id": "agents_skills_ui_styling_scripts_tailwind_config_gen_py_path",
@@ -81292,17 +81513,6 @@
       "source_location": "L602"
     },
     {
-      "id": "app_server_reports_getreportsserverfn",
-      "label": "getReportsServerFn",
-      "_origin": "ast",
-      "community": 58,
-      "community_name": "reports/index.tsx",
-      "file_type": "code",
-      "norm_label": "getreportsserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L54"
-    },
-    {
       "id": "src_components_confirmmodal",
       "label": "ConfirmModal.tsx",
       "_origin": "ast",
@@ -81334,17 +81544,6 @@
       "norm_label": "reports/index.tsx",
       "source_file": "src/routes/admin/reports/index.tsx",
       "source_location": "L1"
-    },
-    {
-      "id": "src_routes_admin_reports_index_route",
-      "label": "Route",
-      "_origin": "ast",
-      "community": 58,
-      "community_name": "reports/index.tsx",
-      "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/admin/reports/index.tsx",
-      "source_location": "L37"
     },
     {
       "id": "src_routes_messages",
@@ -82617,6 +82816,17 @@
       "norm_label": "start",
       "source_file": "package.json",
       "source_location": "L10"
+    },
+    {
+      "id": "package_scripts_test_simulate",
+      "label": "test:simulate",
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "scripts",
+      "file_type": "code",
+      "norm_label": "test:simulate",
+      "source_file": "package.json",
+      "source_location": "L15"
     },
     {
       "id": "agents_skills_copy_editing_skill_paragraph_level_checks",
@@ -85951,76 +86161,26 @@
       "source_location": "L75"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_account_alert",
-      "label": "Account alert",
+      "id": "package_dependencies_drizzle_orm",
+      "label": "drizzle-orm",
       "_origin": "ast",
       "community": 650,
-      "community_name": "Transactional / Account Notifications",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "account alert",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L206"
+      "community_name": "drizzle-orm",
+      "file_type": "code",
+      "norm_label": "drizzle-orm",
+      "source_file": "package.json",
+      "source_location": "L24"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_auth_code_2fa",
-      "label": "Auth code (2FA)",
+      "id": "drizzle_orm",
+      "label": "drizzle-orm",
       "_origin": "ast",
       "community": 650,
-      "community_name": "Transactional / Account Notifications",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "auth code (2fa)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L200"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_delivery_confirmation",
-      "label": "Delivery confirmation",
-      "_origin": "ast",
-      "community": 650,
-      "community_name": "Transactional / Account Notifications",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "delivery confirmation",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L194"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_order_confirmation",
-      "label": "Order confirmation",
-      "_origin": "ast",
-      "community": 650,
-      "community_name": "Transactional / Account Notifications",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "order confirmation",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L182"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_shipping_update",
-      "label": "Shipping update",
-      "_origin": "ast",
-      "community": 650,
-      "community_name": "Transactional / Account Notifications",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "shipping update",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L188"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_transactional_account_notifications",
-      "label": "Transactional / Account Notifications",
-      "_origin": "ast",
-      "community": 650,
-      "community_name": "Transactional / Account Notifications",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "transactional / account notifications",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L180"
+      "community_name": "drizzle-orm",
+      "file_type": "concept",
+      "norm_label": "drizzle-orm",
+      "source_file": "package.json",
+      "source_location": "L24"
     },
     {
       "id": "agents_skills_site_architecture_references_navigation_patterns_column_based_footer_standard",
@@ -86167,76 +86327,26 @@
       "source_location": "L43"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_post_purchase_flow",
-      "label": "Post-Purchase Flow",
+      "id": "package_dependencies_tailwind_merge",
+      "label": "tailwind-merge",
       "_origin": "ast",
       "community": 654,
-      "community_name": "Post-Purchase Flow",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "post-purchase flow",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L80"
+      "community_name": "tailwind-merge",
+      "file_type": "code",
+      "norm_label": "tailwind-merge",
+      "source_file": "package.json",
+      "source_location": "L30"
     },
     {
-      "id": "agents_skills_sms_references_sequence_templates_send_1_immediately_after_purchase_transactional_separate_consent",
-      "label": "Send 1 \u2014 Immediately after purchase (transactional, separate consent)",
+      "id": "tailwind_merge",
+      "label": "tailwind-merge",
       "_origin": "ast",
       "community": 654,
-      "community_name": "Post-Purchase Flow",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 1 \u2014 immediately after purchase (transactional, separate consent)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L82"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_send_2_day_of_shipment",
-      "label": "Send 2 \u2014 Day of shipment",
-      "_origin": "ast",
-      "community": 654,
-      "community_name": "Post-Purchase Flow",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 2 \u2014 day of shipment",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L89"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_send_3_day_of_delivery",
-      "label": "Send 3 \u2014 Day of delivery",
-      "_origin": "ast",
-      "community": 654,
-      "community_name": "Post-Purchase Flow",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 3 \u2014 day of delivery",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L96"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_send_4_2_days_after_delivery_marketing_consent_required",
-      "label": "Send 4 \u2014 2 days after delivery (marketing consent required)",
-      "_origin": "ast",
-      "community": 654,
-      "community_name": "Post-Purchase Flow",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 4 \u2014 2 days after delivery (marketing consent required)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L103"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_send_5_14_days_after_delivery_cross_sell_marketing_consent",
-      "label": "Send 5 \u2014 14 days after delivery (cross-sell, marketing consent)",
-      "_origin": "ast",
-      "community": 654,
-      "community_name": "Post-Purchase Flow",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 5 \u2014 14 days after delivery (cross-sell, marketing consent)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L110"
+      "community_name": "tailwind-merge",
+      "file_type": "concept",
+      "norm_label": "tailwind-merge",
+      "source_file": "package.json",
+      "source_location": "L30"
     },
     {
       "id": "app_routes_local_seo_gbp",
@@ -86484,6 +86594,17 @@
       "norm_label": "video production workflows",
       "source_file": ".agents/skills/video/SKILL.md",
       "source_location": "L253"
+    },
+    {
+      "id": "app_db_schema_posts",
+      "label": "posts",
+      "_origin": "ast",
+      "community": 66,
+      "community_name": "src/routes/admin/posts.tsx",
+      "file_type": "code",
+      "norm_label": "posts",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L37"
     },
     {
       "id": "app_routes_admin_posts",
@@ -87516,28 +87637,6 @@
       "source_location": "L1"
     },
     {
-      "id": "package_dependencies_lucide_react",
-      "label": "lucide-react",
-      "_origin": "ast",
-      "community": 685,
-      "community_name": "lucide-react",
-      "file_type": "code",
-      "norm_label": "lucide-react",
-      "source_file": "package.json",
-      "source_location": "L24"
-    },
-    {
-      "id": "lucide_react",
-      "label": "lucide-react",
-      "_origin": "ast",
-      "community": 685,
-      "community_name": "lucide-react",
-      "file_type": "concept",
-      "norm_label": "lucide-react",
-      "source_file": "package.json",
-      "source_location": "L24"
-    },
-    {
       "id": "package_dependencies_serve",
       "label": "serve",
       "_origin": "ast",
@@ -87546,7 +87645,7 @@
       "file_type": "code",
       "norm_label": "serve",
       "source_file": "package.json",
-      "source_location": "L28"
+      "source_location": "L29"
     },
     {
       "id": "serve",
@@ -87557,7 +87656,7 @@
       "file_type": "concept",
       "norm_label": "serve",
       "source_file": "package.json",
-      "source_location": "L28"
+      "source_location": "L29"
     },
     {
       "id": "drizzle_config",
@@ -87736,66 +87835,6 @@
       "source_location": "L12"
     },
     {
-      "id": "agents_skills_sms_references_compliance_common_rejections",
-      "label": "Common rejections",
-      "_origin": "ast",
-      "community": 690,
-      "community_name": "United States \u2014 A2P 10DLC",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "common rejections",
-      "source_file": ".agents/skills/sms/references/compliance.md",
-      "source_location": "L114"
-    },
-    {
-      "id": "agents_skills_sms_references_compliance_registration_components",
-      "label": "Registration components",
-      "_origin": "ast",
-      "community": 690,
-      "community_name": "United States \u2014 A2P 10DLC",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "registration components",
-      "source_file": ".agents/skills/sms/references/compliance.md",
-      "source_location": "L89"
-    },
-    {
-      "id": "agents_skills_sms_references_compliance_throughput_tiers_varies_by_carrier_and_trust_score",
-      "label": "Throughput tiers (varies by carrier and trust score)",
-      "_origin": "ast",
-      "community": 690,
-      "community_name": "United States \u2014 A2P 10DLC",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "throughput tiers (varies by carrier and trust score)",
-      "source_file": ".agents/skills/sms/references/compliance.md",
-      "source_location": "L106"
-    },
-    {
-      "id": "agents_skills_sms_references_compliance_united_states_a2p_10dlc",
-      "label": "United States \u2014 A2P 10DLC",
-      "_origin": "ast",
-      "community": 690,
-      "community_name": "United States \u2014 A2P 10DLC",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "united states \u2014 a2p 10dlc",
-      "source_file": ".agents/skills/sms/references/compliance.md",
-      "source_location": "L83"
-    },
-    {
-      "id": "agents_skills_sms_references_compliance_what_it_is_85",
-      "label": "What it is",
-      "_origin": "ast",
-      "community": 690,
-      "community_name": "United States \u2014 A2P 10DLC",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "what it is",
-      "source_file": ".agents/skills/sms/references/compliance.md",
-      "source_location": "L85"
-    },
-    {
       "id": "agents_skills_prospecting_references_saas_prospecting_discovery_sources_saas_branch",
       "label": "Discovery Sources (SaaS branch)",
       "_origin": "ast",
@@ -87854,54 +87893,6 @@
       "norm_label": "tier 3 \u2014 buying signals",
       "source_file": ".agents/skills/prospecting/references/saas-prospecting.md",
       "source_location": "L55"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_abandoned_cart_highest_roi_flow_for_ecom",
-      "label": "Abandoned Cart (highest-ROI flow for ecom)",
-      "_origin": "ast",
-      "community": 695,
-      "community_name": "Abandoned Cart (highest-ROI flow for ecom)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "abandoned cart (highest-roi flow for ecom)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L35"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_send_1_30_minutes_after_abandon",
-      "label": "Send 1 \u2014 30 minutes after abandon",
-      "_origin": "ast",
-      "community": 695,
-      "community_name": "Abandoned Cart (highest-ROI flow for ecom)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 1 \u2014 30 minutes after abandon",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L37"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_send_2_4_hours_after_abandon_if_no_purchase",
-      "label": "Send 2 \u2014 4 hours after abandon (if no purchase)",
-      "_origin": "ast",
-      "community": 695,
-      "community_name": "Abandoned Cart (highest-ROI flow for ecom)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 2 \u2014 4 hours after abandon (if no purchase)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L44"
-    },
-    {
-      "id": "agents_skills_sms_references_sequence_templates_send_3_24_hours_after_abandon_if_no_purchase_discount_allowed",
-      "label": "Send 3 \u2014 24 hours after abandon (if no purchase, discount allowed)",
-      "_origin": "ast",
-      "community": 695,
-      "community_name": "Abandoned Cart (highest-ROI flow for ecom)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "send 3 \u2014 24 hours after abandon (if no purchase, discount allowed)",
-      "source_file": ".agents/skills/sms/references/sequence-templates.md",
-      "source_location": "L51"
     },
     {
       "id": "app_routes",
@@ -89992,6 +89983,17 @@
       "source_location": "L26"
     },
     {
+      "id": "app_db_schema",
+      "label": "app/db/schema.ts",
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "app/db/schema.ts",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "app_db_schema_clients",
       "label": "clients",
       "_origin": "ast",
@@ -90023,6 +90025,39 @@
       "norm_label": "users",
       "source_file": "app/db/schema.ts",
       "source_location": "L76"
+    },
+    {
+      "id": "app_lib_auth",
+      "label": "app/lib/auth.ts",
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "app/lib/auth.ts",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_lib_auth_loginserverfn",
+      "label": "loginServerFn",
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "loginserverfn",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L332"
+    },
+    {
+      "id": "app_lib_auth_logoutserverfn",
+      "label": "logoutServerFn",
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "logoutserverfn",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L411"
     },
     {
       "id": "app_server_auth",
@@ -90157,6 +90192,17 @@
       "source_location": "L126"
     },
     {
+      "id": "scripts_simulate",
+      "label": "simulate.ts",
+      "_origin": "ast",
+      "community": 78,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "simulate.ts",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "src_db_index",
       "label": "src/db/index.ts",
       "_origin": "ast",
@@ -90287,6 +90333,17 @@
       "norm_label": "test_web_stack_freshness.py",
       "source_file": ".agents/skills/ui-ux-pro-max/scripts/tests/test_web_stack_freshness.py",
       "source_location": "L1"
+    },
+    {
+      "id": "agents_skills_ui_ux_pro_max_scripts_core_rationale_926",
+      "label": "Resolve a standalone API identifier even when its BM25 IDF is low.",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "search_stack",
+      "file_type": "rationale",
+      "norm_label": "resolve a standalone api identifier even when its bm25 idf is low.",
+      "source_file": ".agents/skills/ui-ux-pro-max/scripts/core.py",
+      "source_location": "L926"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_core_rationale_952",
@@ -92733,28 +92790,6 @@
       "source_location": "L107"
     },
     {
-      "id": "app_components_logoutbutton",
-      "label": "app/components/LogoutButton.tsx",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "app/components/logoutbutton.tsx",
-      "source_file": "app/components/LogoutButton.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "app_lib_auth",
-      "label": "app/lib/auth.ts",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "app/lib/auth.ts",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "app_lib_auth_checkauthserverfn",
       "label": "checkAuthServerFn",
       "_origin": "ast",
@@ -92764,28 +92799,6 @@
       "norm_label": "checkauthserverfn",
       "source_file": "app/lib/auth.ts",
       "source_location": "L241"
-    },
-    {
-      "id": "app_lib_auth_loginserverfn",
-      "label": "loginServerFn",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "loginserverfn",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L332"
-    },
-    {
-      "id": "app_lib_auth_logoutserverfn",
-      "label": "logoutServerFn",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "FileRoutesByPath",
-      "file_type": "code",
-      "norm_label": "logoutserverfn",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L411"
     },
     {
       "id": "app_routes_admin",
@@ -92843,15 +92856,15 @@
       "source_location": "L189"
     },
     {
-      "id": "src_components_logoutbutton",
-      "label": "src/components/LogoutButton.tsx",
+      "id": "app_server_reports_updatereportdisplayoptionsserverfn",
+      "label": "updateReportDisplayOptionsServerFn",
       "_origin": "ast",
       "community": 9,
       "community_name": "FileRoutesByPath",
       "file_type": "code",
-      "norm_label": "src/components/logoutbutton.tsx",
-      "source_file": "src/components/LogoutButton.tsx",
-      "source_location": "L1"
+      "norm_label": "updatereportdisplayoptionsserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L549"
     },
     {
       "id": "src_lib_auth",
@@ -92920,6 +92933,17 @@
       "source_location": "L45"
     },
     {
+      "id": "src_routes_admin_reports_id",
+      "label": "admin/reports/$id.tsx",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "FileRoutesByPath",
+      "file_type": "code",
+      "norm_label": "admin/reports/$id.tsx",
+      "source_file": "src/routes/admin/reports/$id.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_routes_admin_reports_id_edit",
       "label": "$id.edit.tsx",
       "_origin": "ast",
@@ -92951,6 +92975,17 @@
       "norm_label": "route",
       "source_file": "src/routes/admin/reports/$id.tsx",
       "source_location": "L27"
+    },
+    {
+      "id": "src_routes_admin_reports_index_route",
+      "label": "Route",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "FileRoutesByPath",
+      "file_type": "code",
+      "norm_label": "route",
+      "source_file": "src/routes/admin/reports/index.tsx",
+      "source_location": "L37"
     },
     {
       "id": "src_routes_admin_reports_new_route",
@@ -93039,6 +93074,17 @@
       "norm_label": "route",
       "source_file": "src/routes/portal.tsx",
       "source_location": "L7"
+    },
+    {
+      "id": "src_server_reports",
+      "label": "src/server/reports.ts",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "FileRoutesByPath",
+      "file_type": "code",
+      "norm_label": "src/server/reports.ts",
+      "source_file": "src/server/reports.ts",
+      "source_location": "L1"
     },
     {
       "id": "agents_skills_design_system_templates_design_tokens_starter_none_type",
@@ -100743,6 +100789,66 @@
       "weight": 1.0
     },
     {
+      "source": "scripts_simulate_runsimulations",
+      "target": "app_lib_auth_hashpassword",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate_runsimulations",
+      "target": "app_lib_auth_verifypassword",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate_runsimulations",
+      "target": "app_lib_auth_createsessiontoken",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate_runsimulations",
+      "target": "app_lib_auth_verifysessiontoken",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate_runsimulations",
+      "target": "app_lib_auth_getsessiondata",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
       "source": "server_server",
       "target": "server_getmimetype",
       "relation": "calls",
@@ -102147,6 +102253,18 @@
       "weight": 1.0
     },
     {
+      "source": "scripts_simulate_runsimulations",
+      "target": "scripts_simulate_runsimulations_assert",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
       "source": "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_temp_project",
       "target": "fixture",
       "relation": "references",
@@ -103044,6 +103162,19 @@
       "context": "generic_arg",
       "source_file": "src/routeTree.gen.ts",
       "source_location": "L681",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate_runsimulations",
+      "target": "src_lib_hostname",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "deferred": true,
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -104459,7 +104590,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -104471,7 +104602,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -104483,7 +104614,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -104495,7 +104626,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -104507,7 +104638,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -104519,7 +104650,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -104531,7 +104662,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -104543,7 +104674,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -104555,7 +104686,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -104567,7 +104698,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -104579,7 +104710,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -104591,7 +104722,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -104603,7 +104734,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -104615,7 +104746,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -104627,7 +104758,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -104639,7 +104770,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
@@ -104651,7 +104782,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -104663,7 +104794,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -104675,7 +104806,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -104687,7 +104818,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -104699,7 +104830,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -104711,7 +104842,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "weight": 1.0
     },
     {
@@ -104723,7 +104854,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -104735,7 +104866,127 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_db_index_db",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_db_schema_clients",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_db_schema_reports",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_db_schema_users",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_lib_auth_createsessiontoken",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_lib_auth_getsessiondata",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_lib_auth_hashpassword",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_lib_auth_verifypassword",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_lib_auth_verifysessiontoken",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "src_components_reportdocument_reportdocument",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -107064,6 +107315,54 @@
       "context": "import",
       "source_file": "app/server/reports.ts",
       "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_db_index",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_db_schema",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "app_lib_auth",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "src_components_reportdocument",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -180230,7 +180529,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -180263,7 +180562,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L31",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -180307,7 +180606,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -180318,7 +180617,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -180329,7 +180628,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -180340,7 +180639,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -180351,7 +180650,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -180362,7 +180661,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -180373,7 +180672,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -180384,7 +180683,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -180395,7 +180694,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -180406,7 +180705,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -180417,7 +180716,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -180428,7 +180727,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -180439,7 +180738,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -180450,7 +180749,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -180461,7 +180760,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -180472,7 +180771,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -180483,7 +180782,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -180494,7 +180793,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -180505,7 +180804,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -180516,7 +180815,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -180527,7 +180826,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -180538,7 +180837,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
@@ -180549,7 +180848,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "weight": 1.0
     },
     {
@@ -180560,7 +180859,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -180616,6 +180915,17 @@
       "confidence_score": 1.0,
       "source_file": "package.json",
       "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "package_scripts",
+      "target": "package_scripts_test_simulate",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -180946,6 +181256,17 @@
       "confidence_score": 1.0,
       "source_file": "scripts/prerender.mjs",
       "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "scripts_simulate_runsimulations",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -183532,6 +183853,15 @@
       "source_file": "vite.config.ts",
       "source_location": "L23",
       "weight": 1.0
+    },
+    {
+      "source": "scripts_simulate",
+      "target": "src_lib_hostname",
+      "relation": "dynamic_import",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/simulate.ts"
     },
     {
       "source": "agents_skills_design_scripts_cip_core_bm25",
@@ -191457,6 +191787,18 @@
       "weight": 1.0
     },
     {
+      "source": "scripts_simulate_runsimulations",
+      "target": "src_components_reportdocument_reportdocument",
+      "relation": "indirect_call",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "argument",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_navbar_navbar",
       "target": "src_components_navbar_navbar_handleclickoutside",
       "relation": "indirect_call",
@@ -192266,5 +192608,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "6320bc2ce38c34e5f2c41fbda6a68a740911607e"
+  "built_at_commit": "6bfa20ced7d3f77dbb33946116baa089c498e376"
 }

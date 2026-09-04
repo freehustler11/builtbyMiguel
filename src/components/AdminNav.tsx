@@ -49,6 +49,7 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
               <>
                 <Link
                   to="/messages"
+                  preload="intent"
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                     activeTab === 'messages'
                       ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
@@ -61,6 +62,7 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
 
                 <Link
                   to="/admin/posts"
+                  preload="intent"
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                     activeTab === 'posts'
                       ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
@@ -75,6 +77,7 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
 
             <Link
               to="/admin/media"
+              preload="intent"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'media'
                   ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
@@ -87,6 +90,7 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
 
             <Link
               to="/admin/clients"
+              preload="intent"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'clients'
                   ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
@@ -99,6 +103,7 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
 
             <Link
               to="/admin/reports"
+              preload="intent"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'reports'
                   ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'

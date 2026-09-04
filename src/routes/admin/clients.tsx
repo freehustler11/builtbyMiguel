@@ -50,17 +50,15 @@ import type { Client } from '../../db/schema'
 
 export const Route = createFileRoute('/admin/clients')({
   beforeLoad: async ({ location }) => {
-    await requireAdmin({ location })
+    const auth = await requireAdmin({ location })
+    return { auth }
   },
-  loader: async () => {
-    const [{ clients, partners }, auth] = await Promise.all([
-      getClientsServerFn(),
-      checkAuthServerFn(),
-    ])
+  loader: async ({ context }) => {
+    const { clients, partners } = await getClientsServerFn()
     return {
       clients,
       partners: partners || [],
-      currentAdmin: auth,
+      currentAdmin: (context as any)?.auth || (await checkAuthServerFn()),
     }
   },
   head: () => ({

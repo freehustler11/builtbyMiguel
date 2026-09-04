@@ -22,7 +22,7 @@ import {
   Edit3,
   Award,
 } from 'lucide-react'
-import { checkAuthServerFn } from '../../../lib/auth'
+import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { AdminNav } from '../../../components/AdminNav'
 import { ConfirmModal } from '../../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../../components/Toast'
@@ -41,24 +41,16 @@ export const Route = createFileRoute('/admin/reports/')({
       clientId: typeof search.clientId === 'string' ? search.clientId : undefined,
     }
   },
-  beforeLoad: async () => {
-    const { isAuthenticated } = await checkAuthServerFn()
-    if (!isAuthenticated) {
-      throw redirect({
-        to: '/login',
-        search: {
-          redirect: '/admin/reports',
-        },
-      })
-    }
+  beforeLoad: async ({ location }) => {
+    const auth = await requireAdmin({ location })
+    return { auth }
   },
-  loader: async () => {
-    const [{ reports }, { clients }, auth] = await Promise.all([
+  loader: async ({ context }) => {
+    const [{ reports }, { clients }] = await Promise.all([
       getReportsServerFn(),
       getClientsServerFn(),
-      checkAuthServerFn(),
     ])
-    return { reports, clients, auth }
+    return { reports, clients, auth: (context as any)?.auth || (await checkAuthServerFn()) }
   },
   head: () => ({
     meta: [

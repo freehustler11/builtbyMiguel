@@ -52,11 +52,12 @@ export const Route = createFileRoute('/admin/media')({
     }
   },
   beforeLoad: async ({ location }) => {
-    await requireAdmin({ location })
+    const auth = await requireAdmin({ location })
+    return { auth }
   },
-  loader: async ({ location }) => {
+  loader: async ({ location, context }) => {
     const search = location.search as MediaSearch
-    const [mediaData, auth, clientsData] = await Promise.all([
+    const [mediaData, clientsData] = await Promise.all([
       getMediaServerFn({
         data: {
           type: search.type || 'all',
@@ -64,12 +65,11 @@ export const Route = createFileRoute('/admin/media')({
           partnerId: search.partnerId,
         },
       }),
-      checkAuthServerFn(),
       getClientsServerFn(),
     ])
     return {
       ...mediaData,
-      auth,
+      auth: (context as any)?.auth || (await checkAuthServerFn()),
       partners: clientsData.partners || [],
     }
   },

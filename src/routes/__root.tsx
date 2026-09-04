@@ -209,12 +209,19 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
+  const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
   const isIsolated =
     currentPath === '/login' ||
     currentPath.startsWith('/login/') ||
     currentPath.startsWith('/admin') ||
     currentPath.startsWith('/portal') ||
     currentPath.startsWith('/messages')
+
+  const topProgressBar = isNavigating ? (
+    <div className="fixed top-0 left-0 right-0 z-[99999] pointer-events-none">
+      <div className="h-0.5 sm:h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-rose-500 shadow-[0_0_10px_rgba(37,99,235,0.8)] animate-pulse" />
+    </div>
+  ) : null
 
   if (isIsolated) {
     return (
@@ -223,6 +230,7 @@ function RootComponent() {
           <HeadContent />
         </head>
         <body className="bg-slate-50 dark:bg-[#0c111d] print:bg-white text-slate-900 dark:text-white print:text-black antialiased font-sans min-h-screen">
+          {topProgressBar}
           <Outlet />
           <ScrollRestoration />
           <Scripts />
@@ -237,6 +245,7 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body className="bg-[#fafafc] dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 selection:bg-slate-900 selection:text-white dark:selection:bg-rose-500 antialiased font-sans transition-colors duration-200 min-h-screen flex flex-col">
+        {topProgressBar}
         <Navbar />
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <Outlet />
