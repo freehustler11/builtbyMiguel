@@ -77,7 +77,7 @@ export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').unique().notNull(),
   passwordHash: text('password_hash').notNull(),
-  role: text('role', { enum: ['superadmin', 'partner'] }).default('partner').notNull(),
+  role: text('role', { enum: ['superadmin', 'partner', 'client'] }).default('partner').notNull(),
   clientId: uuid('client_id'),
   isActive: boolean('is_active').default(true).notNull(),
   name: text('name'),

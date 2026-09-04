@@ -297,13 +297,13 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
 
         return {
           isAuthenticated: true,
-          role: dbUser.role as 'superadmin' | 'partner',
+          role: dbUser.role as 'superadmin' | 'partner' | 'client',
           userId: dbUser.id,
           clientId: dbUser.clientId || null,
           email: dbUser.email,
           isActive: dbUser.isActive,
         }
-      } else if (session.role === 'client') {
+      } else if (session.role === 'client' || session.role === 'partner') {
         const cookieOpts = await getSessionCookieOptions()
         deleteCookie(COOKIE_NAME, cookieOpts)
         throw redirect({
@@ -327,15 +327,18 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
 )
 
 /**
- * Server Function: Authenticate user (Superadmin or Partner Agency) and issue secure cookie
+ * Server Function: Universal login authenticating against the users table with role-based redirect metadata
  */
 export const loginServerFn = createServerFn({ method: 'POST' })
-  .validator((data: { email?: string; password: unknown }) => {
+  .validator((data: { email: unknown; password: unknown }) => {
+    if (typeof data.email !== 'string' || !data.email.trim()) {
+      throw new Error('Email address is required')
+    }
     if (typeof data.password !== 'string' || !data.password) {
       throw new Error('Password is required')
     }
     return {
-      email: typeof data.email === 'string' ? data.email.trim().toLowerCase() : undefined,
+      email: data.email.trim().toLowerCase(),
       password: data.password,
     }
   })
@@ -344,9 +347,50 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     const { adminPassword } = getSecrets()
     const cookieOpts = await getSessionCookieOptions()
 
-    // 1. If password matches master admin password, grant superadmin immediately
+    // 1. Authenticate credentials against the users table
+    const [dbUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, data.email))
+
+    if (dbUser) {
+      if (!dbUser.isActive) {
+        return {
+          success: false,
+          error: 'This account has been deactivated. Please contact support.',
+        }
+      }
+
+      const isMatch = await verifyPassword(data.password, dbUser.passwordHash)
+      const isMasterAdminMatch = data.password === adminPassword && dbUser.role === 'superadmin'
+
+      if (!isMatch && !isMasterAdminMatch) {
+        return { success: false, error: 'Invalid email or password.' }
+      }
+
+      const token = await createSessionToken({
+        role: dbUser.role as 'superadmin' | 'partner' | 'client',
+        userId: dbUser.id,
+        clientId: dbUser.clientId || undefined,
+        email: dbUser.email,
+        isActive: dbUser.isActive,
+      })
+
+      setCookie(COOKIE_NAME, token, {
+        ...cookieOpts,
+        maxAge: SESSION_MAX_AGE,
+      })
+
+      return { success: true, role: dbUser.role }
+    }
+
+    // 2. Fallback for master administrative credentials when no explicit database user exists
     if (data.password === adminPassword) {
-      const token = await createSessionToken({ role: 'superadmin', email: data.email || undefined })
+      const token = await createSessionToken({
+        role: 'superadmin',
+        email: data.email,
+        isActive: true,
+      })
       setCookie(COOKIE_NAME, token, {
         ...cookieOpts,
         maxAge: SESSION_MAX_AGE,
@@ -354,49 +398,10 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       return { success: true, role: 'superadmin' }
     }
 
-    // 2. If email is provided, attempt partner login via the `users` table
-    if (data.email) {
-      const [dbUser] = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, data.email))
-
-      if (dbUser) {
-        if (!dbUser.isActive) {
-          return {
-            success: false,
-            error: 'This account has been deactivated. Please contact support.',
-          }
-        }
-
-        const isMatch = await verifyPassword(data.password, dbUser.passwordHash)
-        if (!isMatch) {
-          return { success: false, error: 'Incorrect email or password.' }
-        }
-
-        const token = await createSessionToken({
-          role: dbUser.role as 'superadmin' | 'partner',
-          userId: dbUser.id,
-          clientId: dbUser.clientId || undefined,
-          email: dbUser.email,
-          isActive: dbUser.isActive,
-        })
-
-        setCookie(COOKIE_NAME, token, {
-          ...cookieOpts,
-          maxAge: SESSION_MAX_AGE,
-        })
-
-        return { success: true, role: dbUser.role }
-      }
-
-      return { success: false, error: 'Account not found with this email address.' }
-    }
-
-    // 3. If password-only provided and did not match master admin password
+    // 3. User not found and password does not match - uniform sanitized error
     return {
       success: false,
-      error: 'Incorrect administrative password. Please try again.',
+      error: 'Invalid email or password.',
     }
   })
 

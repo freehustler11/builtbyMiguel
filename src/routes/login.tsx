@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Lock, KeyRound, Eye, EyeOff, AlertCircle, ArrowLeft, ShieldCheck, Loader2, Mail, Building2, Briefcase } from 'lucide-react'
+import { Lock, KeyRound, Eye, EyeOff, AlertCircle, ArrowLeft, Loader2, Mail } from 'lucide-react'
 import { loginServerFn, checkAuthServerFn } from '../lib/auth'
 import { ThemeToggle } from '../components/ThemeToggle'
 
@@ -24,6 +24,11 @@ export const Route = createFileRoute('/login')({
 
     const auth = await checkAuthServerFn()
     if (auth.isAuthenticated) {
+      if (auth.role === 'client') {
+        throw redirect({
+          to: search.redirect && search.redirect.startsWith('/portal') ? search.redirect : '/portal',
+        })
+      }
       if (auth.role === 'partner') {
         throw redirect({
           to: search.redirect && (search.redirect.startsWith('/admin/clients') || search.redirect.startsWith('/admin/reports'))
@@ -31,11 +36,7 @@ export const Route = createFileRoute('/login')({
             : '/admin/clients',
         })
       }
-      if (auth.role === 'client') {
-        throw redirect({
-          to: search.redirect && search.redirect.startsWith('/portal') ? search.redirect : '/portal',
-        })
-      }
+      // superadmin
       throw redirect({
         to: search.redirect && !search.redirect.startsWith('/portal') ? search.redirect : '/admin',
       })
@@ -45,7 +46,7 @@ export const Route = createFileRoute('/login')({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { title: 'Sign In | Partner Portal & Admin | built by Miguel' },
+      { title: 'Sign In | built by Miguel' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -57,7 +58,6 @@ function LoginPage() {
   const navigate = useNavigate()
   const router = useRouter()
 
-  const [mode, setMode] = useState<'partner' | 'admin'>('partner')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -68,8 +68,8 @@ function LoginPage() {
     e.preventDefault()
     setError(null)
 
-    if (mode === 'partner' && !email.trim()) {
-      setError('Please enter your partner agency email address.')
+    if (!email.trim()) {
+      setError('Please enter your email address.')
       return
     }
     if (!password.trim()) {
@@ -82,7 +82,7 @@ function LoginPage() {
     try {
       const res = await loginServerFn({
         data: {
-          email: mode === 'partner' ? email.trim() : email.trim() || undefined,
+          email: email.trim(),
           password: password.trim(),
         },
       })
@@ -90,19 +90,24 @@ function LoginPage() {
       if (res.success) {
         await router.invalidate()
         const userRole = res.role as string
-        if (userRole === 'partner') {
+        if (userRole === 'client') {
+          navigate({
+            to: redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal',
+          })
+        } else if (userRole === 'partner') {
           navigate({
             to: redirectTo && (redirectTo.startsWith('/admin/clients') || redirectTo.startsWith('/admin/reports'))
               ? redirectTo
               : '/admin/clients',
           })
-        } else if (userRole === 'client') {
-          navigate({ to: redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal' })
         } else {
-          navigate({ to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin' })
+          // superadmin
+          navigate({
+            to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin',
+          })
         }
       } else {
-        setError(res.error || 'Authentication failed. Please verify your credentials.')
+        setError(res.error || 'Invalid email or password.')
         setIsSubmitting(false)
       }
     } catch (err: unknown) {
@@ -136,53 +141,17 @@ function LoginPage() {
 
         {/* Card Container */}
         <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-[#111827]/95 p-8 shadow-2xl backdrop-blur-xl transition-all">
-          {/* Mode Switcher Tabs */}
-          <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl mb-6">
-            <button
-              type="button"
-              onClick={() => {
-                setMode('partner')
-                setError(null)
-              }}
-              className={`flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                mode === 'partner'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <Briefcase className="w-3.5 h-3.5 text-blue-600" />
-              <span>Partner Agency</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode('admin')
-                setError(null)
-              }}
-              className={`flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                mode === 'admin'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
-              <span>Superadmin</span>
-            </button>
-          </div>
-
           {/* Header */}
           <div className="text-center space-y-2 pb-6 border-b border-slate-100 dark:border-slate-800">
             <div className="mx-auto inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner">
-              {mode === 'partner' ? <Briefcase className="w-6 h-6 text-blue-600" /> : <Lock className="w-6 h-6 text-rose-500" />}
+              <Lock className="w-6 h-6" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                {mode === 'partner' ? 'Partner Agency Portal' : 'Agency Administration'}
+                Sign In
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {mode === 'partner'
-                  ? 'Sign in to manage your assigned clients and monthly performance reports'
-                  : 'Enter your administrator key or master credentials'}
+                Enter your email and password to access your dashboard
               </p>
             </div>
           </div>
@@ -206,44 +175,42 @@ function LoginPage() {
             </div>
           )}
 
-          {/* Login Form */}
+          {/* Universal Login Form */}
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-            {mode === 'partner' && (
-              <div className="space-y-2">
-                <label
-                  htmlFor="user-email"
-                  className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
-                >
-                  Partner Email Address
-                </label>
+            <div className="space-y-2">
+              <label
+                htmlFor="user-email"
+                className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
+              >
+                Email Address
+              </label>
 
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="w-4 h-4" />
-                  </div>
-
-                  <input
-                    id="user-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="partner@youragency.com"
-                    autoFocus
-                    required
-                    autoComplete="email"
-                    disabled={isSubmitting}
-                    className="w-full pl-10 pr-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
-                  />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-4 h-4" />
                 </div>
+
+                <input
+                  id="user-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  autoFocus
+                  required
+                  autoComplete="email"
+                  disabled={isSubmitting}
+                  className="w-full pl-10 pr-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
+                />
               </div>
-            )}
+            </div>
 
             <div className="space-y-2">
               <label
                 htmlFor="user-password"
                 className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
               >
-                {mode === 'partner' ? 'Account Password' : 'Admin Key / Password'}
+                Password
               </label>
 
               <div className="relative">
@@ -257,11 +224,10 @@ function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  autoFocus={mode === 'admin'}
                   required
                   autoComplete="current-password"
                   disabled={isSubmitting}
-                  className="w-full pl-10 pr-11 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500 transition-all font-mono"
+                  className="w-full pl-10 pr-11 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
                 />
 
                 <button
@@ -282,26 +248,17 @@ function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-semibold text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
-                mode === 'partner'
-                  ? 'bg-blue-600 hover:bg-blue-700'
-                  : 'bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500'
-              }`}
+              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Verifying Credentials...</span>
-                </>
-              ) : mode === 'partner' ? (
-                <>
-                  <Briefcase className="w-4 h-4 text-blue-200" />
-                  <span>Sign In to Partner Portal</span>
+                  <span>Signing In...</span>
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="w-4 h-4 text-rose-300" />
-                  <span>Unlock Admin Session</span>
+                  <Lock className="w-4 h-4 text-blue-200" />
+                  <span>Sign In</span>
                 </>
               )}
             </button>

@@ -60,13 +60,13 @@ export async function assertActiveSession(): Promise<ActiveSession> {
       }
 
       return {
-        role: dbUser.role as 'superadmin' | 'partner',
+        role: dbUser.role as 'superadmin' | 'partner' | 'client',
         userId: dbUser.id,
         clientId: dbUser.clientId || null,
         email: dbUser.email,
         isActive: dbUser.isActive,
       }
-    } else if (session.role === 'client') {
+    } else if (session.role === 'client' || session.role === 'partner') {
       const cookieOpts = await getSessionCookieOptions()
       deleteCookie(COOKIE_NAME, cookieOpts)
       throw redirect({
