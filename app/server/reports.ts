@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq, and } from 'drizzle-orm'
 import { db, clients, reports, type Report, type Client } from '../db'
-import { assertActiveSession } from './auth'
+import { assertActiveSession, getEffectivePartnerId } from './auth'
 
 export interface QueryItem {
   query: string
@@ -62,8 +62,9 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
     }
 
     const conditions = []
-    if (auth.role === 'partner') {
-      conditions.push(eq(clients.partnerId, auth.userId!))
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      conditions.push(eq(clients.partnerId, effectivePartnerId))
     }
     if (data?.clientId) {
       conditions.push(eq(reports.clientId, data.clientId))
@@ -148,7 +149,7 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
   })
 
 /**
- * Server Function: Get the most recent report for a client (for auto-filling comparison data)
+ * Server Function: Get the most recent report for a specific client (to autofill previous metrics)
  */
 export const getLatestReportForClientServerFn = createServerFn({ method: 'GET' })
   .validator((data: { clientId: string }) => {
@@ -161,11 +162,12 @@ export const getLatestReportForClientServerFn = createServerFn({ method: 'GET' }
       throw new Error('Unauthorized access: Admin or Partner role required')
     }
 
-    if (auth.role === 'partner') {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, data.clientId), eq(clients.partnerId, auth.userId!)))
+        .where(and(eq(clients.id, data.clientId), eq(clients.partnerId, effectivePartnerId)))
       if (!targetClient) {
         throw new Error('Unauthorized: Client does not belong to your partner account')
       }
@@ -208,7 +210,8 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
     }
 
     // Protection: Partner can ONLY view reports for their assigned clients
-    if (auth.role === 'partner' && row.client.partnerId !== auth.userId) {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId && row.client.partnerId !== effectivePartnerId) {
       throw new Error('Unauthorized: You do not have permission to view this report')
     }
 
@@ -319,11 +322,12 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       throw new Error('Unauthorized: Admin or Partner access required')
     }
 
-    if (auth.role === 'partner') {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, auth.userId!)))
+        .where(and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId)))
       if (!targetClient) {
         throw new Error('Unauthorized: You can only create reports for your assigned clients')
       }
@@ -460,7 +464,8 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       throw new Error('Unauthorized: Admin or Partner access required')
     }
 
-    if (auth.role === 'partner') {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
       const [targetReport] = await db
         .select({ clientId: reports.clientId })
         .from(reports)
@@ -470,7 +475,7 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, auth.userId!)))
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId)))
       if (!targetClient) {
         throw new Error('Unauthorized: You can only edit reports for your assigned clients')
       }
@@ -564,11 +569,12 @@ export const updateReportDisplayOptionsServerFn = createServerFn({ method: 'POST
 
     if (!targetReport) throw new Error('Report not found')
 
-    if (auth.role === 'partner') {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, auth.userId!)))
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId)))
       if (!targetClient) {
         throw new Error('Unauthorized: You can only edit reports for your assigned clients')
       }
@@ -610,7 +616,8 @@ export const deleteReportServerFn = createServerFn({ method: 'POST' })
       throw new Error('Unauthorized: Admin or Partner access required')
     }
 
-    if (auth.role === 'partner') {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
       const [targetReport] = await db
         .select({ clientId: reports.clientId })
         .from(reports)
@@ -620,7 +627,7 @@ export const deleteReportServerFn = createServerFn({ method: 'POST' })
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, auth.userId!)))
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId)))
       if (!targetClient) {
         throw new Error('Unauthorized: You can only delete reports for your assigned clients')
       }

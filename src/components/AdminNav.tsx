@@ -10,20 +10,22 @@ import {
   Activity,
   Database,
   Building2,
+  UserCheck,
 } from 'lucide-react'
 import { LogoutButton } from './LogoutButton'
 import { ThemeToggle } from './ThemeToggle'
 
 interface AdminNavProps {
-  activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports'
+  activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports' | 'team'
   title: string
   description?: string
   actions?: React.ReactNode
-  userRole?: 'superadmin' | 'partner' | 'admin' | string | null
+  userRole?: 'superadmin' | 'partner' | 'partner_employee' | 'admin' | string | null
 }
 
 export function AdminNav({ activeTab, title, description, actions, userRole }: AdminNavProps) {
-  const isPartner = userRole === 'partner'
+  const isPartner = userRole === 'partner' || userRole === 'partner_employee'
+  const isEmployee = userRole === 'partner_employee'
 
   return (
     <div className="space-y-6 pb-6 border-b border-slate-200 dark:border-slate-800">
@@ -34,7 +36,7 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
           {isPartner ? (
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-transparent dark:from-blue-950/50 dark:via-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-200/80 dark:border-blue-900/50 text-xs font-mono font-bold tracking-wide shadow-xs">
               <Building2 className="w-4 h-4 text-blue-500 shrink-0" />
-              <span>Partner Agency Portal</span>
+              <span>{isEmployee ? 'Agency Staff Portal' : 'Partner Agency Portal'}</span>
             </div>
           ) : (
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-transparent dark:from-rose-950/50 dark:via-rose-950/20 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50 text-xs font-mono font-bold tracking-wide shadow-xs">
@@ -113,6 +115,21 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
               <BarChart3 className="w-3.5 h-3.5" />
               <span>Reports</span>
             </Link>
+
+            {!isEmployee && (
+              <Link
+                to="/admin/team"
+                preload="intent"
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'team'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>Team</span>
+              </Link>
+            )}
           </nav>
         </div>
 

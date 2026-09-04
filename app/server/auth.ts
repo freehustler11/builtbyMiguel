@@ -10,8 +10,9 @@ async function getServerUtils() {
 }
 
 export interface ActiveSession {
-  role: 'superadmin' | 'partner' | 'admin' | 'client'
+  role: 'superadmin' | 'partner' | 'admin' | 'client' | 'partner_employee'
   userId: string | null
+  partnerId?: string | null
   clientId: string | null
   email: string | null
   isActive: boolean
@@ -42,6 +43,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
         role: users.role,
         isActive: users.isActive,
         clientId: users.clientId,
+        partnerId: users.partnerId,
         email: users.email,
       })
       .from(users)
@@ -60,13 +62,14 @@ export async function assertActiveSession(): Promise<ActiveSession> {
       }
 
       return {
-        role: dbUser.role as 'superadmin' | 'partner' | 'client',
+        role: dbUser.role as 'superadmin' | 'partner' | 'client' | 'partner_employee',
         userId: dbUser.id,
+        partnerId: dbUser.partnerId || null,
         clientId: dbUser.clientId || null,
         email: dbUser.email,
         isActive: dbUser.isActive,
       }
-    } else if (session.role === 'client' || session.role === 'partner') {
+    } else if (session.role === 'client' || session.role === 'partner' || session.role === 'partner_employee') {
       const cookieOpts = await getSessionCookieOptions()
       deleteCookie(COOKIE_NAME, cookieOpts)
       throw redirect({
@@ -81,6 +84,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
   return {
     role: session.role === 'admin' ? 'superadmin' : session.role,
     userId: null,
+    partnerId: session.partnerId || null,
     clientId: session.clientId || null,
     email: session.email || null,
     isActive: true,
@@ -88,13 +92,25 @@ export async function assertActiveSession(): Promise<ActiveSession> {
 }
 
 /**
- * Assert that the current session is a Superadmin (blocks partner agency accounts)
+ * Assert that the current session is a Superadmin (blocks partner agency accounts and employees)
  */
 export async function assertSuperadminSession(): Promise<ActiveSession> {
   const session = await assertActiveSession()
-  if (session.role === 'partner') {
+  if (session.role === 'partner' || session.role === 'partner_employee') {
     throw new Error('Unauthorized: Superadmin privileges required')
   }
   return session
+}
+
+/**
+ * Helper to get effective partner/agency ID for tenant isolation:
+ * - If partner: returns their userId (agency owner ID)
+ * - If partner_employee: returns their partnerId (parent agency ID)
+ * - Otherwise: returns null (superadmin or client)
+ */
+export function getEffectivePartnerId(auth: ActiveSession): string | null {
+  if (auth.role === 'partner') return auth.userId
+  if (auth.role === 'partner_employee') return auth.partnerId || null
+  return null
 }
 

@@ -9,7 +9,7 @@ export const Route = createFileRoute('/admin/')({
         to: '/portal',
       })
     }
-    if (auth.role === 'partner') {
+    if (auth.role === 'partner' || auth.role === 'partner_employee') {
       throw redirect({
         to: '/admin/clients',
       })

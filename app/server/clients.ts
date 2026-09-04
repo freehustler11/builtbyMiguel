@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq } from 'drizzle-orm'
 import { db, clients, reports, users, type Client } from '../db'
-import { assertActiveSession } from './auth'
+import { assertActiveSession, getEffectivePartnerId } from './auth'
 
 export interface ClientWithReportCount extends Client {
   reportCount: number
@@ -27,12 +27,13 @@ export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
   async (): Promise<{ clients: ClientWithReportCount[]; partners: PartnerSummary[] }> => {
     const auth = await assertActiveSession()
 
-    // 1. If user is a partner, only fetch their assigned clients
-    if (auth.role === 'partner') {
+    // 1. If user is a partner or partner employee, only fetch their assigned agency clients
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
       const partnerClients = await db
         .select()
         .from(clients)
-        .where(eq(clients.partnerId, auth.userId!))
+        .where(eq(clients.partnerId, effectivePartnerId))
         .orderBy(desc(clients.createdAt))
 
       const allReports = await db.select({ clientId: reports.clientId }).from(reports)
@@ -106,8 +107,9 @@ export const getClientByIdServerFn = createServerFn({ method: 'GET' })
       throw new Error('Client not found')
     }
 
-    // Protection: If partner role, ensure client belongs to this partner
-    if (auth.role === 'partner' && client.partnerId !== auth.userId) {
+    // Protection: If partner or employee, ensure client belongs to this partner
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId && client.partnerId !== effectivePartnerId) {
       throw new Error('Unauthorized access to client record')
     }
 
@@ -151,9 +153,10 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
     const auth = await assertActiveSession()
 
     let assignedPartnerId: string | null = null
-    if (auth.role === 'partner') {
-      // Partners can only create clients assigned to their own account
-      assignedPartnerId = auth.userId
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      // Partners & partner employees can only create clients assigned to their agency
+      assignedPartnerId = effectivePartnerId
     } else {
       assignedPartnerId = data.partnerId && data.partnerId.trim() ? data.partnerId.trim() : null
     }
@@ -219,8 +222,9 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
       partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
     }
 
-    if (auth.role === 'partner') {
-      if (existing.partnerId !== auth.userId) {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      if (existing.partnerId !== effectivePartnerId) {
         throw new Error('Unauthorized: You can only edit your own assigned clients')
       }
       // Keep existing partnerId
@@ -254,7 +258,8 @@ export const deleteClientServerFn = createServerFn({ method: 'POST' })
     const [existing] = await db.select().from(clients).where(eq(clients.id, data.id))
     if (!existing) throw new Error('Client not found')
 
-    if (auth.role === 'partner' && existing.partnerId !== auth.userId) {
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId && existing.partnerId !== effectivePartnerId) {
       throw new Error('Unauthorized: You can only delete your own assigned clients')
     }
 

@@ -98,7 +98,7 @@ function formatDate(dateInput: string | Date | null) {
 function AdminClientsPage() {
   const router = useRouter()
   const { clients: initialClients, partners: initialPartners, currentAdmin } = Route.useLoaderData()
-  const isSuperadmin = currentAdmin?.role !== 'partner'
+  const isSuperadmin = currentAdmin?.role === 'superadmin' || currentAdmin?.role === 'admin'
 
   const [clients, setClients] = useState(initialClients)
   const [partnersList, setPartnersList] = useState<PartnerSummary[]>(initialPartners)

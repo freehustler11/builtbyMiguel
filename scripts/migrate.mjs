@@ -116,6 +116,8 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "users_client_id_idx" ON "users" ("client_id")`
     await sql`CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users" ("email")`
     await sql`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "is_active" boolean DEFAULT true NOT NULL`
+    await sql`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "partner_id" uuid REFERENCES "users"("id") ON DELETE CASCADE`
+    await sql`CREATE INDEX IF NOT EXISTS "users_partner_id_idx" ON "users" ("partner_id")`
     await sql`UPDATE "users" SET "role" = 'superadmin' WHERE "role" = 'admin'`
     await sql`ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'partner'`
 

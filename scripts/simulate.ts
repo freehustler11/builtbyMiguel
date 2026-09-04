@@ -240,21 +240,130 @@ async function runSimulations() {
     const getPostLoginRedirect = (role: string) => {
       if (role === 'superadmin') return '/admin'
       if (role === 'partner') return '/admin'
+      if (role === 'partner_employee') return '/admin'
       if (role === 'client') return '/portal'
       return '/login'
     }
 
     assert(getPostLoginRedirect('superadmin') === '/admin', 'Superadmin routed to /admin')
     assert(getPostLoginRedirect('partner') === '/admin', 'Partner routed to /admin')
+    assert(getPostLoginRedirect('partner_employee') === '/admin', 'Partner employee routed to /admin')
     assert(getPostLoginRedirect('client') === '/portal', 'Client routed to /portal')
 
     // Verify client cannot access /admin
-    const canAccessAdmin = (role: string) => role === 'superadmin' || role === 'partner' || role === 'admin'
+    const canAccessAdmin = (role: string) =>
+      role === 'superadmin' || role === 'partner' || role === 'admin' || role === 'partner_employee'
     assert(canAccessAdmin('superadmin') === true, 'Superadmin allowed on /admin')
     assert(canAccessAdmin('partner') === true, 'Partner allowed on /admin')
+    assert(canAccessAdmin('partner_employee') === true, 'Partner employee allowed on /admin')
     assert(canAccessAdmin('client') === false, 'Client blocked on /admin')
+
+    const canAccessSuperadminOnly = (role: string) => role === 'superadmin' || role === 'admin'
+    assert(canAccessSuperadminOnly('superadmin') === true, 'Superadmin allowed on superadmin-only routes')
+    assert(canAccessSuperadminOnly('partner') === false, 'Partner blocked on superadmin-only routes')
+    assert(canAccessSuperadminOnly('partner_employee') === false, 'Partner employee blocked on superadmin-only routes')
   } catch (err: any) {
     assert(false, 'Role access simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 7: Partner Employees, Sub-Accounts & Tenant Isolation
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 7: Partner Employees, Sub-Accounts & Tenant Isolation')
+  try {
+    const { getEffectivePartnerId } = await import('../app/server/auth')
+
+    // Test 1: Session Token creation and decoding for partner_employee
+    const mockPartnerId = '11111111-2222-3333-4444-555555555555'
+    const mockEmployeeId = '66666666-7777-8888-9999-000000000000'
+    const empEmail = 'staff@agencygrowth.com'
+
+    const empToken = await createSessionToken({
+      role: 'partner_employee',
+      userId: mockEmployeeId,
+      partnerId: mockPartnerId,
+      email: empEmail,
+      isActive: true,
+    })
+    assert(typeof empToken === 'string' && empToken.length > 20, 'Employee session token generated')
+
+    const decodedEmp = await getSessionData(empToken)
+    assert(decodedEmp?.role === 'partner_employee', 'Decoded token role is partner_employee')
+    assert(decodedEmp?.partnerId === mockPartnerId, 'Decoded token preserves partnerId parent reference')
+    assert(decodedEmp?.userId === mockEmployeeId, 'Decoded token preserves employee userId')
+    assert(decodedEmp?.email === empEmail, 'Decoded token preserves employee email')
+
+    // Test 2: Effective Partner ID resolution (Tenant Scoping)
+    const partnerOwnerScope = getEffectivePartnerId({
+      role: 'partner',
+      userId: mockPartnerId,
+      clientId: null,
+      email: 'owner@agencygrowth.com',
+      isActive: true,
+    })
+    assert(partnerOwnerScope === mockPartnerId, 'Partner owner resolves effectivePartnerId to their userId')
+
+    const employeeScope = getEffectivePartnerId({
+      role: 'partner_employee',
+      userId: mockEmployeeId,
+      partnerId: mockPartnerId,
+      clientId: null,
+      email: empEmail,
+      isActive: true,
+    })
+    assert(employeeScope === mockPartnerId, 'Employee resolves effectivePartnerId to their parent partnerId')
+
+    const superadminScope = getEffectivePartnerId({
+      role: 'superadmin',
+      userId: 'admin-id',
+      clientId: null,
+      email: superadminEmail,
+      isActive: true,
+    })
+    assert(superadminScope === null, 'Superadmin resolves effectivePartnerId to null (unscoped global access)')
+
+    // Test 3: Database creation, foreign key linkage, and ON DELETE CASCADE
+    const testOwnerEmail = `test_partner_owner_${Date.now()}@example.com`
+    const testEmpEmail = `test_partner_employee_${Date.now()}@example.com`
+    const testPwHash = await hashPassword('TempPassword123!')
+
+    // Insert Partner Owner
+    const [createdOwner] = await db.insert(users).values({
+      email: testOwnerEmail,
+      passwordHash: testPwHash,
+      name: 'Test Agency Owner',
+      role: 'partner',
+      isActive: true,
+    }).returning()
+    assert(Boolean(createdOwner?.id), 'Test partner owner successfully created in DB')
+
+    // Insert Employee under Partner
+    const [createdEmp] = await db.insert(users).values({
+      email: testEmpEmail,
+      passwordHash: testPwHash,
+      name: 'Test Team Member',
+      role: 'partner_employee',
+      partnerId: createdOwner.id,
+      isActive: true,
+    }).returning()
+    assert(Boolean(createdEmp?.id), 'Test partner employee successfully created in DB')
+    assert(createdEmp.partnerId === createdOwner.id, 'Employee record has valid foreign key partner_id')
+
+    // Verify employee can authenticate
+    const empPwValid = await verifyPassword('TempPassword123!', createdEmp.passwordHash)
+    assert(empPwValid === true, 'Employee password verifies against passwordHash')
+
+    // Test 4: Database ON DELETE CASCADE
+    // Deleting the agency owner must automatically remove the employee sub-account
+    await db.delete(users).where(eq(users.id, createdOwner.id))
+
+    const [orphanedEmp] = await db.select().from(users).where(eq(users.id, createdEmp.id))
+    assert(orphanedEmp === undefined, 'Employee sub-account automatically deleted on parent agency deletion (ON DELETE CASCADE)')
+
+    const [deletedOwner] = await db.select().from(users).where(eq(users.id, createdOwner.id))
+    assert(deletedOwner === undefined, 'Agency owner cleanly removed from DB')
+  } catch (err: any) {
+    assert(false, 'Partner employees simulation failed', err.message)
   }
 
   // ---------------------------------------------------------------
@@ -266,6 +375,7 @@ async function runSimulations() {
   if (failed > 0) {
     process.exit(1)
   }
+  process.exit(0)
 }
 
 runSimulations().catch((err) => {

@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq, isNull } from 'drizzle-orm'
 import { db, media, users, type Media } from '../db'
-import { assertActiveSession } from './auth'
+import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { uploadFileToStorage, deleteFileFromStorage, getStorageProviderInfo } from './storage'
 
 export interface MediaItemWithPartner extends Media {
@@ -10,7 +10,7 @@ export interface MediaItemWithPartner extends Media {
 
 /**
  * Server Function: Get uploaded media with filtering, search, and partner isolation.
- * - Partners can ONLY view their own uploaded media (media.partnerId === auth.userId).
+ * - Partners and employees can ONLY view their agency's uploaded media (media.partnerId === effectivePartnerId).
  * - Superadmins can view all media or filter by partnerId ('all' | 'direct' | partner UUID).
  */
 export const getMediaServerFn = createServerFn({ method: 'GET' })
@@ -33,12 +33,13 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
 
     let items: Media[]
 
-    if (auth.role === 'partner') {
-      // Partner agency: strictly scoped to files where partner_id === auth.userId
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      // Partner agency / employee: strictly scoped to files where partner_id === effectivePartnerId
       items = await db
         .select()
         .from(media)
-        .where(eq(media.partnerId, auth.userId!))
+        .where(eq(media.partnerId, effectivePartnerId))
         .orderBy(desc(media.createdAt))
     } else {
       // Superadmin: can view all, direct agency files, or filter by specific partner
@@ -130,12 +131,13 @@ export const uploadMediaServerFn = createServerFn({ method: 'POST' })
     }
 
     // Determine ownership:
-    // If partner: uploadedBy = auth.userId, partnerId = auth.userId
+    // If partner / employee: uploadedBy = auth.userId, partnerId = effectivePartnerId
     // If superadmin: uploadedBy = auth.userId, partnerId = data.partnerId || null
     const uploadedBy = auth.userId || null
     let partnerId: string | null = null
-    if (auth.role === 'partner') {
-      partnerId = auth.userId
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      partnerId = effectivePartnerId
     } else if (data.partnerId && data.partnerId !== 'direct' && data.partnerId !== 'all') {
       partnerId = data.partnerId
     }
@@ -168,7 +170,7 @@ export const uploadMediaServerFn = createServerFn({ method: 'POST' })
 
 /**
  * Server Function: Delete a media item from storage and database.
- * Partners can strictly ONLY delete their own agency's uploaded files.
+ * Partners and employees can strictly ONLY delete their own agency's uploaded files.
  */
 export const deleteMediaServerFn = createServerFn({ method: 'POST' })
   .validator((data: { id: string }) => {
@@ -189,8 +191,9 @@ export const deleteMediaServerFn = createServerFn({ method: 'POST' })
       throw new Error('Media item not found')
     }
 
-    // Authorization: Partner can ONLY delete files assigned to their agency
-    if (auth.role === 'partner' && item.partnerId !== auth.userId) {
+    // Authorization: Partner / employee can ONLY delete files assigned to their agency
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId && item.partnerId !== effectivePartnerId) {
       throw new Error('Unauthorized: You do not have permission to delete this media file')
     }
 
