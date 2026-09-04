@@ -1,9 +1,9 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { requireAuth } from '../lib/auth'
+import { requireAdmin } from '../lib/auth'
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: async ({ location }) => {
-    await requireAuth({ location })
+    await requireAdmin({ location })
   },
   component: AdminLayout,
 })
@@ -11,3 +11,4 @@ export const Route = createFileRoute('/admin')({
 function AdminLayout() {
   return <Outlet />
 }
+

@@ -19,6 +19,7 @@ import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as LocalSeoGbpRouteImport } from './routes/local-seo-gbp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SystemsAutoRouteImport } from './routes/systems-auto'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -31,9 +32,11 @@ import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/index'
 import { Route as AdminReportsIdRouteImport } from './routes/admin/reports/$id'
 import { Route as AdminReportsNewRouteImport } from './routes/admin/reports/new'
+import { Route as PortalReportsIdRouteImport } from './routes/portal/reports/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -83,6 +86,11 @@ const LoginRoute = LoginRouteImport.update({
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
@@ -145,6 +153,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortalRoute,
+} as any)
 const AdminReportsIndexRoute = AdminReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
@@ -160,6 +173,11 @@ const AdminReportsNewRoute = AdminReportsNewRouteImport.update({
   path: '/reports/new',
   getParentRoute: () => AdminRoute,
 } as any)
+const PortalReportsIdRoute = PortalReportsIdRouteImport.update({
+  id: '/reports/$id',
+  path: '/reports/$id',
+  getParentRoute: () => PortalRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -172,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
@@ -184,8 +203,10 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/portal/': typeof PortalIndexRoute
   '/admin/reports/$id': typeof AdminReportsIdRoute
   '/admin/reports/new': typeof AdminReportsNewRoute
+  '/portal/reports/$id': typeof PortalReportsIdRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -210,8 +231,10 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
+  '/portal': typeof PortalIndexRoute
   '/admin/reports/$id': typeof AdminReportsIdRoute
   '/admin/reports/new': typeof AdminReportsNewRoute
+  '/portal/reports/$id': typeof PortalReportsIdRoute
   '/admin/reports': typeof AdminReportsIndexRoute
 }
 export interface FileRoutesById {
@@ -226,6 +249,7 @@ export interface FileRoutesById {
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
@@ -238,8 +262,10 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/portal/': typeof PortalIndexRoute
   '/admin/reports/$id': typeof AdminReportsIdRoute
   '/admin/reports/new': typeof AdminReportsNewRoute
+  '/portal/reports/$id': typeof PortalReportsIdRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
 }
 export interface FileRouteTypes {
@@ -255,6 +281,7 @@ export interface FileRouteTypes {
     | '/local-seo-gbp'
     | '/login'
     | '/messages'
+    | '/portal'
     | '/privacy-policy'
     | '/systems-auto'
     | '/terms'
@@ -267,8 +294,10 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/admin/'
     | '/blog/'
+    | '/portal/'
     | '/admin/reports/$id'
     | '/admin/reports/new'
+    | '/portal/reports/$id'
     | '/admin/reports/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -293,8 +322,10 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/admin'
     | '/blog'
+    | '/portal'
     | '/admin/reports/$id'
     | '/admin/reports/new'
+    | '/portal/reports/$id'
     | '/admin/reports'
   id:
     | '__root__'
@@ -308,6 +339,7 @@ export interface FileRouteTypes {
     | '/local-seo-gbp'
     | '/login'
     | '/messages'
+    | '/portal'
     | '/privacy-policy'
     | '/systems-auto'
     | '/terms'
@@ -320,8 +352,10 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/admin/'
     | '/blog/'
+    | '/portal/'
     | '/admin/reports/$id'
     | '/admin/reports/new'
+    | '/portal/reports/$id'
     | '/admin/reports/'
   fileRoutesById: FileRoutesById
 }
@@ -336,6 +370,7 @@ export interface RootRouteChildren {
   LocalSeoGbpRoute: typeof LocalSeoGbpRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  PortalRoute: typeof PortalRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SystemsAutoRoute: typeof SystemsAutoRoute
   TermsRoute: typeof TermsRoute
@@ -416,6 +451,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy-policy': {
@@ -502,6 +544,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portal/': {
+      id: '/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/admin/reports/': {
       id: '/admin/reports/'
       path: '/reports'
@@ -522,6 +571,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/reports/new'
       preLoaderRoute: typeof AdminReportsNewRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/portal/reports/$id': {
+      id: '/portal/reports/$id'
+      path: '/reports/$id'
+      fullPath: '/portal/reports/$id'
+      preLoaderRoute: typeof PortalReportsIdRouteImport
+      parentRoute: typeof PortalRoute
     }
   }
 }
@@ -548,6 +604,19 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface PortalRouteChildren {
+  PortalIndexRoute: typeof PortalIndexRoute
+  PortalReportsIdRoute: typeof PortalReportsIdRoute
+}
+
+const PortalRouteChildren: PortalRouteChildren = {
+  PortalIndexRoute: PortalIndexRoute,
+  PortalReportsIdRoute: PortalReportsIdRoute,
+}
+
+const PortalRouteWithChildren =
+  PortalRoute._addFileChildren(PortalRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
@@ -559,6 +628,7 @@ const rootRouteChildren: RootRouteChildren = {
   LocalSeoGbpRoute: LocalSeoGbpRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  PortalRoute: PortalRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SystemsAutoRoute: SystemsAutoRoute,
   TermsRoute: TermsRoute,

@@ -1,9 +1,20 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getCookie, setCookie, deleteCookie } from '@tanstack/react-start/server'
 import { redirect } from '@tanstack/react-router'
+import { eq } from 'drizzle-orm'
+import { db, users } from '../db'
 
 const COOKIE_NAME = 'admin_session'
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 // 7 days in seconds
+
+export interface SessionUser {
+  role: 'admin' | 'client'
+  userId?: string
+  clientId?: string
+  email?: string
+  isActive?: boolean
+  exp: number
+}
 
 function getSecrets() {
   const adminPassword = process.env.ADMIN_PASSWORD || 'L0v3hurt$11290523'
@@ -14,12 +25,97 @@ function getSecrets() {
 }
 
 /**
- * Sign and serialize a session token using standard Web Crypto API
+ * Hash password securely using standard Web Crypto PBKDF2 (zero node:crypto imports)
  */
-export async function createSessionToken(): Promise<string> {
+export async function hashPassword(password: string): Promise<string> {
+  const saltBytes = new Uint8Array(16)
+  crypto.getRandomValues(saltBytes)
+  const saltHex = Array.from(saltBytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+
+  const enc = new TextEncoder()
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(password),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits'],
+  )
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: enc.encode(saltHex),
+      iterations: 100000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    256,
+  )
+
+  const hashHex = Array.from(new Uint8Array(derivedBits))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+
+  return `${saltHex}:${hashHex}`
+}
+
+/**
+ * Verify a plaintext password against a stored salt:hash string
+ */
+export async function verifyPassword(password: string, combinedHash: string): Promise<boolean> {
+  try {
+    const [saltHex, key] = combinedHash.split(':')
+    if (!saltHex || !key) return false
+
+    const enc = new TextEncoder()
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits'],
+    )
+
+    const derivedBits = await crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: enc.encode(saltHex),
+        iterations: 100000,
+        hash: 'SHA-256',
+      },
+      keyMaterial,
+      256,
+    )
+
+    const derivedHex = Array.from(new Uint8Array(derivedBits))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+
+    return derivedHex === key
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Sign and serialize a session token with role, userId, and clientId using Web Crypto HMAC-SHA256
+ */
+export async function createSessionToken(payloadData?: {
+  role?: 'admin' | 'client'
+  userId?: string
+  clientId?: string
+  email?: string
+  isActive?: boolean
+}): Promise<string> {
   const { sessionSecret } = getSecrets()
-  const payload = {
-    role: 'admin',
+  const payload: SessionUser = {
+    role: payloadData?.role || 'admin',
+    userId: payloadData?.userId,
+    clientId: payloadData?.clientId,
+    email: payloadData?.email,
+    isActive: payloadData?.isActive ?? true,
     exp: Date.now() + SESSION_MAX_AGE * 1000,
   }
   const serialized = Buffer.from(JSON.stringify(payload)).toString('base64url')
@@ -44,14 +140,12 @@ export async function createSessionToken(): Promise<string> {
 }
 
 /**
- * Verify HMAC signature and expiry of a session token
+ * Extract, verify signature, and return session payload if valid
  */
-export async function verifySessionToken(
-  token?: string | null,
-): Promise<boolean> {
-  if (!token || typeof token !== 'string') return false
+export async function getSessionData(token?: string | null): Promise<SessionUser | null> {
+  if (!token || typeof token !== 'string') return null
   const [serialized, signature] = token.split('.')
-  if (!serialized || !signature) return false
+  if (!serialized || !signature) return null
 
   const { sessionSecret } = getSecrets()
 
@@ -73,56 +167,180 @@ export async function verifySessionToken(
       enc.encode(serialized),
     )
 
-    if (!isValid) return false
+    if (!isValid) return null
 
-    const payload = JSON.parse(
+    const payload: SessionUser = JSON.parse(
       Buffer.from(serialized, 'base64url').toString('utf8'),
     )
     if (!payload.exp || Date.now() > payload.exp) {
-      return false
+      return null
     }
-    return payload.role === 'admin'
+    return payload
   } catch {
-    return false
+    return null
   }
 }
 
 /**
- * Server Function: Check if the current request has a valid admin session
+ * Verify HMAC signature and expiry of a session token
+ */
+export async function verifySessionToken(token?: string | null): Promise<boolean> {
+  const session = await getSessionData(token)
+  return !!session
+}
+
+/**
+ * Server Function: Check if the current request has a valid session and return role metadata
  */
 export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
   async () => {
     const token = getCookie(COOKIE_NAME)
-    const isValid = await verifySessionToken(token)
-    return { isAuthenticated: isValid }
+    const session = await getSessionData(token)
+    if (!session) {
+      return {
+        isAuthenticated: false,
+        role: null,
+        userId: null,
+        clientId: null,
+        email: null,
+        isActive: null,
+      }
+    }
+
+    // If session has userId, verify real-time status and role in database
+    if (session.userId) {
+      const [dbUser] = await db
+        .select({
+          id: users.id,
+          role: users.role,
+          isActive: users.isActive,
+          clientId: users.clientId,
+          email: users.email,
+        })
+        .from(users)
+        .where(eq(users.id, session.userId))
+
+      if (!dbUser || !dbUser.isActive) {
+        // Kill session immediately and redirect to login
+        deleteCookie(COOKIE_NAME, {
+          path: '/',
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+        })
+        throw redirect({
+          to: '/login',
+          search: {
+            error: 'account_disabled',
+          },
+        })
+      }
+
+      return {
+        isAuthenticated: true,
+        role: dbUser.role as 'admin' | 'client',
+        userId: dbUser.id,
+        clientId: dbUser.clientId || null,
+        email: dbUser.email,
+        isActive: dbUser.isActive,
+      }
+    }
+
+    return {
+      isAuthenticated: true,
+      role: session.role,
+      userId: null,
+      clientId: session.clientId || null,
+      email: session.email || null,
+      isActive: true,
+    }
   },
 )
 
 /**
- * Server Function: Authenticate admin with password and issue secure cookie
+ * Server Function: Authenticate user (Admin or Client) and issue secure cookie
  */
 export const loginServerFn = createServerFn({ method: 'POST' })
-  .validator((data: { password: unknown }) => {
+  .validator((data: { email?: string; password: unknown }) => {
     if (typeof data.password !== 'string' || !data.password) {
       throw new Error('Password is required')
     }
-    return { password: data.password }
+    return {
+      email: typeof data.email === 'string' ? data.email.trim().toLowerCase() : undefined,
+      password: data.password,
+    }
   })
   .handler(async ({ data }) => {
     const { adminPassword } = getSecrets()
 
-    // Validate password
+    // 1. If email is provided, attempt client/admin login via the `users` table
+    if (data.email) {
+      const [dbUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, data.email))
+
+      if (dbUser) {
+        if (!dbUser.isActive) {
+          return {
+            success: false,
+            error: 'This account has been deactivated. Please contact support.',
+          }
+        }
+
+        const isMatch = await verifyPassword(data.password, dbUser.passwordHash)
+        if (!isMatch) {
+          return { success: false, error: 'Incorrect email or password.' }
+        }
+
+        const token = await createSessionToken({
+          role: dbUser.role as 'admin' | 'client',
+          userId: dbUser.id,
+          clientId: dbUser.clientId || undefined,
+          email: dbUser.email,
+          isActive: dbUser.isActive,
+        })
+
+        setCookie(COOKIE_NAME, token, {
+          path: '/',
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+          maxAge: SESSION_MAX_AGE,
+        })
+
+        return { success: true, role: dbUser.role }
+      }
+
+      // Check fallback admin email + master admin password
+      if (
+        (data.email === 'admin' || data.email === 'admin@builtbymiguel.net' || data.email === 'miguel@builtbymiguel.net') &&
+        data.password === adminPassword
+      ) {
+        const token = await createSessionToken({ role: 'admin', email: data.email })
+        setCookie(COOKIE_NAME, token, {
+          path: '/',
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+          maxAge: SESSION_MAX_AGE,
+        })
+        return { success: true, role: 'admin' }
+      }
+
+      return { success: false, error: 'Account not found with this email address.' }
+    }
+
+    // 2. If password-only provided, validate against master admin password
     if (data.password !== adminPassword) {
       return {
         success: false,
-        error: 'Incorrect admin password. Please try again.',
+        error: 'Incorrect administrative password. Please try again.',
       }
     }
 
-    // Generate secure signed session token
-    const token = await createSessionToken()
+    const token = await createSessionToken({ role: 'admin' })
 
-    // Set secure HTTP-only cookie (works seamlessly behind Dokploy/Traefik/Cloudflare reverse proxies)
     setCookie(COOKIE_NAME, token, {
       path: '/',
       httpOnly: true,
@@ -131,11 +349,11 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       maxAge: SESSION_MAX_AGE,
     })
 
-    return { success: true }
+    return { success: true, role: 'admin' }
   })
 
 /**
- * Server Function: Logout and clear the admin session cookie
+ * Server Function: Logout and clear the session cookie
  */
 export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
   async () => {
@@ -150,16 +368,16 @@ export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
 )
 
 /**
- * Auth Route Guard: Require authentication on protected routes.
- * Call this in `beforeLoad` of any protected route or layout.
+ * Auth Route Guard: Require admin privileges.
+ * Blocks non-admins and redirects clients to /portal.
  */
-export async function requireAuth({
+export async function requireAdmin({
   location,
 }: {
   location: { href: string }
 }) {
-  const { isAuthenticated } = await checkAuthServerFn()
-  if (!isAuthenticated) {
+  const auth = await checkAuthServerFn()
+  if (!auth.isAuthenticated) {
     throw redirect({
       to: '/login',
       search: {
@@ -167,5 +385,41 @@ export async function requireAuth({
       },
     })
   }
-  return { isAuthenticated }
+  if (auth.role !== 'admin') {
+    throw redirect({
+      to: '/portal',
+    })
+  }
+  return auth
+}
+
+/**
+ * Auth Route Guard: Require client or admin session for portal access.
+ */
+export async function requireClient({
+  location,
+}: {
+  location: { href: string }
+}) {
+  const auth = await checkAuthServerFn()
+  if (!auth.isAuthenticated) {
+    throw redirect({
+      to: '/login',
+      search: {
+        redirect: location.href,
+      },
+    })
+  }
+  return auth
+}
+
+/**
+ * Backward compatibility: Require authenticated session
+ */
+export async function requireAuth({
+  location,
+}: {
+  location: { href: string }
+}) {
+  return requireAdmin({ location })
 }

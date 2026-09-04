@@ -1,23 +1,35 @@
 import { createFileRoute, redirect, useNavigate, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Lock, KeyRound, Eye, EyeOff, AlertCircle, ArrowLeft, ShieldCheck, Loader2 } from 'lucide-react'
+import { Lock, KeyRound, Eye, EyeOff, AlertCircle, ArrowLeft, ShieldCheck, Loader2, Mail, Building2, User } from 'lucide-react'
 import { loginServerFn, checkAuthServerFn } from '../lib/auth'
 
 interface LoginSearch {
   redirect?: string
+  error?: string
 }
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>): LoginSearch => {
     return {
       redirect: typeof search.redirect === 'string' ? search.redirect : undefined,
+      error: typeof search.error === 'string' ? search.error : undefined,
     }
   },
   beforeLoad: async ({ search }) => {
-    const { isAuthenticated } = await checkAuthServerFn()
-    if (isAuthenticated) {
+    // If account was disabled, don't redirect away
+    if (search.error === 'account_disabled') {
+      return
+    }
+
+    const auth = await checkAuthServerFn()
+    if (auth.isAuthenticated) {
+      if (auth.role === 'client') {
+        throw redirect({
+          to: search.redirect && search.redirect.startsWith('/portal') ? search.redirect : '/portal',
+        })
+      }
       throw redirect({
-        to: search.redirect || '/admin',
+        to: search.redirect && !search.redirect.startsWith('/portal') ? search.redirect : '/admin',
       })
     }
   },
@@ -25,7 +37,7 @@ export const Route = createFileRoute('/login')({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { title: 'Admin Login | built by Miguel' },
+      { title: 'Sign In | Client Portal & Admin | built by Miguel' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -33,10 +45,12 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginPage() {
-  const { redirect: redirectTo } = Route.useSearch()
+  const { redirect: redirectTo, error: searchError } = Route.useSearch()
   const navigate = useNavigate()
   const router = useRouter()
 
+  const [mode, setMode] = useState<'client' | 'admin'>('client')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -44,22 +58,36 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+
+    if (mode === 'client' && !email.trim()) {
+      setError('Please enter your account email address.')
+      return
+    }
     if (!password.trim()) {
-      setError('Please enter the admin password.')
+      setError('Please enter your password.')
       return
     }
 
     setIsSubmitting(true)
-    setError(null)
 
     try {
-      const res = await loginServerFn({ data: { password } })
+      const res = await loginServerFn({
+        data: {
+          email: mode === 'client' ? email.trim() : undefined,
+          password: password.trim(),
+        },
+      })
 
       if (res.success) {
         await router.invalidate()
-        navigate({ to: redirectTo && redirectTo !== '/login' ? redirectTo : '/admin' })
+        if (res.role === 'client') {
+          navigate({ to: redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal' })
+        } else {
+          navigate({ to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin' })
+        }
       } else {
-        setError(res.error || 'Authentication failed. Please verify your password.')
+        setError(res.error || 'Authentication failed. Please verify your credentials.')
         setIsSubmitting(false)
       }
     } catch (err: unknown) {
@@ -70,11 +98,11 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12">
       {/* Background Soft Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-gradient-to-tr from-rose-500/10 via-amber-500/5 to-cyan-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-gradient-to-tr from-rose-500/10 via-blue-500/5 to-cyan-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      <div className="w-full max-w-md space-y-8">
+      <div className="w-full max-w-md space-y-6">
         {/* Back Link */}
         <div className="flex justify-center">
           <a
@@ -88,22 +116,69 @@ function LoginPage() {
 
         {/* Card Container */}
         <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-[#111827]/95 p-8 shadow-2xl backdrop-blur-xl transition-all">
+          {/* Mode Switcher Tabs */}
+          <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl mb-6">
+            <button
+              type="button"
+              onClick={() => {
+                setMode('client')
+                setError(null)
+              }}
+              className={`flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                mode === 'client'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5 text-blue-600" />
+              <span>Client Portal</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('admin')
+                setError(null)
+              }}
+              className={`flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                mode === 'admin'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
+              <span>Agency Admin</span>
+            </button>
+          </div>
+
           {/* Header */}
-          <div className="text-center space-y-3 pb-6 border-b border-slate-100 dark:border-slate-800">
-            <div className="mx-auto inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 dark:text-rose-400 shadow-inner">
-              <Lock className="w-6 h-6" />
+          <div className="text-center space-y-2 pb-6 border-b border-slate-100 dark:border-slate-800">
+            <div className="mx-auto inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner">
+              {mode === 'client' ? <Building2 className="w-6 h-6 text-blue-600" /> : <Lock className="w-6 h-6 text-rose-500" />}
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                Admin Portal
+                {mode === 'client' ? 'Client Performance Portal' : 'Agency Administration'}
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Enter your administrative key to manage systems & content
+                {mode === 'client'
+                  ? 'Sign in to access your company\'s live monthly SEO & growth reports'
+                  : 'Enter your administrator key to manage clients & systems'}
               </p>
             </div>
           </div>
 
-          {/* Error Callout */}
+          {/* Disabled Account Alert Callout */}
+          {searchError === 'account_disabled' && (
+            <div className="mt-6 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-start gap-3 text-xs text-amber-800 dark:text-amber-200 animate-in fade-in duration-200">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
+              <div>
+                <strong className="block font-bold">Portal Access Suspended</strong>
+                <span>Your client portal account has been deactivated. Please contact your account administrator.</span>
+              </div>
+            </div>
+          )}
+
+          {/* Form Error Callout */}
           {error && (
             <div className="mt-6 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 flex items-start gap-3 text-xs text-rose-600 dark:text-rose-300 animate-in fade-in duration-200">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -113,12 +188,42 @@ function LoginPage() {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+            {mode === 'client' && (
+              <div className="space-y-2">
+                <label
+                  htmlFor="user-email"
+                  className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
+                >
+                  Account Email
+                </label>
+
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <Mail className="w-4 h-4" />
+                  </div>
+
+                  <input
+                    id="user-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="client@yourbusiness.com"
+                    autoFocus
+                    required
+                    autoComplete="email"
+                    disabled={isSubmitting}
+                    className="w-full pl-10 pr-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               <label
-                htmlFor="admin-password"
+                htmlFor="user-password"
                 className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
               >
-                Admin Password
+                {mode === 'client' ? 'Account Password' : 'Admin Key / Password'}
               </label>
 
               <div className="relative">
@@ -127,12 +232,12 @@ function LoginPage() {
                 </div>
 
                 <input
-                  id="admin-password"
+                  id="user-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  autoFocus
+                  autoFocus={mode === 'admin'}
                   required
                   autoComplete="current-password"
                   disabled={isSubmitting}
@@ -157,16 +262,25 @@ function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-semibold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-semibold text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                mode === 'client'
+                  ? 'bg-blue-600 hover:bg-blue-700'
+                  : 'bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500'
+              }`}
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-rose-400 dark:text-white" />
-                  <span>Verifying Key...</span>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Verifying Credentials...</span>
+                </>
+              ) : mode === 'client' ? (
+                <>
+                  <Building2 className="w-4 h-4 text-blue-200" />
+                  <span>Sign In to Client Portal</span>
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="w-4 h-4 text-rose-400 dark:text-rose-200" />
+                  <ShieldCheck className="w-4 h-4 text-rose-300" />
                   <span>Unlock Admin Session</span>
                 </>
               )}

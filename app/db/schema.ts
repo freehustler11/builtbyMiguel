@@ -1,4 +1,4 @@
-import { doublePrecision, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, doublePrecision, integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 /**
  * Messages table for storing Audit and Contact form inquiries
@@ -86,11 +86,33 @@ export const clients = pgTable('clients', {
   logoUrl: text('logo_url'),
   primaryColor: text('primary_color').default('#2563eb'),
   secondaryColor: text('secondary_color').default('#1e293b'),
+  // White-labeling configuration
+  isWhiteLabel: boolean('is_white_label').default(false).notNull(),
+  partnerName: text('partner_name'),
+  partnerLogoUrl: text('partner_logo_url'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
 export type Client = typeof clients.$inferSelect
 export type NewClient = typeof clients.$inferInsert
+
+/**
+ * Users table for role-based access control (Admin vs Client Portal)
+ */
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: text('email').unique().notNull(),
+  passwordHash: text('password_hash').notNull(),
+  role: text('role', { enum: ['admin', 'client'] }).default('client').notNull(),
+  clientId: uuid('client_id').references(() => clients.id, { onDelete: 'cascade' }),
+  isActive: boolean('is_active').default(true).notNull(),
+  name: text('name'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export type User = typeof users.$inferSelect
+export type NewUser = typeof users.$inferInsert
 
 /**
  * Reports table for monthly performance and analytics reports
@@ -102,18 +124,38 @@ export const reports = pgTable('reports', {
     .references(() => clients.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
   reportMonth: text('report_month').notNull(),
-  // GBP Metrics
+  // Prior Month Relation
+  previousReportId: uuid('previous_report_id').references(() => reports.id, { onDelete: 'set null' }),
+  // GBP Metrics (Current)
   gbpCalls: integer('gbp_calls').default(0),
   gbpDirections: integer('gbp_directions').default(0),
   gbpViews: integer('gbp_views').default(0),
-  // GSC Metrics
+  // GBP Metrics (Previous Month Comparison)
+  prevGbpCalls: integer('prev_gbp_calls').default(0),
+  prevGbpDirections: integer('prev_gbp_directions').default(0),
+  prevGbpViews: integer('prev_gbp_views').default(0),
+  // GBP Reputation
+  gbpRating: doublePrecision('gbp_rating').default(5.0),
+  gbpReviewCount: integer('gbp_review_count').default(0),
+  // GSC Metrics (Current)
   gscClicks: integer('gsc_clicks').default(0),
   gscImpressions: integer('gsc_impressions').default(0),
   gscPosition: doublePrecision('gsc_position').default(0),
-  // GA4 Metrics
+  // GSC Metrics (Previous Month Comparison)
+  prevGscClicks: integer('prev_gsc_clicks').default(0),
+  prevGscImpressions: integer('prev_gsc_impressions').default(0),
+  prevGscPosition: doublePrecision('prev_gsc_position').default(0),
+  // GA4 Metrics (Current)
   gaUsers: integer('ga_users').default(0),
   gaSessions: integer('ga_sessions').default(0),
   gaViews: integer('ga_views').default(0),
+  // GA4 Metrics (Previous Month Comparison)
+  prevGaUsers: integer('prev_ga_users').default(0),
+  prevGaSessions: integer('prev_ga_sessions').default(0),
+  prevGaViews: integer('prev_ga_views').default(0),
+  // Deep Metric Tables (JSONB)
+  topQueries: jsonb('top_queries').$type<Array<{ query: string; clicks: number; impressions: number; position: number }>>().default([]),
+  topPages: jsonb('top_pages').$type<Array<{ path: string; clicks: number; users: number }>>().default([]),
   // Narrative Fields
   summary: text('summary'),
   workCompleted: text('work_completed'),
@@ -123,6 +165,7 @@ export const reports = pgTable('reports', {
 
 export type Report = typeof reports.$inferSelect
 export type NewReport = typeof reports.$inferInsert
+
 
 
 

@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useRouter, Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Users,
   Plus,
@@ -18,6 +18,9 @@ import {
   Image as ImageIcon,
   ArrowUpRight,
   RefreshCw,
+  KeyRound,
+  ShieldCheck,
+  CheckCircle2,
 } from 'lucide-react'
 import { checkAuthServerFn } from '../../lib/auth'
 import { AdminNav } from '../../components/AdminNav'
@@ -29,6 +32,8 @@ import {
   createClientServerFn,
   updateClientServerFn,
   deleteClientServerFn,
+  createOrUpdateClientUserServerFn,
+  toggleClientUserActiveServerFn,
   type ClientWithReportCount,
 } from '../../server/clients'
 import type { Client } from '../../db/schema'
@@ -46,7 +51,11 @@ export const Route = createFileRoute('/admin/clients')({
     }
   },
   loader: async () => {
-    return await getClientsServerFn()
+    const [{ clients }, auth] = await Promise.all([
+      getClientsServerFn(),
+      checkAuthServerFn(),
+    ])
+    return { clients, currentAdmin: auth }
   },
   head: () => ({
     meta: [
@@ -84,7 +93,12 @@ function formatDate(dateInput: string | Date | null) {
 
 function AdminClientsPage() {
   const router = useRouter()
-  const { clients } = Route.useLoaderData()
+  const { clients: initialClients, currentAdmin } = Route.useLoaderData()
+  const [clients, setClients] = useState(initialClients)
+
+  useEffect(() => {
+    setClients(initialClients)
+  }, [initialClients])
 
   // State
   const [searchQuery, setSearchQuery] = useState('')
@@ -102,7 +116,21 @@ function AdminClientsPage() {
   const [logoUrl, setLogoUrl] = useState('')
   const [primaryColor, setPrimaryColor] = useState('#2563eb')
   const [secondaryColor, setSecondaryColor] = useState('#1e293b')
+  const [isWhiteLabel, setIsWhiteLabel] = useState(false)
+  const [partnerName, setPartnerName] = useState('')
+  const [partnerLogoUrl, setPartnerLogoUrl] = useState('')
+  const [isPartnerLogoModalOpen, setIsPartnerLogoModalOpen] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+
+  // Portal Account Modal State
+  const [isPortalModalOpen, setIsPortalModalOpen] = useState(false)
+  const [portalClient, setPortalClient] = useState<ClientWithReportCount | null>(null)
+  const [portalEmail, setPortalEmail] = useState('')
+  const [portalPassword, setPortalPassword] = useState('')
+  const [portalIsActive, setPortalIsActive] = useState(true)
+  const [portalIsSubmitting, setPortalIsSubmitting] = useState(false)
+  const [portalError, setPortalError] = useState<string | null>(null)
+  const [isTogglingId, setIsTogglingId] = useState<string | null>(null)
 
   const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
     const id = Math.random().toString(36).substring(2, 9)
@@ -124,6 +152,9 @@ function AdminClientsPage() {
     setLogoUrl('')
     setPrimaryColor('#2563eb')
     setSecondaryColor('#1e293b')
+    setIsWhiteLabel(false)
+    setPartnerName('')
+    setPartnerLogoUrl('')
     setFormError(null)
     setIsModalOpen(true)
   }
@@ -136,8 +167,145 @@ function AdminClientsPage() {
     setLogoUrl(client.logoUrl || '')
     setPrimaryColor(client.primaryColor || '#2563eb')
     setSecondaryColor(client.secondaryColor || '#1e293b')
+    setIsWhiteLabel(Boolean(client.isWhiteLabel))
+    setPartnerName(client.partnerName || '')
+    setPartnerLogoUrl(client.partnerLogoUrl || '')
     setFormError(null)
     setIsModalOpen(true)
+  }
+
+  const openPortalModal = (client: ClientWithReportCount) => {
+    setPortalClient(client)
+    setPortalEmail(client.portalUser?.email || '')
+    setPortalPassword('')
+    setPortalIsActive(client.portalUser ? client.portalUser.isActive : true)
+    setPortalError(null)
+    setIsPortalModalOpen(true)
+  }
+
+  const handleToggleUserActive = async (client: ClientWithReportCount) => {
+    if (!client.portalUser) return
+    const userId = client.portalUser.id
+    const targetActive = !client.portalUser.isActive
+
+    // Block admin from deactivating self
+    if (currentAdmin?.userId === userId && !targetActive) {
+      addToast('Action Blocked', 'You cannot deactivate your own administrative account.', 'error')
+      return
+    }
+
+    // Optimistic local update
+    setClients((prev) =>
+      prev.map((c) => {
+        if (c.id === client.id && c.portalUser) {
+          return {
+            ...c,
+            portalUser: {
+              ...c.portalUser,
+              isActive: targetActive,
+            },
+          }
+        }
+        return c
+      })
+    )
+
+    try {
+      setIsTogglingId(userId)
+      await toggleClientUserActiveServerFn({
+        data: {
+          userId,
+          isActive: targetActive,
+        },
+      })
+      addToast(
+        targetActive ? 'Access Enabled' : 'Access Suspended',
+        targetActive
+          ? `Portal access for "${client.businessName}" is now active.`
+          : `Portal access for "${client.businessName}" has been suspended.`,
+        targetActive ? 'success' : 'info'
+      )
+    } catch (err: any) {
+      // Rollback optimistic state
+      setClients((prev) =>
+        prev.map((c) => {
+          if (c.id === client.id && c.portalUser) {
+            return {
+              ...c,
+              portalUser: {
+                ...c.portalUser,
+                isActive: !targetActive,
+              },
+            }
+          }
+          return c
+        })
+      )
+      addToast('Action Failed', err?.message || 'Could not update access status', 'error')
+    } finally {
+      setIsTogglingId(null)
+    }
+  }
+
+  const handleSavePortalUser = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!portalClient) return
+    setPortalError(null)
+
+    if (!portalEmail.trim() || !portalEmail.includes('@')) {
+      setPortalError('Please enter a valid email address.')
+      return
+    }
+
+    const isNewUser = !portalClient.portalUser
+    if (isNewUser && (!portalPassword || portalPassword.length < 6)) {
+      setPortalError('Password must be at least 6 characters long.')
+      return
+    }
+    if (!isNewUser && portalPassword && portalPassword.length < 6) {
+      setPortalError('New password must be at least 6 characters long.')
+      return
+    }
+
+    try {
+      setPortalIsSubmitting(true)
+      const res = await createOrUpdateClientUserServerFn({
+        data: {
+          clientId: portalClient.id,
+          email: portalEmail.trim(),
+          password: portalPassword.trim() || undefined,
+          isActive: portalIsActive,
+        },
+      })
+
+      // Update local clients state immediately
+      setClients((prev) =>
+        prev.map((c) => {
+          if (c.id === portalClient.id) {
+            return {
+              ...c,
+              portalUser: {
+                id: res.user.id,
+                email: res.user.email,
+                isActive: res.user.isActive,
+                createdAt: c.portalUser?.createdAt || new Date(),
+              },
+            }
+          }
+          return c
+        })
+      )
+
+      addToast(
+        'Portal Credentials Saved',
+        `Access credentials for "${portalClient.businessName}" saved successfully.`
+      )
+      setIsPortalModalOpen(false)
+    } catch (err: any) {
+      setPortalError(err?.message || 'Failed to update portal account.')
+    } finally {
+      setPortalIsSubmitting(false)
+    }
   }
 
   const handleSaveClient = async (e: React.FormEvent) => {
@@ -165,6 +333,9 @@ function AdminClientsPage() {
             logoUrl: logoUrl.trim() || undefined,
             primaryColor: primaryColor.trim() || undefined,
             secondaryColor: secondaryColor.trim() || undefined,
+            isWhiteLabel,
+            partnerName: isWhiteLabel ? partnerName.trim() || undefined : undefined,
+            partnerLogoUrl: isWhiteLabel ? partnerLogoUrl.trim() || undefined : undefined,
           },
         })
         addToast('Client Updated', `"${businessName}" details updated successfully.`)
@@ -177,6 +348,9 @@ function AdminClientsPage() {
             logoUrl: logoUrl.trim() || undefined,
             primaryColor: primaryColor.trim() || undefined,
             secondaryColor: secondaryColor.trim() || undefined,
+            isWhiteLabel,
+            partnerName: isWhiteLabel ? partnerName.trim() || undefined : undefined,
+            partnerLogoUrl: isWhiteLabel ? partnerLogoUrl.trim() || undefined : undefined,
           },
         })
         addToast('Client Created', `"${businessName}" has been added to your client portfolio.`)
@@ -323,9 +497,17 @@ function AdminClientsPage() {
                         )}
 
                         <div className="min-w-0">
-                          <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
-                            {client.businessName}
-                          </h3>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
+                              {client.businessName}
+                            </h3>
+                            {client.isWhiteLabel && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shrink-0">
+                                <ShieldCheck className="w-3 h-3" />
+                                <span>White-Label</span>
+                              </span>
+                            )}
+                          </div>
                           <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                             <User className="w-3 h-3 text-slate-400" />
                             <span className="truncate">{client.name}</span>
@@ -368,11 +550,111 @@ function AdminClientsPage() {
                       </a>
                     )}
 
+                    {/* Account Access Section */}
+                    <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <KeyRound className="w-3.5 h-3.5 text-slate-400" />
+                          <span className="text-[10px] font-mono uppercase font-bold text-slate-400 tracking-wider">
+                            Account Access
+                          </span>
+                        </div>
+                        {client.portalUser && (
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${
+                                client.portalUser.isActive
+                                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+                                  : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800'
+                              }`}
+                            >
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  client.portalUser.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                                }`}
+                              />
+                              {client.portalUser.isActive ? 'Active' : 'Suspended'}
+                            </span>
+
+                            {/* Instant Toggle Switch */}
+                            <button
+                              type="button"
+                              role="switch"
+                              aria-checked={client.portalUser.isActive}
+                              disabled={
+                                isTogglingId === client.portalUser.id ||
+                                currentAdmin?.userId === client.portalUser.id
+                              }
+                              onClick={() => handleToggleUserActive(client)}
+                              title={
+                                currentAdmin?.userId === client.portalUser.id
+                                  ? 'Cannot deactivate your own account'
+                                  : client.portalUser.isActive
+                                  ? 'Click to suspend portal access'
+                                  : 'Click to activate portal access'
+                              }
+                              className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                                client.portalUser.isActive
+                                  ? 'bg-emerald-500'
+                                  : 'bg-slate-300 dark:bg-slate-700'
+                              }`}
+                            >
+                              <span className="sr-only">Toggle client active access</span>
+                              <span
+                                aria-hidden="true"
+                                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                                  client.portalUser.isActive ? 'translate-x-4' : 'translate-x-0'
+                                }`}
+                              />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {client.portalUser ? (
+                        <div className="flex items-center justify-between gap-2 pt-0.5">
+                          <span
+                            className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate block"
+                            title={client.portalUser.email}
+                          >
+                            {client.portalUser.email}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => openPortalModal(client)}
+                            className="px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/80 dark:border-blue-900/50 transition shrink-0 cursor-pointer"
+                          >
+                            Edit Credentials
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between gap-2 pt-0.5">
+                          <span className="font-mono text-xs text-slate-400 italic">
+                            No credentials created
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => openPortalModal(client)}
+                            className="px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/80 dark:border-blue-900/50 transition shrink-0 cursor-pointer"
+                          >
+                            + Setup Access
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
                     {/* Branding Color Palette Swatches */}
                     <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 space-y-2">
-                      <span className="text-[10px] font-mono uppercase font-bold text-slate-400 tracking-wider">
-                        Brand Identity
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-mono uppercase font-bold text-slate-400 tracking-wider">
+                          Brand Identity
+                        </span>
+                        {client.partnerName && (
+                          <span className="text-[10px] font-mono text-slate-400 truncate max-w-[130px]">
+                            via {client.partnerName}
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-3 text-xs font-mono">
                         <div className="flex items-center gap-1.5">
                           <span
@@ -524,6 +806,67 @@ function AdminClientsPage() {
                 )}
               </div>
 
+              {/* White-Label Settings */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-mono font-bold uppercase text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
+                      <span>White-Label Mode</span>
+                    </span>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Hide all "built by Miguel" branding and contact info on this client's reports.
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={isWhiteLabel}
+                    onChange={(e) => setIsWhiteLabel(e.target.checked)}
+                    className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
+                  />
+                </label>
+
+                {isWhiteLabel && (
+                  <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-800 animate-in fade-in">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                        Managing Partner / Agency Name (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={partnerName}
+                        onChange={(e) => setPartnerName(e.target.value)}
+                        placeholder="e.g. Apex Growth Partners"
+                        className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                        Partner Logo URL (Optional)
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={partnerLogoUrl}
+                          onChange={(e) => setPartnerLogoUrl(e.target.value)}
+                          placeholder="https://... partner logo"
+                          className="flex-1 px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setIsPartnerLogoModalOpen(true)}
+                          className="px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 cursor-pointer"
+                          title="Choose partner logo from media library"
+                        >
+                          <ImageIcon className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Brand Colors (Primary and Secondary) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 {/* Primary Color */}
@@ -635,7 +978,154 @@ function AdminClientsPage() {
         </div>
       )}
 
-      {/* Media Picker Modal for Logo */}
+      {/* Client Portal Account Modal */}
+      {isPortalModalOpen && portalClient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 shadow-2xl animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/50">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    Client Portal Access
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {portalClient.businessName}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPortalModalOpen(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {portalError && (
+              <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-900 text-xs text-rose-600 dark:text-rose-400 font-semibold">
+                {portalError}
+              </div>
+            )}
+
+            <form onSubmit={handleSavePortalUser} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  Client Login Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={portalEmail}
+                  onChange={(e) => setPortalEmail(e.target.value)}
+                  placeholder="client@company.com"
+                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    {portalClient.portalUser ? 'Reset Password (optional)' : 'Password *'}
+                  </label>
+                  {portalClient.portalUser && (
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Leave blank to keep current
+                    </span>
+                  )}
+                </div>
+                <input
+                  type="password"
+                  required={!portalClient.portalUser}
+                  value={portalPassword}
+                  onChange={(e) => setPortalPassword(e.target.value)}
+                  placeholder={
+                    portalClient.portalUser
+                      ? '•••••••• (leave blank to keep current)'
+                      : 'At least 6 characters'
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                />
+              </div>
+
+              {/* Account Active Status in Modal */}
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="space-y-0.5">
+                  <span className="block text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Account Status
+                  </span>
+                  <span className="block text-[11px] text-slate-500 dark:text-slate-400">
+                    {portalIsActive
+                      ? 'Account is active and can sign in.'
+                      : 'Account is suspended. Sign-in attempts will be blocked.'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={portalIsActive}
+                  disabled={currentAdmin?.userId === portalClient.portalUser?.id}
+                  onClick={() => setPortalIsActive(!portalIsActive)}
+                  title={
+                    currentAdmin?.userId === portalClient.portalUser?.id
+                      ? 'Cannot deactivate your own account'
+                      : portalIsActive
+                      ? 'Click to suspend account'
+                      : 'Click to activate account'
+                  }
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    portalIsActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
+                  }`}
+                >
+                  <span className="sr-only">Toggle client active access</span>
+                  <span
+                    aria-hidden="true"
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                      portalIsActive ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 text-[11px] text-blue-700 dark:text-blue-300">
+                <span>Clients sign in at <code>/login</code> and are immediately directed to their isolated <code>/portal</code> view.</span>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsPortalModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={portalIsSubmitting}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition disabled:opacity-50 cursor-pointer"
+                >
+                  {portalIsSubmitting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Save Portal Credentials</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Media Picker Modal for Client Logo */}
       <MediaPickerModal
         isOpen={isMediaModalOpen}
         onClose={() => setIsMediaModalOpen(false)}
@@ -645,6 +1135,19 @@ function AdminClientsPage() {
           setLogoUrl(media.fileUrl)
           setIsMediaModalOpen(false)
           addToast('Logo Selected', `Selected "${media.filename}".`)
+        }}
+      />
+
+      {/* Media Picker Modal for Partner Logo */}
+      <MediaPickerModal
+        isOpen={isPartnerLogoModalOpen}
+        onClose={() => setIsPartnerLogoModalOpen(false)}
+        acceptTypes="images"
+        title="Select Partner Agency Logo from Media Library"
+        onSelect={(media) => {
+          setPartnerLogoUrl(media.fileUrl)
+          setIsPartnerLogoModalOpen(false)
+          addToast('Partner Logo Selected', `Selected "${media.filename}".`)
         }}
       />
 

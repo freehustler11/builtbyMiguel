@@ -4,6 +4,7 @@ import {
   ScrollRestoration,
   HeadContent,
   Scripts,
+  useRouterState,
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
 import { Navbar } from '@/components/Navbar'
@@ -184,6 +185,26 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootComponent() {
+  const currentPath = useRouterState({ select: (s) => s.location.pathname })
+  const isIsolated =
+    currentPath.startsWith('/portal') ||
+    (currentPath.startsWith('/admin/reports/') && currentPath !== '/admin/reports' && currentPath !== '/admin/reports/new')
+
+  if (isIsolated) {
+    return (
+      <html lang="en">
+        <head>
+          <HeadContent />
+        </head>
+        <body className="bg-slate-100 dark:bg-[#070b14] print:bg-white text-slate-900 dark:text-white print:text-black antialiased font-sans min-h-screen">
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+        </body>
+      </html>
+    )
+  }
+
   return (
     <html lang="en">
       <head>
