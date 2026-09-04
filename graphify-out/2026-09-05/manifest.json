@@ -1062,9 +1062,9 @@
     "semantic_hash": ""
   },
   "app/db/schema.ts": {
-    "mtime": 1788524748.4042778,
-    "seen": 1788525592.0432727,
-    "ast_hash": "f158d8384eacb5f80ea3c548dd57b725",
+    "mtime": 1788538568.5241494,
+    "seen": 1788538793.328323,
+    "ast_hash": "049091639541a1689d9f774d86a7632a",
     "semantic_hash": ""
   },
   "app/lib/auth.ts": {
@@ -3012,8 +3012,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1788537344.925526,
-    "seen": 1788537470.0496867,
+    "mtime": 1788538711.6494498,
+    "seen": 1788538793.5834072,
     "ast_hash": "e4223283dbb6d6e2ab58d43ec64f5475",
     "semantic_hash": ""
   },
@@ -3162,9 +3162,9 @@
     "semantic_hash": ""
   },
   "app/server/reports.ts": {
-    "mtime": 1788525019.2842655,
-    "seen": 1788525592.0610385,
-    "ast_hash": "5b8d85e89dd6669cc8bdf0a92c46a1e6",
+    "mtime": 1788538573.4785924,
+    "seen": 1788538793.377476,
+    "ast_hash": "e1993cddd5b5a125db320e6b09a0c375",
     "semantic_hash": ""
   },
   "src/routes/admin/clients.tsx": {
@@ -3186,9 +3186,9 @@
     "semantic_hash": ""
   },
   "src/routes/admin/reports/new.tsx": {
-    "mtime": 1788537266.2942996,
-    "seen": 1788537469.6608207,
-    "ast_hash": "4fdefafe043c675f4e2b576624ce5960",
+    "mtime": 1788538604.5149176,
+    "seen": 1788538793.4108052,
+    "ast_hash": "7700bc60bda91a420cf19e3bf5d3484a",
     "semantic_hash": ""
   },
   "src/server/clients.ts": {
@@ -3204,9 +3204,9 @@
     "semantic_hash": ""
   },
   "src/components/ReportDocument.tsx": {
-    "mtime": 1788537214.5773048,
-    "seen": 1788537469.6322362,
-    "ast_hash": "077ee7206e51b67f8b925b44a9ce69f4",
+    "mtime": 1788538615.539634,
+    "seen": 1788538793.3944762,
+    "ast_hash": "828fac57fd785df497ba3c7eb02c8859",
     "semantic_hash": ""
   },
   "src/routes/portal.tsx": {
@@ -3264,9 +3264,9 @@
     "semantic_hash": ""
   },
   "scripts/simulate.ts": {
-    "mtime": 1788525519.232144,
-    "seen": 1788525592.0928333,
-    "ast_hash": "8f82ddf65a9c1c843cdf3b0d42672bc8",
+    "mtime": 1788538686.3694723,
+    "seen": 1788538793.3865585,
+    "ast_hash": "32fdb9f7313d33ce61656c54f629d905",
     "semantic_hash": ""
   },
   "src/components/ThemedNumberInput.tsx": {
