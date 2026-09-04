@@ -7,6 +7,20 @@ import { db, users } from '../db'
 const COOKIE_NAME = 'admin_session'
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 // 7 days in seconds
 
+const isProd = process.env.NODE_ENV === 'production'
+const cookieDomain = isProd ? (process.env.COOKIE_DOMAIN || '.builtbymiguel.net') : undefined
+const isSecure = isProd || process.env.SECURE_COOKIES === 'true'
+
+export function getSessionCookieOptions() {
+  return {
+    path: '/',
+    httpOnly: true,
+    secure: isSecure,
+    sameSite: 'lax' as const,
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
+  }
+}
+
 export interface SessionUser {
   role: 'superadmin' | 'partner' | 'admin' | 'client'
   userId?: string
@@ -249,12 +263,7 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
 
       if (dbUser) {
         if (!dbUser.isActive) {
-          deleteCookie(COOKIE_NAME, {
-            path: '/',
-            httpOnly: true,
-            secure: false,
-            sameSite: 'lax',
-          })
+          deleteCookie(COOKIE_NAME, getSessionCookieOptions())
           throw redirect({
             to: '/login',
             search: {
@@ -272,12 +281,7 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
           isActive: dbUser.isActive,
         }
       } else if (session.role === 'client') {
-        deleteCookie(COOKIE_NAME, {
-          path: '/',
-          httpOnly: true,
-          secure: false,
-          sameSite: 'lax',
-        })
+        deleteCookie(COOKIE_NAME, getSessionCookieOptions())
         throw redirect({
           to: '/login',
           search: {
@@ -343,10 +347,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
         })
 
         setCookie(COOKIE_NAME, token, {
-          path: '/',
-          httpOnly: true,
-          secure: false,
-          sameSite: 'lax',
+          ...getSessionCookieOptions(),
           maxAge: SESSION_MAX_AGE,
         })
 
@@ -360,10 +361,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       ) {
         const token = await createSessionToken({ role: 'superadmin', email: data.email })
         setCookie(COOKIE_NAME, token, {
-          path: '/',
-          httpOnly: true,
-          secure: false,
-          sameSite: 'lax',
+          ...getSessionCookieOptions(),
           maxAge: SESSION_MAX_AGE,
         })
         return { success: true, role: 'superadmin' }
@@ -383,10 +381,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     const token = await createSessionToken({ role: 'superadmin' })
 
     setCookie(COOKIE_NAME, token, {
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      ...getSessionCookieOptions(),
       maxAge: SESSION_MAX_AGE,
     })
 
@@ -398,12 +393,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
  */
 export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
   async () => {
-    deleteCookie(COOKIE_NAME, {
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    })
+    deleteCookie(COOKIE_NAME, getSessionCookieOptions())
     return { success: true }
   },
 )

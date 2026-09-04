@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm'
 import { getCookie, deleteCookie } from '@tanstack/react-start/server'
 import { redirect } from '@tanstack/react-router'
 import { db, users } from '../db'
-import { getSessionData } from '../lib/auth'
+import { getSessionData, getSessionCookieOptions } from '../lib/auth'
 
 const COOKIE_NAME = 'admin_session'
 
@@ -45,12 +45,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
 
     if (dbUser) {
       if (!dbUser.isActive) {
-        deleteCookie(COOKIE_NAME, {
-          path: '/',
-          httpOnly: true,
-          secure: false,
-          sameSite: 'lax',
-        })
+        deleteCookie(COOKIE_NAME, getSessionCookieOptions())
         throw redirect({
           to: '/login',
           search: {
@@ -67,12 +62,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
         isActive: dbUser.isActive,
       }
     } else if (session.role === 'client') {
-      deleteCookie(COOKIE_NAME, {
-        path: '/',
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-      })
+      deleteCookie(COOKIE_NAME, getSessionCookieOptions())
       throw redirect({
         to: '/login',
         search: {

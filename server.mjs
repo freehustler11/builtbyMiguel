@@ -62,11 +62,73 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
-  // 3. Dynamic TanStack Start SSR Handler
+  // 3. Hostname Detection & Routing (builtbymiguel.net vs app.builtbymiguel.net)
+  const protocol = req.headers['x-forwarded-proto'] || 'http'
+  const rawHost = req.headers['x-forwarded-host'] || req.headers.host || `localhost:${port}`
+  const host = rawHost.split(':')[0].toLowerCase()
+
+  const isInternal =
+    urlPath === '/login' ||
+    urlPath.startsWith('/login/') ||
+    urlPath === '/admin' ||
+    urlPath.startsWith('/admin/') ||
+    urlPath === '/portal' ||
+    urlPath.startsWith('/portal/') ||
+    urlPath === '/messages' ||
+    urlPath.startsWith('/messages/')
+
+  const isTechnicalOrAsset =
+    urlPath.startsWith('/_server') ||
+    urlPath.startsWith('/_build') ||
+    urlPath.startsWith('/assets/') ||
+    urlPath.startsWith('/api/') ||
+    urlPath.startsWith('/favicon') ||
+    urlPath.startsWith('/logo') ||
+    urlPath === '/robots.txt' ||
+    urlPath === '/sitemap.xml' ||
+    urlPath === '/llms.txt' ||
+    urlPath === '/llms-full.txt'
+
+  // Rule 1: builtbymiguel.net (marketing site)
+  // If visiting internal app routes, redirect to app.builtbymiguel.net
+  if (host === 'builtbymiguel.net' || host === 'www.builtbymiguel.net') {
+    if (isInternal) {
+      res.writeHead(302, {
+        Location: `https://app.builtbymiguel.net${req.url}`,
+      })
+      res.end()
+      return
+    }
+  }
+
+  // Rule 2: app.builtbymiguel.net (app subdomain)
+  if (host === 'app.builtbymiguel.net') {
+    // Root / redirects to /admin if session active, else /login
+    if (urlPath === '/') {
+      const cookies = req.headers.cookie || ''
+      const hasSession = cookies.includes('admin_session=')
+      const targetPath = hasSession ? '/admin' : '/login'
+      res.writeHead(302, {
+        Location: `https://app.builtbymiguel.net${targetPath}`,
+      })
+      res.end()
+      return
+    }
+
+    // Only render /login, /admin/*, /portal/*, /messages.
+    // If loading a marketing page, redirect back to builtbymiguel.net
+    if (!isInternal && !isTechnicalOrAsset) {
+      res.writeHead(302, {
+        Location: `https://builtbymiguel.net${req.url}`,
+      })
+      res.end()
+      return
+    }
+  }
+
+  // 4. Dynamic TanStack Start SSR Handler
   try {
-    const protocol = req.headers['x-forwarded-proto'] || 'http'
-    const host = req.headers['x-forwarded-host'] || req.headers.host || `localhost:${port}`
-    const fullUrl = `${protocol}://${host}${req.url}`
+    const fullUrl = `${protocol}://${rawHost}${req.url}`
 
     const headers = new Headers()
     for (const [key, value] of Object.entries(req.headers)) {

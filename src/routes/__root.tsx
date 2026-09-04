@@ -5,10 +5,12 @@ import {
   HeadContent,
   Scripts,
   useRouterState,
+  redirect,
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import { checkHostnameRoutingServerFn, isInternalPath, isMarketingPath } from '../lib/hostname'
 import appCss from '../index.css?url'
 
 export interface RouterContext {
@@ -73,6 +75,47 @@ const LOCAL_BUSINESS_JSON_LD = {
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async ({ location }) => {
+    // Client-side browser navigation check
+    if (typeof window !== 'undefined') {
+      const clientHost = window.location.host.split(':')[0].toLowerCase()
+      if (clientHost === 'builtbymiguel.net' || clientHost === 'www.builtbymiguel.net') {
+        if (isInternalPath(location.pathname)) {
+          window.location.href = `https://app.builtbymiguel.net${location.pathname}${location.searchStr || ''}`
+          return
+        }
+      } else if (clientHost === 'app.builtbymiguel.net') {
+        if (location.pathname === '/') {
+          window.location.href = 'https://app.builtbymiguel.net/login'
+          return
+        }
+        if (isMarketingPath(location.pathname)) {
+          window.location.href = `https://builtbymiguel.net${location.pathname}${location.searchStr || ''}`
+          return
+        }
+      }
+    } else {
+      // Server-side (SSR) check
+      try {
+        const res = await checkHostnameRoutingServerFn({
+          data: {
+            pathname: location.pathname,
+            search: location.searchStr || '',
+          },
+        })
+        if (res?.redirectUrl) {
+          throw redirect({
+            href: res.redirectUrl,
+            statusCode: 302,
+          })
+        }
+      } catch (err) {
+        if (err && typeof err === 'object' && ('statusCode' in err || 'href' in err)) {
+          throw err
+        }
+      }
+    }
+  },
   head: () => ({
     meta: [
       {

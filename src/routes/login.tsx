@@ -126,7 +126,7 @@ function LoginPage() {
         {/* Back Link */}
         <div className="flex justify-center">
           <a
-            href="/"
+            href="https://builtbymiguel.net"
             className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 hover:text-slate-900 dark:hover:text-slate-300 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
