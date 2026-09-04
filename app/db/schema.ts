@@ -194,8 +194,8 @@ export const reports = pgTable('reports', {
     show_next_steps: true,
   }),
   // Deep Metric Tables (JSONB)
-  topQueries: jsonb('top_queries').$type<Array<{ query: string; clicks: number; impressions: number; position: number }>>().default([]),
-  topPages: jsonb('top_pages').$type<Array<{ path: string; impressions: number; position: number; clicks?: number; users?: number }>>().default([]),
+  topQueries: jsonb('top_queries').$type<Array<{ query: string; clicks: number | string; impressions: number | string; position: number | string }>>().default([]),
+  topPages: jsonb('top_pages').$type<Array<{ path: string; impressions: number | string; position: number | string; clicks?: number | string; users?: number | string }>>().default([]),
   // Narrative Fields
   summaryTitle: text('summary_title').default('Performance Highlights & Strategic Updates'),
   summary: text('summary'),

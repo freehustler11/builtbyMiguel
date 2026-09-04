@@ -127,19 +127,19 @@ function getDefaultMonthString(): string {
 }
 
 const DEFAULT_QUERY_ITEMS: QueryItem[] = [
-  { query: '', clicks: 0, impressions: 0, position: 1.0 },
-  { query: '', clicks: 0, impressions: 0, position: 1.0 },
-  { query: '', clicks: 0, impressions: 0, position: 1.0 },
-  { query: '', clicks: 0, impressions: 0, position: 1.0 },
-  { query: '', clicks: 0, impressions: 0, position: 1.0 },
+  { query: '', clicks: '', impressions: '', position: '' },
+  { query: '', clicks: '', impressions: '', position: '' },
+  { query: '', clicks: '', impressions: '', position: '' },
+  { query: '', clicks: '', impressions: '', position: '' },
+  { query: '', clicks: '', impressions: '', position: '' },
 ]
 
 const DEFAULT_PAGE_ITEMS: PageItem[] = [
-  { path: '/', impressions: 0, position: 1.0 },
-  { path: '', impressions: 0, position: 1.0 },
-  { path: '', impressions: 0, position: 1.0 },
-  { path: '', impressions: 0, position: 1.0 },
-  { path: '', impressions: 0, position: 1.0 },
+  { path: '/', impressions: '', position: '' },
+  { path: '', impressions: '', position: '' },
+  { path: '', impressions: '', position: '' },
+  { path: '', impressions: '', position: '' },
+  { path: '', impressions: '', position: '' },
 ]
 
 function AdminReportFormPage() {
@@ -233,9 +233,14 @@ function AdminReportFormPage() {
     if (existingReport && Array.isArray(existingReport.topQueries) && existingReport.topQueries.length > 0) {
       const items = [...existingReport.topQueries]
       while (items.length < 5) {
-        items.push({ query: '', clicks: 0, impressions: 0, position: 1.0 })
+        items.push({ query: '', clicks: '', impressions: '', position: '' })
       }
-      return items.slice(0, 5)
+      return items.slice(0, 5).map((q) => ({
+        query: q.query || '',
+        clicks: q.clicks !== undefined && q.clicks !== null ? q.clicks : '',
+        impressions: q.impressions !== undefined && q.impressions !== null ? q.impressions : '',
+        position: q.position !== undefined && q.position !== null ? q.position : '',
+      }))
     }
     return DEFAULT_QUERY_ITEMS
   })
@@ -244,12 +249,12 @@ function AdminReportFormPage() {
     if (existingReport && Array.isArray(existingReport.topPages) && existingReport.topPages.length > 0) {
       const items = [...existingReport.topPages]
       while (items.length < 5) {
-        items.push({ path: '', impressions: 0, position: 1.0 })
+        items.push({ path: '', impressions: '', position: '' })
       }
       return items.slice(0, 5).map((p: any) => ({
         path: p.path || '',
-        impressions: p.impressions !== undefined ? p.impressions : (p.clicks || 0),
-        position: p.position !== undefined ? p.position : 1.0,
+        impressions: p.impressions !== undefined && p.impressions !== null ? p.impressions : (p.clicks !== undefined && p.clicks !== null ? p.clicks : ''),
+        position: p.position !== undefined && p.position !== null ? p.position : '',
       }))
     }
     return DEFAULT_PAGE_ITEMS
@@ -1016,11 +1021,11 @@ function AdminReportFormPage() {
                     <span>Analytics (GA4)</span>
                   </div>
 
-                  {/* Users */}
+                  {/* Total Users */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Users (Current)
+                        Total Users (Current)
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
@@ -1031,7 +1036,7 @@ function AdminReportFormPage() {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block" title="Total Users (Prior Month)">
                         Prior Month
                       </label>
                       <ThemedNumberInput
@@ -1206,8 +1211,8 @@ function AdminReportFormPage() {
                               theme="emerald"
                               min="0"
                               placeholder="0"
-                              value={q.clicks === 0 ? '' : q.clicks}
-                              onChange={(e) => handleQueryChange(idx, 'clicks', e.target.value === '' ? 0 : Number(e.target.value))}
+                              value={q.clicks === 0 || q.clicks === '' ? '' : q.clicks}
+                              onChange={(e) => handleQueryChange(idx, 'clicks', e.target.value)}
                               inputClassName="text-right focus:ring-2 focus:ring-emerald-500"
                             />
                           </div>
@@ -1216,8 +1221,8 @@ function AdminReportFormPage() {
                               theme="emerald"
                               min="0"
                               placeholder="0"
-                              value={q.impressions === 0 ? '' : q.impressions}
-                              onChange={(e) => handleQueryChange(idx, 'impressions', e.target.value === '' ? 0 : Number(e.target.value))}
+                              value={q.impressions === 0 || q.impressions === '' ? '' : q.impressions}
+                              onChange={(e) => handleQueryChange(idx, 'impressions', e.target.value)}
                               inputClassName="text-right focus:ring-2 focus:ring-emerald-500"
                             />
                           </div>
@@ -1227,8 +1232,8 @@ function AdminReportFormPage() {
                               step="0.1"
                               min="1.0"
                               placeholder="1.0"
-                              value={!q.query && (q.position === 1 || !q.position) ? '' : (q.position === 1 ? '1.0' : (q.position || ''))}
-                              onChange={(e) => handleQueryChange(idx, 'position', e.target.value === '' ? 1.0 : Number(e.target.value))}
+                              value={q.position !== undefined && q.position !== null ? q.position : ''}
+                              onChange={(e) => handleQueryChange(idx, 'position', e.target.value)}
                               inputClassName="text-right focus:ring-2 focus:ring-emerald-500"
                             />
                           </div>
@@ -1297,8 +1302,8 @@ function AdminReportFormPage() {
                               theme="indigo"
                               min="0"
                               placeholder="0"
-                              value={p.impressions === 0 || p.impressions === undefined ? '' : p.impressions}
-                              onChange={(e) => handlePageChange(idx, 'impressions', e.target.value === '' ? 0 : Number(e.target.value))}
+                              value={p.impressions === 0 || p.impressions === '' || p.impressions === undefined ? '' : p.impressions}
+                              onChange={(e) => handlePageChange(idx, 'impressions', e.target.value)}
                               inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
                             />
                           </div>
@@ -1308,8 +1313,8 @@ function AdminReportFormPage() {
                               step="0.1"
                               min="1.0"
                               placeholder="1.0"
-                              value={!p.path && (p.position === 1 || !p.position) ? '' : (p.position === 1 ? '1.0' : (p.position || ''))}
-                              onChange={(e) => handlePageChange(idx, 'position', e.target.value === '' ? 1.0 : Number(e.target.value))}
+                              value={p.position !== undefined && p.position !== null ? p.position : ''}
+                              onChange={(e) => handlePageChange(idx, 'position', e.target.value)}
                               inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
                             />
                           </div>

@@ -635,7 +635,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Users className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Active Users</span>
+                      <span>Total Users</span>
                     </span>
                     <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">

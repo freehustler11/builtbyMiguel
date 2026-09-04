@@ -329,7 +329,7 @@ function AdminReportsListPage() {
                       <div className="p-2.5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 space-y-0.5">
                         <div className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase truncate flex items-center justify-center gap-1">
                           <Users className="w-2.5 h-2.5" />
-                          <span>Users</span>
+                          <span>Total Users</span>
                         </div>
                         <div className="text-sm font-extrabold text-indigo-900 dark:text-indigo-200">
                           {report.gaUsers || 0}

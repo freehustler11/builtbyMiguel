@@ -5,17 +5,17 @@ import { assertActiveSession, getEffectivePartnerId } from './auth'
 
 export interface QueryItem {
   query: string
-  clicks: number
-  impressions: number
-  position: number
+  clicks: number | string
+  impressions: number | string
+  position: number | string
 }
 
 export interface PageItem {
   path: string
-  impressions: number
-  position: number
-  clicks?: number
-  users?: number
+  impressions: number | string
+  position: number | string
+  clicks?: number | string
+  users?: number | string
 }
 
 export interface DisplayOptions {
