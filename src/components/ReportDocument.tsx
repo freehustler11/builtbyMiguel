@@ -18,6 +18,9 @@ import {
   Award,
   Target,
   Activity,
+  Zap,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react'
 import type { Report, Client } from '../db/schema'
 import type { DisplayOptions, QueryItem, PageItem } from '../server/reports'
@@ -177,6 +180,11 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
   const gaSessionsMoM = getMoMChange(report.gaSessions, report.prevGaSessions)
   const gaViewsMoM = getMoMChange(report.gaViews, report.prevGaViews)
 
+  // Executive KPI summary calculations
+  const customerActions = (report.gbpCalls || 0) + (report.gbpDirections || 0)
+  const prevCustomerActions = (report.prevGbpCalls || 0) + (report.prevGbpDirections || 0)
+  const customerActionsMoM = getMoMChange(customerActions, prevCustomerActions)
+
   return (
     <div
       className="report-root flex flex-col items-center gap-8 print:gap-0 print:block w-full overflow-x-auto print:overflow-visible"
@@ -186,7 +194,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
       }}
     >
       {/* ========================================================================= */}
-      {/* PAGE 1: SLIM EXECUTIVE HEADER, SUMMARY & 4-METRIC BALANCED KPIS           */}
+      {/* PAGE 1: EXECUTIVE DASHBOARD & PLATFORM PERFORMANCE                        */}
       {/* ========================================================================= */}
       <div
         className="report-page report-page-1 bg-white text-slate-900 shadow-xl hover:shadow-2xl transition-shadow rounded-2xl print:rounded-none border border-slate-200/80 print:border-none flex flex-col justify-between"
@@ -202,47 +210,47 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           pageBreakAfter: 'always',
         }}
       >
-        <div className="flex-1 flex flex-col justify-between space-y-4 print:space-y-3">
+        <div className="flex-1 flex flex-col justify-start gap-3.5 print:gap-3">
           {/* Top Slim Executive Brand Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 print:border-slate-300">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 print:border-slate-300">
             {/* Left: Client Logo & Business Identity */}
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3.5 min-w-0">
               {client.logoUrl ? (
-                <div className="h-12 w-auto max-w-[180px] flex items-center justify-start shrink-0">
+                <div className="h-11 w-auto max-w-[170px] flex items-center justify-start shrink-0">
                   <img
                     src={client.logoUrl}
                     alt={client.businessName}
-                    className="h-full w-auto max-w-[180px] object-contain object-left"
+                    className="h-full w-auto max-w-[170px] object-contain object-left"
                   />
                 </div>
               ) : (
                 <div
-                  className="h-12 w-12 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-xs shrink-0"
+                  className="h-11 w-11 rounded-xl flex items-center justify-center text-white font-extrabold text-base shadow-xs shrink-0"
                   style={{ backgroundColor: primaryColor }}
                 >
                   {client.businessName.substring(0, 2).toUpperCase()}
                 </div>
               )}
 
-              <div className="space-y-1">
+              <div className="space-y-0.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">
                     {client.businessName}
                   </h1>
                   <span
-                    className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-2xs"
+                    className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-2xs shrink-0"
                     style={{ backgroundColor: primaryColor }}
                   >
                     Performance Audit
                   </span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 font-mono">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-slate-500 font-mono">
                   <span className="font-bold text-slate-800">Period: {report.reportMonth}</span>
                   {options.show_contact_person && client.name && (
                     <>
                       <span>•</span>
-                      <span>Contact: {client.name}</span>
+                      <span className="truncate">Contact: {client.name}</span>
                     </>
                   )}
                   {client.websiteUrl && (
@@ -252,7 +260,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                         href={client.websiteUrl.startsWith('http') ? client.websiteUrl : `https://${client.websiteUrl}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="hover:underline text-slate-600 print:text-black font-medium"
+                        className="hover:underline text-slate-600 print:text-black font-medium truncate max-w-[200px]"
                       >
                         {client.websiteUrl.replace(/^https?:\/\//, '')}
                       </a>
@@ -268,7 +276,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
               </div>
             </div>
 
-            {/* Right: Agency / Partner Badge (Completely hidden if show_agency_info is false) */}
+            {/* Right: Agency / Partner Badge */}
             {options.show_agency_info && (
               isWhiteLabel ? (
                 client.partnerLogoUrl ? (
@@ -294,12 +302,113 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             )}
           </div>
 
-          {/* Executive Summary */}
+          {/* Executive KPI Snapshot Grid (4 Hero Metric Cards) */}
+          <div className="grid grid-cols-4 gap-2.5 print:gap-2">
+            {/* KPI 1: Impressions */}
+            <div
+              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              style={{
+                borderTop: `3px solid ${primaryColor}`,
+                WebkitPrintColorAdjust: 'exact',
+                printColorAdjust: 'exact',
+              }}
+            >
+              <div className="flex items-center justify-between text-slate-500 mb-1">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Impressions</span>
+                <Eye className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+              </div>
+              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+                {report.gscImpressions?.toLocaleString() || 0}
+              </div>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+                <span className="text-[9px] font-mono text-slate-400">Total Visibility</span>
+                {renderMoMBadge(gscImpressionsMoM)}
+              </div>
+            </div>
+
+            {/* KPI 2: Organic Clicks */}
+            <div
+              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              style={{
+                borderTop: `3px solid ${primaryColor}`,
+                WebkitPrintColorAdjust: 'exact',
+                printColorAdjust: 'exact',
+              }}
+            >
+              <div className="flex items-center justify-between text-slate-500 mb-1">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Organic Clicks</span>
+                <MousePointerClick className="w-3.5 h-3.5 text-emerald-600" />
+              </div>
+              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+                {report.gscClicks?.toLocaleString() || 0}
+              </div>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+                <span className="text-[9px] font-mono text-slate-400">Search Traffic</span>
+                {renderMoMBadge(gscClicksMoM)}
+              </div>
+            </div>
+
+            {/* KPI 3: Direct Customer Actions */}
+            <div
+              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              style={{
+                borderTop: `3px solid ${primaryColor}`,
+                WebkitPrintColorAdjust: 'exact',
+                printColorAdjust: 'exact',
+              }}
+            >
+              <div className="flex items-center justify-between text-slate-500 mb-1">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Direct Actions</span>
+                <Zap className="w-3.5 h-3.5 text-amber-500" />
+              </div>
+              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+                {customerActions.toLocaleString()}
+              </div>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+                <span className="text-[9px] font-mono text-slate-400">Calls & Directions</span>
+                {renderMoMBadge(customerActionsMoM)}
+              </div>
+            </div>
+
+            {/* KPI 4: Average Rank / Position */}
+            <div
+              className="p-2.5 sm:p-3 rounded-xl bg-slate-50/70 print:bg-white border border-slate-200/90 print:border-slate-300 flex flex-col justify-between shadow-2xs"
+              style={{
+                borderTop: `3px solid ${primaryColor}`,
+                WebkitPrintColorAdjust: 'exact',
+                printColorAdjust: 'exact',
+              }}
+            >
+              <div className="flex items-center justify-between text-slate-500 mb-1">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Avg. Position</span>
+                <Target className="w-3.5 h-3.5 text-indigo-600" />
+              </div>
+              <div className="text-lg sm:text-xl font-mono font-black text-slate-900 tracking-tight my-0.5">
+                {report.gscPosition ? parseDecimal(report.gscPosition).toFixed(1) : '—'}
+              </div>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+                <span className="text-[9px] font-mono text-slate-400">Search Rank</span>
+                {renderMoMBadge(gscPositionMoM)}
+              </div>
+            </div>
+          </div>
+
+          {/* Executive Summary Card with Brand Accent Border */}
           {options.show_summary && report.summary && (
-            <div className="p-4 rounded-2xl bg-slate-50 print:bg-slate-50 border border-slate-200 print:border-slate-300 space-y-1.5 print:break-inside-avoid">
-              <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-700">
-                <TrendingUp className="w-3.5 h-3.5 text-slate-600" />
-                <span>Executive Summary</span>
+            <div
+              className="p-3 sm:p-3.5 rounded-xl bg-slate-50/70 print:bg-slate-50/50 border border-slate-200/90 print:border-slate-300 space-y-1.5 print:break-inside-avoid shadow-2xs"
+              style={{
+                borderLeft: `4px solid ${primaryColor}`,
+                WebkitPrintColorAdjust: 'exact',
+                printColorAdjust: 'exact',
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-800">
+                  <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                  <span>Executive Summary & Performance Highlights</span>
+                </div>
+                <span className="text-[10px] font-mono text-slate-400 font-semibold uppercase">Monthly Review</span>
               </div>
               <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-normal whitespace-pre-line">
                 {report.summary}
@@ -307,22 +416,22 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             </div>
           )}
 
-          {/* Balanced 4-Metric KPI Grid */}
-          <div className="space-y-3">
+          {/* Balanced 3-Column Platform KPI Grid */}
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
                 <TrendingUp className="w-3.5 h-3.5 text-slate-600" />
-                <span>Core Performance Indicators (MoM)</span>
+                <span>Core Platform Indicators (Month-over-Month)</span>
               </h3>
               <span className="text-[10px] font-mono text-slate-400">
-                MoM pills indicate vs. prior month
+                MoM badges indicate performance vs. prior period
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 print:grid-cols-3">
-              {/* Card 1: Google Business Profile (GBP) - Exactly 4 Metric Rows */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 print:grid-cols-3 print:gap-2.5">
+              {/* Card 1: Google Business Profile (GBP) */}
               <div
-                className="rounded-2xl border p-4 space-y-3 bg-slate-50/40 print:bg-white print:border-slate-300 print:break-inside-avoid shadow-2xs"
+                className="rounded-xl border p-3 space-y-2.5 bg-slate-50/50 print:bg-white print:border-slate-300 print:break-inside-avoid shadow-2xs"
                 style={{
                   borderTop: `3.5px solid ${primaryColor}`,
                   borderColor: '#e2e8f0',
@@ -330,8 +439,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   printColorAdjust: 'exact',
                 }}
               >
-                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                <div className="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
                     <PhoneCall className="w-3.5 h-3.5" style={{ color: primaryColor }} />
                     <span>Google Business Profile</span>
                   </div>
@@ -347,15 +456,15 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </span>
                 </div>
 
-                <div className="space-y-2 font-mono">
+                <div className="space-y-1.5 font-mono text-xs">
                   {/* Row 1: Total Reviews & Rating */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                      <span>Total Reviews</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                      <span>Reviews</span>
                     </span>
-                    <div className="flex items-center gap-1.5">
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-900 border border-amber-200">
                         <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
                         <span>{Number(report.gbpRating || 5.0).toFixed(1)}</span>
                       </span>
@@ -367,12 +476,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 2: Calls */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <PhoneCall className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <PhoneCall className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Phone Calls</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gbpCalls || 0}
                       </span>
@@ -381,12 +490,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 3: Directions */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Navigation className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Navigation className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Directions</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gbpDirections || 0}
                       </span>
@@ -395,12 +504,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 4: Profile Views */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Eye className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Profile Views</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gbpViews || 0}
                       </span>
@@ -410,9 +519,9 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 </div>
               </div>
 
-              {/* Card 2: Google Search Console (GSC) - Exactly 4 Metric Rows */}
+              {/* Card 2: Google Search Console (GSC) */}
               <div
-                className="rounded-2xl border p-4 space-y-3 bg-slate-50/40 print:bg-white print:border-slate-300 print:break-inside-avoid shadow-2xs"
+                className="rounded-xl border p-3 space-y-2.5 bg-slate-50/50 print:bg-white print:border-slate-300 print:break-inside-avoid shadow-2xs"
                 style={{
                   borderTop: `3.5px solid ${primaryColor}`,
                   borderColor: '#e2e8f0',
@@ -420,8 +529,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   printColorAdjust: 'exact',
                 }}
               >
-                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                <div className="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
                     <MousePointerClick className="w-3.5 h-3.5" style={{ color: primaryColor }} />
                     <span>Search Console (GSC)</span>
                   </div>
@@ -437,14 +546,14 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </span>
                 </div>
 
-                <div className="space-y-2 font-mono">
+                <div className="space-y-1.5 font-mono text-xs">
                   {/* Row 1: Clicks */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <MousePointerClick className="w-3 h-3" style={{ color: primaryColor }} />
-                      <span>Total Clicks</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <MousePointerClick className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                      <span>Clicks</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gscClicks || 0}
                       </span>
@@ -452,13 +561,13 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                     </div>
                   </div>
 
-                  {/* Row 2: Impressions */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Eye className="w-3 h-3" style={{ color: primaryColor }} />
+                  {/* Row 2: Impressions (Safe layout without label collision) */}
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Impressions</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gscImpressions?.toLocaleString() || 0}
                       </span>
@@ -467,12 +576,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 3: CTR % */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Target className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Target className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>CTR Rate</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {gscCtrNum.toFixed(1)}%
                       </span>
@@ -481,12 +590,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 4: Avg Position */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <TrendingUp className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Avg. Position</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gscPosition ? parseDecimal(report.gscPosition).toFixed(1) : '—'}
                       </span>
@@ -496,9 +605,9 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 </div>
               </div>
 
-              {/* Card 3: Google Analytics 4 (GA4) - Exactly 4 Metric Rows */}
+              {/* Card 3: Google Analytics 4 (GA4) */}
               <div
-                className="rounded-2xl border p-4 space-y-3 bg-slate-50/40 print:bg-white print:border-slate-300 print:break-inside-avoid shadow-2xs"
+                className="rounded-xl border p-3 space-y-2.5 bg-slate-50/50 print:bg-white print:border-slate-300 print:break-inside-avoid shadow-2xs"
                 style={{
                   borderTop: `3.5px solid ${primaryColor}`,
                   borderColor: '#e2e8f0',
@@ -506,8 +615,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   printColorAdjust: 'exact',
                 }}
               >
-                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                <div className="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
                     <Users className="w-3.5 h-3.5" style={{ color: primaryColor }} />
                     <span>Analytics (GA4)</span>
                   </div>
@@ -523,14 +632,14 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </span>
                 </div>
 
-                <div className="space-y-2 font-mono">
+                <div className="space-y-1.5 font-mono text-xs">
                   {/* Row 1: Users */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Users className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Users className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Active Users</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaUsers || 0}
                       </span>
@@ -539,12 +648,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 2: Engagement Rate / New Users */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Activity className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Activity className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>{report.gaNewUsers ? 'New Users' : 'Engagement'}</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaNewUsers
                           ? report.gaNewUsers
@@ -555,12 +664,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 3: Sessions */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Layers className="w-3 h-3" style={{ color: primaryColor }} />
-                      <span>Total Sessions</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Layers className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                      <span>Sessions</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaSessions || 0}
                       </span>
@@ -569,12 +678,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 4: Pageviews */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-100">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5">
-                      <Eye className="w-3 h-3" style={{ color: primaryColor }} />
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Pageviews</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaViews?.toLocaleString() || 0}
                       </span>
@@ -587,16 +696,16 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           </div>
         </div>
 
-        {/* Page 1 Bottom Footer (Pinned to bottom via justify-between) */}
-        <div className="pt-3 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
-          <div className="flex items-center gap-2">
+        {/* Page 1 Bottom Footer */}
+        <div className="pt-2.5 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
+          <div className="flex items-center gap-2 truncate">
             <span className="font-bold text-slate-800 print:text-black">
               {options.show_agency_info && client.partnerName ? client.partnerName : 'Confidential Performance Audit'}
             </span>
             <span>•</span>
-            <span>Prepared exclusively for {client.businessName}</span>
+            <span className="truncate">Prepared exclusively for {client.businessName}</span>
           </div>
-          <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold">
+          <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold shrink-0">
             Confidential • Page 1 of 2
           </div>
         </div>
@@ -612,7 +721,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
       </div>
 
       {/* ========================================================================= */}
-      {/* PAGE 2: DEEP METRIC TABLES, ROADMAP & FOOTER                              */}
+      {/* PAGE 2: DEEP METRIC TABLES, ROADMAP & TECHNICAL HEALTH                    */}
       {/* ========================================================================= */}
       <div
         className="report-page report-page-2 bg-white text-slate-900 shadow-xl hover:shadow-2xl transition-shadow rounded-2xl print:rounded-none border border-slate-200/80 print:border-none flex flex-col justify-between"
@@ -628,232 +737,281 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           pageBreakInside: 'avoid',
         }}
       >
-        <div className="flex-1 flex flex-col justify-between space-y-4 print:space-y-3">
-          <div className="space-y-4 print:space-y-3">
-            {/* Section Header for Page 2 */}
-            <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
-              <div className="flex items-center gap-2">
-                <FileSpreadsheet className="w-4 h-4" style={{ color: primaryColor }} />
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-                  Detailed Search Visibility & Strategic Deliverables
-                </h3>
+        <div className="flex-1 flex flex-col justify-start gap-3.5 print:gap-3">
+          {/* Section Header for Page 2 */}
+          <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+            <div className="flex items-center gap-2">
+              <FileSpreadsheet className="w-4 h-4" style={{ color: primaryColor }} />
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+                Detailed Search Visibility & Strategic Deliverables
+              </h3>
+            </div>
+            <span className="text-[11px] font-mono text-slate-500 font-semibold">
+              {client.businessName} • {report.reportMonth}
+            </span>
+          </div>
+
+          {/* Row 1: Deep Metric Tables - Side-by-Side 2-Column Grid (Hidden if both empty) */}
+          {options.show_tables && (topQueries.length > 0 || topPages.length > 0) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 print:grid-cols-2 print:gap-3">
+              {/* Table 1: Top 5 Search Queries */}
+              {topQueries.length > 0 && (
+                <div
+                  className={`rounded-xl border p-3 space-y-2 print:break-inside-avoid bg-white shadow-2xs ${
+                    topPages.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
+                  }`}
+                  style={{
+                    borderTop: `3px solid ${primaryColor}`,
+                    borderColor: '#e2e8f0',
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
+                  }}
+                >
+                  <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+                      <Search className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                      <span>Top Search Queries (GSC)</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 font-semibold">Top 5 by Clicks</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left font-mono text-[11px]">
+                      <thead>
+                        <tr className="border-b border-slate-200 text-[10px] text-slate-400 uppercase">
+                          <th className="pb-1 font-bold">Query</th>
+                          <th className="pb-1 font-bold text-right">Clicks</th>
+                          <th className="pb-1 font-bold text-right">Impr.</th>
+                          <th className="pb-1 font-bold text-right">Pos.</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {topQueries.slice(0, 5).map((item: QueryItem, idx: number) => (
+                          <tr key={idx} className="hover:bg-slate-50/60 even:bg-slate-50/30">
+                            <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[150px]">
+                              {item.query}
+                            </td>
+                            <td className="py-1.5 text-right font-bold text-emerald-700">
+                              {item.clicks}
+                            </td>
+                            <td className="py-1.5 text-right text-slate-600">
+                              {item.impressions?.toLocaleString()}
+                            </td>
+                            <td className="py-1.5 text-right text-slate-500">
+                              {Number(item.position).toFixed(1)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Table 2: Top 5 High-Value Pages */}
+              {topPages.length > 0 && (
+                <div
+                  className={`rounded-xl border p-3 space-y-2 print:break-inside-avoid bg-white shadow-2xs ${
+                    topQueries.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
+                  }`}
+                  style={{
+                    borderTop: `3px solid ${primaryColor}`,
+                    borderColor: '#e2e8f0',
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
+                  }}
+                >
+                  <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+                      <Globe className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                      <span>Top Landing Pages (GA4)</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 font-semibold">Top 5 by Traffic</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left font-mono text-[11px]">
+                      <thead>
+                        <tr className="border-b border-slate-200 text-[10px] text-slate-400 uppercase">
+                          <th className="pb-1 font-bold">Path / Page</th>
+                          <th className="pb-1 font-bold text-right">Clicks</th>
+                          <th className="pb-1 font-bold text-right">Users</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {topPages.slice(0, 5).map((item: PageItem, idx: number) => (
+                          <tr key={idx} className="hover:bg-slate-50/60 even:bg-slate-50/30">
+                            <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[170px]">
+                              {item.path}
+                            </td>
+                            <td className="py-1.5 text-right font-bold text-indigo-700">
+                              {item.clicks}
+                            </td>
+                            <td className="py-1.5 text-right text-slate-600 font-semibold">
+                              {item.users}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Row 2: Work Completed & Next Steps - Side-by-Side 2-Column Grid (Hidden if both empty) */}
+          {options.show_next_steps && (completedBullets.length > 0 || nextStepBullets.length > 0) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 print:grid-cols-2 print:gap-3">
+              {/* Work Completed */}
+              {completedBullets.length > 0 && (
+                <div
+                  className={`p-3 rounded-xl border space-y-2 print:break-inside-avoid bg-white shadow-2xs ${
+                    nextStepBullets.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
+                  }`}
+                  style={{
+                    borderTop: `3px solid ${primaryColor}`,
+                    borderColor: '#e2e8f0',
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
+                  }}
+                >
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
+                    <ListChecks className="w-4 h-4" style={{ color: primaryColor }} />
+                    <span>Work Completed This Month</span>
+                  </div>
+
+                  <ul className="space-y-1.5 text-xs text-slate-700 leading-relaxed">
+                    {completedBullets.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <CheckCircle2
+                          className="w-3.5 h-3.5 shrink-0 mt-0.5"
+                          style={{
+                            color: primaryColor,
+                            WebkitPrintColorAdjust: 'exact',
+                            printColorAdjust: 'exact',
+                          }}
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Next Steps: Fixed alignment with w-5 h-5 badges */}
+              {nextStepBullets.length > 0 && (
+                <div
+                  className={`p-3 rounded-xl border space-y-2 print:break-inside-avoid bg-white shadow-2xs ${
+                    completedBullets.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
+                  }`}
+                  style={{
+                    borderTop: `3px solid ${secondaryColor}`,
+                    borderColor: '#e2e8f0',
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
+                  }}
+                >
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
+                    <ListOrdered className="w-4 h-4" style={{ color: secondaryColor }} />
+                    <span>Next Steps & Strategic Priorities</span>
+                  </div>
+
+                  <ul className="space-y-1.5 text-xs text-slate-700 leading-relaxed">
+                    {nextStepBullets.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5">
+                        <span
+                          className="w-4 h-4 rounded-full text-[9px] font-mono font-bold text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs"
+                          style={{
+                            backgroundColor: secondaryColor,
+                            WebkitPrintColorAdjust: 'exact',
+                            printColorAdjust: 'exact',
+                          }}
+                        >
+                          {idx + 1}
+                        </span>
+                        <span className="text-xs leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Row 3: Technical Search Health & Authority Assurance Card */}
+          <div
+            className="p-3 rounded-xl border border-slate-200/90 bg-slate-50/70 print:bg-white print:border-slate-300 space-y-2 print:break-inside-avoid shadow-2xs"
+            style={{
+              borderLeft: `4px solid ${primaryColor}`,
+              WebkitPrintColorAdjust: 'exact',
+              printColorAdjust: 'exact',
+            }}
+          >
+            <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/70">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+                <ShieldCheck className="w-4 h-4" style={{ color: primaryColor }} />
+                <span>Technical Search Health & Authority Assurance</span>
               </div>
-              <span className="text-[11px] font-mono text-slate-500 font-semibold">
-                {client.businessName} • {report.reportMonth}
+              <span className="text-[10px] font-mono font-semibold text-slate-500 uppercase tracking-wide">
+                Continuous Monitoring
               </span>
             </div>
 
-            {/* Row 1: Deep Metric Tables - Side-by-Side 2-Column Grid (Hidden if both empty) */}
-            {options.show_tables && (topQueries.length > 0 || topPages.length > 0) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2">
-                {/* Table 1: Top 5 Search Queries */}
-                {topQueries.length > 0 && (
-                  <div
-                    className={`rounded-2xl border p-4 space-y-2.5 print:break-inside-avoid bg-white shadow-2xs ${
-                      topPages.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
-                    }`}
-                    style={{
-                      borderTop: `3px solid ${primaryColor}`,
-                      borderColor: '#e2e8f0',
-                      WebkitPrintColorAdjust: 'exact',
-                      printColorAdjust: 'exact',
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-                        <Search className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Top Search Queries (GSC)</span>
-                      </div>
-                      <span className="text-[10px] font-mono text-slate-400">Top 5</span>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left font-mono text-[11px]">
-                        <thead>
-                          <tr className="border-b border-slate-200 text-[10px] text-slate-400 uppercase">
-                            <th className="pb-1.5 font-bold">Query</th>
-                            <th className="pb-1.5 font-bold text-right">Clicks</th>
-                            <th className="pb-1.5 font-bold text-right">Impr.</th>
-                            <th className="pb-1.5 font-bold text-right">Pos.</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {topQueries.slice(0, 5).map((item: QueryItem, idx: number) => (
-                            <tr key={idx} className="hover:bg-slate-50/50">
-                              <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[150px]">
-                                {item.query}
-                              </td>
-                              <td className="py-1.5 text-right font-bold text-emerald-700">
-                                {item.clicks}
-                              </td>
-                              <td className="py-1.5 text-right text-slate-600">
-                                {item.impressions?.toLocaleString()}
-                              </td>
-                              <td className="py-1.5 text-right text-slate-500">
-                                {Number(item.position).toFixed(1)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* Table 2: Top 5 High-Value Pages */}
-                {topPages.length > 0 && (
-                  <div
-                    className={`rounded-2xl border p-4 space-y-2.5 print:break-inside-avoid bg-white shadow-2xs ${
-                      topQueries.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
-                    }`}
-                    style={{
-                      borderTop: `3px solid ${primaryColor}`,
-                      borderColor: '#e2e8f0',
-                      WebkitPrintColorAdjust: 'exact',
-                      printColorAdjust: 'exact',
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-                        <Globe className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Top Landing Pages</span>
-                      </div>
-                      <span className="text-[10px] font-mono text-slate-400">Top 5</span>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left font-mono text-[11px]">
-                        <thead>
-                          <tr className="border-b border-slate-200 text-[10px] text-slate-400 uppercase">
-                            <th className="pb-1.5 font-bold">Path / Page</th>
-                            <th className="pb-1.5 font-bold text-right">Clicks</th>
-                            <th className="pb-1.5 font-bold text-right">Users</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {topPages.slice(0, 5).map((item: PageItem, idx: number) => (
-                            <tr key={idx} className="hover:bg-slate-50/50">
-                              <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[170px]">
-                                {item.path}
-                              </td>
-                              <td className="py-1.5 text-right font-bold text-indigo-700">
-                                {item.clicks}
-                              </td>
-                              <td className="py-1.5 text-right text-slate-600 font-semibold">
-                                {item.users}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 print:grid-cols-4 print:gap-2">
+              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">Core Web Vitals</div>
+                  <div className="text-[10px] text-slate-500 truncate">Fast / Sub-Second</div>
+                </div>
               </div>
-            )}
-
-            {/* Row 2: Work Completed & Next Steps - Side-by-Side 2-Column Grid (Hidden if both empty) */}
-            {options.show_next_steps && (completedBullets.length > 0 || nextStepBullets.length > 0) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2">
-                {/* Work Completed */}
-                {completedBullets.length > 0 && (
-                  <div
-                    className={`p-4 rounded-2xl border space-y-2.5 print:break-inside-avoid bg-white shadow-2xs ${
-                      nextStepBullets.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
-                    }`}
-                    style={{
-                      borderTop: `3px solid ${primaryColor}`,
-                      borderColor: '#e2e8f0',
-                      WebkitPrintColorAdjust: 'exact',
-                      printColorAdjust: 'exact',
-                    }}
-                  >
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 pb-2 border-b border-slate-100">
-                      <ListChecks className="w-4 h-4" style={{ color: primaryColor }} />
-                      <span>Work Completed This Month</span>
-                    </div>
-
-                    <ul className="space-y-2 print:space-y-1.5 text-xs text-slate-700 leading-relaxed">
-                      {completedBullets.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5">
-                          <CheckCircle2
-                            className="w-4 h-4 shrink-0 mt-0.5"
-                            style={{
-                              color: primaryColor,
-                              WebkitPrintColorAdjust: 'exact',
-                              printColorAdjust: 'exact',
-                            }}
-                          />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Next Steps: Fixed alignment with w-5 h-5 badges */}
-                {nextStepBullets.length > 0 && (
-                  <div
-                    className={`p-4 rounded-2xl border space-y-2.5 print:break-inside-avoid bg-white shadow-2xs ${
-                      completedBullets.length === 0 ? 'md:col-span-2 print:col-span-2' : ''
-                    }`}
-                    style={{
-                      borderTop: `3px solid ${secondaryColor}`,
-                      borderColor: '#e2e8f0',
-                      WebkitPrintColorAdjust: 'exact',
-                      printColorAdjust: 'exact',
-                    }}
-                  >
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 pb-2 border-b border-slate-100">
-                      <ListOrdered className="w-4 h-4" style={{ color: secondaryColor }} />
-                      <span>Next Steps & Strategic Priorities</span>
-                    </div>
-
-                    <ul className="space-y-2.5 print:space-y-1.5 text-xs text-slate-700 leading-relaxed">
-                      {nextStepBullets.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <span
-                            className="w-5 h-5 rounded-full text-[10px] font-mono font-bold text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs"
-                            style={{
-                              backgroundColor: secondaryColor,
-                              WebkitPrintColorAdjust: 'exact',
-                              printColorAdjust: 'exact',
-                            }}
-                          >
-                            {idx + 1}
-                          </span>
-                          <span className="text-xs leading-relaxed">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">NAP Citations</div>
+                  <div className="text-[10px] text-slate-500 truncate">100% Consistent</div>
+                </div>
               </div>
-            )}
-          </div>
-
-          {/* Page 2 Bottom Footer (Pinned to bottom via justify-between) */}
-          <div className="pt-3.5 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
-            {options.show_agency_info && (client.partnerName || isWhiteLabel) ? (
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-800 print:text-black">
-                  {client.partnerName || 'Confidential Performance Audit'}
-                </span>
-                <span>•</span>
-                <span>Prepared exclusively for {client.businessName}</span>
+              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">Google Maps Pack</div>
+                  <div className="text-[10px] text-slate-500 truncate">Geo-Rank Tracked</div>
+                </div>
               </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-800 print:text-black">
-                  Performance Audit
-                </span>
-                <span>•</span>
-                <span>Prepared exclusively for {client.businessName}</span>
+              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">Entity Schema</div>
+                  <div className="text-[10px] text-slate-500 truncate">Structured Data Active</div>
+                </div>
               </div>
-            )}
-            <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold">
-              Confidential • Page 2 of 2
             </div>
+          </div>
+        </div>
+
+        {/* Page 2 Bottom Footer */}
+        <div className="pt-2.5 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
+          {options.show_agency_info && (client.partnerName || isWhiteLabel) ? (
+            <div className="flex items-center gap-2 truncate">
+              <span className="font-bold text-slate-800 print:text-black">
+                {client.partnerName || 'Confidential Performance Audit'}
+              </span>
+              <span>•</span>
+              <span className="truncate">Prepared exclusively for {client.businessName}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 truncate">
+              <span className="font-bold text-slate-800 print:text-black">
+                Performance Audit
+              </span>
+              <span>•</span>
+              <span className="truncate">Prepared exclusively for {client.businessName}</span>
+            </div>
+          )}
+          <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold shrink-0">
+            Confidential • Page 2 of 2
           </div>
         </div>
       </div>
