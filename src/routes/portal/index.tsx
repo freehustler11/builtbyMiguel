@@ -143,7 +143,7 @@ function PortalDashboardPage() {
         <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2 text-sm font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
             <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span>Monthly Performance Audits</span>
+            <span>Monthly Performance Reports</span>
           </div>
           <span className="text-xs font-mono text-slate-400">
             {reports.length} {reports.length === 1 ? 'Report' : 'Reports'} Available
@@ -159,7 +159,7 @@ function PortalDashboardPage() {
               No Reports Published Yet
             </h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-              Your monthly performance and SEO audits will appear here once finalized by your account manager.
+              Your monthly performance and SEO reports will appear here once finalized by your account manager.
             </p>
           </div>
         ) : (

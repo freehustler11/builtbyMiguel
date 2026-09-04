@@ -95,6 +95,30 @@ export const Route = createFileRoute('/admin/reports/new')({
   component: AdminReportFormPage,
 })
 
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+]
+
+const YEARS = Array.from({ length: 8 }, (_, i) => String(2024 + i))
+
+function parseMonthYear(str: string) {
+  const trimmed = (str || '').trim()
+  const parts = trimmed.split(/\s+/)
+  if (parts.length >= 2) {
+    const m = parts[0]
+    const y = parts[parts.length - 1]
+    if (MONTH_NAMES.includes(m) && /^\d{4}$/.test(y)) {
+      return { month: m, year: y }
+    }
+  }
+  const now = new Date()
+  return {
+    month: MONTH_NAMES[now.getMonth()],
+    year: String(now.getFullYear()),
+  }
+}
+
 function getDefaultMonthString(): string {
   const now = new Date()
   return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(now)
@@ -124,12 +148,28 @@ function AdminReportFormPage() {
   const isEditing = Boolean(editId && existingReport)
 
   // Form State
+  const initialMonthYear = parseMonthYear(
+    existingReport?.reportMonth || getDefaultMonthString()
+  )
+  const [selectedMonth, setSelectedMonth] = useState<string>(initialMonthYear.month)
+  const [selectedYear, setSelectedYear] = useState<string>(initialMonthYear.year)
   const [selectedClientId, setSelectedClientId] = useState(
     existingReport?.clientId || queryClientId || clients[0]?.id || ''
   )
   const [reportMonth, setReportMonth] = useState(
-    existingReport?.reportMonth || getDefaultMonthString()
+    existingReport?.reportMonth || `${initialMonthYear.month} ${initialMonthYear.year}`
   )
+
+  const handleMonthChange = (month: string) => {
+    setSelectedMonth(month)
+    setReportMonth(`${month} ${selectedYear}`)
+  }
+
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year)
+    setReportMonth(`${selectedMonth} ${year}`)
+  }
+
   const [title, setTitle] = useState(existingReport?.title || '')
   const [hasManuallyEditedTitle, setHasManuallyEditedTitle] = useState(isEditing)
   const [previousReportId, setPreviousReportId] = useState<string>(
@@ -602,14 +642,30 @@ function AdminReportFormPage() {
                   <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
                     Report Period / Month *
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={reportMonth}
-                    onChange={(e) => setReportMonth(e.target.value)}
-                    placeholder="e.g. September 2026 or Q3 2026"
-                    className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={selectedMonth}
+                      onChange={(e) => handleMonthChange(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                    >
+                      {MONTH_NAMES.map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={selectedYear}
+                      onChange={(e) => handleYearChange(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                    >
+                      {YEARS.map((y) => (
+                        <option key={y} value={y}>
+                          {y}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -626,7 +682,7 @@ function AdminReportFormPage() {
                     setTitle(e.target.value)
                     setHasManuallyEditedTitle(true)
                   }}
-                  placeholder="e.g. Apex Plumbing - Monthly Growth & SEO Report"
+                  placeholder="e.g. Local SEO Report or Apex Plumbing - Monthly Performance Report"
                   className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-semibold"
                 />
               </div>

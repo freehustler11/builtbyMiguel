@@ -21,6 +21,8 @@ import {
   Zap,
   ShieldCheck,
   Sparkles,
+  MapPin,
+  Compass,
 } from 'lucide-react'
 import type { Report, Client } from '../db/schema'
 import type { DisplayOptions, QueryItem, PageItem } from '../server/reports'
@@ -69,16 +71,10 @@ function getMoMChange(
 ): { label: string; isPositive: boolean; isNeutral: boolean } {
   const curr = parseDecimal(current)
   const prev = previous !== null && previous !== undefined && previous !== '' ? parseDecimal(previous) : null
-  const fallback = options?.fallbackLabel || 'N/A'
+  const fallback = options?.fallbackLabel || 'Baseline'
 
   // If previous value is null, undefined, or 0 (no prior month data)
   if (prev === null || isNaN(prev) || prev === 0) {
-    if (fallback === 'Baseline' || fallback === 'New') {
-      return { label: fallback, isPositive: false, isNeutral: true }
-    }
-    if (curr > 0) {
-      return { label: '+100%', isPositive: true, isNeutral: false }
-    }
     return { label: fallback, isPositive: false, isNeutral: true }
   }
 
@@ -213,7 +209,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           pageBreakAfter: 'always',
         }}
       >
-        <div className="flex-1 flex flex-col justify-start gap-3.5 print:gap-3">
+        <div className="flex-1 flex flex-col justify-start space-y-6 print:space-y-4">
           {/* Top Slim Executive Brand Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 print:border-slate-300">
             {/* Left: Client Logo & Business Identity */}
@@ -241,10 +237,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                     {client.businessName}
                   </h1>
                   <span
-                    className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-2xs shrink-0"
+                    className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-2xs shrink-0"
                     style={{ backgroundColor: primaryColor }}
                   >
-                    Performance Audit
+                    {report.title && !report.title.includes(client.businessName)
+                      ? report.title.toUpperCase()
+                      : 'MONTHLY PERFORMANCE REPORT'}
                   </span>
                 </div>
 
@@ -461,12 +459,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
                 <div className="space-y-1.5 font-mono text-xs">
                   {/* Row 1: Total Reviews & Rating */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
                       <span>Reviews</span>
                     </span>
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0 ml-auto">
                       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-900 border border-amber-200">
                         <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
                         <span>{Number(report.gbpRating || 5.0).toFixed(1)}</span>
@@ -479,12 +477,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 2: Calls */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <PhoneCall className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Phone Calls</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gbpCalls || 0}
                       </span>
@@ -493,12 +491,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 3: Directions */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Navigation className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Directions</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gbpDirections || 0}
                       </span>
@@ -507,12 +505,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 4: Website Clicks */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Globe className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Website Clicks</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {websiteClicks || 0}
                       </span>
@@ -551,12 +549,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
                 <div className="space-y-1.5 font-mono text-xs">
                   {/* Row 1: Clicks */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <MousePointerClick className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Clicks</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gscClicks || 0}
                       </span>
@@ -565,12 +563,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 2: Impressions (Safe layout without label collision) */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Impressions</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gscImpressions?.toLocaleString() || 0}
                       </span>
@@ -579,12 +577,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 3: CTR % */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Target className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>CTR Rate</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {gscCtrNum.toFixed(1)}%
                       </span>
@@ -593,12 +591,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 4: Avg Position */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Avg. Position</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gscPosition ? parseDecimal(report.gscPosition).toFixed(1) : '—'}
                       </span>
@@ -637,12 +635,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
                 <div className="space-y-1.5 font-mono text-xs">
                   {/* Row 1: Users */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Users className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Active Users</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaUsers || 0}
                       </span>
@@ -651,12 +649,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 2: Engagement Rate / New Users */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Activity className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>{report.gaNewUsers ? 'New Users' : 'Engagement'}</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaNewUsers
                           ? report.gaNewUsers
@@ -667,12 +665,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 3: Sessions */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Layers className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Sessions</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaSessions || 0}
                       </span>
@@ -681,12 +679,12 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </div>
 
                   {/* Row 4: Pageviews */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-100">
+                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
                     <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
                       <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Pageviews</span>
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <span className="text-sm font-extrabold text-slate-900">
                         {report.gaViews?.toLocaleString() || 0}
                       </span>
@@ -703,13 +701,13 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
         <div className="pt-2.5 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
           <div className="flex items-center gap-2 truncate">
             <span className="font-bold text-slate-800 print:text-black">
-              {options.show_agency_info && client.partnerName ? client.partnerName : 'Confidential Performance Audit'}
+              {options.show_agency_info && client.partnerName ? client.partnerName : 'Monthly Performance Report'}
             </span>
             <span>•</span>
             <span className="truncate">Prepared exclusively for {client.businessName}</span>
           </div>
           <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold shrink-0">
-            Confidential • Page 1 of 2
+            Page 1 of 2
           </div>
         </div>
       </div>
@@ -740,7 +738,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           pageBreakInside: 'avoid',
         }}
       >
-        <div className="flex-1 flex flex-col justify-start gap-3.5 print:gap-3">
+        <div className="flex-1 flex flex-col justify-start space-y-6 print:space-y-4">
           {/* Section Header for Page 2 */}
           <div className="flex items-center justify-between border-b border-slate-200 pb-2">
             <div className="flex items-center gap-2">
@@ -772,35 +770,35 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 >
                   <div className="flex items-center justify-between pb-1 border-b border-slate-100">
                     <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-                      <Search className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                      <Search className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Top Search Queries (GSC)</span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 font-semibold">Top 5 by Clicks</span>
+                    <span className="text-[10px] font-mono text-slate-400 font-semibold whitespace-nowrap">Top 5 by Clicks</span>
                   </div>
 
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left font-mono text-[11px]">
+                    <table className="w-full text-left font-mono text-[11px] table-fixed">
                       <thead>
                         <tr className="border-b border-slate-200 text-[10px] text-slate-400 uppercase">
-                          <th className="pb-1 font-bold">Query</th>
-                          <th className="pb-1 font-bold text-right">Clicks</th>
-                          <th className="pb-1 font-bold text-right">Impr.</th>
-                          <th className="pb-1 font-bold text-right">Pos.</th>
+                          <th className="pb-1 font-bold w-[52%]">Query</th>
+                          <th className="pb-1 font-bold text-right w-[16%] whitespace-nowrap">Clicks</th>
+                          <th className="pb-1 font-bold text-right w-[16%] whitespace-nowrap">Impr.</th>
+                          <th className="pb-1 font-bold text-right w-[16%] whitespace-nowrap">Pos.</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {topQueries.slice(0, 5).map((item: QueryItem, idx: number) => (
                           <tr key={idx} className="hover:bg-slate-50/60 even:bg-slate-50/30">
-                            <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[150px]">
+                            <td className="py-1.5 pr-2 font-medium text-slate-800 truncate">
                               {item.query}
                             </td>
-                            <td className="py-1.5 text-right font-bold text-emerald-700">
+                            <td className="py-1.5 text-right font-bold text-emerald-700 whitespace-nowrap">
                               {item.clicks}
                             </td>
-                            <td className="py-1.5 text-right text-slate-600">
+                            <td className="py-1.5 text-right text-slate-600 whitespace-nowrap">
                               {item.impressions?.toLocaleString()}
                             </td>
-                            <td className="py-1.5 text-right text-slate-500">
+                            <td className="py-1.5 text-right text-slate-500 whitespace-nowrap">
                               {Number(item.position).toFixed(1)}
                             </td>
                           </tr>
@@ -826,31 +824,31 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 >
                   <div className="flex items-center justify-between pb-1 border-b border-slate-100">
                     <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-                      <Globe className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                      <Globe className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
                       <span>Top Landing Pages (GA4)</span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 font-semibold">Top 5 by Traffic</span>
+                    <span className="text-[10px] font-mono text-slate-400 font-semibold whitespace-nowrap">Top 5 by Traffic</span>
                   </div>
 
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left font-mono text-[11px]">
+                    <table className="w-full text-left font-mono text-[11px] table-fixed">
                       <thead>
                         <tr className="border-b border-slate-200 text-[10px] text-slate-400 uppercase">
-                          <th className="pb-1 font-bold">Path / Page</th>
-                          <th className="pb-1 font-bold text-right">Clicks</th>
-                          <th className="pb-1 font-bold text-right">Users</th>
+                          <th className="pb-1 font-bold w-[60%]">Path / Page</th>
+                          <th className="pb-1 font-bold text-right w-[20%] whitespace-nowrap">Clicks</th>
+                          <th className="pb-1 font-bold text-right w-[20%] whitespace-nowrap">Users</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {topPages.slice(0, 5).map((item: PageItem, idx: number) => (
                           <tr key={idx} className="hover:bg-slate-50/60 even:bg-slate-50/30">
-                            <td className="py-1.5 pr-2 font-medium text-slate-800 truncate max-w-[170px]">
+                            <td className="py-1.5 pr-2 font-medium text-slate-800 truncate">
                               {item.path}
                             </td>
-                            <td className="py-1.5 text-right font-bold text-indigo-700">
+                            <td className="py-1.5 text-right font-bold text-indigo-700 whitespace-nowrap">
                               {item.clicks}
                             </td>
-                            <td className="py-1.5 text-right text-slate-600 font-semibold">
+                            <td className="py-1.5 text-right text-slate-600 font-semibold whitespace-nowrap">
                               {item.users}
                             </td>
                           </tr>
@@ -942,9 +940,9 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             </div>
           )}
 
-          {/* Row 3: Technical Search Health & Authority Assurance Card */}
+          {/* Row 3: Campaign Focus Areas */}
           <div
-            className="p-3 rounded-xl border border-slate-200/90 bg-slate-50/70 print:bg-white print:border-slate-300 space-y-2 print:break-inside-avoid shadow-2xs"
+            className="p-3.5 rounded-xl border border-slate-200/90 bg-slate-50/70 print:bg-white print:border-slate-300 space-y-2.5 print:break-inside-avoid shadow-2xs"
             style={{
               borderLeft: `4px solid ${primaryColor}`,
               WebkitPrintColorAdjust: 'exact',
@@ -953,41 +951,108 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           >
             <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/70">
               <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-                <ShieldCheck className="w-4 h-4" style={{ color: primaryColor }} />
-                <span>Technical Search Health & Authority Assurance</span>
+                <Target className="w-4 h-4" style={{ color: primaryColor }} />
+                <span>Campaign Focus Areas</span>
               </div>
               <span className="text-[10px] font-mono font-semibold text-slate-500 uppercase tracking-wide">
-                Continuous Monitoring
+                Ongoing Initiatives
               </span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 print:grid-cols-4 print:gap-2">
-              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">Core Web Vitals</div>
-                  <div className="text-[10px] text-slate-500 truncate">Fast / Sub-Second</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 print:grid-cols-4 print:gap-2">
+              {/* Card 1: Google Business Profile */}
+              <div className="p-2.5 rounded-lg bg-white border border-slate-200/80 flex flex-col justify-between shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <div
+                    className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+                    style={{
+                      backgroundColor: `${primaryColor}15`,
+                      color: primaryColor,
+                    }}
+                  >
+                    <MapPin className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-900 leading-tight">
+                    Google Business Profile
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-[10px] font-mono text-slate-600 font-medium leading-tight">
+                    Optimization & Engagement
+                  </span>
                 </div>
               </div>
-              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">NAP Citations</div>
-                  <div className="text-[10px] text-slate-500 truncate">100% Consistent</div>
+
+              {/* Card 2: Local Search Visibility */}
+              <div className="p-2.5 rounded-lg bg-white border border-slate-200/80 flex flex-col justify-between shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <div
+                    className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+                    style={{
+                      backgroundColor: `${primaryColor}15`,
+                      color: primaryColor,
+                    }}
+                  >
+                    <Search className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-900 leading-tight">
+                    Local Search Visibility
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-[10px] font-mono text-slate-600 font-medium leading-tight">
+                    Target Keyword Growth
+                  </span>
                 </div>
               </div>
-              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">Google Maps Pack</div>
-                  <div className="text-[10px] text-slate-500 truncate">Geo-Rank Tracked</div>
+
+              {/* Card 3: Reputation Management */}
+              <div className="p-2.5 rounded-lg bg-white border border-slate-200/80 flex flex-col justify-between shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <div
+                    className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+                    style={{
+                      backgroundColor: `${primaryColor}15`,
+                      color: primaryColor,
+                    }}
+                  >
+                    <Star className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-900 leading-tight">
+                    Reputation Management
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-[10px] font-mono text-slate-600 font-medium leading-tight">
+                    Review Monitoring & Replies
+                  </span>
                 </div>
               </div>
-              <div className="p-2 rounded-lg bg-white border border-slate-100 flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10px] font-mono font-bold text-slate-900 uppercase truncate">Entity Schema</div>
-                  <div className="text-[10px] text-slate-500 truncate">Structured Data Active</div>
+
+              {/* Card 4: Neighborhood Coverage */}
+              <div className="p-2.5 rounded-lg bg-white border border-slate-200/80 flex flex-col justify-between shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <div
+                    className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+                    style={{
+                      backgroundColor: `${primaryColor}15`,
+                      color: primaryColor,
+                    }}
+                  >
+                    <Compass className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-900 leading-tight">
+                    Neighborhood Coverage
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-[10px] font-mono text-slate-600 font-medium leading-tight">
+                    Local Content Expansion
+                  </span>
                 </div>
               </div>
             </div>
@@ -999,7 +1064,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           {options.show_agency_info && (client.partnerName || isWhiteLabel) ? (
             <div className="flex items-center gap-2 truncate">
               <span className="font-bold text-slate-800 print:text-black">
-                {client.partnerName || 'Confidential Performance Audit'}
+                {client.partnerName || 'Monthly Performance Report'}
               </span>
               <span>•</span>
               <span className="truncate">Prepared exclusively for {client.businessName}</span>
@@ -1007,14 +1072,14 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           ) : (
             <div className="flex items-center gap-2 truncate">
               <span className="font-bold text-slate-800 print:text-black">
-                Performance Audit
+                Monthly Performance Report
               </span>
               <span>•</span>
               <span className="truncate">Prepared exclusively for {client.businessName}</span>
             </div>
           )}
           <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold shrink-0">
-            Confidential • Page 2 of 2
+            Page 2 of 2
           </div>
         </div>
       </div>

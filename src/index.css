@@ -36,4 +36,47 @@
     background-color: #f43f5e;
     color: #ffffff;
   }
+
+  /* Themed Form Controls: Checkboxes, Radio Buttons, and Native Inputs */
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--color-blue-600, #2563eb);
+    cursor: pointer;
+  }
+  html.dark input[type="checkbox"],
+  html.dark input[type="radio"] {
+    accent-color: var(--color-blue-500, #3b82f6);
+  }
+
+  /* Custom Themed Scrollbars */
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.7);
+  }
+
+  html.dark ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.25);
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+  }
+
+  /* Firefox Scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  }
+  html.dark * {
+    scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+  }
 }

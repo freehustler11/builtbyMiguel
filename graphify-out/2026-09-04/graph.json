@@ -7967,7 +7967,7 @@
       "file_type": "code",
       "norm_label": "requireauth()",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L495"
+      "source_location": "L500"
     },
     {
       "id": "app_lib_auth_requiresuperadmin",
@@ -7979,7 +7979,7 @@
       "file_type": "code",
       "norm_label": "requiresuperadmin()",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L445"
+      "source_location": "L450"
     },
     {
       "id": "src_components_confirmmodal_confirmmodal",
@@ -9479,7 +9479,7 @@
       "file_type": "code",
       "norm_label": "requireadmin()",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L419"
+      "source_location": "L424"
     },
     {
       "id": "app_lib_auth_requireclient",
@@ -9491,7 +9491,7 @@
       "file_type": "code",
       "norm_label": "requireclient()",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L475"
+      "source_location": "L480"
     },
     {
       "id": "src_routes_admin_adminlayout",
@@ -9515,7 +9515,7 @@
       "file_type": "code",
       "norm_label": "loginpage()",
       "source_file": "src/routes/login.tsx",
-      "source_location": "L55"
+      "source_location": "L56"
     },
     {
       "id": "src_routes_portal_portallayout",
@@ -69493,7 +69493,7 @@
       "file_type": "code",
       "norm_label": "logoutserverfn",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L406"
+      "source_location": "L411"
     },
     {
       "id": "app_lib_hostname",
@@ -99937,7 +99937,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L343",
+      "source_location": "L346",
       "weight": 1.0
     },
     {
@@ -99949,7 +99949,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L344",
+      "source_location": "L347",
       "weight": 1.0
     },
     {
@@ -99961,19 +99961,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L345",
-      "weight": 1.0
-    },
-    {
-      "source": "app_lib_auth_loginserverfn",
-      "target": "app_lib_auth_createsessiontoken",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L349",
+      "source_location": "L348",
       "weight": 1.0
     },
     {
@@ -99985,7 +99973,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L372",
+      "source_location": "L364",
+      "weight": 1.0
+    },
+    {
+      "source": "app_lib_auth_loginserverfn",
+      "target": "app_lib_auth_createsessiontoken",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L371",
       "weight": 1.0
     },
     {
@@ -99997,7 +99997,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L408",
+      "source_location": "L413",
       "weight": 1.0
     },
     {
@@ -100009,7 +100009,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L409",
+      "source_location": "L414",
       "weight": 1.0
     },
     {
@@ -100021,7 +100021,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L424",
+      "source_location": "L429",
       "weight": 1.0
     },
     {
@@ -100033,7 +100033,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L500",
+      "source_location": "L505",
       "weight": 1.0
     },
     {
@@ -100045,7 +100045,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L480",
+      "source_location": "L485",
       "weight": 1.0
     },
     {
@@ -100057,7 +100057,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/lib/auth.ts",
-      "source_location": "L450",
+      "source_location": "L455",
       "weight": 1.0
     },
     {
@@ -179095,7 +179095,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/lib/auth.ts",
-      "source_location": "L406",
+      "source_location": "L411",
       "weight": 1.0
     },
     {
@@ -179106,18 +179106,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/lib/auth.ts",
-      "source_location": "L419",
-      "weight": 1.0
-    },
-    {
-      "source": "app_lib_auth",
-      "target": "app_lib_auth_requiresuperadmin",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L445",
+      "source_location": "L424",
       "weight": 1.0
     },
     {
@@ -179133,13 +179122,24 @@
     },
     {
       "source": "app_lib_auth",
+      "target": "app_lib_auth_requiresuperadmin",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L450",
+      "weight": 1.0
+    },
+    {
+      "source": "app_lib_auth",
       "target": "app_lib_auth_requireclient",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/lib/auth.ts",
-      "source_location": "L475",
+      "source_location": "L480",
       "weight": 1.0
     },
     {
@@ -179150,7 +179150,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/lib/auth.ts",
-      "source_location": "L495",
+      "source_location": "L500",
       "weight": 1.0
     },
     {
@@ -191962,7 +191962,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/login.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -192187,5 +192187,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "dc2b401549937a0bccfaf78b1cedc2276bc61ed5"
+  "built_at_commit": "adf8b04c43060a332d29edbec0f58392890b6cd9"
 }
