@@ -1,16 +1,16 @@
 # Graph Report - built by Miguel  (2026-09-04)
 
 ## Corpus Check
-- 530 files · ~791,188 words
+- 530 files · ~791,488 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 7852 nodes · 8979 edges · 696 communities (638 shown, 43 thin omitted)
+- 7853 nodes · 8980 edges · 694 communities (636 shown, 43 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 73 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `eb62d818`
+- Built from commit: `4693124e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -24,7 +24,7 @@
 - TestTailwindConfigGenerator
 - BM25
 - search_stack
-- new.tsx
+- ReportDocument.tsx
 - src/routeTree.gen.ts
 - html-token-validator.py
 - scripts/core.py
@@ -52,9 +52,9 @@
 - validate-asset.cjs
 - app/components/CodeTerminalInspector.tsx
 - useTheme
-- test_core.py
+- generate_design_system
 - app/server/leads.ts
-- FileRoutesByPath
+- routeTree
 - Social Listening & Engagement Triage
 - design-tokens-starter.json
 - app/lib/auth.ts
@@ -71,9 +71,9 @@
 - test_tailwind_config_gen.py
 - logo/generate.py
 - generate-tokens.cjs
-- Short-Form Video (TikTok, Reels, Shorts)
+- app/lib/hostname.ts
 - ._base_config
-- reports/index.tsx
+- clients.tsx
 - test_text_layout_resilience.py
 - scripts
 - sync-brand-to-tokens.cjs
@@ -93,26 +93,25 @@
 - sm
 - The 12 Programmatic SEO Playbooks
 - prerender.mjs
-- clients.tsx
+- new.tsx
 - _style_is_dark_primary
-- Content Repurposing System
+- src/components/ThemeToggle.tsx
 - button
 - Customer Research — Source Guides
 - Event Marketing
 - generate-favicon.mjs
 - ponytail-review/SKILL.md
 - The 139 Marketing Ideas
-- Visual Patterns
+- Hook Formulas
 - xl
 - Tailwind CSS Utility Reference
-- Hook Formulas
+- Analytics & Iteration
 - test_sync_brand_to_tokens.py
 - main
 - parse_decision_rules
 - input
 - SMS Sequence Types
-- Analytics & Optimization
-- Engagement Strategy
+- Posting Strategy
 - _row_identities
 - .__init__
 - .temp_project
@@ -150,7 +149,6 @@
 - .test_default_content_paths_react
 - .test_default_content_paths_vue
 - Launch Strategy
-- src/routes/blog/index.tsx
 - Team and Agency Model — Hire for Strategy, Outsource Execution
 - Typography Specifications
 - Core Principles
@@ -282,7 +280,7 @@
 - Automation Playbooks
 - Lifecycle Stage Definitions
 - Layout Patterns
-- Hook Formulas
+- Post Format Templates
 - Meta Creative Format Taxonomy — Which Format to Make Next
 - LinkedIn B2B Playbook
 - Google Play Store — Official Specs & Guidelines
@@ -414,7 +412,7 @@
 - ponytail-debt/SKILL.md
 - Platform-Specific Strategy Guide
 - AI Video Prompting Guide
-- app/db/schema.ts
+- src/routes/blog/$slug.tsx
 - Growth Experimentation Program
 - lg
 - Core Principles
@@ -710,21 +708,21 @@
 10. `TestShadcnInstaller` - 26 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `LoginPage()` --calls--> `loginServerFn`  [EXTRACTED]
-  src/routes/login.tsx → app/lib/auth.ts
-- `PortalLayout()` --calls--> `logoutServerFn`  [EXTRACTED]
-  src/routes/portal.tsx → app/lib/auth.ts
-- `BrandedReportViewPage()` --calls--> `updateReportDisplayOptionsServerFn`  [EXTRACTED]
-  src/routes/admin/reports/$id.tsx → app/server/reports.ts
 - `runSimulations()` --indirect_call--> `ReportDocument()`  [INFERRED]
   scripts/simulate.ts → src/components/ReportDocument.tsx
 - `ReportDocumentProps` --references--> `Client`  [EXTRACTED]
   src/components/ReportDocument.tsx → app/db/schema.ts
+- `ReportDocumentProps` --references--> `Report`  [EXTRACTED]
+  src/components/ReportDocument.tsx → app/db/schema.ts
+- `runSimulations()` --calls--> `hashPassword()`  [EXTRACTED]
+  scripts/simulate.ts → app/lib/auth.ts
+- `Route` --calls--> `checkAuthServerFn`  [EXTRACTED]
+  src/routes/admin/clients.tsx → app/lib/auth.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (696 total, 43 thin omitted)
+## Communities (694 total, 43 thin omitted)
 
 ### Community 0 - "validate_data.py"
 Cohesion: 0.08
@@ -755,20 +753,20 @@ Cohesion: 0.06
 Nodes (16): Test adding colors multiple times., Test adding full color palette., Test adding custom spacing., Test adding custom breakpoints., Test TailwindConfigGenerator class., Test generating TypeScript configuration., Test validating config with empty theme extensions., Test writing configuration to file. (+8 more)
 
 ### Community 7 - "BM25"
-Cohesion: 0.16
-Nodes (7): BM25, BM25 ranking algorithm for text search, Lowercase, normalize synonyms, split, remove punctuation, filter stopwords, Build BM25 index from documents, Score all documents against query, All indexed terms, for suggestion/typo-recovery purposes., TestTokenizer
+Cohesion: 0.11
+Nodes (9): BM25, BM25 ranking algorithm for text search, Lowercase, normalize synonyms, split, remove punctuation, filter stopwords, Build BM25 index from documents, Score all documents against query, All indexed terms, for suggestion/typo-recovery purposes., TestBm25CoreBehavior, TestDiagnosticsContracts (+1 more)
 
 ### Community 8 - "search_stack"
 Cohesion: 0.11
 Nodes (6): Search stack-specific guidelines, search_stack(), _rows(), TestNativeDesktopStackFreshness, _rows(), TestWebStackFreshness
 
-### Community 9 - "new.tsx"
-Cohesion: 0.07
-Nodes (31): Report, DisplayOptions, PageItem, QueryItem, Navbar(), NavItem, SERVICE_ITEMS, formatDate() (+23 more)
+### Community 9 - "ReportDocument.tsx"
+Cohesion: 0.15
+Nodes (17): requireAdmin(), DisplayOptions, getReportByIdServerFn, updateReportDisplayOptionsServerFn, formatDate(), getMoMChange(), getMoMPositionChange(), parseBulletLines() (+9 more)
 
 ### Community 10 - "src/routeTree.gen.ts"
-Cohesion: 0.02
-Nodes (77): queryClient, Register, router, @tanstack/react-router, createRouter(), getRouter(), Register, @tanstack/react-router (+69 more)
+Cohesion: 0.03
+Nodes (68): getPortalReportsServerFn, createRouter(), getRouter(), Register, @tanstack/react-router, Route, Route, Route (+60 more)
 
 ### Community 11 - "html-token-validator.py"
 Cohesion: 0.13
@@ -779,7 +777,7 @@ Cohesion: 0.09
 Nodes (36): _contains_phrase(), _domain_keywords(), _exact_match_diagnostic(), _exact_stack_identifier(), _file_signature(), _get_bm25(), _legacy_successor_guidance(), _load_csv() (+28 more)
 
 ### Community 13 - "search"
-Cohesion: 0.11
+Cohesion: 0.12
 Nodes (7): Resolve a deprecated in-domain alias, or expose a cross-domain redirect., Main search function with auto-domain detection, search(), _style_search_destination(), TestSearchDomains, read_rows(), TestStyleTaxonomy
 
 ### Community 14 - "DesignSystemGenerator"
@@ -851,8 +849,8 @@ Cohesion: 0.10
 Nodes (7): read_rows(), split_values(), style_identities(), TestGeneratedCatalogContract, TestLandingAndStackContract, TestReasoningContract, TestStyleIdentityContract
 
 ### Community 32 - "media.tsx"
-Cohesion: 0.18
-Nodes (18): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo(), uploadFileToStorage() (+10 more)
+Cohesion: 0.17
+Nodes (19): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo(), uploadFileToStorage() (+11 more)
 
 ### Community 33 - "extract-colors.cjs"
 Cohesion: 0.22
@@ -870,17 +868,17 @@ Nodes (3): CodeTab, CodeTerminalInspectorProps, DEFAULT_CODE_TABS
 Cohesion: 0.33
 Nodes (6): ThemeToggle(), ThemeToggleProps, applyTheme(), getInitialTheme(), Theme, useTheme()
 
-### Community 37 - "test_core.py"
-Cohesion: 0.13
-Nodes (7): generate_design_system(), Main entry point for design system generation. Args: query: Search query (e.g.,…, format_output(), Format results for Claude consumption (token-optimized), TestBm25CoreBehavior, TestDiagnosticsContracts, TestPersistence
+### Community 37 - "generate_design_system"
+Cohesion: 0.25
+Nodes (5): generate_design_system(), Main entry point for design system generation. Args: query: Search query (e.g.,…, format_output(), Format results for Claude consumption (token-optimized), TestPersistence
 
 ### Community 38 - "app/server/leads.ts"
 Cohesion: 0.08
 Nodes (25): messages, AuditPage(), Route, ContactPage(), Route, AuditLeadPayload, ContactLeadPayload, LeadSubmissionResponse (+17 more)
 
-### Community 39 - "FileRoutesByPath"
-Cohesion: 0.15
-Nodes (20): checkAuthServerFn, requireAdmin(), requireClient(), getClientsServerFn, getReportByIdServerFn, Route, Route, Route (+12 more)
+### Community 39 - "routeTree"
+Cohesion: 0.10
+Nodes (13): queryClient, Register, router, @tanstack/react-router, createRouter(), getRouter(), Register, @tanstack/react-router (+5 more)
 
 ### Community 40 - "Social Listening & Engagement Triage"
 Cohesion: 0.04
@@ -891,8 +889,8 @@ Cohesion: 0.15
 Nodes (12): component, $type, $value, dark, semantic, $schema, $type, $value (+4 more)
 
 ### Community 42 - "app/lib/auth.ts"
-Cohesion: 0.12
-Nodes (29): LogoutButton(), LogoutButtonProps, ActiveSessionResult, CachedSession, createSessionToken(), getSecrets(), getServerUtils(), getSessionCookieOptions() (+21 more)
+Cohesion: 0.14
+Nodes (24): LogoutButton(), LogoutButtonProps, ActiveSessionResult, CachedSession, checkAuthServerFn, createSessionToken(), getSecrets(), getServerUtils() (+16 more)
 
 ### Community 43 - "Ponytail Help"
 Cohesion: 0.25
@@ -946,17 +944,17 @@ Nodes (9): enhance_prompt(), generate_batch(), generate_logo(), load_env(), main
 Cohesion: 0.36
 Nodes (9): flattenTokens(), fs, generateCSS(), generateTailwind(), main(), parseArgs(), path, resolveReference() (+1 more)
 
-### Community 56 - "Short-Form Video (TikTok, Reels, Shorts)"
-Cohesion: 0.29
-Nodes (7): Caption & Subtitle Best Practices, Common Mistakes, Content Ideas by Type, Platform Specs, Short-Form Video (TikTok, Reels, Shorts), The 3-Second Rule, Video Structures
+### Community 56 - "app/lib/hostname.ts"
+Cohesion: 0.25
+Nodes (12): checkHostnameRoutingServerFn, getServerUtils(), HostnameRoutingResult, classifyHost(), HostType, isInternalPath(), isMarketingPath(), isTechnicalOrAsset() (+4 more)
 
 ### Community 57 - "._base_config"
 Cohesion: 0.22
 Nodes (6): Path, Initialize generator. Args: typescript: If True, generate .ts config, else .js…, Determine default output path., Create base configuration structure., Get default content paths for framework., Any
 
-### Community 58 - "reports/index.tsx"
-Cohesion: 0.10
-Nodes (25): requireAuth(), requireSuperadmin(), getMessagesServerFn, ReportWithClient, AgencyOwnerInfo, createTeamMemberServerFn, deleteTeamMemberServerFn, EmployeeItem (+17 more)
+### Community 58 - "clients.tsx"
+Cohesion: 0.07
+Nodes (40): db, Message, hashPassword(), requireAuth(), requireSuperadmin(), ActiveSession, assertSuperadminSession(), PartnerSummary (+32 more)
 
 ### Community 59 - "test_text_layout_resilience.py"
 Cohesion: 0.22
@@ -975,8 +973,8 @@ Cohesion: 0.28
 Nodes (8): Path, Regression tests for validate-tokens.cjs. The validator used to skip any line…, A hardcoded hex on the same line as a var() token is still a violation., A line that references only tokens produces no false positives., _run(), test_flags_hardcoded_hex_sharing_line_with_token(), test_token_only_line_reports_no_violation(), CompletedProcess
 
 ### Community 63 - "Social Content"
-Cohesion: 0.09
-Nodes (22): 1. Goals, 2. Audience, 3. Brand Voice, 4. Resources, Batching Strategy (2-3 hours weekly), Before Creating Content, Content Calendar Structure, Content Ideas by Situation (+14 more)
+Cohesion: 0.04
+Nodes (48): 1. Goals, 2. Audience, 3. Brand Voice, 4. Resources, Analytics & Optimization, Batching Strategy (2-3 hours weekly), Before Creating Content, Blog Post → Social Content (+40 more)
 
 ### Community 64 - ".generate"
 Cohesion: 0.16
@@ -1034,17 +1032,17 @@ Nodes (43): 10. Translations, 11. Directory, 12. Profiles, 1. Templates, 2. Cura
 Cohesion: 0.33
 Nodes (4): __dirname, rootDir, ROUTE_META, routesToPrerender
 
-### Community 78 - "clients.tsx"
-Cohesion: 0.11
-Nodes (38): db, Client, clients, reports, users, hashPassword(), ActiveSession, assertActiveSession() (+30 more)
+### Community 78 - "new.tsx"
+Cohesion: 0.08
+Nodes (45): Client, clients, NewClient, NewMedia, NewMessage, NewPost, NewReport, NewUser (+37 more)
 
 ### Community 79 - "_style_is_dark_primary"
-Cohesion: 0.24
+Cohesion: 0.21
 Nodes (7): _query_wants_dark(), True when a styles.csv row describes itself as dark-first., True when the query explicitly asks for a dark theme., Resolve the mode the rest of the output has to agree with., _resolve_color_mode(), _style_is_dark_primary(), TestModeResolution
 
-### Community 80 - "Content Repurposing System"
-Cohesion: 0.33
-Nodes (6): Blog Post → Social Content, Content Repurposing System, Newsletter → Social Content, Podcast / Video → Social Content, Repurposing Workflow, Webinar / Live Event → Social Content
+### Community 80 - "src/components/ThemeToggle.tsx"
+Cohesion: 0.18
+Nodes (9): Navbar(), NavItem, SERVICE_ITEMS, ThemeToggle(), ThemeToggleProps, applyTheme(), getInitialTheme(), Theme (+1 more)
 
 ### Community 81 - "button"
 Cohesion: 0.20
@@ -1070,9 +1068,9 @@ Nodes (4): Boundaries, Examples, Format, Scoring
 Cohesion: 0.05
 Nodes (41): Case Library (inspiration fuel), Corey's Unicorn Floatie Campaign, Direct Mail: The 3-Rule Framework, Guerrilla Marketing (#121), How to Use This With a Client, The ROI discipline, Audience-Specific (137-139), Competitor & Comparison (11-13) (+33 more)
 
-### Community 87 - "Visual Patterns"
-Cohesion: 0.40
-Nodes (5): B-Roll Heavy, Screen Recording, Slideshow/Carousel Video, Talking Head, Visual Patterns
+### Community 87 - "Hook Formulas"
+Cohesion: 0.33
+Nodes (6): Contrarian Hooks, Curiosity Hooks, Hook Formulas, Social Proof Hooks, Story Hooks, Value Hooks
 
 ### Community 88 - "xl"
 Cohesion: 0.67
@@ -1082,9 +1080,9 @@ Nodes (4): xl, xl, $type, $value
 Cohesion: 0.05
 Nodes (43): Arbitrary Values, Aspect Ratio, Background Colors, Border Color, Border Radius, Border Style, Border Width, Borders (+35 more)
 
-### Community 90 - "Hook Formulas"
-Cohesion: 0.40
-Nodes (5): Contrarian Hooks, Curiosity Hooks, Hook Formulas, Story Hooks, Value Hooks
+### Community 90 - "Analytics & Iteration"
+Cohesion: 0.50
+Nodes (4): Analytics & Iteration, Metrics That Matter, What to Test, When to Pivot
 
 ### Community 93 - "parse_decision_rules"
 Cohesion: 0.31
@@ -1098,13 +1096,9 @@ Nodes (8): padding-x, input, $type, $value, focus-ring, padding-x, $type, $value
 Cohesion: 0.25
 Nodes (8): Abandoned Cart (highest-ROI flow for ecom), Browse Abandonment, Post-Purchase, Promotional / Campaign Sends, SMS Sequence Types, Transactional (separate compliance bucket), Welcome / Opt-In Confirmation (immediate), Win-Back (lapsed)
 
-### Community 96 - "Analytics & Optimization"
+### Community 96 - "Posting Strategy"
 Cohesion: 0.50
-Nodes (4): Analytics & Optimization, Metrics That Matter, Optimization Actions, Weekly Review
-
-### Community 97 - "Engagement Strategy"
-Cohesion: 0.50
-Nodes (4): Building Relationships, Daily Engagement Routine (30 min), Engagement Strategy, Quality Comments
+Nodes (4): Batch Creation Workflow, Frequency Recommendations, Optimal Posting Times (test your audience), Posting Strategy
 
 ### Community 98 - "_row_identities"
 Cohesion: 0.25
@@ -1165,10 +1159,6 @@ Nodes (32): 1. Mobile-First Design, 2. Consistent Breakpoint Usage, 3. Test at B
 ### Community 134 - "Launch Strategy"
 Cohesion: 0.06
 Nodes (31): Announcement Tactics, Before Starting, Borrowed Channels, Case Studies, Cons, Core Philosophy, Five-Phase Launch Approach, How to Launch Successfully (+23 more)
-
-### Community 136 - "src/routes/blog/index.tsx"
-Cohesion: 0.39
-Nodes (5): getPublicPostsServerFn, BlogIndexPage(), calculateReadingTime(), formatDate(), Route
 
 ### Community 137 - "Team and Agency Model — Hire for Strategy, Outsource Execution"
 Cohesion: 0.06
@@ -1531,8 +1521,8 @@ Cohesion: 0.12
 Nodes (16): Documentation Site, E-Commerce, Hybrid SaaS + Content, Navigation, Navigation, Navigation, Navigation, Page Hierarchy (+8 more)
 
 ### Community 232 - "Short-Form Video: Hooks, Scripts & Strategy"
-Cohesion: 0.11
-Nodes (18): Additional Video Structures, Analytics & Iteration, Batch Creation Workflow, Controversial Hooks (Best for comments), Curiosity Hooks (Best for engagement), Frequency Recommendations, Metrics That Matter, Optimal Posting Times (test your audience) (+10 more)
+Cohesion: 0.12
+Nodes (15): Additional Video Structures, B-Roll Heavy, Controversial Hooks (Best for comments), Curiosity Hooks (Best for engagement), Screen Recording, Scripting Template, Short-Form Video: Hooks, Scripts & Strategy, Slideshow/Carousel Video (+7 more)
 
 ### Community 233 - "Part 2 — Creator Format Library"
 Cohesion: 0.09
@@ -1694,9 +1684,9 @@ Nodes (13): Lead Rejection and Recycling, Lifecycle Stage Definitions, Mid-Marke
 Cohesion: 0.14
 Nodes (13): Card Styles, Component Variants, CSS Structures, Feature Grid (3 columns), Layout Decision Flow, Layout Patterns, Layout Selection by Use Case, Metric Styles (+5 more)
 
-### Community 273 - "Hook Formulas"
-Cohesion: 0.10
-Nodes (20): Contents, Contrarian Hooks, Curiosity Hooks, Hook Formulas, Instagram Templates, LinkedIn Post Templates, Post Format Templates, Social Proof Hooks (+12 more)
+### Community 273 - "Post Format Templates"
+Cohesion: 0.14
+Nodes (14): Contents, Instagram Templates, LinkedIn Post Templates, Post Format Templates, The Breakdown Thread, The Carousel Hook, The Contrarian Take, The How-To (+6 more)
 
 ### Community 274 - "Meta Creative Format Taxonomy — Which Format to Make Next"
 Cohesion: 0.15
@@ -2222,9 +2212,9 @@ Nodes (7): Contents, Facebook, Instagram, LinkedIn, Platform-Specific Strategy G
 Cohesion: 0.25
 Nodes (8): AI Video Prompting Guide, Aspect Ratios, Camera Movement Vocabulary, Common Prompt Mistakes, Cost Optimization, Example Prompts by Use Case, Prompt Structure, Prompting Workflow
 
-### Community 406 - "app/db/schema.ts"
-Cohesion: 0.11
-Nodes (21): Message, NewClient, NewMedia, NewMessage, NewPost, NewReport, NewUser, Post (+13 more)
+### Community 406 - "src/routes/blog/$slug.tsx"
+Cohesion: 0.13
+Nodes (17): Post, getPublicPostBySlugServerFn, getPublicPostsServerFn, BlogIndexPage(), calculateReadingTime(), formatDate(), Route, BlogPostPage() (+9 more)
 
 ### Community 407 - "Growth Experimentation Program"
 Cohesion: 0.29
@@ -3280,7 +3270,7 @@ Nodes (5): Discovery Sources (SaaS branch), GitHub prospecting pattern (when aud
 
 ## Knowledge Gaps
 - **4972 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+4967 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 5413 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 5414 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **43 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
@@ -3288,6 +3278,8 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Ad Creative` connect `Ad Creative` to `ad-creative/SKILL.md`?**
   _High betweenness centrality (0.003) - this node is a cross-community bridge._
+- **Why does `search()` connect `search` to `.generate`, `validate_data.py`, `_row_identities`, `generate_design_system`, `BM25`, `scripts/core.py`, `design_system.py`, `test_text_layout_resilience.py`, `detect_domain`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 3 inferred relationships involving `DesignSystemGenerator` (e.g. with `TestReasoningMatch` and `TestReasoningContract`) actually correct?**
@@ -3298,5 +3290,3 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.07656341320864991 - nodes in this community are weakly interconnected._
 - **Should `gray` be split into smaller, more focused modules?**
   _Cohesion score 0.05370101596516691 - nodes in this community are weakly interconnected._
-- **Should `slide_search_core.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.08478513356562137 - nodes in this community are weakly interconnected._

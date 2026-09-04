@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   Lock,
   UserCheck,
+  Loader2,
 } from 'lucide-react'
 import { AdminNav } from '../../components/AdminNav'
 import { ConfirmModal } from '../../components/ConfirmModal'
@@ -88,6 +89,7 @@ function AdminTeamPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [employeeToDelete, setEmployeeToDelete] = useState<EmployeeItem | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
 
   // Form State
@@ -199,20 +201,38 @@ function AdminTeamPage() {
 
   const handleToggleStatus = async (emp: EmployeeItem) => {
     try {
+      setUpdatingId(emp.id)
+      const nextActive = !emp.isActive
+      // Optimistically update local state for instant toggle switch animation
+      setEmployees((prev) =>
+        prev.map((e) => (e.id === emp.id ? { ...e, isActive: nextActive } : e))
+      )
+
       const res = await toggleTeamMemberActiveServerFn({
-        data: { id: emp.id, isActive: !emp.isActive },
+        data: { id: emp.id, isActive: nextActive },
       })
       if (res.success) {
         addToast(
           'info',
           'Account Status Updated',
-          `${emp.name || emp.email} account ${!emp.isActive ? 'activated' : 'suspended'}.`
+          `${emp.name || emp.email} account ${nextActive ? 'activated' : 'suspended'}.`
         )
         await router.invalidate()
+      } else {
+        // Revert on failure
+        setEmployees((prev) =>
+          prev.map((e) => (e.id === emp.id ? { ...e, isActive: emp.isActive } : e))
+        )
       }
     } catch (err: unknown) {
+      // Revert on failure
+      setEmployees((prev) =>
+        prev.map((e) => (e.id === emp.id ? { ...e, isActive: emp.isActive } : e))
+      )
       const msg = err instanceof Error ? err.message : 'Failed to update status.'
       addToast('error', 'Update Failed', msg)
+    } finally {
+      setUpdatingId(null)
     }
   }
 
@@ -445,22 +465,59 @@ function AdminTeamPage() {
                           </td>
 
                           <td className="py-4 px-4">
-                            <button
-                              onClick={() => handleToggleStatus(employee)}
-                              title="Click to toggle status"
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition ${
-                                employee.isActive
-                                  ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/40'
-                                  : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-900/50 hover:bg-amber-100 dark:hover:bg-amber-900/40'
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  employee.isActive ? 'bg-emerald-500' : 'bg-amber-500'
+                            <div className="flex items-center gap-3">
+                              {/* Toggle Switch */}
+                              <button
+                                type="button"
+                                role="switch"
+                                aria-checked={employee.isActive}
+                                disabled={updatingId === employee.id}
+                                onClick={() => handleToggleStatus(employee)}
+                                title={
+                                  employee.isActive
+                                    ? 'Click to suspend team member account'
+                                    : 'Click to reactivate team member account'
+                                }
+                                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 ${
+                                  employee.isActive
+                                    ? 'bg-emerald-500 hover:bg-emerald-600'
+                                    : 'bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'
                                 }`}
-                              />
-                              <span>{employee.isActive ? 'Active' : 'Suspended'}</span>
-                            </button>
+                              >
+                                <span className="sr-only">Toggle account status</span>
+                                <span
+                                  aria-hidden="true"
+                                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                                    employee.isActive ? 'translate-x-5' : 'translate-x-0'
+                                  }`}
+                                />
+                              </button>
+
+                              {/* Status Label */}
+                              <div className="flex items-center gap-1.5 min-w-[75px]">
+                                {updatingId === employee.id ? (
+                                  <span className="inline-flex items-center gap-1 text-xs font-mono text-slate-400 animate-pulse">
+                                    <Loader2 className="w-3 h-3 animate-spin text-blue-500" />
+                                    <span>Updating...</span>
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-bold ${
+                                      employee.isActive
+                                        ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-900/40'
+                                        : 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-900/40'
+                                    }`}
+                                  >
+                                    <span
+                                      className={`w-1.5 h-1.5 rounded-full ${
+                                        employee.isActive ? 'bg-emerald-500' : 'bg-amber-500'
+                                      }`}
+                                    />
+                                    <span>{employee.isActive ? 'Active' : 'Suspended'}</span>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </td>
 
                           <td className="py-4 px-4 sm:px-6 text-right">

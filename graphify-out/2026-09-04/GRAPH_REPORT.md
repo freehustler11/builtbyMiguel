@@ -1,16 +1,16 @@
 # Graph Report - built by Miguel  (2026-09-04)
 
 ## Corpus Check
-- 530 files · ~791,061 words
+- 530 files · ~791,188 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 7852 nodes · 8975 edges · 688 communities (631 shown, 43 thin omitted)
+- 7852 nodes · 8979 edges · 696 communities (638 shown, 43 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 73 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `55d76664`
+- Built from commit: `eb62d818`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -24,7 +24,7 @@
 - TestTailwindConfigGenerator
 - BM25
 - search_stack
-- FileRoutesByPath
+- new.tsx
 - src/routeTree.gen.ts
 - html-token-validator.py
 - scripts/core.py
@@ -54,7 +54,7 @@
 - useTheme
 - test_core.py
 - app/server/leads.ts
-- src/routes/login.tsx
+- FileRoutesByPath
 - Social Listening & Engagement Triage
 - design-tokens-starter.json
 - app/lib/auth.ts
@@ -293,7 +293,7 @@
 - Lead Magnet Format Guide
 - Onboarding Experiment Ideas
 - SaaS Prospecting Reference
-- SMS Platform Reference
+- SimpleTexting
 - A/B Test Templates Reference
 - The Creative Review Page
 - B2B Paid Playbook
@@ -650,11 +650,15 @@
 - Lead Lifecycle Framework
 - Pipeline Stage Management
 - secondary-foreground
+- Transactional / Account Notifications
+- Post-Purchase Flow
+- United States — A2P 10DLC
 - drizzle-orm
 - Footer Navigation
 - Content / Blog Site
 - SaaS Marketing Site
 - tailwind-merge
+- Compliance — Read First
 - Before Starting
 - AI Avatars
 - AI Video Generation
@@ -662,6 +666,9 @@
 - Programmatic Video
 - Landing Page Alignment (the headline-mirror trick)
 - Essential Events
+- Abandoned Cart (highest-ROI flow for ecom)
+- Promotional / Campaign Sends
+- SMS Platform Reference
 - Ideation Framework
 - SEO Considerations
 - MVP Scope
@@ -717,7 +724,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (688 total, 43 thin omitted)
+## Communities (696 total, 43 thin omitted)
 
 ### Community 0 - "validate_data.py"
 Cohesion: 0.08
@@ -755,9 +762,9 @@ Nodes (7): BM25, BM25 ranking algorithm for text search, Lowercase, normalize sy
 Cohesion: 0.11
 Nodes (6): Search stack-specific guidelines, search_stack(), _rows(), TestNativeDesktopStackFreshness, _rows(), TestWebStackFreshness
 
-### Community 9 - "FileRoutesByPath"
-Cohesion: 0.08
-Nodes (39): Report, checkAuthServerFn, requireAdmin(), requireClient(), getClientsServerFn, DisplayOptions, getReportByIdServerFn, PageItem (+31 more)
+### Community 9 - "new.tsx"
+Cohesion: 0.07
+Nodes (31): Report, DisplayOptions, PageItem, QueryItem, Navbar(), NavItem, SERVICE_ITEMS, formatDate() (+23 more)
 
 ### Community 10 - "src/routeTree.gen.ts"
 Cohesion: 0.02
@@ -871,9 +878,9 @@ Nodes (7): generate_design_system(), Main entry point for design system generati
 Cohesion: 0.08
 Nodes (25): messages, AuditPage(), Route, ContactPage(), Route, AuditLeadPayload, ContactLeadPayload, LeadSubmissionResponse (+17 more)
 
-### Community 39 - "src/routes/login.tsx"
-Cohesion: 0.14
-Nodes (12): Navbar(), NavItem, SERVICE_ITEMS, ThemeToggle(), ThemeToggleProps, applyTheme(), getInitialTheme(), Theme (+4 more)
+### Community 39 - "FileRoutesByPath"
+Cohesion: 0.15
+Nodes (20): checkAuthServerFn, requireAdmin(), requireClient(), getClientsServerFn, getReportByIdServerFn, Route, Route, Route (+12 more)
 
 ### Community 40 - "Social Listening & Engagement Triage"
 Cohesion: 0.04
@@ -1116,8 +1123,8 @@ Cohesion: 0.05
 Nodes (41): 1. Alternative pages (highest ROI), 2. Use-case / ICP pages, 3. Template / asset gallery (if applicable), 3-week prep timeline, 4. "Best of" listicles you wrote yourself, 5. Integration pages (when integrations ship), Badges and paid plans, Before Starting (+33 more)
 
 ### Community 104 - "SMS Sequence Templates"
-Cohesion: 0.05
-Nodes (41): Abandoned Cart (highest-ROI flow for ecom), Account alert, Auth code (2FA), Browse Abandonment, Delivery confirmation, Early access, Flash sale (single send), Holiday / BFCM (2-send sequence) (+33 more)
+Cohesion: 0.10
+Nodes (21): Browse Abandonment, Early access, Loyalty milestone, Re-Engagement / Reactivation (Subscribers Who've Gone Cold), Replenishment (Consumables Ecom), Segmentation rules across all flows, Send 1 — 1 hour after browse (single product or category), Send 1 — 60-90 days after last purchase (+13 more)
 
 ### Community 105 - "Client Types — Variations by Business Model"
 Cohesion: 0.05
@@ -1432,8 +1439,8 @@ Cohesion: 0.11
 Nodes (18): Anti-Patterns, Blog Category Sidebar, Bottom Tab Bar, Breadcrumbs, Common Fixes, Documentation Sidebar, Hamburger Menu, Header Navigation (+10 more)
 
 ### Community 209 - "SMS Marketing"
-Cohesion: 0.11
-Nodes (18): Canada — CASL, Common Mistakes, Compliance — Read First, EU/UK — GDPR-derived consent, Key Metrics, Measurement, Output Format, Phone Number Types (US) (+10 more)
+Cohesion: 0.15
+Nodes (13): Common Mistakes, Key Metrics, Measurement, Output Format, Phone Number Types (US), Platform Selection, Related Skills, SMS Marketing (+5 more)
 
 ### Community 210 - "Voice & Audio Generation"
 Cohesion: 0.06
@@ -1484,8 +1491,8 @@ Cohesion: 0.12
 Nodes (17): Before Starting, Calendar Scheduling Integration, CRM Automation Workflows, Dashboard Structure, Essential Automations, Key Metrics, Lead Routing, Marketing-to-Sales Automations (+9 more)
 
 ### Community 222 - "SMS Compliance Reference"
-Cohesion: 0.12
-Nodes (17): Audit-ready compliance checklist, Australia — Spam Act 2003, Canada — CASL, Common rejections, Consent, Consent requirements, EU / UK — GDPR + ePrivacy Directive, Every message must include (+9 more)
+Cohesion: 0.17
+Nodes (12): Audit-ready compliance checklist, Australia — Spam Act 2003, Canada — CASL, Consent, Consent requirements, EU / UK — GDPR + ePrivacy Directive, Every message must include, Mandatory provisions (+4 more)
 
 ### Community 223 - "iOS-Native Reveal Video Ads (iMessage, ChatGPT, Apple Notes, AirDrop)"
 Cohesion: 0.12
@@ -1731,9 +1738,9 @@ Nodes (13): Contents, Dynamic Content, Metrics to Track, Motivation Mechanics, O
 Cohesion: 0.17
 Nodes (9): Common Mistakes (SaaS), Decay signals (downgrade scoring), Growth signals, ICP Signals That Matter (SaaS branch), Output Columns (SaaS branch), Qualification Checklist (SaaS branch), SaaS Prospecting Reference, Technographic signals (+1 more)
 
-### Community 284 - "SMS Platform Reference"
-Cohesion: 0.15
-Nodes (9): A2P 10DLC: what your platform should handle, Compliance, Integration paths, Key features, Pricing, Quick selection table, SimpleTexting, SMS Platform Reference (+1 more)
+### Community 284 - "SimpleTexting"
+Cohesion: 0.33
+Nodes (6): Compliance, Integration paths, Key features, Pricing, SimpleTexting, Watch out for
 
 ### Community 285 - "A/B Test Templates Reference"
 Cohesion: 0.17
@@ -3159,6 +3166,18 @@ Nodes (4): Pipeline Metrics, Pipeline Stage Management, Pipeline Stages, Stage H
 Cohesion: 0.67
 Nodes (3): secondary-foreground, $type, $value
 
+### Community 647 - "Transactional / Account Notifications"
+Cohesion: 0.33
+Nodes (6): Account alert, Auth code (2FA), Delivery confirmation, Order confirmation, Shipping update, Transactional / Account Notifications
+
+### Community 648 - "Post-Purchase Flow"
+Cohesion: 0.33
+Nodes (6): Post-Purchase Flow, Send 1 — Immediately after purchase (transactional, separate consent), Send 2 — Day of shipment, Send 3 — Day of delivery, Send 4 — 2 days after delivery (marketing consent required), Send 5 — 14 days after delivery (cross-sell, marketing consent)
+
+### Community 649 - "United States — A2P 10DLC"
+Cohesion: 0.40
+Nodes (5): Common rejections, Registration components, Throughput tiers (varies by carrier and trust score), United States — A2P 10DLC, What it is
+
 ### Community 651 - "Footer Navigation"
 Cohesion: 0.50
 Nodes (4): Column-Based Footer (Standard), Expanded Footer, Footer Navigation, Minimal Footer
@@ -3170,6 +3189,10 @@ Nodes (4): Content / Blog Site, Navigation, Page Hierarchy, URL Map
 ### Community 653 - "SaaS Marketing Site"
 Cohesion: 0.50
 Nodes (4): Navigation, Page Hierarchy, SaaS Marketing Site, URL Map
+
+### Community 655 - "Compliance — Read First"
+Cohesion: 0.40
+Nodes (5): Canada — CASL, Compliance — Read First, EU/UK — GDPR-derived consent, US — A2P 10DLC Registration (required since 2022), US — TCPA (Telephone Consumer Protection Act)
 
 ### Community 656 - "Before Starting"
 Cohesion: 0.50
@@ -3198,6 +3221,18 @@ Nodes (3): Headline mirroring, Landing Page Alignment (the headline-mirror trick
 ### Community 662 - "Essential Events"
 Cohesion: 0.67
 Nodes (3): Essential Events, Marketing Site, Product/App
+
+### Community 664 - "Abandoned Cart (highest-ROI flow for ecom)"
+Cohesion: 0.50
+Nodes (4): Abandoned Cart (highest-ROI flow for ecom), Send 1 — 30 minutes after abandon, Send 2 — 4 hours after abandon (if no purchase), Send 3 — 24 hours after abandon (if no purchase, discount allowed)
+
+### Community 665 - "Promotional / Campaign Sends"
+Cohesion: 0.50
+Nodes (4): Flash sale (single send), Holiday / BFCM (2-send sequence), Limited drop / launch, Promotional / Campaign Sends
+
+### Community 666 - "SMS Platform Reference"
+Cohesion: 0.67
+Nodes (3): A2P 10DLC: what your platform should handle, Quick selection table, SMS Platform Reference
 
 ### Community 667 - "Ideation Framework"
 Cohesion: 0.67
