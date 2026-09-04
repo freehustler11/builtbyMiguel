@@ -12,8 +12,10 @@ export interface QueryItem {
 
 export interface PageItem {
   path: string
-  clicks: number
-  users: number
+  impressions: number
+  position: number
+  clicks?: number
+  users?: number
 }
 
 export interface DisplayOptions {

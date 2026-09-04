@@ -135,11 +135,11 @@ const DEFAULT_QUERY_ITEMS: QueryItem[] = [
 ]
 
 const DEFAULT_PAGE_ITEMS: PageItem[] = [
-  { path: '/', clicks: 0, users: 0 },
-  { path: '', clicks: 0, users: 0 },
-  { path: '', clicks: 0, users: 0 },
-  { path: '', clicks: 0, users: 0 },
-  { path: '', clicks: 0, users: 0 },
+  { path: '/', impressions: 0, position: 1.0 },
+  { path: '', impressions: 0, position: 1.0 },
+  { path: '', impressions: 0, position: 1.0 },
+  { path: '', impressions: 0, position: 1.0 },
+  { path: '', impressions: 0, position: 1.0 },
 ]
 
 function AdminReportFormPage() {
@@ -244,9 +244,13 @@ function AdminReportFormPage() {
     if (existingReport && Array.isArray(existingReport.topPages) && existingReport.topPages.length > 0) {
       const items = [...existingReport.topPages]
       while (items.length < 5) {
-        items.push({ path: '', clicks: 0, users: 0 })
+        items.push({ path: '', impressions: 0, position: 1.0 })
       }
-      return items.slice(0, 5)
+      return items.slice(0, 5).map((p: any) => ({
+        path: p.path || '',
+        impressions: p.impressions !== undefined ? p.impressions : (p.clicks || 0),
+        position: p.position !== undefined ? p.position : 1.0,
+      }))
     }
     return DEFAULT_PAGE_ITEMS
   })
@@ -452,11 +456,11 @@ function AdminReportFormPage() {
       }))
 
     const cleanedPages = topPages
-      .filter((p) => p.path.trim().length > 0)
+      .filter((p) => p.path && p.path.trim().length > 0)
       .map((p) => ({
         path: p.path.trim(),
-        clicks: Number(p.clicks) || 0,
-        users: Number(p.users) || 0,
+        impressions: Number(p.impressions) || 0,
+        position: p.position ? (Number(p.position) || 1.0) : 1.0,
       }))
 
     try {
@@ -1240,14 +1244,14 @@ function AdminReportFormPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
                         <Globe className="w-3.5 h-3.5" />
-                        <span>Top 5 Landing Pages (GA4 &amp; GSC)</span>
+                        <span>Top 5 Landing Pages (GSC)</span>
                       </div>
                       <span className="text-[10px] font-mono text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-md font-semibold border border-indigo-200 dark:border-indigo-800">
-                        GA4 Engagement
+                        Google Search Console
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                      Where to find: In <strong className="text-slate-700 dark:text-slate-300">GA4 &gt; Reports &gt; Engagement &gt; Pages and screens</strong>. Enter the top URLs by organic traffic.
+                      Where to find: In <strong className="text-slate-700 dark:text-slate-300">GSC &gt; Performance &gt; Search results &gt; Pages</strong> tab. Enter the top URLs by impressions and average position.
                     </p>
                   </div>
 
@@ -1257,11 +1261,11 @@ function AdminReportFormPage() {
                       <span>#</span>
                       <span className="ml-1">Page URL / Path</span>
                     </div>
-                    <div className="col-span-3 text-right" title="Organic Clicks to this URL">
-                      Clicks (GSC)
+                    <div className="col-span-3 text-right" title="Search Impressions for this URL">
+                      Impressions
                     </div>
-                    <div className="col-span-3 text-right" title="Active Visitors on this Page">
-                      Visitors (GA4)
+                    <div className="col-span-3 text-right" title="Average Search Ranking Position">
+                      Avg. Position
                     </div>
                   </div>
 
@@ -1293,18 +1297,19 @@ function AdminReportFormPage() {
                               theme="indigo"
                               min="0"
                               placeholder="0"
-                              value={p.clicks === 0 ? '' : p.clicks}
-                              onChange={(e) => handlePageChange(idx, 'clicks', e.target.value === '' ? 0 : Number(e.target.value))}
+                              value={p.impressions === 0 || p.impressions === undefined ? '' : p.impressions}
+                              onChange={(e) => handlePageChange(idx, 'impressions', e.target.value === '' ? 0 : Number(e.target.value))}
                               inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
                             />
                           </div>
                           <div className="col-span-3">
                             <ThemedNumberInput
                               theme="indigo"
-                              min="0"
-                              placeholder="0"
-                              value={p.users === 0 ? '' : p.users}
-                              onChange={(e) => handlePageChange(idx, 'users', e.target.value === '' ? 0 : Number(e.target.value))}
+                              step="0.1"
+                              min="1.0"
+                              placeholder="1.0"
+                              value={!p.path && (p.position === 1 || !p.position) ? '' : (p.position === 1 ? '1.0' : (p.position || ''))}
+                              onChange={(e) => handlePageChange(idx, 'position', e.target.value === '' ? 1.0 : Number(e.target.value))}
                               inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
                             />
                           </div>

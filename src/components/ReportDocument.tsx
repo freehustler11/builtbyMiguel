@@ -820,9 +820,9 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   <div className="flex items-center justify-between pb-1 border-b border-slate-100">
                     <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                       <Globe className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Top Landing Pages (GA4)</span>
+                      <span>Top Landing Pages (GSC)</span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 font-semibold whitespace-nowrap">Top 5 by Traffic</span>
+                    <span className="text-[10px] font-mono text-slate-400 font-semibold whitespace-nowrap">Top 5 by Visibility</span>
                   </div>
 
                   <div className="overflow-x-auto">
@@ -830,24 +830,28 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                       <thead>
                         <tr className="border-b border-slate-200 text-[10px] text-slate-400 uppercase">
                           <th className="pb-1 font-bold w-[60%]">Path / Page</th>
-                          <th className="pb-1 font-bold text-right w-[20%] whitespace-nowrap">Clicks</th>
-                          <th className="pb-1 font-bold text-right w-[20%] whitespace-nowrap">Users</th>
+                          <th className="pb-1 font-bold text-right w-[20%] whitespace-nowrap">Impr.</th>
+                          <th className="pb-1 font-bold text-right w-[20%] whitespace-nowrap">Pos.</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {topPages.slice(0, 5).map((item: PageItem, idx: number) => (
-                          <tr key={idx} className="hover:bg-slate-50/60 even:bg-slate-50/30">
-                            <td className="py-1.5 pr-2 font-medium text-slate-800 truncate">
-                              {item.path}
-                            </td>
-                            <td className="py-1.5 text-right font-bold text-indigo-700 whitespace-nowrap">
-                              {item.clicks}
-                            </td>
-                            <td className="py-1.5 text-right text-slate-600 font-semibold whitespace-nowrap">
-                              {item.users}
-                            </td>
-                          </tr>
-                        ))}
+                        {topPages.slice(0, 5).map((item: PageItem, idx: number) => {
+                          const impressionsVal = item.impressions !== undefined ? item.impressions : (item.clicks || 0)
+                          const positionVal = item.position !== undefined ? item.position : 1.0
+                          return (
+                            <tr key={idx} className="hover:bg-slate-50/60 even:bg-slate-50/30">
+                              <td className="py-1.5 pr-2 font-medium text-slate-800 truncate">
+                                {item.path}
+                              </td>
+                              <td className="py-1.5 text-right font-bold text-indigo-700 whitespace-nowrap">
+                                {impressionsVal?.toLocaleString()}
+                              </td>
+                              <td className="py-1.5 text-right text-slate-500 font-semibold whitespace-nowrap">
+                                {Number(positionVal).toFixed(1)}
+                              </td>
+                            </tr>
+                          )
+                        })}
                       </tbody>
                     </table>
                   </div>

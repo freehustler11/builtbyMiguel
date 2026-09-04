@@ -198,6 +198,32 @@ async function runSimulations() {
       })
     )
     assert(html3.includes('Apex Growth Partners'), 'Partner agency name rendered in white-label mode')
+
+    // Test 5: Top 5 Pages with Impressions and Position
+    const pagesReport: any = {
+      ...sampleReport,
+      id: 'pages-test',
+      topPages: [
+        { path: '/dispensary-menu', impressions: 12500, position: 2.3 },
+        { path: '/locations/miami', impressions: 8400, position: 1.8 },
+      ],
+    }
+    const htmlPages = ReactDOMServer.renderToStaticMarkup(
+      React.createElement(ReportDocument, {
+        client: sampleClient,
+        report: pagesReport,
+        displayOptions: {
+          show_agency_info: false,
+          show_contact_person: true,
+          show_date_generated: false,
+          show_summary: true,
+          show_tables: true,
+          show_next_steps: true,
+        },
+      })
+    )
+    assert(htmlPages.includes('Top Landing Pages (GSC)'), 'Table 2 header rendered as Top Landing Pages (GSC)')
+    assert(htmlPages.includes('12,500') && htmlPages.includes('2.3'), 'Top pages renders impressions and position correctly')
   } catch (err: any) {
     assert(false, 'ReportDocument rendering threw error', err.message)
   }
