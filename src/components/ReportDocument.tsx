@@ -161,13 +161,19 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
   return (
     <div
-      className="report-root max-w-5xl mx-auto text-slate-900 bg-white shadow-xl print:shadow-none rounded-3xl print:rounded-none border border-slate-200/80 print:border-none p-6 sm:p-8 print:p-0"
+      className="report-root flex flex-col items-center gap-8 print:gap-0 print:block w-full"
       style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
     >
       {/* ========================================================================= */}
       {/* PAGE 1: SLIM EXECUTIVE HEADER, SUMMARY & 4-METRIC BALANCED KPIS           */}
       {/* ========================================================================= */}
-      <section className="print-page-1 flex flex-col justify-between space-y-4 print:space-y-4">
+      <div
+        className="report-page report-page-1 bg-white text-slate-900 shadow-xl hover:shadow-2xl transition-shadow rounded-2xl print:rounded-none border border-slate-200/80 print:border-none w-full max-w-[8.5in] p-6 sm:p-8 print:w-[8.5in] print:h-[11in] print:max-h-[11in] print:p-[0.5in] print:box-border print:overflow-hidden print:shadow-none flex flex-col justify-between"
+        style={{
+          breakAfter: 'page',
+          pageBreakAfter: 'always',
+        }}
+      >
         <div className="space-y-4 print:space-y-4">
           {/* Top Slim Executive Brand Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 print:border-slate-300">
@@ -517,27 +523,42 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           </div>
         </div>
 
-        {/* Page 1 Footer indicator for screen */}
-        <div className="text-[10px] font-mono text-slate-400 text-right print:hidden pt-2">
-          Page 1 of 2 • Core Performance Indicators
+        {/* Page 1 Bottom Footer (Pinned to bottom via justify-between) */}
+        <div className="pt-3 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-800 print:text-black">
+              {options.show_agency_info && client.partnerName ? client.partnerName : 'Confidential Performance Audit'}
+            </span>
+            <span>•</span>
+            <span>Prepared exclusively for {client.businessName}</span>
+          </div>
+          <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold">
+            Confidential • Page 1 of 2
+          </div>
         </div>
-      </section>
+      </div>
 
-      {/* ========================================================================= */}
-      {/* PAGE BREAK (Enforces clean 2-page print split)                            */}
-      {/* ========================================================================= */}
-      <div className="print-page-break my-8 print:my-0 border-t-2 border-dashed border-slate-200 print:border-none relative flex items-center justify-center">
-        <span className="bg-white px-3 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 print:hidden">
-          Page Break (2-Page Print Layout)
+      {/* Screen-only Paper Break Divider */}
+      <div className="print:hidden w-full max-w-[8.5in] flex items-center justify-center gap-3 text-slate-400 font-mono text-xs my-1">
+        <span className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
+        <span className="px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold text-[11px] shadow-2xs">
+          End of Page 1 • Page 2 Below
         </span>
+        <span className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
       </div>
 
       {/* ========================================================================= */}
       {/* PAGE 2: DEEP METRIC TABLES, ROADMAP & FOOTER                              */}
       {/* ========================================================================= */}
-      <section className="print-page-2 flex flex-col justify-between space-y-4 print:space-y-3 print:pt-2">
+      <div
+        className="report-page report-page-2 bg-white text-slate-900 shadow-xl hover:shadow-2xl transition-shadow rounded-2xl print:rounded-none border border-slate-200/80 print:border-none w-full max-w-[8.5in] p-6 sm:p-8 print:w-[8.5in] print:h-[11in] print:max-h-[11in] print:p-[0.5in] print:box-border print:overflow-hidden print:shadow-none flex flex-col justify-between"
+        style={{
+          breakInside: 'avoid',
+          pageBreakInside: 'avoid',
+        }}
+      >
         <div className="space-y-4 print:space-y-3">
-          {/* Section Header for Page 2: Clean, single-line without overlapping text */}
+          {/* Section Header for Page 2: Clean, single-line without middle-of-content page number */}
           <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
             <div className="flex items-center gap-2">
               <FileSpreadsheet className="w-4 h-4 text-slate-600" />
@@ -545,8 +566,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 Detailed Search Visibility & Strategic Deliverables
               </h3>
             </div>
-            <span className="text-[11px] font-mono text-slate-400">
-              Page 2 of 2
+            <span className="text-[11px] font-mono text-slate-500 font-semibold">
+              {client.businessName} • {report.reportMonth}
             </span>
           </div>
 
@@ -707,8 +728,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           )}
         </div>
 
-        {/* Document Footer */}
-        <div className="pt-4 border-t border-slate-200 print:border-slate-300 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-slate-400 print:break-inside-avoid">
+        {/* Page 2 Bottom Footer (Pinned to bottom via justify-between) */}
+        <div className="pt-3.5 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
           {options.show_agency_info && (client.partnerName || isWhiteLabel) ? (
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-800 print:text-black">
@@ -726,18 +747,18 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
               <span>Prepared exclusively for {client.businessName}</span>
             </div>
           )}
-          <div className="text-[11px] text-slate-400">
+          <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold">
             Confidential • Page 2 of 2
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Global Ink-Friendly Print Styling */}
       <style>{`
         @media print {
           @page {
             size: letter portrait;
-            margin: 0.4in;
+            margin: 0;
           }
           *, *::before, *::after {
             -webkit-print-color-adjust: exact !important;
@@ -749,6 +770,38 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             color: #0f172a !important;
             margin: 0 !important;
             padding: 0 !important;
+            width: 8.5in !important;
+            height: auto !important;
+          }
+          .report-root {
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 8.5in !important;
+          }
+          .report-page {
+            width: 8.5in !important;
+            height: 11in !important;
+            max-height: 11in !important;
+            padding: 0.5in !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+          }
+          .report-page-1 {
+            page-break-after: always !important;
+            break-after: page !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          .report-page-2 {
+            page-break-before: always !important;
+            break-before: page !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
           }
           /* Suppress browser link URL stamping */
           a, a:visited {
@@ -762,32 +815,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           abbr[title]:after {
             content: "" !important;
           }
-          /* Suppress heavy black fills */
-          .bg-slate-900, .dark\\:bg-\\[\\#070b14\\] {
+          /* Suppress heavy black ink blocks */
+          .bg-slate-900, .dark\\:bg-\\[\\#070b14\\], .dark\\:bg-\\[\\#0c111d\\] {
             background-color: white !important;
             color: #0f172a !important;
-          }
-          .print-page-1 {
-            page-break-after: always !important;
-            break-after: page !important;
-            break-inside: avoid !important;
-          }
-          .print-page-2 {
-            page-break-before: always !important;
-            break-before: page !important;
-            break-inside: avoid !important;
-          }
-          .print-page-break {
-            page-break-after: always !important;
-            break-after: page !important;
-            height: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            border: none !important;
-          }
-          .print\\:break-inside-avoid {
-            break-inside: avoid !important;
-            page-break-inside: avoid !important;
           }
         }
       `}</style>

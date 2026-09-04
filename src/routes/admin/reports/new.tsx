@@ -458,25 +458,30 @@ function AdminReportFormPage() {
       }
 
       if (isEditing && editId) {
-        await updateReportServerFn({
+        const updateRes = await updateReportServerFn({
           data: {
             id: editId,
             ...payload,
           },
         })
+        const targetId = updateRes?.report?.id || editId
         addToast('Report Updated', 'Saved changes successfully!')
         navigate({
           to: '/admin/reports/$id',
-          params: { id: editId },
+          params: { id: targetId },
         })
       } else {
         const res = await createReportServerFn({
           data: payload,
         })
+        const newReportId = res?.report?.id
+        if (!newReportId) {
+          throw new Error('Failed to create report: ID not returned from server.')
+        }
         addToast('Report Created', 'Redirecting to your branded report...')
         navigate({
           to: '/admin/reports/$id',
-          params: { id: res.report.id },
+          params: { id: newReportId },
         })
       }
     } catch (err: any) {
