@@ -19,7 +19,7 @@ export function createRouter() {
       queryClient,
     },
     defaultPreload: 'intent',
-    defaultPreloadDelay: 20, // Preload immediately on cursor intent
+    defaultPreloadDelay: 150, // Preload on deliberate cursor intent (150ms)
     defaultPreloadStaleTime: 1000 * 60 * 2, // 2 minutes
     defaultStaleTime: 1000 * 30, // 30 seconds fresh cache for instant navigation without re-fetching
     scrollRestoration: true,

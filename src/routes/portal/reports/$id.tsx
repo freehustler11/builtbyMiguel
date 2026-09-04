@@ -4,6 +4,7 @@ import { Printer, ArrowLeft } from 'lucide-react'
 import { checkAuthServerFn } from '../../../lib/auth'
 import { getReportByIdServerFn } from '../../../server/reports'
 import { ReportDocument } from '../../../components/ReportDocument'
+import { ThemeToggle } from '../../../components/ThemeToggle'
 
 export const Route = createFileRoute('/portal/reports/$id')({
   beforeLoad: async () => {
@@ -64,14 +65,17 @@ function ClientPortalReportPage() {
           <span>Back to All Reports</span>
         </Link>
 
-        <button
-          type="button"
-          onClick={handlePrint}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-sm transition-all cursor-pointer"
-        >
-          <Printer className="w-4 h-4" />
-          <span>Print / Save as PDF</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle variant="pill" />
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-sm transition-all cursor-pointer"
+          >
+            <Printer className="w-4 h-4" />
+            <span>Print / Save as PDF</span>
+          </button>
+        </div>
       </div>
 
       {/* Render Document */}

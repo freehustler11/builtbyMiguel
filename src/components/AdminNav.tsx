@@ -146,14 +146,15 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
             <span>PostgreSQL Live</span>
           </div>
 
-          <Link
-            to="/blog"
+          <a
+            href={typeof window !== 'undefined' && window.location.hostname.includes('localhost') ? '/' : 'https://builtbymiguel.net'}
             target="_blank"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition shadow-2xs"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition shadow-xs hover:border-slate-300 dark:hover:border-slate-700"
           >
             <span>Live Site</span>
             <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-          </Link>
+          </a>
 
           <ThemeToggle variant="pill" />
 

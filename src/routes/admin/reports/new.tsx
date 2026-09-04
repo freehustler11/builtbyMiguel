@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { ThemedNumberInput } from '../../../components/ThemedNumberInput'
+import { ThemeToggle } from '../../../components/ThemeToggle'
 import { ToastContainer, type ToastMessage } from '../../../components/Toast'
 import { getClientsServerFn } from '../../../server/clients'
 import {
@@ -555,14 +556,21 @@ function AdminReportFormPage() {
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Back Link */}
-        <Link
-          to="/admin/reports"
-          className="inline-flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-slate-900 dark:hover:text-white transition"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to All Reports</span>
-        </Link>
+        {/* Sticky Quick Nav Bar */}
+        <div className="sticky top-0 z-30 bg-slate-50/95 dark:bg-[#0c111d]/95 backdrop-blur-md -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
+          <Link
+            to="/admin/reports"
+            className="inline-flex items-center gap-2 text-xs font-mono font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to All Reports</span>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-slate-400 dark:text-slate-500 hidden sm:inline">Theme:</span>
+            <ThemeToggle variant="pill" />
+          </div>
+        </div>
 
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
@@ -573,6 +581,9 @@ function AdminReportFormPage() {
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Configure metrics, month-over-month comparisons, search keywords, and strategic deliverables.
             </p>
+          </div>
+          <div className="hidden sm:flex items-center gap-3 shrink-0">
+            <ThemeToggle variant="pill" />
           </div>
         </div>
 

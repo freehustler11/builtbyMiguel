@@ -75,7 +75,13 @@ const LOCAL_BUSINESS_JSON_LD = {
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async (opts: any) => {
+    // CRITICAL: Never trigger browser window redirect during route preloads
+    if (opts?.preload || opts?.cause === 'preload') {
+      return
+    }
+
+    const { location } = opts
     // Client-side browser navigation check
     if (typeof window !== 'undefined') {
       const clientHost = window.location.host.split(':')[0].toLowerCase()
