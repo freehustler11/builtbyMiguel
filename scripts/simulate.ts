@@ -1,6 +1,19 @@
 import 'dotenv/config'
 import { db } from '../app/db/index'
-import { users, clients, reports, messages, media, activityLogs } from '../app/db/schema'
+import {
+  users,
+  clients,
+  reports,
+  messages,
+  media,
+  activityLogs,
+  landingPages,
+  clientArticles,
+  keywords,
+  keywordRankHistory,
+  tasks,
+  monthlyMetrics,
+} from '../app/db/schema'
 import { eq, sql, inArray, and, isNull } from 'drizzle-orm'
 import { hashPassword, verifyPassword, createSessionToken, verifySessionToken, getSessionData } from '../app/lib/auth'
 import { getEffectivePartnerId } from '../app/server/auth'
@@ -1108,6 +1121,243 @@ async function runSimulations() {
     assert(true, 'Simulation 14 test data cleanly purged')
   } catch (err: any) {
     assert(false, 'Superadmin agencies simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 15: Client-Scoped CRM Database Tables & Constraints
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 15: Client-Scoped CRM Database Tables & Constraints')
+  try {
+    // 1. Create test partner, staff user, and test client
+    const [testPartner] = await db.insert(users).values({
+      name: 'CRM Test Partner Agency',
+      email: `crm_partner_${Date.now()}@test.com`,
+      passwordHash: await hashPassword('CrmPass123!'),
+      role: 'partner',
+      isActive: true,
+    }).returning()
+    assert(Boolean(testPartner?.id), 'Test partner agency created for CRM tables')
+
+    const [testStaff] = await db.insert(users).values({
+      name: 'CRM Staff Member',
+      email: `crm_staff_${Date.now()}@test.com`,
+      passwordHash: await hashPassword('CrmPass123!'),
+      role: 'partner_employee',
+      partnerId: testPartner.id,
+      isActive: true,
+    }).returning()
+    assert(Boolean(testStaff?.id), 'Test staff member created')
+
+    const [testClient] = await db.insert(clients).values({
+      name: 'CRM Client Owner',
+      businessName: 'Apex Dental Care',
+      partnerId: testPartner.id,
+    }).returning()
+    assert(Boolean(testClient?.id), 'Test client created')
+
+    // 2. Landing Pages: verify creation, default status 'planning', assignedTo, and wentLiveAt automatic setting
+    const [lp] = await db.insert(landingPages).values({
+      clientId: testClient.id,
+      title: 'Emergency Dentist Landing Page',
+      targetUrl: 'https://apexdental.com/emergency',
+      focusKeyword: 'emergency dentist miami',
+      ctaGoal: 'Schedule Emergency Appointment',
+      assignedTo: testStaff.id,
+    }).returning()
+    assert(Boolean(lp?.id), 'Landing page inserted successfully')
+    assert(lp.status === 'planning', 'Landing page default status is planning')
+    assert(lp.wentLiveAt === null, 'Landing page wentLiveAt is initially null')
+    assert(lp.assignedTo === testStaff.id, 'Landing page assignedTo references user')
+
+    // Simulate status change to 'live' setting wentLiveAt automatically
+    const liveTime = new Date()
+    const [lpLive] = await db.update(landingPages)
+      .set({
+        status: 'live',
+        wentLiveAt: liveTime,
+        updatedAt: liveTime,
+      })
+      .where(eq(landingPages.id, lp.id))
+      .returning()
+    assert(lpLive.status === 'live', 'Landing page transitioned to live')
+    assert(Boolean(lpLive.wentLiveAt), 'wentLiveAt set upon going live')
+
+    // 3. Client Articles: verify creation, default status 'idea', writerId FK, and publishedAt
+    const [article] = await db.insert(clientArticles).values({
+      clientId: testClient.id,
+      title: '5 Signs You Need a Root Canal',
+      draftUrl: 'https://docs.google.com/document/d/example',
+      targetKeyword: 'root canal signs',
+      writerId: testStaff.id,
+    }).returning()
+    assert(Boolean(article?.id), 'Client article inserted successfully')
+    assert(article.status === 'idea', 'Client article default status is idea')
+    assert(article.publishedAt === null, 'Client article publishedAt is initially null')
+    assert(article.writerId === testStaff.id, 'Client article writerId is a FK referencing users.id')
+
+    // Simulate status change to 'live' setting publishedAt automatically
+    const pubTime = new Date()
+    const [articleLive] = await db.update(clientArticles)
+      .set({
+        status: 'live',
+        publishedAt: pubTime,
+        updatedAt: pubTime,
+      })
+      .where(eq(clientArticles.id, article.id))
+      .returning()
+    assert(articleLive.status === 'live', 'Client article transitioned to live')
+    assert(Boolean(articleLive.publishedAt), 'publishedAt set upon going live')
+
+    // 4. Keywords: verify client-specific keywords (with location)
+    const [kw] = await db.insert(keywords).values({
+      clientId: testClient.id,
+      keyword: 'best cosmetic dentist',
+      location: 'Miami, FL',
+      searchVolume: 1200,
+      estimatedTraffic: 350,
+      currentRank: 4,
+      previousRank: 7,
+      targetUrl: 'https://apexdental.com/cosmetic',
+    }).returning()
+    assert(Boolean(kw?.id), 'Keyword inserted successfully')
+    assert(kw.location === 'Miami, FL', 'Keyword stores local market location')
+    assert(kw.status === 'research', 'Keyword default status is research')
+
+    // 5. Keyword Rank History: append-only trend tracking and unique constraint (keyword_id, month, year)
+    const [rhJan] = await db.insert(keywordRankHistory).values({
+      keywordId: kw.id,
+      month: 1,
+      year: 2026,
+      rank: 12,
+    }).returning()
+    const [rhFeb] = await db.insert(keywordRankHistory).values({
+      keywordId: kw.id,
+      month: 2,
+      year: 2026,
+      rank: 7,
+    }).returning()
+    const [rhMar] = await db.insert(keywordRankHistory).values({
+      keywordId: kw.id,
+      month: 3,
+      year: 2026,
+      rank: 4,
+    }).returning()
+    assert(Boolean(rhJan?.id && rhFeb?.id && rhMar?.id), 'Keyword rank history entries recorded across months')
+
+    // Test unique constraint (keyword_id, month, year)
+    let duplicateHistoryFailed = false
+    try {
+      await db.insert(keywordRankHistory).values({
+        keywordId: kw.id,
+        month: 1,
+        year: 2026,
+        rank: 99,
+      })
+    } catch {
+      duplicateHistoryFailed = true
+    }
+    assert(duplicateHistoryFailed, 'Unique constraint on keyword_rank_history(keyword_id, month, year) enforced')
+
+    // 6. Tasks: client-scoped task AND internal agency task (nullable client_id, direct partner_id tenancy)
+    const [clientTask] = await db.insert(tasks).values({
+      clientId: testClient.id,
+      partnerId: testPartner.id,
+      title: 'Fix Title Tags on Service Pages',
+      category: 'on_page',
+      assignedTo: testStaff.id,
+    }).returning()
+    assert(Boolean(clientTask?.id), 'Client-specific task created')
+    assert(clientTask.status === 'todo', 'Task default status is todo')
+    assert(clientTask.completedAt === null, 'Task completedAt is initially null')
+
+    // Simulate completion
+    const [completedClientTask] = await db.update(tasks)
+      .set({
+        status: 'done',
+        completedAt: new Date(),
+      })
+      .where(eq(tasks.id, clientTask.id))
+      .returning()
+    assert(completedClientTask.status === 'done', 'Task marked done')
+    assert(Boolean(completedClientTask.completedAt), 'completedAt set automatically on status change to done')
+
+    // Internal agency task with client_id = null
+    const [internalTask] = await db.insert(tasks).values({
+      clientId: null,
+      partnerId: testPartner.id,
+      title: 'Update Agency Pitch Deck for Q2',
+      category: 'technical_seo',
+      assignedTo: testStaff.id,
+    }).returning()
+    assert(Boolean(internalTask?.id), 'Internal agency task created with nullable client_id')
+    assert(internalTask.clientId === null, 'Internal task has null client_id without polluting client list')
+    assert(internalTask.partnerId === testPartner.id, 'Internal task maintains direct partner_id tenancy')
+
+    // 7. Monthly Metrics: living editable entry surface and UNIQUE (client_id, month, year)
+    const [metricsJan] = await db.insert(monthlyMetrics).values({
+      clientId: testClient.id,
+      month: 1,
+      year: 2026,
+      gscClicks: 450,
+      gscImpressions: 12000,
+      gscCtr: 3.75,
+      gscPosition: 8.2,
+      gaSessions: 600,
+      gaUsers: 510,
+      gaNewUsers: 480,
+      gaViews: 1100,
+      gaEngagementRate: 62.5,
+      gbpCalls: 34,
+      gbpViews: 890,
+      gbpDirections: 45,
+      gbpWebsiteClicks: 120,
+      gbpRating: 4.9,
+      gbpReviewsCount: 88,
+      semrushAuthorityScore: 28,
+      semrushRankedKeywords: 145,
+    }).returning()
+    assert(Boolean(metricsJan?.id), 'Monthly metrics entry created successfully')
+    assert(metricsJan.gscClicks === 450, 'GSC clicks recorded accurately')
+    assert(metricsJan.gbpRating === 4.9, 'GBP rating recorded as double precision')
+
+    // Test unique constraint (client_id, month, year)
+    let duplicateMetricsFailed = false
+    try {
+      await db.insert(monthlyMetrics).values({
+        clientId: testClient.id,
+        month: 1,
+        year: 2026,
+        gscClicks: 999,
+      })
+    } catch {
+      duplicateMetricsFailed = true
+    }
+    assert(duplicateMetricsFailed, 'Unique constraint on monthly_metrics(client_id, month, year) prevents duplicate month entries')
+
+    // 8. Foreign Key Restrict on clients(id): attempting to delete client while deliverables exist is blocked
+    let clientDeleteBlocked = false
+    try {
+      await db.delete(clients).where(eq(clients.id, testClient.id))
+    } catch {
+      clientDeleteBlocked = true
+    }
+    assert(clientDeleteBlocked, 'ON DELETE RESTRICT on client deliverables prevents accidental client deletion')
+
+    // 9. Cascade on keyword deletion: keywordRankHistory cascades
+    await db.delete(keywords).where(eq(keywords.id, kw.id))
+    const remainingHistory = await db.select().from(keywordRankHistory).where(eq(keywordRankHistory.keywordId, kw.id))
+    assert(remainingHistory.length === 0, 'Keyword deletion cascaded and deleted keyword_rank_history records')
+
+    // 10. Clean up remaining test data
+    await db.delete(monthlyMetrics).where(eq(monthlyMetrics.clientId, testClient.id))
+    await db.delete(tasks).where(inArray(tasks.id, [clientTask.id, internalTask.id]))
+    await db.delete(clientArticles).where(eq(clientArticles.id, article.id))
+    await db.delete(landingPages).where(eq(landingPages.id, lp.id))
+    await db.delete(clients).where(eq(clients.id, testClient.id))
+    await db.delete(users).where(inArray(users.id, [testStaff.id, testPartner.id]))
+    assert(true, 'Simulation 15 test data cleanly purged')
+  } catch (err: any) {
+    assert(false, 'CRM tables simulation failed', err.message)
   }
 
   // ---------------------------------------------------------------

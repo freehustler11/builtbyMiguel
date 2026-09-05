@@ -888,9 +888,9 @@
     "semantic_hash": ""
   },
   "app/db/schema.ts": {
-    "mtime": 1788609818.3959424,
-    "seen": 1788610657.350777,
-    "ast_hash": "f6f4398e753497ae2bbb3f88e2b8bbb0",
+    "mtime": 1788616678.439971,
+    "seen": 1788616881.0440762,
+    "ast_hash": "9b9f50d6f79f1cda3aec1791297430be",
     "semantic_hash": ""
   },
   "app/lib/auth.ts": {
@@ -918,9 +918,9 @@
     "semantic_hash": ""
   },
   "scripts/migrate.mjs": {
-    "mtime": 1788609778.2775204,
-    "seen": 1788610657.3508642,
-    "ast_hash": "69c2f59a2235dcdd14f5413bd7464ada",
+    "mtime": 1788616629.305386,
+    "seen": 1788616881.0442023,
+    "ast_hash": "2b16b6c690f48abf25e1d0b575db7068",
     "semantic_hash": ""
   },
   "src/components/AdminNav.tsx": {
@@ -2778,8 +2778,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1788616429.6183462,
-    "seen": 1788616502.9335182,
+    "mtime": 1788616801.816032,
+    "seen": 1788616881.0469842,
     "ast_hash": "e4223283dbb6d6e2ab58d43ec64f5475",
     "semantic_hash": ""
   },
@@ -3012,9 +3012,9 @@
     "semantic_hash": ""
   },
   "scripts/simulate.ts": {
-    "mtime": 1788616349.2349665,
-    "seen": 1788616502.931638,
-    "ast_hash": "3d07f5ff933d4ef97814218c3077f541",
+    "mtime": 1788616734.931029,
+    "seen": 1788616881.0442169,
+    "ast_hash": "200628a28841ae6d40d46a8b94fba739",
     "semantic_hash": ""
   },
   "src/components/ThemedNumberInput.tsx": {

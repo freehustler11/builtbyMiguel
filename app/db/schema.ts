@@ -8,6 +8,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
@@ -253,3 +254,177 @@ export const activityLogs = pgTable('activity_logs', {
 
 export type ActivityLog = typeof activityLogs.$inferSelect
 export type NewActivityLog = typeof activityLogs.$inferInsert
+
+/**
+ * Landing pages deliverable table
+ */
+export const landingPages = pgTable(
+  'landing_pages',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').notNull().references(() => clients.id, { onDelete: 'restrict' }),
+    title: text('title').notNull(),
+    targetUrl: text('target_url'),
+    focusKeyword: text('focus_keyword'),
+    ctaGoal: text('cta_goal'),
+    status: text('status', { enum: ['planning', 'copywriting', 'design', 'client_review', 'live'] })
+      .default('planning')
+      .notNull(),
+    wentLiveAt: timestamp('went_live_at', { withTimezone: true }),
+    assignedTo: uuid('assigned_to').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('landing_pages_client_id_idx').on(table.clientId),
+  ]
+)
+
+export type LandingPage = typeof landingPages.$inferSelect
+export type NewLandingPage = typeof landingPages.$inferInsert
+
+/**
+ * Client articles deliverable table (NOT "blogs" — posts is marketing blog)
+ */
+export const clientArticles = pgTable(
+  'client_articles',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').notNull().references(() => clients.id, { onDelete: 'restrict' }),
+    title: text('title').notNull(),
+    draftUrl: text('draft_url'),
+    liveUrl: text('live_url'),
+    targetKeyword: text('target_keyword'),
+    status: text('status', { enum: ['idea', 'drafting', 'review', 'approved', 'live'] })
+      .default('idea')
+      .notNull(),
+    publishedAt: timestamp('published_at', { withTimezone: true }),
+    writerId: uuid('writer_id').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('client_articles_client_id_idx').on(table.clientId),
+  ]
+)
+
+export type ClientArticle = typeof clientArticles.$inferSelect
+export type NewClientArticle = typeof clientArticles.$inferInsert
+
+/**
+ * Keywords tracking table
+ */
+export const keywords = pgTable(
+  'keywords',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').notNull().references(() => clients.id, { onDelete: 'restrict' }),
+    keyword: text('keyword').notNull(),
+    location: text('location'),
+    searchVolume: integer('search_volume'),
+    estimatedTraffic: integer('estimated_traffic'),
+    currentRank: integer('current_rank'),
+    previousRank: integer('previous_rank'),
+    targetUrl: text('target_url'),
+    status: text('status', { enum: ['research', 'targeting_next', 'in_progress', 'ranking'] })
+      .default('research')
+      .notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('keywords_client_id_idx').on(table.clientId),
+    index('keywords_client_id_status_idx').on(table.clientId, table.status),
+  ]
+)
+
+export type Keyword = typeof keywords.$inferSelect
+export type NewKeyword = typeof keywords.$inferInsert
+
+/**
+ * Keyword rank history table (append-only historical tracking)
+ */
+export const keywordRankHistory = pgTable(
+  'keyword_rank_history',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    keywordId: uuid('keyword_id').notNull().references(() => keywords.id, { onDelete: 'cascade' }),
+    month: integer('month').notNull(),
+    year: integer('year').notNull(),
+    rank: integer('rank'),
+    recordedAt: timestamp('recorded_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('keyword_rank_history_unique_idx').on(table.keywordId, table.month, table.year),
+    index('keyword_rank_history_kw_ym_idx').on(table.keywordId, table.year, table.month),
+  ]
+)
+
+export type KeywordRankHistory = typeof keywordRankHistory.$inferSelect
+export type NewKeywordRankHistory = typeof keywordRankHistory.$inferInsert
+
+/**
+ * Tasks table (nullable client_id for internal work, direct partner_id tenancy)
+ */
+export const tasks = pgTable(
+  'tasks',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').references(() => clients.id, { onDelete: 'restrict' }),
+    partnerId: uuid('partner_id').notNull().references((): AnyPgColumn => users.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    category: text('category', { enum: ['citations', 'technical_seo', 'on_page', 'backlinks', 'schema', 'gbp'] }).notNull(),
+    status: text('status', { enum: ['todo', 'done'] }).default('todo').notNull(),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+    assignedTo: uuid('assigned_to').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('tasks_client_id_idx').on(table.clientId),
+    index('tasks_partner_id_idx').on(table.partnerId),
+    index('tasks_assigned_to_idx').on(table.assignedTo),
+  ]
+)
+
+export type Task = typeof tasks.$inferSelect
+export type NewTask = typeof tasks.$inferInsert
+
+/**
+ * Monthly metrics table (living editable entry surface and source of MoM history)
+ */
+export const monthlyMetrics = pgTable(
+  'monthly_metrics',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').notNull().references(() => clients.id, { onDelete: 'restrict' }),
+    month: integer('month').notNull(),
+    year: integer('year').notNull(),
+    gscClicks: integer('gsc_clicks'),
+    gscImpressions: integer('gsc_impressions'),
+    gscCtr: doublePrecision('gsc_ctr'),
+    gscPosition: doublePrecision('gsc_position'),
+    gaSessions: integer('ga_sessions'),
+    gaUsers: integer('ga_users'),
+    gaNewUsers: integer('ga_new_users'),
+    gaViews: integer('ga_views'),
+    gaEngagementRate: doublePrecision('ga_engagement_rate'),
+    gbpCalls: integer('gbp_calls'),
+    gbpViews: integer('gbp_views'),
+    gbpDirections: integer('gbp_directions'),
+    gbpWebsiteClicks: integer('gbp_website_clicks'),
+    gbpRating: doublePrecision('gbp_rating'),
+    gbpReviewsCount: integer('gbp_reviews_count'),
+    semrushAuthorityScore: integer('semrush_authority_score'),
+    semrushRankedKeywords: integer('semrush_ranked_keywords'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('monthly_metrics_client_month_year_unique_idx').on(table.clientId, table.month, table.year),
+    index('monthly_metrics_client_id_idx').on(table.clientId),
+  ]
+)
+
+export type MonthlyMetric = typeof monthlyMetrics.$inferSelect
+export type NewMonthlyMetric = typeof monthlyMetrics.$inferInsert

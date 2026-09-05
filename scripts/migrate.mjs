@@ -297,6 +297,126 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "clients_lower_business_name_idx" ON "clients" (lower("business_name"))`
     await sql`CREATE INDEX IF NOT EXISTS "users_lower_name_idx" ON "users" (lower("name"))`
 
+    // 10. Ensure landing_pages table exists
+    await sql`
+      CREATE TABLE IF NOT EXISTS "landing_pages" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "title" text NOT NULL,
+        "target_url" text,
+        "focus_keyword" text,
+        "cta_goal" text,
+        "status" text DEFAULT 'planning' NOT NULL,
+        "went_live_at" timestamp with time zone,
+        "assigned_to" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "landing_pages_client_id_idx" ON "landing_pages" ("client_id");`
+
+    // 11. Ensure client_articles table exists (NOT "blogs" — client deliverables)
+    await sql`
+      CREATE TABLE IF NOT EXISTS "client_articles" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "title" text NOT NULL,
+        "draft_url" text,
+        "live_url" text,
+        "target_keyword" text,
+        "status" text DEFAULT 'idea' NOT NULL,
+        "published_at" timestamp with time zone,
+        "writer_id" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "client_articles_client_id_idx" ON "client_articles" ("client_id");`
+
+    // 12. Ensure keywords table exists
+    await sql`
+      CREATE TABLE IF NOT EXISTS "keywords" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "keyword" text NOT NULL,
+        "location" text,
+        "search_volume" integer,
+        "estimated_traffic" integer,
+        "current_rank" integer,
+        "previous_rank" integer,
+        "target_url" text,
+        "status" text DEFAULT 'research' NOT NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "keywords_client_id_idx" ON "keywords" ("client_id");`
+    await sql`CREATE INDEX IF NOT EXISTS "keywords_client_id_status_idx" ON "keywords" ("client_id", "status");`
+
+    // 13. Ensure keyword_rank_history table exists
+    await sql`
+      CREATE TABLE IF NOT EXISTS "keyword_rank_history" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "keyword_id" uuid NOT NULL REFERENCES "keywords"("id") ON DELETE CASCADE,
+        "month" integer NOT NULL,
+        "year" integer NOT NULL,
+        "rank" integer,
+        "recorded_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE UNIQUE INDEX IF NOT EXISTS "keyword_rank_history_unique_idx" ON "keyword_rank_history" ("keyword_id", "month", "year");`
+    await sql`CREATE INDEX IF NOT EXISTS "keyword_rank_history_kw_ym_idx" ON "keyword_rank_history" ("keyword_id", "year", "month");`
+
+    // 14. Ensure tasks table exists (nullable client_id for internal work, direct partner_id tenancy)
+    await sql`
+      CREATE TABLE IF NOT EXISTS "tasks" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "client_id" uuid REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "partner_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+        "title" text NOT NULL,
+        "category" text NOT NULL,
+        "status" text DEFAULT 'todo' NOT NULL,
+        "completed_at" timestamp with time zone,
+        "assigned_to" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "tasks_client_id_idx" ON "tasks" ("client_id");`
+    await sql`CREATE INDEX IF NOT EXISTS "tasks_partner_id_idx" ON "tasks" ("partner_id");`
+    await sql`CREATE INDEX IF NOT EXISTS "tasks_assigned_to_idx" ON "tasks" ("assigned_to");`
+
+    // 15. Ensure monthly_metrics table exists
+    await sql`
+      CREATE TABLE IF NOT EXISTS "monthly_metrics" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "month" integer NOT NULL,
+        "year" integer NOT NULL,
+        "gsc_clicks" integer,
+        "gsc_impressions" integer,
+        "gsc_ctr" double precision,
+        "gsc_position" double precision,
+        "ga_sessions" integer,
+        "ga_users" integer,
+        "ga_new_users" integer,
+        "ga_views" integer,
+        "ga_engagement_rate" double precision,
+        "gbp_calls" integer,
+        "gbp_views" integer,
+        "gbp_directions" integer,
+        "gbp_website_clicks" integer,
+        "gbp_rating" double precision,
+        "gbp_reviews_count" integer,
+        "semrush_authority_score" integer,
+        "semrush_ranked_keywords" integer,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE UNIQUE INDEX IF NOT EXISTS "monthly_metrics_client_month_year_unique_idx" ON "monthly_metrics" ("client_id", "month", "year");`
+    await sql`CREATE INDEX IF NOT EXISTS "monthly_metrics_client_id_idx" ON "monthly_metrics" ("client_id");`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)
