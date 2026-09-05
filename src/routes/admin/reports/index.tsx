@@ -299,6 +299,15 @@ function AdminReportsListPage() {
                       <span className="text-slate-400 text-[11px]">
                         Created {formatDate(report.createdAt)}
                       </span>
+
+                      {report.creatorNameOrEmail && (
+                        <span
+                          className="text-slate-400 text-[11px] truncate max-w-[220px]"
+                          title={`Created by ${report.creatorNameOrEmail}`}
+                        >
+                          • Created by: {report.creatorNameOrEmail}
+                        </span>
+                      )}
                     </div>
 
                     {/* Metric Highlights Pill Cards */}

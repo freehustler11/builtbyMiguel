@@ -75,7 +75,9 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/portal' ||
     urlPath.startsWith('/portal/') ||
     urlPath === '/messages' ||
-    urlPath.startsWith('/messages/')
+    urlPath.startsWith('/messages/') ||
+    urlPath === '/superadmin' ||
+    urlPath.startsWith('/superadmin/')
 
   const isTechnicalOrAsset =
     urlPath.startsWith('/_server') ||

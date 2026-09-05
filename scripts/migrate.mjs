@@ -198,6 +198,27 @@ export async function runMigrations() {
       END $$;
     `
 
+    // 11. Ensure reports.created_by_user_id column exists
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "created_by_user_id" uuid REFERENCES "users"("id") ON DELETE SET NULL`
+    await sql`CREATE INDEX IF NOT EXISTS "reports_created_by_user_id_idx" ON "reports" ("created_by_user_id")`
+
+    // 12. Ensure activity_logs table exists for superadmin activity tracking
+    await sql`
+      CREATE TABLE IF NOT EXISTS "activity_logs" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "user_id" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "user_email" text,
+        "role" text,
+        "action" text NOT NULL,
+        "ip_address" text,
+        "user_agent" text,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "activity_logs_created_at_idx" ON "activity_logs" ("created_at" DESC)`
+    await sql`CREATE INDEX IF NOT EXISTS "activity_logs_action_idx" ON "activity_logs" ("action")`
+    await sql`CREATE INDEX IF NOT EXISTS "activity_logs_user_id_idx" ON "activity_logs" ("user_id")`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

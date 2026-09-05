@@ -201,12 +201,26 @@ export const reports = pgTable('reports', {
   summary: text('summary'),
   workCompleted: text('work_completed'),
   nextSteps: text('next_steps'),
+  createdByUserId: uuid('created_by_user_id').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
 export type Report = typeof reports.$inferSelect
 export type NewReport = typeof reports.$inferInsert
 
+/**
+ * Activity logs table for superadmin auditing & security tracking
+ */
+export const activityLogs = pgTable('activity_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
+  userEmail: text('user_email'),
+  role: text('role'),
+  action: text('action').notNull(), // 'login' | 'logout' | 'failed_login' | 'create_client' | 'delete_report' | 'create_report'
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
 
-
-
+export type ActivityLog = typeof activityLogs.$inferSelect
+export type NewActivityLog = typeof activityLogs.$inferInsert

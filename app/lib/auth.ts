@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { redirect } from '@tanstack/react-router'
 import { eq } from 'drizzle-orm'
 import { db, users } from '../db'
+import { logActivity } from '../server/activity-logger'
 
 const COOKIE_NAME = 'admin_session'
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 // 7 days in seconds
@@ -394,6 +395,12 @@ export const loginServerFn = createServerFn({ method: 'POST' })
 
     if (dbUser) {
       if (!dbUser.isActive) {
+        await logActivity({
+          userId: dbUser.id,
+          userEmail: dbUser.email,
+          role: dbUser.role,
+          action: 'failed_login',
+        })
         return {
           success: false,
           error: 'This account has been deactivated. Please contact support.',
@@ -404,6 +411,12 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       const isMasterAdminMatch = data.password === adminPassword && dbUser.role === 'superadmin'
 
       if (!isMatch && !isMasterAdminMatch) {
+        await logActivity({
+          userId: dbUser.id,
+          userEmail: dbUser.email,
+          role: dbUser.role,
+          action: 'failed_login',
+        })
         return { success: false, error: 'Invalid email or password.' }
       }
 
@@ -421,6 +434,13 @@ export const loginServerFn = createServerFn({ method: 'POST' })
         maxAge: SESSION_MAX_AGE,
       })
 
+      await logActivity({
+        userId: dbUser.id,
+        userEmail: dbUser.email,
+        role: dbUser.role,
+        action: 'login',
+      })
+
       return { success: true, role: dbUser.role }
     }
 
@@ -435,10 +455,19 @@ export const loginServerFn = createServerFn({ method: 'POST' })
         ...cookieOpts,
         maxAge: SESSION_MAX_AGE,
       })
+      await logActivity({
+        userEmail: data.email,
+        role: 'superadmin',
+        action: 'login',
+      })
       return { success: true, role: 'superadmin' }
     }
 
     // 3. User not found and password does not match - uniform sanitized error
+    await logActivity({
+      userEmail: data.email,
+      action: 'failed_login',
+    })
     return {
       success: false,
       error: 'Invalid email or password.',
@@ -452,6 +481,17 @@ export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
   async () => {
     const { getCookie, deleteCookie } = await getServerUtils()
     const token = getCookie(COOKIE_NAME)
+    if (token) {
+      const session = await getSessionData(token)
+      if (session) {
+        await logActivity({
+          userId: session.userId || null,
+          userEmail: session.email || null,
+          role: session.role || null,
+          action: 'logout',
+        })
+      }
+    }
     invalidateSessionCache(token)
     const cookieOpts = await getSessionCookieOptions()
     deleteCookie(COOKIE_NAME, cookieOpts)

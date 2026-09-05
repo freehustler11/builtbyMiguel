@@ -21,6 +21,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as SuperadminRouteImport } from './routes/superadmin'
 import { Route as SystemsAutoRouteImport } from './routes/systems-auto'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
@@ -34,6 +35,7 @@ import { Route as AdminTeamRouteImport } from './routes/admin/team'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
+import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
 import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/index'
 import { Route as AdminReportsIdRouteImport } from './routes/admin/reports/$id'
 import { Route as AdminReportsNewRouteImport } from './routes/admin/reports/new'
@@ -98,6 +100,11 @@ const PortalRoute = PortalRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminRoute = SuperadminRouteImport.update({
+  id: '/superadmin',
+  path: '/superadmin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SystemsAutoRoute = SystemsAutoRouteImport.update({
@@ -165,6 +172,11 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PortalRoute,
 } as any)
+const SuperadminActivityRoute = SuperadminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => SuperadminRoute,
+} as any)
 const AdminReportsIndexRoute = AdminReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
@@ -204,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/superadmin': typeof SuperadminRouteWithChildren
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
@@ -214,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -234,6 +248,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/superadmin': typeof SuperadminRouteWithChildren
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
@@ -244,6 +259,7 @@ export interface FileRoutesByTo {
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/portal': typeof PortalIndexRoute
@@ -267,6 +283,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/superadmin': typeof SuperadminRouteWithChildren
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
@@ -277,6 +294,7 @@ export interface FileRoutesById {
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -301,6 +319,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/portal'
     | '/privacy-policy'
+    | '/superadmin'
     | '/systems-auto'
     | '/terms'
     | '/thank-you'
@@ -311,6 +330,7 @@ export interface FileRouteTypes {
     | '/admin/posts'
     | '/admin/team'
     | '/blog/$slug'
+    | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
     | '/portal/'
@@ -331,6 +351,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/privacy-policy'
+    | '/superadmin'
     | '/systems-auto'
     | '/terms'
     | '/thank-you'
@@ -341,6 +362,7 @@ export interface FileRouteTypes {
     | '/admin/posts'
     | '/admin/team'
     | '/blog/$slug'
+    | '/superadmin/activity'
     | '/admin'
     | '/blog'
     | '/portal'
@@ -363,6 +385,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/portal'
     | '/privacy-policy'
+    | '/superadmin'
     | '/systems-auto'
     | '/terms'
     | '/thank-you'
@@ -373,6 +396,7 @@ export interface FileRouteTypes {
     | '/admin/posts'
     | '/admin/team'
     | '/blog/$slug'
+    | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
     | '/portal/'
@@ -396,6 +420,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   PortalRoute: typeof PortalRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  SuperadminRoute: typeof SuperadminRouteWithChildren
   SystemsAutoRoute: typeof SystemsAutoRoute
   TermsRoute: typeof TermsRoute
   ThankYouRoute: typeof ThankYouRoute
@@ -491,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/superadmin': {
+      id: '/superadmin'
+      path: '/superadmin'
+      fullPath: '/superadmin'
+      preLoaderRoute: typeof SuperadminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/systems-auto': {
       id: '/systems-auto'
       path: '/systems-auto'
@@ -582,6 +614,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/superadmin/activity': {
+      id: '/superadmin/activity'
+      path: '/activity'
+      fullPath: '/superadmin/activity'
+      preLoaderRoute: typeof SuperadminActivityRouteImport
+      parentRoute: typeof SuperadminRoute
+    }
     '/admin/reports/': {
       id: '/admin/reports/'
       path: '/reports'
@@ -669,6 +708,18 @@ const PortalRouteChildren: PortalRouteChildren = {
 const PortalRouteWithChildren =
   PortalRoute._addFileChildren(PortalRouteChildren)
 
+interface SuperadminRouteChildren {
+  SuperadminActivityRoute: typeof SuperadminActivityRoute
+}
+
+const SuperadminRouteChildren: SuperadminRouteChildren = {
+  SuperadminActivityRoute: SuperadminActivityRoute,
+}
+
+const SuperadminRouteWithChildren = SuperadminRoute._addFileChildren(
+  SuperadminRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
@@ -682,6 +733,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   PortalRoute: PortalRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  SuperadminRoute: SuperadminRouteWithChildren,
   SystemsAutoRoute: SystemsAutoRoute,
   TermsRoute: TermsRoute,
   ThankYouRoute: ThankYouRoute,

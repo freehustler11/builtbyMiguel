@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { desc, eq } from 'drizzle-orm'
 import { db, clients, reports, users, type Client } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
+import { logActivity } from './activity-logger'
 
 export interface ClientWithReportCount extends Client {
   reportCount: number
@@ -176,6 +177,13 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
         partnerId: assignedPartnerId,
       })
       .returning()
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'create_client',
+    })
 
     return { success: true, client: created }
   })

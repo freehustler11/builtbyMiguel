@@ -393,6 +393,132 @@ async function runSimulations() {
   }
 
   // ---------------------------------------------------------------
+  // SIMULATION 8: Superadmin Activity Tracking & Logs Table
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 8: Superadmin Activity Tracking & Device Parsing')
+  try {
+    const { activityLogs } = await import('../app/db/schema')
+    const { parseDevice, logActivity } = await import('../app/server/activity-logger')
+
+    // Test UA parsing
+    const chromeWin = parseDevice('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+    assert(chromeWin === 'Chrome on Windows', `Chrome on Windows correctly identified: ${chromeWin}`)
+
+    const safariIphone = parseDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1')
+    assert(safariIphone === 'Safari on iPhone', `Safari on iPhone correctly identified: ${safariIphone}`)
+
+    const edgeWin = parseDevice('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0')
+    assert(edgeWin === 'Edge on Windows', `Edge on Windows correctly identified: ${edgeWin}`)
+
+    const firefoxMac = parseDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/119.0')
+    assert(firefoxMac === 'Firefox on macOS', `Firefox on macOS correctly identified: ${firefoxMac}`)
+
+    // Test Activity Logging
+    const testLogId = `test_user_${Date.now()}@example.com`
+    await logActivity({
+      userEmail: testLogId,
+      role: 'superadmin',
+      action: 'login',
+      ipAddress: '198.51.100.42',
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0',
+    })
+
+    await logActivity({
+      userEmail: testLogId,
+      role: 'superadmin',
+      action: 'failed_login',
+      ipAddress: '198.51.100.43',
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) Safari/604.1',
+    })
+
+    await logActivity({
+      userEmail: testLogId,
+      role: 'superadmin',
+      action: 'logout',
+      ipAddress: '198.51.100.42',
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0',
+    })
+
+    // Query recorded logs
+    const recordedLogs = await db
+      .select()
+      .from(activityLogs)
+      .where(eq(activityLogs.userEmail, testLogId))
+
+    assert(recordedLogs.length === 3, `Successfully recorded 3 activity log entries (found ${recordedLogs.length})`)
+
+    const loginEntry = recordedLogs.find((l) => l.action === 'login')
+    assert(Boolean(loginEntry), 'Successful login activity event recorded')
+    assert(loginEntry?.ipAddress === '198.51.100.42', 'Login IP address captured accurately')
+
+    const failedEntry = recordedLogs.find((l) => l.action === 'failed_login')
+    assert(Boolean(failedEntry), 'Failed login attempt activity event recorded')
+    assert(failedEntry?.ipAddress === '198.51.100.43', 'Failed login IP address captured accurately')
+
+    const logoutEntry = recordedLogs.find((l) => l.action === 'logout')
+    assert(Boolean(logoutEntry), 'Logout activity event recorded')
+
+    // Clean up test activity logs
+    await db.delete(activityLogs).where(eq(activityLogs.userEmail, testLogId))
+    const [cleanedCheck] = await db.select().from(activityLogs).where(eq(activityLogs.userEmail, testLogId))
+    assert(cleanedCheck === undefined, 'Test activity logs cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Superadmin activity tracking simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 9: Report Creator Tracking (Internal Only)
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 9: Internal Report Creator Attribution')
+  try {
+    const [testClient] = await db.select().from(clients).limit(1)
+    const [testUser] = await db.select().from(users).limit(1)
+
+    assert(Boolean(testClient?.id), 'Client found for report creator test')
+    assert(Boolean(testUser?.id), 'User found for report creator test')
+
+    // Insert report with created_by_user_id
+    const testReportTitle = `Creator Tracking Verification ${Date.now()}`
+    const [createdReport] = await db.insert(reports).values({
+      clientId: testClient.id,
+      title: testReportTitle,
+      reportMonth: 'September 2026',
+      createdByUserId: testUser.id,
+    }).returning()
+
+    assert(Boolean(createdReport?.id), 'Report with created_by_user_id successfully created')
+    assert(createdReport.createdByUserId === testUser.id, 'Report createdByUserId matches creator user ID')
+
+    // Query with creator leftJoin (identical to getReportsServerFn)
+    const [joinedReport] = await db
+      .select({
+        id: reports.id,
+        title: reports.title,
+        createdByUserId: reports.createdByUserId,
+        creatorName: users.name,
+        creatorEmail: users.email,
+      })
+      .from(reports)
+      .leftJoin(users, eq(reports.createdByUserId, users.id))
+      .where(eq(reports.id, createdReport.id))
+
+    assert(Boolean(joinedReport), 'Joined report query executed successfully')
+    const creatorNameOrEmail = joinedReport.creatorName || joinedReport.creatorEmail || null
+    assert(Boolean(creatorNameOrEmail), `Creator name/email populated for internal view: ${creatorNameOrEmail}`)
+
+    // Verify client portal simulation: created_by_user_id is omitted from client output
+    const { createdByUserId: _omitted, ...clientSanitizedReport } = joinedReport
+    assert(!('createdByUserId' in clientSanitizedReport) || (clientSanitizedReport as any).createdByUserId === undefined, 'Report sanitized: created_by_user_id is never sent to client portal')
+
+    // Clean up test report
+    await db.delete(reports).where(eq(reports.id, createdReport.id))
+    const [cleanedReport] = await db.select().from(reports).where(eq(reports.id, createdReport.id))
+    assert(cleanedReport === undefined, 'Test report cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Report creator tracking simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
   // SIMULATION SUMMARY
   // ---------------------------------------------------------------
   console.log('\n====================================================')

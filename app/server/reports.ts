@@ -1,7 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq, and } from 'drizzle-orm'
-import { db, clients, reports, type Report, type Client } from '../db'
+import { db, clients, reports, users, type Report, type Client } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
+import { logActivity } from './activity-logger'
 
 export interface QueryItem {
   query: string
@@ -48,6 +49,9 @@ export interface ReportWithClient extends Report {
   clientIsWhiteLabel: boolean
   clientPartnerName: string | null
   clientPartnerLogoUrl: string | null
+  creatorName?: string | null
+  creatorEmail?: string | null
+  creatorNameOrEmail?: string | null
 }
 
 /**
@@ -122,7 +126,11 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         summary: reports.summary,
         workCompleted: reports.workCompleted,
         nextSteps: reports.nextSteps,
+        createdByUserId: reports.createdByUserId,
         createdAt: reports.createdAt,
+        // Creator Join
+        creatorName: users.name,
+        creatorEmail: users.email,
         // Client Join
         clientName: clients.name,
         clientBusinessName: clients.businessName,
@@ -136,6 +144,7 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
       })
       .from(reports)
       .innerJoin(clients, eq(reports.clientId, clients.id))
+      .leftJoin(users, eq(reports.createdByUserId, users.id))
       .orderBy(desc(reports.createdAt))
 
     if (conditions.length === 1) {
@@ -147,7 +156,11 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
     }
 
     const rows = await query
-    return { reports: rows as ReportWithClient[] }
+    const mapped = rows.map((r: any) => ({
+      ...r,
+      creatorNameOrEmail: r.creatorName || r.creatorEmail || null,
+    }))
+    return { reports: mapped as ReportWithClient[] }
   })
 
 /**
@@ -257,9 +270,12 @@ export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handle
       .where(eq(reports.clientId, targetClientId))
       .orderBy(desc(reports.createdAt))
 
+    // Strictly internal: never expose createdByUserId to client portal
+    const sanitizedReports = clientReports.map(({ createdByUserId: _omitted, ...rest }) => rest)
+
     return {
       client,
-      reports: clientReports,
+      reports: sanitizedReports,
     }
   }
 )
@@ -398,8 +414,16 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         summary: data.summary?.trim() || null,
         workCompleted: data.workCompleted?.trim() || null,
         nextSteps: data.nextSteps?.trim() || null,
+        createdByUserId: auth.userId || null,
       })
       .returning()
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'create_report',
+    })
 
     return { success: true, report: created }
   })
@@ -636,6 +660,14 @@ export const deleteReportServerFn = createServerFn({ method: 'POST' })
     }
 
     await db.delete(reports).where(eq(reports.id, data.id))
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'delete_report',
+    })
+
     return { success: true }
   })
 
