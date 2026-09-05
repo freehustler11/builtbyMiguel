@@ -19,7 +19,7 @@ import { ThemeToggle } from './ThemeToggle'
 import { ChangePasswordModal } from './ChangePasswordModal'
 
 interface AdminNavProps {
-  activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports' | 'team' | 'activity'
+  activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports' | 'team' | 'activity' | 'agencies'
   title: string
   description?: string
   actions?: React.ReactNode
@@ -107,18 +107,33 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
               <span>Media Library</span>
             </Link>
 
-            <Link
-              to="/admin/clients"
-              preload="intent"
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'clients'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <Users className="w-3.5 h-3.5" />
-              <span>Clients</span>
-            </Link>
+            {isPartner ? (
+              <Link
+                to="/admin/clients"
+                preload="intent"
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'clients'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>Clients</span>
+              </Link>
+            ) : (
+              <Link
+                to="/admin/agencies"
+                preload="intent"
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'agencies' || activeTab === 'clients'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Building2 className="w-3.5 h-3.5" />
+                <span>Agencies</span>
+              </Link>
+            )}
 
             <Link
               to="/admin/reports"

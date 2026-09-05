@@ -24,88 +24,110 @@ export interface PartnerSummary {
  * Server Function: Get clients with report counts and partner info.
  * If user is a partner, scopes results strictly to clients where partner_id === auth.userId.
  */
-export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
-  async (): Promise<{ clients: ClientWithReportCount[]; partners: PartnerSummary[] }> => {
-    const auth = await assertActiveSession()
-    if (auth.role === 'client') {
-      throw new Error('Unauthorized: Client accounts cannot view client listings')
-    }
+export const getClientsServerFn = createServerFn({ method: 'GET' })
+  .validator((data?: { partnerId?: string }) => data || {})
+  .handler(
+    async ({ data }): Promise<{ clients: ClientWithReportCount[]; partners: PartnerSummary[] }> => {
+      const auth = await assertActiveSession()
+      if (auth.role === 'client') {
+        throw new Error('Unauthorized: Client accounts cannot view client listings')
+      }
 
-    // 1. If user is a partner or partner employee, only fetch their assigned agency clients
-    const effectivePartnerId = getEffectivePartnerId(auth)
-    if (effectivePartnerId) {
-      const partnerClients = await db
+      const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+
+      // 1. If user is a partner or partner employee, only fetch their assigned agency clients.
+      // For partner and partner_employee, the partnerId argument is ignored entirely and scoped to getEffectivePartnerId(auth).
+      if (!isSuperadmin) {
+        const effectivePartnerId = getEffectivePartnerId(auth)
+        if (!effectivePartnerId) {
+          return { clients: [], partners: [] }
+        }
+
+        const partnerClients = await db
+          .select()
+          .from(clients)
+          .where(and(eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
+          .orderBy(sql`lower(${clients.businessName}) asc nulls last`)
+
+        const clientIds = partnerClients.map((c) => c.id)
+        const countMap: Record<string, number> = {}
+        if (clientIds.length > 0) {
+          const partnerReports = await db
+            .select({ clientId: reports.clientId })
+            .from(reports)
+            .where(inArray(reports.clientId, clientIds))
+          for (const r of partnerReports) {
+            if (r.clientId) {
+              countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+            }
+          }
+        }
+
+        const clientList: ClientWithReportCount[] = partnerClients.map((c) => ({
+          ...c,
+          reportCount: countMap[c.id] || 0,
+          partner: null,
+        }))
+
+        return { clients: clientList, partners: [] }
+      }
+
+      // 2. Superadmin / Admin: partnerId filter argument is honoured ONLY for superadmin
+      const conditions = [isNull(clients.deletedAt)]
+      if (data?.partnerId === 'unassigned') {
+        conditions.push(isNull(clients.partnerId))
+      } else if (data?.partnerId && data.partnerId !== 'all') {
+        conditions.push(eq(clients.partnerId, data.partnerId))
+      }
+
+      const allClients = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
+        .where(and(...conditions))
         .orderBy(sql`lower(${clients.businessName}) asc nulls last`)
 
-      const clientIds = partnerClients.map((c) => c.id)
+      const clientIds = allClients.map((c) => c.id)
       const countMap: Record<string, number> = {}
       if (clientIds.length > 0) {
-        const partnerReports = await db
+        const matchingReports = await db
           .select({ clientId: reports.clientId })
           .from(reports)
           .where(inArray(reports.clientId, clientIds))
-        for (const r of partnerReports) {
+        for (const r of matchingReports) {
           if (r.clientId) {
             countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
           }
         }
       }
 
-      const clientList: ClientWithReportCount[] = partnerClients.map((c) => ({
+      const partnerUsers = await db
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          isActive: users.isActive,
+        })
+        .from(users)
+        .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
+        .orderBy(sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
+
+      const partnerMap: Record<string, { id: string; name: string | null; email: string }> = {}
+      for (const p of partnerUsers) {
+        partnerMap[p.id] = { id: p.id, name: p.name, email: p.email }
+      }
+
+      const clientList: ClientWithReportCount[] = allClients.map((c) => ({
         ...c,
         reportCount: countMap[c.id] || 0,
-        partner: null,
+        partner: c.partnerId ? partnerMap[c.partnerId] || null : null,
       }))
 
-      return { clients: clientList, partners: [] }
-    }
-
-    // 2. Superadmin / Admin: fetch all clients and partner list
-    const allClients = await db
-      .select()
-      .from(clients)
-      .where(isNull(clients.deletedAt))
-      .orderBy(sql`lower(${clients.businessName}) asc nulls last`)
-
-    const allReports = await db.select({ clientId: reports.clientId }).from(reports)
-    const countMap: Record<string, number> = {}
-    for (const r of allReports) {
-      if (r.clientId) {
-        countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+      return {
+        clients: clientList,
+        partners: partnerUsers,
       }
     }
-
-    const partnerUsers = await db
-      .select({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        isActive: users.isActive,
-      })
-      .from(users)
-      .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
-      .orderBy(sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
-
-    const partnerMap: Record<string, { id: string; name: string | null; email: string }> = {}
-    for (const p of partnerUsers) {
-      partnerMap[p.id] = { id: p.id, name: p.name, email: p.email }
-    }
-
-    const clientList: ClientWithReportCount[] = allClients.map((c) => ({
-      ...c,
-      reportCount: countMap[c.id] || 0,
-      partner: c.partnerId ? partnerMap[c.partnerId] || null : null,
-    }))
-
-    return {
-      clients: clientList,
-      partners: partnerUsers,
-    }
-  }
-)
+  )
 
 /**
  * Server Function: Get a single client by ID with their reports

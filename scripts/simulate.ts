@@ -1,8 +1,9 @@
 import 'dotenv/config'
 import { db } from '../app/db/index'
 import { users, clients, reports, messages, media, activityLogs } from '../app/db/schema'
-import { eq, sql, inArray } from 'drizzle-orm'
+import { eq, sql, inArray, and, isNull } from 'drizzle-orm'
 import { hashPassword, verifyPassword, createSessionToken, verifySessionToken, getSessionData } from '../app/lib/auth'
+import { getEffectivePartnerId } from '../app/server/auth'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { ReportDocument } from '../src/components/ReportDocument'
@@ -963,6 +964,150 @@ async function runSimulations() {
     await db.delete(messages).where(inArray(messages.id, [mArchived.id, mNewRecent.id, mNewOlder.id]))
   } catch (err: any) {
     assert(false, 'SQL-level sorting defaults simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 14: Superadmin Agencies, Unassigned Clients & Detail Aggregates
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 14: Superadmin Agencies, Unassigned Clients & Detail Aggregates')
+  try {
+    const { getEffectivePartnerId } = await import('../app/server/auth')
+
+    // 1. Create a test partner agency with null name (testing fallback to email)
+    const testAgencyPassword = await hashPassword('AgencyPass123!')
+    const testAgencyEmail = `agency_sort_${Date.now()}@test.com`
+    const [testAgency] = await db.insert(users).values({
+      name: null,
+      email: testAgencyEmail,
+      passwordHash: testAgencyPassword,
+      role: 'partner',
+      isActive: true,
+    }).returning()
+    assert(Boolean(testAgency?.id), 'Test partner agency created successfully')
+    assert(testAgency.name === null, 'Partner name is null, testing fallback to email')
+    const displayName = testAgency.name || testAgency.email
+    assert(displayName === testAgencyEmail, 'Fallback correctly resolves null name to email')
+
+    // 2. Test edge case: Zero staff, zero clients initially
+    const initialStaff = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.partnerId, testAgency.id), eq(users.role, 'partner_employee'), isNull(users.deletedAt)))
+    assert(initialStaff.length === 0, 'Newly created agency has zero staff (handles 0 cleanly)')
+
+    const initialClients = await db
+      .select()
+      .from(clients)
+      .where(and(eq(clients.partnerId, testAgency.id), isNull(clients.deletedAt)))
+    assert(initialClients.length === 0, 'Newly created agency has zero clients (handles 0 cleanly)')
+
+    // 3. Add staff member to this agency
+    const [agencyStaff] = await db.insert(users).values({
+      name: 'Agency Staff Member',
+      email: `staff_${Date.now()}@agency.com`,
+      passwordHash: testAgencyPassword,
+      role: 'partner_employee',
+      partnerId: testAgency.id,
+      isActive: true,
+    }).returning()
+    assert(Boolean(agencyStaff?.id), 'Staff member successfully added to agency')
+
+    // 4. Create one assigned client and one unassigned client
+    const [assignedClient] = await db.insert(clients).values({
+      name: 'Assigned Contact',
+      businessName: 'Assigned Corp',
+      partnerId: testAgency.id,
+    }).returning()
+    const [unassignedClient] = await db.insert(clients).values({
+      name: 'Direct Contact',
+      businessName: 'Direct Unassigned Corp',
+      partnerId: null,
+    }).returning()
+
+    // Query unassigned clients (simulating getClientsServerFn({ partnerId: 'unassigned' }))
+    const unassignedResults = await db
+      .select()
+      .from(clients)
+      .where(and(isNull(clients.partnerId), isNull(clients.deletedAt)))
+    assert(
+      unassignedResults.some((c) => c.id === unassignedClient.id),
+      'Unassigned query contains direct client with partner_id IS NULL'
+    )
+    assert(
+      !unassignedResults.some((c) => c.id === assignedClient.id),
+      'Unassigned query excludes client assigned to a partner'
+    )
+
+    // Query agency clients (simulating getClientsServerFn({ partnerId: testAgency.id }))
+    const agencyClients = await db
+      .select()
+      .from(clients)
+      .where(and(eq(clients.partnerId, testAgency.id), isNull(clients.deletedAt)))
+    assert(
+      agencyClients.some((c) => c.id === assignedClient.id),
+      'Agency query contains assigned client'
+    )
+    assert(
+      !agencyClients.some((c) => c.id === unassignedClient.id),
+      'Agency query excludes unassigned client'
+    )
+
+    // 5. Tenancy scoping guard check: partner_employee ignores partnerId filter
+    const staffEffectivePartnerId = getEffectivePartnerId({
+      role: 'partner_employee',
+      userId: agencyStaff.id,
+      partnerId: testAgency.id,
+      clientId: null,
+      email: agencyStaff.email,
+      isActive: true,
+    })
+    assert(staffEffectivePartnerId === testAgency.id, 'Staff member is strictly scoped to their partnerId')
+
+    // 6. Reports this month counting from period_start
+    const now = new Date()
+    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0))
+    const startOfNextMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0))
+    const previousMonthDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 15, 0, 0, 0, 0))
+
+    // Current month report
+    const [currentReport] = await db.insert(reports).values({
+      clientId: assignedClient.id,
+      title: 'Current Month Report',
+      periodStart: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 5, 0, 0, 0, 0)),
+      periodEnd: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999)),
+      reportMonth: 'Current Month',
+    }).returning()
+
+    // Prior month report
+    const [priorReport] = await db.insert(reports).values({
+      clientId: assignedClient.id,
+      title: 'Prior Month Report',
+      periodStart: previousMonthDate,
+      periodEnd: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0, 23, 59, 59, 999)),
+      reportMonth: 'Prior Month',
+    }).returning()
+
+    const agencyMonthReports = await db
+      .select({ id: reports.id })
+      .from(reports)
+      .where(
+        and(
+          eq(reports.clientId, assignedClient.id),
+          sql`${reports.periodStart} >= ${startOfMonth.toISOString()}::timestamptz`,
+          sql`${reports.periodStart} < ${startOfNextMonth.toISOString()}::timestamptz`
+        )
+      )
+
+    assert(agencyMonthReports.length === 1, 'Only report with period_start in current UTC month is counted in reportsThisMonth')
+    assert(agencyMonthReports[0].id === currentReport.id, 'Current month report accurately identified')
+
+    // 7. Clean up
+    await db.delete(reports).where(inArray(reports.id, [currentReport.id, priorReport.id]))
+    await db.delete(clients).where(inArray(clients.id, [assignedClient.id, unassignedClient.id]))
+    await db.delete(users).where(inArray(users.id, [agencyStaff.id, testAgency.id]))
+    assert(true, 'Simulation 14 test data cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Superadmin agencies simulation failed', err.message)
   }
 
   // ---------------------------------------------------------------

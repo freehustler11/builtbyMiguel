@@ -36,6 +36,9 @@ import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
+import { Route as AdminAgenciesIndexRouteImport } from './routes/admin/agencies/index'
+import { Route as AdminAgenciesPartnerIdRouteImport } from './routes/admin/agencies/$partnerId'
+import { Route as AdminAgenciesUnassignedRouteImport } from './routes/admin/agencies/unassigned'
 import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/index'
 import { Route as AdminReportsIdRouteImport } from './routes/admin/reports/$id'
 import { Route as AdminReportsNewRouteImport } from './routes/admin/reports/new'
@@ -177,6 +180,21 @@ const SuperadminActivityRoute = SuperadminActivityRouteImport.update({
   path: '/activity',
   getParentRoute: () => SuperadminRoute,
 } as any)
+const AdminAgenciesIndexRoute = AdminAgenciesIndexRouteImport.update({
+  id: '/agencies/',
+  path: '/agencies/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAgenciesPartnerIdRoute = AdminAgenciesPartnerIdRouteImport.update({
+  id: '/agencies/$partnerId',
+  path: '/agencies/$partnerId',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAgenciesUnassignedRoute = AdminAgenciesUnassignedRouteImport.update({
+  id: '/agencies/unassigned',
+  path: '/agencies/unassigned',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminReportsIndexRoute = AdminReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
@@ -231,9 +249,12 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
+  '/admin/agencies/$partnerId': typeof AdminAgenciesPartnerIdRoute
+  '/admin/agencies/unassigned': typeof AdminAgenciesUnassignedRoute
   '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
+  '/admin/agencies/': typeof AdminAgenciesIndexRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
   '/admin/reports/$id/edit': typeof AdminReportsIdEditRoute
 }
@@ -263,9 +284,12 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/portal': typeof PortalIndexRoute
+  '/admin/agencies/$partnerId': typeof AdminAgenciesPartnerIdRoute
+  '/admin/agencies/unassigned': typeof AdminAgenciesUnassignedRoute
   '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
+  '/admin/agencies': typeof AdminAgenciesIndexRoute
   '/admin/reports': typeof AdminReportsIndexRoute
   '/admin/reports/$id/edit': typeof AdminReportsIdEditRoute
 }
@@ -298,9 +322,12 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
+  '/admin/agencies/$partnerId': typeof AdminAgenciesPartnerIdRoute
+  '/admin/agencies/unassigned': typeof AdminAgenciesUnassignedRoute
   '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
+  '/admin/agencies/': typeof AdminAgenciesIndexRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
   '/admin/reports/$id/edit': typeof AdminReportsIdEditRoute
 }
@@ -334,9 +361,12 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blog/'
     | '/portal/'
+    | '/admin/agencies/$partnerId'
+    | '/admin/agencies/unassigned'
     | '/admin/reports/$id'
     | '/admin/reports/new'
     | '/portal/reports/$id'
+    | '/admin/agencies/'
     | '/admin/reports/'
     | '/admin/reports/$id/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -366,9 +396,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog'
     | '/portal'
+    | '/admin/agencies/$partnerId'
+    | '/admin/agencies/unassigned'
     | '/admin/reports/$id'
     | '/admin/reports/new'
     | '/portal/reports/$id'
+    | '/admin/agencies'
     | '/admin/reports'
     | '/admin/reports/$id/edit'
   id:
@@ -400,9 +433,12 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blog/'
     | '/portal/'
+    | '/admin/agencies/$partnerId'
+    | '/admin/agencies/unassigned'
     | '/admin/reports/$id'
     | '/admin/reports/new'
     | '/portal/reports/$id'
+    | '/admin/agencies/'
     | '/admin/reports/'
     | '/admin/reports/$id/edit'
   fileRoutesById: FileRoutesById
@@ -621,6 +657,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperadminActivityRouteImport
       parentRoute: typeof SuperadminRoute
     }
+    '/admin/agencies/': {
+      id: '/admin/agencies/'
+      path: '/agencies'
+      fullPath: '/admin/agencies/'
+      preLoaderRoute: typeof AdminAgenciesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/agencies/$partnerId': {
+      id: '/admin/agencies/$partnerId'
+      path: '/agencies/$partnerId'
+      fullPath: '/admin/agencies/$partnerId'
+      preLoaderRoute: typeof AdminAgenciesPartnerIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/agencies/unassigned': {
+      id: '/admin/agencies/unassigned'
+      path: '/agencies/unassigned'
+      fullPath: '/admin/agencies/unassigned'
+      preLoaderRoute: typeof AdminAgenciesUnassignedRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/reports/': {
       id: '/admin/reports/'
       path: '/reports'
@@ -677,8 +734,11 @@ interface AdminRouteChildren {
   AdminPostsRoute: typeof AdminPostsRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminAgenciesPartnerIdRoute: typeof AdminAgenciesPartnerIdRoute
+  AdminAgenciesUnassignedRoute: typeof AdminAgenciesUnassignedRoute
   AdminReportsIdRoute: typeof AdminReportsIdRouteWithChildren
   AdminReportsNewRoute: typeof AdminReportsNewRoute
+  AdminAgenciesIndexRoute: typeof AdminAgenciesIndexRoute
   AdminReportsIndexRoute: typeof AdminReportsIndexRoute
 }
 
@@ -688,8 +748,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPostsRoute: AdminPostsRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminAgenciesPartnerIdRoute: AdminAgenciesPartnerIdRoute,
+  AdminAgenciesUnassignedRoute: AdminAgenciesUnassignedRoute,
   AdminReportsIdRoute: AdminReportsIdRouteWithChildren,
   AdminReportsNewRoute: AdminReportsNewRoute,
+  AdminAgenciesIndexRoute: AdminAgenciesIndexRoute,
   AdminReportsIndexRoute: AdminReportsIndexRoute,
 }
 
