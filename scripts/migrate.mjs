@@ -203,7 +203,7 @@ export async function runMigrations() {
         ) LOOP
           EXECUTE 'ALTER TABLE "reports" DROP CONSTRAINT ' || quote_ident(r.constraint_name);
         END LOOP;
-        ALTER TABLE "reports" ADD CONSTRAINT "reports_client_id_clients_id_fk" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE SET NULL;
+        ALTER TABLE "reports" ADD CONSTRAINT "reports_client_id_clients_id_fk" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE RESTRICT;
       END $$;
     `
 
@@ -235,19 +235,19 @@ export async function runMigrations() {
     }
 
     const unpopulatedReports = await sql`
-      SELECT r.id, r.report_month, r.client_id, r.period_start, r.client_snapshot,
-             c.business_name, c.logo_url, c.primary_color, c.secondary_color,
+      SELECT r.id, r.report_month, r.client_id, r.period_start, r.period_end, r.client_snapshot,
+             c.name, c.website_url, c.business_name, c.logo_url, c.primary_color, c.secondary_color,
              c.is_white_label, c.partner_name, c.partner_logo_url
       FROM "reports" r
       LEFT JOIN "clients" c ON r.client_id = c.id
-      WHERE r.period_start IS NULL OR r.client_snapshot IS NULL
+      WHERE r.period_start IS NULL OR r.period_end IS NULL OR r.client_snapshot IS NULL
     `
 
     for (const rep of unpopulatedReports) {
       let pStart = rep.period_start
-      let pEnd = null
+      let pEnd = rep.period_end
 
-      if (!pStart && rep.report_month) {
+      if ((!pStart || !pEnd) && rep.report_month) {
         const parts = rep.report_month.trim().split(/\s+/)
         if (parts.length >= 2) {
           const mStr = parts[0].toLowerCase()
@@ -260,10 +260,16 @@ export async function runMigrations() {
         }
       }
 
+      // Default fallback if report_month text parsing failed
+      if (!pStart) pStart = new Date()
+      if (!pEnd) pEnd = new Date()
+
       let snapshot = rep.client_snapshot
       if (!snapshot && rep.business_name) {
         snapshot = {
           businessName: rep.business_name,
+          name: rep.name || null,
+          websiteUrl: rep.website_url || null,
           logoUrl: rep.logo_url || null,
           primaryColor: rep.primary_color || '#2563eb',
           secondaryColor: rep.secondary_color || '#1e293b',
@@ -273,17 +279,19 @@ export async function runMigrations() {
         }
       }
 
-      if (pStart || snapshot) {
-        await sql`
-          UPDATE "reports"
-          SET
-            "period_start" = COALESCE("period_start", ${pStart}),
-            "period_end" = COALESCE("period_end", ${pEnd}),
-            "client_snapshot" = COALESCE("client_snapshot", ${snapshot ? sql.json(snapshot) : null})
-          WHERE "id" = ${rep.id}
-        `
-      }
+      await sql`
+        UPDATE "reports"
+        SET
+          "period_start" = COALESCE("period_start", ${pStart}),
+          "period_end" = COALESCE("period_end", ${pEnd}),
+          "client_snapshot" = COALESCE("client_snapshot", ${snapshot ? sql.json(snapshot) : null})
+        WHERE "id" = ${rep.id}
+      `
     }
+
+    // Enforce NOT NULL on period_start and period_end
+    await sql`ALTER TABLE "reports" ALTER COLUMN "period_start" SET NOT NULL`
+    await sql`ALTER TABLE "reports" ALTER COLUMN "period_end" SET NOT NULL`
 
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {

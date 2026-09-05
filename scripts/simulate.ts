@@ -491,6 +491,8 @@ async function runSimulations() {
       clientId: testClient.id,
       title: testReportTitle,
       reportMonth: 'September 2026',
+      periodStart: new Date('2026-09-01T00:00:00Z'),
+      periodEnd: new Date('2026-09-30T23:59:59.999Z'),
       createdByUserId: testUser.id,
     }).returning()
 

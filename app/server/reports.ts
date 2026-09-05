@@ -294,9 +294,9 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
     const snap = row.report.clientSnapshot
     const client = row.client || {
       id: row.report.clientId || '',
-      name: snap?.businessName || '',
+      name: snap?.name || snap?.businessName || '',
       businessName: snap?.businessName || '',
-      websiteUrl: null,
+      websiteUrl: snap?.websiteUrl || null,
       logoUrl: snap?.logoUrl || null,
       primaryColor: snap?.primaryColor || '#2563eb',
       secondaryColor: snap?.secondaryColor || '#1e293b',
@@ -429,6 +429,8 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
     const { periodStart, periodEnd } = parseReportPeriod(data.reportMonth)
     const clientSnapshot: ClientSnapshot = {
       businessName: targetClient.businessName || targetClient.name,
+      name: targetClient.name || null,
+      websiteUrl: targetClient.websiteUrl || null,
       logoUrl: targetClient.logoUrl ?? null,
       primaryColor: targetClient.primaryColor || '#2563eb',
       secondaryColor: targetClient.secondaryColor || '#1e293b',
@@ -662,6 +664,8 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
     if (clientRow) {
       updatePayload.clientSnapshot = {
         businessName: clientRow.businessName || clientRow.name,
+        name: clientRow.name || null,
+        websiteUrl: clientRow.websiteUrl || null,
         logoUrl: clientRow.logoUrl ?? null,
         primaryColor: clientRow.primaryColor || '#2563eb',
         secondaryColor: clientRow.secondaryColor || '#1e293b',

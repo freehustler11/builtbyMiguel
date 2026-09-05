@@ -133,6 +133,8 @@ export type NewClient = typeof clients.$inferInsert
 
 export interface ClientSnapshot {
   businessName: string
+  name?: string | null
+  websiteUrl?: string | null
   logoUrl?: string | null
   primaryColor?: string
   secondaryColor?: string
@@ -146,11 +148,11 @@ export interface ClientSnapshot {
  */
 export const reports = pgTable('reports', {
   id: uuid('id').primaryKey().defaultRandom(),
-  clientId: uuid('client_id').references(() => clients.id, { onDelete: 'set null' }),
+  clientId: uuid('client_id').references(() => clients.id, { onDelete: 'restrict' }),
   title: text('title').notNull(),
   reportMonth: text('report_month').notNull(),
-  periodStart: timestamp('period_start', { withTimezone: true }),
-  periodEnd: timestamp('period_end', { withTimezone: true }),
+  periodStart: timestamp('period_start', { withTimezone: true }).notNull(),
+  periodEnd: timestamp('period_end', { withTimezone: true }).notNull(),
   clientSnapshot: jsonb('client_snapshot').$type<ClientSnapshot>(),
   previousReportId: uuid('previous_report_id').references((): AnyPgColumn => reports.id, { onDelete: 'set null' }),
   // GBP Metrics (Current)

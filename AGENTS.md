@@ -4,92 +4,60 @@ This document serves as the single source of truth for architectural standards, 
 
 ---
 
-## 1. Confirmed Stack & Runtime Architecture
+## STANDING RULES
 
-- **Framework**: TanStack Start (SSR full-stack React framework with `@tanstack/react-router`).
-- **Server Engine**: Nitro / Vite Node server (`@tanstack/react-start/server`), running on **Node.js 22 LTS**.
-- **Database**: PostgreSQL with Drizzle ORM (`drizzle-orm/postgres-js`).
-- **Styling**: Tailwind CSS v4 with Lucide React icons.
-- **Port**: **3000** (`PORT=3000`). All containerized deployments bind to port 3000, never port 80.
+### DIRECTORIES
+- `/app` is canonical for backend: `db/schema.ts`, `db/index.ts`, `server/*.ts`, `lib/auth.ts`, `server/auth.ts`, `server/activity-logger.ts`, `server/storage.ts`.
+- `/src` is canonical for frontend: `routes`, `components`, `main.tsx`, `router.tsx`.
+- The re-export shims in `src/db/`, `src/server/`, `src/lib/auth.ts` are **INTENTIONAL**. They exist because `tsconfig.app.json` includes only `"src"` and aliases `@` to `./src`. Do not delete or "clean up" these shims.
+- New backend code goes in `/app`. New UI goes in `/src`.
+
+### ROLES — exactly four, no others:
+`superadmin | partner | partner_employee | client`
+- "partner" IS the agency. There is no agencies table. An agency is a row in `users` where `role = 'partner'`.
+- Never introduce an "agency" table, entity, or column. The tenant is called partner everywhere in code.
+
+### TENANCY
+- `getEffectivePartnerId(auth)` resolves `partner` -> own `userId`, `partner_employee` -> their `partnerId`, everyone else -> `null`.
+- `clients.partner_id -> users.id`. `reports` have **NO** `partner_id`; they inherit tenancy by joining through `clients`.
+- Every query touching client-scoped data filters by the effective partner id.
+- Tenancy is enforced in server functions only. Postgres RLS is NOT enabled.
+
+### GUARDS
+- All role guards are **ALLOWLISTS**. A guard states which roles it permits, never which it blocks. Denylist guards are how the client-role bypass happened.
+- When a server function accepts a `partnerId` or similar filter argument, that argument is honoured **ONLY** for `superadmin`. For `partner` and `partner_employee` the argument is ignored entirely and the query is scoped to `getEffectivePartnerId(auth)`. `getTeamMembersServerFn` is the reference implementation of this pattern — copy it.
+
+### NAMING
+- CRM deliverable articles are called **`client_articles`**. Never "blogs" or "posts". The `posts` table is the agency's own marketing blog and is unrelated.
+- Marketing site content: `posts`. Client deliverables: `client_articles`.
+
+### STACK
+- React 19, Vite, TanStack Start + Router + Query, Tailwind v4, TypeScript strict, Drizzle ORM, PostgreSQL.
+- Production runs `server.mjs` on Node 22, port 3000. NOT nginx, NOT port 80.
+- No test framework installed. Verification is: `npx tsc -b`, `npm run build`, `npm run test:simulate`.
+
+### PROCESS
+- Produce an implementation plan and stop. Wait for my approval before writing code.
+- If anything in my instructions contradicts these rules or contradicts itself, stop and ask rather than guessing.
 
 ---
 
-## 2. Directory Structure Reality & Boundary Rules
+## DATABASE ARCHITECTURE & MIGRATION ENGINE
 
-The codebase intentionally uses a split directory architecture:
-- **/app**: Canonical directory for **backend / server-side logic**:
-  - `app/server/`: TanStack Start `createServerFn` RPC endpoints (auth, clients, reports, team, partners, activity, passwords).
-  - `app/db/`: Database connection (`index.ts`) and Drizzle schema (`schema.ts`).
-  - `app/lib/`: Server utilities, cookie session handlers, password hashing.
-  - `app/router.tsx`: Root TanStack router instantiation.
-- **/src**: Canonical directory for **frontend / UI logic**:
-  - `src/routes/`: File-based routing pages and layouts (`/admin`, `/portal`, `/login`, `/superadmin`, etc.).
-  - `src/components/`: Reusable React components (`ReportDocument`, `Sidebar`, `ThemeToggle`, UI widgets).
-  - `src/lib/`: Frontend utilities.
-- **Re-export Shims (`src/` -> `app/`)**:
-  - `src/server/*`, `src/db/*`, and `src/lib/*` include thin re-export shims pointing to `../../app/*`.
-  - **Rationale**: `tsconfig.app.json` specifies `"include": ["src"]`. These shims allow frontend route components in `src/routes/` to import server functions and types without violating TypeScript project boundaries.
-  - **Rule**: Do NOT delete these Group C shims. When adding new server functions or database models in `app/`, create matching re-exports in `src/` if imported by frontend routes.
-
----
-
-## 3. Tenancy & Access Control
-
-### Naming Decision: "Partner", Never "Agency"
-- The multi-tenant entity is strictly called **`partner`**.
-- Do **NOT** introduce or rename anything to "agency" in schema, database columns, API parameters, or types.
-
-### Roles
-The system defines exactly four authenticated roles (plus the historical `admin` alias, which normalizes to `superadmin`):
-1. **`superadmin`** (or `admin`): Unrestricted administrative access across all partners and clients.
-2. **`partner`**: Tenant owner account. Can manage assigned clients, view and edit their reports, and invite employees.
-3. **`partner_employee`**: Staff account belonging to a partner agency (`users.partnerId = partner.id`). Can manage clients and reports for their partner, but cannot manage other team members or view other partners.
-4. **`client`**: Read-only portal user linked directly to a single client (`users.clientId = client.id`). Restricted strictly to their own client's reports.
-
-### Tenancy Enforcement Rule
-- Every client-scoped query **must** filter by the active user's partner:
-  ```ts
-  const auth = await assertActiveSession()
-  const effectivePartnerId = getEffectivePartnerId(auth)
-  if (effectivePartnerId) {
-    // Restrict query to clients where client.partnerId === effectivePartnerId
-  }
+### Canonical Migration Engine: `scripts/migrate.mjs`
+- All schema alterations, table creations, column additions, indexes, constraints, and data backfills **MUST** be written into `scripts/migrate.mjs`.
+- `scripts/migrate.mjs` is executed automatically on boot by `server.mjs` before the HTTP server starts listening:
+  ```js
+  runMigrations().finally(() => {
+    server.listen(port, '0.0.0.0', ...)
+  })
   ```
-- **Allowlist Guards**: Role checks must be explicit allowlists (`if (auth.role !== 'superadmin') throw ...`), never denylists (`if (role === 'client')`).
-
----
-
-## 4. Database Schema & Migration Path
-
-### Chosen Migration Engine: `scripts/migrate.mjs`
-- All schema changes, table creations, column additions, indexes, and data backfills **MUST** be written into `scripts/migrate.mjs`.
-- `scripts/migrate.mjs` is automatically executed on application boot by `server.mjs` before the HTTP server starts listening.
 - It can also be run manually via `npm run db:migrate`.
-- **Drizzle-Kit Migrations**: The `drizzle/` SQL directory and `drizzle-kit generate` migrations are **inert / obsolete**. Do NOT rely on drizzle-kit migrations for production deployments.
+- **Drizzle-Kit Migrations Inert / Obsolete**: The `drizzle/` directory has been removed. `drizzle-kit generate` migrations are **inert** and do not run in production. All CRM tables, foreign keys, and indexes must go through `scripts/migrate.mjs` exclusively.
 
-### Soft Delete Pattern
-- `clients` and `users` use soft delete via `deleted_at` (`timestamptz`).
-- **Never** perform hard `DELETE` queries on `clients` or `users`. Always execute:
-  ```ts
-  await db.update(clients).set({ deletedAt: new Date() }).where(...)
-  await db.update(users).set({ deletedAt: new Date(), isActive: false }).where(...)
-  ```
-- All `SELECT` queries across the application must explicitly filter out soft-deleted records: `isNull(table.deletedAt)`.
-- Foreign key references on reports (`reports.client_id`) use `ON DELETE SET NULL` (or `RESTRICT`), ensuring that report history is permanently preserved even if a client is deleted.
+### Database Conventions
+- **Soft Deletes**: `clients` and `users` use soft delete via `deleted_at` (`timestamptz`). Never hard delete. All queries must filter with `isNull(table.deletedAt)`.
+- **Foreign Key Integrity**: `reports.client_id` uses `ON DELETE RESTRICT` to prevent cascade deletions.
+- **Report Immutability**: `reports.client_snapshot` (`jsonb`) freezes `businessName`, `name`, `websiteUrl`, `logoUrl`, `primaryColor`, `secondaryColor`, `isWhiteLabel`, `partnerName`, and `partnerLogoUrl` upon report creation and update.
+- **Report Periods**: Stored as UTC `timestamptz NOT NULL` in `reports.period_start` and `reports.period_end`. `report_month` text is preserved for UI display.
 
-### Immutability & Snapshots
-- Reports freeze branding attributes in `reports.client_snapshot` (`jsonb`) upon creation and update:
-  - `businessName`, `logoUrl`, `primaryColor`, `secondaryColor`, `isWhiteLabel`, `partnerName`, `partnerLogoUrl`.
-- Renderers (such as `ReportDocument.tsx`) read branding from `report.client_snapshot` with fallback to the live `client` join if the snapshot is absent.
-- The title-badge comparison (`!report.title.includes(businessName)`) evaluates against the snapshot `businessName`.
-
-### Timestamps & Date Boundaries
-- Date ranges and timestamps are stored in UTC using `timestamptz`.
-- Report periods define start and end timestamps (`period_start` and `period_end`) spanning UTC month boundaries (e.g., `2026-08-01T00:00:00.000Z` to `2026-08-31T23:59:59.999Z`).
-- `report_month` text is preserved for UI display (e.g., `"August 2026"`).
-
----
-
-## 5. Upcoming CRM Conventions
-- Deliverable articles created for clients are named **`client_articles`**, never "blogs" or "posts".
-- All future CRM tables must link to `client_id` and respect the partner tenancy boundary via `clients.partner_id`.

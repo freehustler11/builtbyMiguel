@@ -137,8 +137,8 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
   const isWhiteLabel = snapshot?.isWhiteLabel !== undefined ? Boolean(snapshot.isWhiteLabel) : Boolean(client?.isWhiteLabel)
   const partnerName = (snapshot?.partnerName !== undefined && snapshot?.partnerName !== null) ? snapshot.partnerName : client?.partnerName
   const partnerLogoUrl = (snapshot?.partnerLogoUrl !== undefined && snapshot?.partnerLogoUrl !== null) ? snapshot.partnerLogoUrl : client?.partnerLogoUrl
-  const contactName = client?.name
-  const websiteUrl = client?.websiteUrl
+  const contactName = snapshot?.name ?? client?.name
+  const websiteUrl = snapshot?.websiteUrl ?? client?.websiteUrl
 
   // Merge display options with explicit defaults
   const options: Required<DisplayOptions> = {

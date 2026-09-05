@@ -102,17 +102,18 @@ The application packages into a multi-stage Docker container running Node.js 22:
 │   │   ├── partners.ts
 │   │   ├── passwords.ts
 │   │   ├── reports.ts
+│   │   ├── storage.ts
 │   │   └── team.ts
-│   └── router.tsx             # Root TanStack router instantiation
+│   └── components/            # Backend UI helpers (LogoutButton)
 ├── src/                       # Canonical frontend tree
-│   ├── components/            # React UI components (ReportDocument, Sidebar, etc.)
+│   ├── components/            # React UI components (ReportDocument, AdminNav, etc.)
 │   ├── lib/                   # Client-side utilities & tsconfig shims
 │   ├── routes/                # File-based routes (/admin, /portal, /login, etc.)
+│   ├── router.tsx             # Root TanStack router instantiation
 │   └── server/                # Re-export shims for tsconfig.app.json resolution
 ├── scripts/
 │   ├── migrate.mjs            # Production migration script (runs on container boot)
-│   ├── simulate.ts            # Simulation and access-control integration tests
-│   └── security-audit.ts      # Automated security regression test suite
+│   └── simulate.ts            # Simulation and access-control integration tests
 ├── Dockerfile                 # Production multi-stage Dockerfile (Node 22, Port 3000)
 ├── server.mjs                 # Production server boot entry (runs migrations, starts SSR)
 ├── AGENTS.md                  # Comprehensive AI & architectural documentation
