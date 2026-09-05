@@ -9800,6 +9800,116 @@
       "source_location": "L10"
     },
     {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_500_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_500_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_50_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_50_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_600_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_600_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_700_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_700_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_800_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_800_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L14"
+    },
+    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_900_type",
       "label": "$type",
       "_origin": "ast",
@@ -9844,6 +9954,72 @@
       "source_location": "L16"
     },
     {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_50",
+      "label": "50",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "50",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_500",
+      "label": "500",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "500",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_600",
+      "label": "600",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "600",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_700",
+      "label": "700",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "700",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_800",
+      "label": "800",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "800",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_color_blue",
+      "label": "blue",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "blue",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L18"
+    },
+    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_color_gray",
       "label": "gray",
       "_origin": "ast",
@@ -9853,6 +10029,50 @@
       "norm_label": "gray",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L5"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_color_green",
+      "label": "green",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "green",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_color_red",
+      "label": "red",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "red",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_color_white",
+      "label": "white",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "white",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_color_yellow",
+      "label": "yellow",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "yellow",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L34"
     },
     {
       "id": "agents_skills_design_system_templates_design_tokens_starter_gray_100",
@@ -9899,6 +10119,61 @@
       "source_location": "L10"
     },
     {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_50",
+      "label": "50",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "50",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_500",
+      "label": "500",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "500",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_600",
+      "label": "600",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "600",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_700",
+      "label": "700",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "700",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_800",
+      "label": "800",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "800",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L14"
+    },
+    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_gray_900",
       "label": "900",
       "_origin": "ast",
@@ -9919,6 +10194,105 @@
       "norm_label": "950",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L16"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_green_500",
+      "label": "500",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "500",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_green_600",
+      "label": "600",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "600",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_primitive_color",
+      "label": "color",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "color",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_red_500",
+      "label": "500",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "500",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_red_600",
+      "label": "600",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "600",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_red_700",
+      "label": "700",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "700",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_white_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_white_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_yellow_500",
+      "label": "500",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "gray",
+      "file_type": "code",
+      "norm_label": "500",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L35"
     },
     {
       "id": "src_main",
@@ -17336,59 +17710,88 @@
       "source_location": "L31"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_700_type",
-      "label": "$type",
+      "id": "agents_skills_sales_enablement_references_deck_frameworks_anti_patterns",
+      "label": "Anti-Patterns",
       "_origin": "ast",
       "community": 135,
-      "community_name": "$type",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L13"
+      "community_name": "Anti-Patterns",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "anti-patterns",
+      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
+      "source_location": "L245"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_700_value",
-      "label": "$value",
+      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_feature_dump",
+      "label": "The Feature Dump",
       "_origin": "ast",
       "community": 135,
-      "community_name": "$type",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L13"
+      "community_name": "Anti-Patterns",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the feature dump",
+      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
+      "source_location": "L247"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_700",
-      "label": "700",
+      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_generic_screenshot",
+      "label": "The Generic Screenshot",
       "_origin": "ast",
       "community": 135,
-      "community_name": "$type",
-      "file_type": "code",
-      "norm_label": "700",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L22"
+      "community_name": "Anti-Patterns",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the generic screenshot",
+      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
+      "source_location": "L256"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_700",
-      "label": "700",
+      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_kitchen_sink",
+      "label": "The Kitchen Sink",
       "_origin": "ast",
       "community": 135,
-      "community_name": "$type",
-      "file_type": "code",
-      "norm_label": "700",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L13"
+      "community_name": "Anti-Patterns",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the kitchen sink",
+      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
+      "source_location": "L262"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_red_700",
-      "label": "700",
+      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_missing_story_arc",
+      "label": "The Missing Story Arc",
       "_origin": "ast",
       "community": 135,
-      "community_name": "$type",
-      "file_type": "code",
-      "norm_label": "700",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L28"
+      "community_name": "Anti-Patterns",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the missing story arc",
+      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
+      "source_location": "L253"
+    },
+    {
+      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_premature_demo",
+      "label": "The Premature Demo",
+      "_origin": "ast",
+      "community": 135,
+      "community_name": "Anti-Patterns",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the premature demo",
+      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
+      "source_location": "L259"
+    },
+    {
+      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_wall_of_text",
+      "label": "The Wall of Text",
+      "_origin": "ast",
+      "community": 135,
+      "community_name": "Anti-Patterns",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the wall of text",
+      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
+      "source_location": "L250"
     },
     {
       "id": "agents_skills_copywriting_references_copy_frameworks_clarity_beats_cleverness_the_metrics",
@@ -20158,66 +20561,6 @@
       "source_location": "L130"
     },
     {
-      "id": "agents_skills_ad_creative_references_static_ad_templates_batch_distribution",
-      "label": "Batch Distribution",
-      "_origin": "ast",
-      "community": 149,
-      "community_name": "The Templates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "batch distribution",
-      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
-      "source_location": "L306"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_static_ad_templates_generation_rules",
-      "label": "Generation Rules",
-      "_origin": "ast",
-      "community": 149,
-      "community_name": "The Templates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "generation rules",
-      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
-      "source_location": "L26"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_static_ad_templates_how_to_use_this_library",
-      "label": "How to Use This Library",
-      "_origin": "ast",
-      "community": 149,
-      "community_name": "The Templates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "how to use this library",
-      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
-      "source_location": "L19"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_static_ad_templates_per_concept_output_format",
-      "label": "Per-Concept Output Format",
-      "_origin": "ast",
-      "community": 149,
-      "community_name": "The Templates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "per-concept output format",
-      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
-      "source_location": "L290"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_static_ad_templates_static_ad_template_library",
-      "label": "Static Ad Template Library",
-      "_origin": "ast",
-      "community": 149,
-      "community_name": "The Templates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "static ad template library",
-      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
-      "source_location": "L1"
-    },
-    {
       "id": "agents_skills_ad_creative_references_static_ad_templates_the_templates",
       "label": "The Templates",
       "_origin": "ast",
@@ -20228,18 +20571,6 @@
       "norm_label": "the templates",
       "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
       "source_location": "L37"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_static_ad_templates_unicorn_scaler_vs_supporting_cast_read_tiers_this_way",
-      "label": "Unicorn Scaler vs. Supporting Cast (read tiers this way)",
-      "_origin": "ast",
-      "community": 149,
-      "community_name": "The Templates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "unicorn scaler vs. supporting cast (read tiers this way)",
-      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
-      "source_location": "L7"
     },
     {
       "id": "agents_skills_design_scripts_logo_core",
@@ -25522,18 +25853,6 @@
       "source_location": "L321"
     },
     {
-      "id": "agents_skills_ads_references_conversion_tracking_enhanced_conversions",
-      "label": "Enhanced Conversions",
-      "_origin": "ast",
-      "community": 165,
-      "community_name": "Conversion Tracking Setup",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "enhanced conversions",
-      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
-      "source_location": "L79"
-    },
-    {
       "id": "agents_skills_ads_references_conversion_tracking_events_api_server_side",
       "label": "Events API (server-side)",
       "_origin": "ast",
@@ -25544,54 +25863,6 @@
       "norm_label": "events api (server-side)",
       "source_file": ".agents/skills/ads/references/conversion-tracking.md",
       "source_location": "L285"
-    },
-    {
-      "id": "agents_skills_ads_references_conversion_tracking_fire_conversion_events",
-      "label": "Fire conversion events",
-      "_origin": "ast",
-      "community": 165,
-      "community_name": "Conversion Tracking Setup",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "fire conversion events",
-      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
-      "source_location": "L60"
-    },
-    {
-      "id": "agents_skills_ads_references_conversion_tracking_google_ads",
-      "label": "Google Ads",
-      "_origin": "ast",
-      "community": 165,
-      "community_name": "Conversion Tracking Setup",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "google ads",
-      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
-      "source_location": "L31"
-    },
-    {
-      "id": "agents_skills_ads_references_conversion_tracking_google_tag_manager_alternative",
-      "label": "Google Tag Manager alternative",
-      "_origin": "ast",
-      "community": 165,
-      "community_name": "Conversion Tracking Setup",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "google tag manager alternative",
-      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
-      "source_location": "L90"
-    },
-    {
-      "id": "agents_skills_ads_references_conversion_tracking_install_the_google_tag",
-      "label": "Install the Google tag",
-      "_origin": "ast",
-      "community": 165,
-      "community_name": "Conversion Tracking Setup",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "install the google tag",
-      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
-      "source_location": "L33"
     },
     {
       "id": "agents_skills_ads_references_conversion_tracking_install_the_insight_tag",
@@ -25688,18 +25959,6 @@
       "norm_label": "platform-side checks",
       "source_file": ".agents/skills/ads/references/conversion-tracking.md",
       "source_location": "L314"
-    },
-    {
-      "id": "agents_skills_ads_references_conversion_tracking_set_up_conversion_actions",
-      "label": "Set up conversion actions",
-      "_origin": "ast",
-      "community": 165,
-      "community_name": "Conversion Tracking Setup",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "set up conversion actions",
-      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
-      "source_location": "L49"
     },
     {
       "id": "agents_skills_ads_references_conversion_tracking_standard_events",
@@ -28845,6 +29104,18 @@
       "source_location": "L289"
     },
     {
+      "id": "agents_skills_sales_enablement_skill_calculator_design",
+      "label": "Calculator Design",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "calculator design",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L152"
+    },
+    {
       "id": "agents_skills_sales_enablement_skill_card_structure",
       "label": "Card Structure",
       "_origin": "ast",
@@ -28857,6 +29128,18 @@
       "source_location": "L291"
     },
     {
+      "id": "agents_skills_sales_enablement_skill_case_study_briefs_sales_format",
+      "label": "Case Study Briefs (Sales Format)",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "case study briefs (sales format)",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L216"
+    },
+    {
       "id": "agents_skills_sales_enablement_skill_common_mistakes",
       "label": "Common Mistakes",
       "_origin": "ast",
@@ -28867,6 +29150,18 @@
       "norm_label": "common mistakes",
       "source_file": ".agents/skills/sales-enablement/SKILL.md",
       "source_location": "L257"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_core_principles",
+      "label": "Core Principles",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "core principles",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L41"
     },
     {
       "id": "agents_skills_sales_enablement_skill_customization_by_buyer_type",
@@ -28905,6 +29200,78 @@
       "source_location": "L73"
     },
     {
+      "id": "agents_skills_sales_enablement_skill_demo_scripts_talk_tracks",
+      "label": "Demo Scripts & Talk Tracks",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "demo scripts & talk tracks",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L187"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_design_principles",
+      "label": "Design Principles",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "design principles",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L107"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_how_sales_case_studies_differ",
+      "label": "How Sales Case Studies Differ",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "how sales case studies differ",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L218"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_implementation_options",
+      "label": "Implementation Options",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "implementation options",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L179"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_keeping_it_living",
+      "label": "Keeping It Living",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "keeping it living",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L283"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_key_principles",
+      "label": "Key Principles",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "key principles",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L206"
+    },
+    {
       "id": "agents_skills_sales_enablement_skill_objection_categories",
       "label": "Objection Categories",
       "_origin": "ast",
@@ -28927,6 +29294,30 @@
       "norm_label": "objection handling docs",
       "source_file": ".agents/skills/sales-enablement/SKILL.md",
       "source_location": "L118"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_one_pagers_leave_behinds",
+      "label": "One-Pagers / Leave-Behinds",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "one-pagers / leave-behinds",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L91"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_organization",
+      "label": "Organization",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "organization",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L231"
     },
     {
       "id": "agents_skills_sales_enablement_skill_output_format",
@@ -28989,6 +29380,18 @@
       "source_location": "L131"
     },
     {
+      "id": "agents_skills_sales_enablement_skill_roi_calculators_value_props",
+      "label": "ROI Calculators & Value Props",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "roi calculators & value props",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L150"
+    },
+    {
       "id": "agents_skills_sales_enablement_skill_sales_deck_pitch_deck",
       "label": "Sales Deck / Pitch Deck",
       "_origin": "ast",
@@ -29013,6 +29416,90 @@
       "source_location": "L8"
     },
     {
+      "id": "agents_skills_sales_enablement_skill_sales_playbooks",
+      "label": "Sales Playbooks",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "sales playbooks",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L265"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_sales_uses_what_sales_trusts",
+      "label": "Sales Uses What Sales Trusts",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "sales uses what sales trusts",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L43"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_scannable_over_comprehensive",
+      "label": "Scannable Over Comprehensive",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "scannable over comprehensive",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L49"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_script_structure",
+      "label": "Script Structure",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "script structure",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L189"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_situation_specific_not_generic",
+      "label": "Situation-Specific, Not Generic",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "situation-specific, not generic",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L46"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_structure",
+      "label": "Structure",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "structure",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L99"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_structure_222",
+      "label": "Structure",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "structure",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L222"
+    },
+    {
       "id": "agents_skills_sales_enablement_skill_structure_242",
       "label": "Structure",
       "_origin": "ast",
@@ -29025,6 +29512,18 @@
       "source_location": "L242"
     },
     {
+      "id": "agents_skills_sales_enablement_skill_talk_track_types",
+      "label": "Talk Track Types",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "talk track types",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L197"
+    },
+    {
       "id": "agents_skills_sales_enablement_skill_task_specific_questions",
       "label": "Task-Specific Questions",
       "_origin": "ast",
@@ -29035,6 +29534,18 @@
       "norm_label": "task-specific questions",
       "source_file": ".agents/skills/sales-enablement/SKILL.md",
       "source_location": "L330"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_tie_back_to_business_outcomes",
+      "label": "Tie Back to Business Outcomes",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "tie back to business outcomes",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L52"
     },
     {
       "id": "agents_skills_sales_enablement_skill_tool_integrations",
@@ -29059,6 +29570,54 @@
       "norm_label": "two formats",
       "source_file": ".agents/skills/sales-enablement/SKILL.md",
       "source_location": "L141"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_value_prop_by_persona",
+      "label": "Value Prop by Persona",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "value prop by persona",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L170"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_what_goes_in_a_playbook",
+      "label": "What Goes in a Playbook",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "what goes in a playbook",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L267"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_when_to_build",
+      "label": "When to Build",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "when to build",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L277"
+    },
+    {
+      "id": "agents_skills_sales_enablement_skill_when_to_use",
+      "label": "When to Use",
+      "_origin": "ast",
+      "community": 177,
+      "community_name": "Sales Enablement",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "when to use",
+      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "source_location": "L93"
     },
     {
       "id": "agents_skills_attribution_skill",
@@ -34112,7 +34671,7 @@
       "label": "sales-enablement/SKILL.md",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "frontmatter": {
         "name": "sales-enablement",
@@ -34128,7 +34687,7 @@
       "label": "deck-frameworks.md",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "page",
       "norm_label": "deck-frameworks.md",
@@ -34136,23 +34695,11 @@
       "source_location": "L1"
     },
     {
-      "id": "agents_skills_sales_enablement_references_deck_frameworks_anti_patterns",
-      "label": "Anti-Patterns",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "anti-patterns",
-      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
-      "source_location": "L245"
-    },
-    {
       "id": "agents_skills_sales_enablement_references_deck_frameworks_champion_deck",
       "label": "Champion Deck",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "champion deck",
@@ -34164,7 +34711,7 @@
       "label": "Economic Buyer Deck",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "economic buyer deck",
@@ -34176,7 +34723,7 @@
       "label": "Persona Customization Guide",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "persona customization guide",
@@ -34188,7 +34735,7 @@
       "label": "Sales Deck Frameworks",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "sales deck frameworks",
@@ -34200,7 +34747,7 @@
       "label": "Technical Buyer Deck",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "technical buyer deck",
@@ -34208,71 +34755,11 @@
       "source_location": "L200"
     },
     {
-      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_feature_dump",
-      "label": "The Feature Dump",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the feature dump",
-      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
-      "source_location": "L247"
-    },
-    {
-      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_generic_screenshot",
-      "label": "The Generic Screenshot",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the generic screenshot",
-      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
-      "source_location": "L256"
-    },
-    {
-      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_kitchen_sink",
-      "label": "The Kitchen Sink",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the kitchen sink",
-      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
-      "source_location": "L262"
-    },
-    {
-      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_missing_story_arc",
-      "label": "The Missing Story Arc",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the missing story arc",
-      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
-      "source_location": "L253"
-    },
-    {
-      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_premature_demo",
-      "label": "The Premature Demo",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the premature demo",
-      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
-      "source_location": "L259"
-    },
-    {
       "id": "agents_skills_sales_enablement_references_deck_frameworks_the_storytelling_arc",
       "label": "The Storytelling Arc",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "the storytelling arc",
@@ -34280,23 +34767,11 @@
       "source_location": "L5"
     },
     {
-      "id": "agents_skills_sales_enablement_references_deck_frameworks_the_wall_of_text",
-      "label": "The Wall of Text",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the wall of text",
-      "source_file": ".agents/skills/sales-enablement/references/deck-frameworks.md",
-      "source_location": "L250"
-    },
-    {
       "id": "agents_skills_sales_enablement_references_objection_library",
       "label": "objection-library.md",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "page",
       "norm_label": "objection-library.md",
@@ -34308,7 +34783,7 @@
       "label": "Objection Library",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "objection library",
@@ -34320,24 +34795,12 @@
       "label": "Quick-Reference Table",
       "_origin": "ast",
       "community": 198,
-      "community_name": "Anti-Patterns",
+      "community_name": "Sales Deck Frameworks",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "quick-reference table",
       "source_file": ".agents/skills/sales-enablement/references/objection-library.md",
       "source_location": "L5"
-    },
-    {
-      "id": "agents_skills_sales_enablement_references_one_pager_templates",
-      "label": "one-pager-templates.md",
-      "_origin": "ast",
-      "community": 198,
-      "community_name": "Anti-Patterns",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "one-pager-templates.md",
-      "source_file": ".agents/skills/sales-enablement/references/one-pager-templates.md",
-      "source_location": "L1"
     },
     {
       "id": "agents_skills_sales_enablement_references_objection_library_a_committee_decides_this",
@@ -35006,6 +35469,18 @@
       "norm_label": "color",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L85"
+    },
+    {
+      "id": "agents_skills_sales_enablement_references_one_pager_templates",
+      "label": "one-pager-templates.md",
+      "_origin": "ast",
+      "community": 200,
+      "community_name": "Layout Guidance",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "one-pager-templates.md",
+      "source_file": ".agents/skills/sales-enablement/references/one-pager-templates.md",
+      "source_location": "L1"
     },
     {
       "id": "agents_skills_sales_enablement_references_one_pager_templates_champion_enablement_one_pager",
@@ -42211,54 +42686,6 @@
       "source_location": "L232"
     },
     {
-      "id": "agents_skills_ad_creative_references_short_form_video_specs_audio_defaults_and_the_organic_vs_baked_decision",
-      "label": "Audio defaults (and the organic-vs-baked decision)",
-      "_origin": "ast",
-      "community": 233,
-      "community_name": "Part 2 \u2014 Creator Format Library",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "audio defaults (and the organic-vs-baked decision)",
-      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
-      "source_location": "L41"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_short_form_video_specs_canvas",
-      "label": "Canvas",
-      "_origin": "ast",
-      "community": 233,
-      "community_name": "Part 2 \u2014 Creator Format Library",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "canvas",
-      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
-      "source_location": "L11"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_short_form_video_specs_caption_style_classic_tiktok",
-      "label": "Caption style (classic TikTok)",
-      "_origin": "ast",
-      "community": 233,
-      "community_name": "Part 2 \u2014 Creator Format Library",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "caption style (classic tiktok)",
-      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
-      "source_location": "L26"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_short_form_video_specs_determinism_if_you_generate_programmatically",
-      "label": "Determinism (if you generate programmatically)",
-      "_origin": "ast",
-      "community": 233,
-      "community_name": "Part 2 \u2014 Creator Format Library",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "determinism (if you generate programmatically)",
-      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
-      "source_location": "L46"
-    },
-    {
       "id": "agents_skills_ad_creative_references_short_form_video_specs_format_10_conversation_b",
       "label": "Format 10 \u2014 Conversation \u00b7 B",
       "_origin": "ast",
@@ -42427,18 +42854,6 @@
       "source_location": "L192"
     },
     {
-      "id": "agents_skills_ad_creative_references_short_form_video_specs_part_1_the_vertical_video_spec",
-      "label": "Part 1 \u2014 The Vertical Video Spec",
-      "_origin": "ast",
-      "community": 233,
-      "community_name": "Part 2 \u2014 Creator Format Library",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "part 1 \u2014 the vertical video spec",
-      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
-      "source_location": "L9"
-    },
-    {
       "id": "agents_skills_ad_creative_references_short_form_video_specs_part_2_creator_format_library",
       "label": "Part 2 \u2014 Creator Format Library",
       "_origin": "ast",
@@ -42449,30 +42864,6 @@
       "norm_label": "part 2 \u2014 creator format library",
       "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
       "source_location": "L51"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_short_form_video_specs_safe_zones_the_single_most_missed_constraint",
-      "label": "Safe zones (the single most-missed constraint)",
-      "_origin": "ast",
-      "community": 233,
-      "community_name": "Part 2 \u2014 Creator Format Library",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "safe zones (the single most-missed constraint)",
-      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
-      "source_location": "L14"
-    },
-    {
-      "id": "agents_skills_ad_creative_references_short_form_video_specs_short_form_vertical_video_production_spec_creator_formats",
-      "label": "Short-Form Vertical Video \u2014 Production Spec & Creator Formats",
-      "_origin": "ast",
-      "community": 233,
-      "community_name": "Part 2 \u2014 Creator Format Library",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "short-form vertical video \u2014 production spec & creator formats",
-      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
-      "source_location": "L1"
     },
     {
       "id": "agents_skills_content_strategy_skill_calendar_split_60_30_10",
@@ -43567,7 +43958,7 @@
       "file_type": "code",
       "norm_label": "dependencies",
       "source_file": "package.json",
-      "source_location": "L18"
+      "source_location": "L17"
     },
     {
       "id": "package_dependencies_clsx",
@@ -43578,18 +43969,7 @@
       "file_type": "code",
       "norm_label": "clsx",
       "source_file": "package.json",
-      "source_location": "L24"
-    },
-    {
-      "id": "package_dependencies_drizzle_orm",
-      "label": "drizzle-orm",
-      "_origin": "ast",
-      "community": 24,
-      "community_name": "dependencies",
-      "file_type": "code",
-      "norm_label": "drizzle-orm",
-      "source_file": "package.json",
-      "source_location": "L25"
+      "source_location": "L23"
     },
     {
       "id": "package_dependencies_lucide_react",
@@ -43600,7 +43980,7 @@
       "file_type": "code",
       "norm_label": "lucide-react",
       "source_file": "package.json",
-      "source_location": "L26"
+      "source_location": "L25"
     },
     {
       "id": "package_dependencies_postgres",
@@ -43611,7 +43991,7 @@
       "file_type": "code",
       "norm_label": "postgres",
       "source_file": "package.json",
-      "source_location": "L27"
+      "source_location": "L26"
     },
     {
       "id": "package_dependencies_react",
@@ -43622,7 +44002,7 @@
       "file_type": "code",
       "norm_label": "react",
       "source_file": "package.json",
-      "source_location": "L28"
+      "source_location": "L27"
     },
     {
       "id": "package_dependencies_react_dom",
@@ -43633,18 +44013,7 @@
       "file_type": "code",
       "norm_label": "react-dom",
       "source_file": "package.json",
-      "source_location": "L29"
-    },
-    {
-      "id": "package_dependencies_tailwind_merge",
-      "label": "tailwind-merge",
-      "_origin": "ast",
-      "community": 24,
-      "community_name": "dependencies",
-      "file_type": "code",
-      "norm_label": "tailwind-merge",
-      "source_file": "package.json",
-      "source_location": "L31"
+      "source_location": "L28"
     },
     {
       "id": "package_dependencies_tanstack_react_query",
@@ -43655,7 +44024,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/react-query",
       "source_file": "package.json",
-      "source_location": "L19"
+      "source_location": "L18"
     },
     {
       "id": "package_dependencies_tanstack_react_query_devtools",
@@ -43666,7 +44035,29 @@
       "file_type": "code",
       "norm_label": "@tanstack/react-query-devtools",
       "source_file": "package.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "package_dependencies_tanstack_react_router",
+      "label": "@tanstack/react-router",
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "@tanstack/react-router",
+      "source_file": "package.json",
       "source_location": "L20"
+    },
+    {
+      "id": "package_dependencies_tanstack_react_start",
+      "label": "@tanstack/react-start",
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "@tanstack/react-start",
+      "source_file": "package.json",
+      "source_location": "L21"
     },
     {
       "id": "package_dependencies_tanstack_router_devtools",
@@ -43677,7 +44068,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/router-devtools",
       "source_file": "package.json",
-      "source_location": "L23"
+      "source_location": "L22"
     },
     {
       "id": "clsx",
@@ -43688,18 +44079,7 @@
       "file_type": "concept",
       "norm_label": "clsx",
       "source_file": "package.json",
-      "source_location": "L24"
-    },
-    {
-      "id": "drizzle_orm",
-      "label": "drizzle-orm",
-      "_origin": "ast",
-      "community": 24,
-      "community_name": "dependencies",
-      "file_type": "concept",
-      "norm_label": "drizzle-orm",
-      "source_file": "package.json",
-      "source_location": "L25"
+      "source_location": "L23"
     },
     {
       "id": "lucide_react",
@@ -43710,7 +44090,7 @@
       "file_type": "concept",
       "norm_label": "lucide-react",
       "source_file": "package.json",
-      "source_location": "L26"
+      "source_location": "L25"
     },
     {
       "id": "postgres",
@@ -43721,7 +44101,7 @@
       "file_type": "concept",
       "norm_label": "postgres",
       "source_file": "package.json",
-      "source_location": "L27"
+      "source_location": "L26"
     },
     {
       "id": "react",
@@ -43732,7 +44112,7 @@
       "file_type": "concept",
       "norm_label": "react",
       "source_file": "package.json",
-      "source_location": "L28"
+      "source_location": "L27"
     },
     {
       "id": "react_dom",
@@ -43743,18 +44123,7 @@
       "file_type": "concept",
       "norm_label": "react-dom",
       "source_file": "package.json",
-      "source_location": "L29"
-    },
-    {
-      "id": "tailwind_merge",
-      "label": "tailwind-merge",
-      "_origin": "ast",
-      "community": 24,
-      "community_name": "dependencies",
-      "file_type": "concept",
-      "norm_label": "tailwind-merge",
-      "source_file": "package.json",
-      "source_location": "L31"
+      "source_location": "L28"
     },
     {
       "id": "tanstack_react_query",
@@ -43765,7 +44134,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/react-query",
       "source_file": "package.json",
-      "source_location": "L19"
+      "source_location": "L18"
     },
     {
       "id": "tanstack_react_query_devtools",
@@ -43776,7 +44145,29 @@
       "file_type": "concept",
       "norm_label": "@tanstack/react-query-devtools",
       "source_file": "package.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "tanstack_react_router",
+      "label": "@tanstack/react-router",
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "dependencies",
+      "file_type": "concept",
+      "norm_label": "@tanstack/react-router",
+      "source_file": "package.json",
       "source_location": "L20"
+    },
+    {
+      "id": "tanstack_react_start",
+      "label": "@tanstack/react-start",
+      "_origin": "ast",
+      "community": 24,
+      "community_name": "dependencies",
+      "file_type": "concept",
+      "norm_label": "@tanstack/react-start",
+      "source_file": "package.json",
+      "source_location": "L21"
     },
     {
       "id": "tanstack_router_devtools",
@@ -43787,7 +44178,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/router-devtools",
       "source_file": "package.json",
-      "source_location": "L23"
+      "source_location": "L22"
     },
     {
       "id": "agents_skills_emails_references_copy_guidelines_by_behavior",
@@ -45598,7 +45989,7 @@
       "file_type": "code",
       "norm_label": "devdependencies",
       "source_file": "package.json",
-      "source_location": "L33"
+      "source_location": "L32"
     },
     {
       "id": "package_devdependencies_dotenv",
@@ -45609,7 +46000,7 @@
       "file_type": "code",
       "norm_label": "dotenv",
       "source_file": "package.json",
-      "source_location": "L40"
+      "source_location": "L39"
     },
     {
       "id": "package_devdependencies_drizzle_kit",
@@ -45620,7 +46011,7 @@
       "file_type": "code",
       "norm_label": "drizzle-kit",
       "source_file": "package.json",
-      "source_location": "L41"
+      "source_location": "L40"
     },
     {
       "id": "package_devdependencies_tailwindcss",
@@ -45631,7 +46022,7 @@
       "file_type": "code",
       "norm_label": "tailwindcss",
       "source_file": "package.json",
-      "source_location": "L42"
+      "source_location": "L41"
     },
     {
       "id": "package_devdependencies_tailwindcss_vite",
@@ -45642,7 +46033,7 @@
       "file_type": "code",
       "norm_label": "@tailwindcss/vite",
       "source_file": "package.json",
-      "source_location": "L34"
+      "source_location": "L33"
     },
     {
       "id": "package_devdependencies_tanstack_router_plugin",
@@ -45653,7 +46044,7 @@
       "file_type": "code",
       "norm_label": "@tanstack/router-plugin",
       "source_file": "package.json",
-      "source_location": "L35"
+      "source_location": "L34"
     },
     {
       "id": "package_devdependencies_types_node",
@@ -45664,7 +46055,7 @@
       "file_type": "code",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L36"
+      "source_location": "L35"
     },
     {
       "id": "package_devdependencies_types_react",
@@ -45675,7 +46066,7 @@
       "file_type": "code",
       "norm_label": "@types/react",
       "source_file": "package.json",
-      "source_location": "L37"
+      "source_location": "L36"
     },
     {
       "id": "package_devdependencies_types_react_dom",
@@ -45686,7 +46077,7 @@
       "file_type": "code",
       "norm_label": "@types/react-dom",
       "source_file": "package.json",
-      "source_location": "L38"
+      "source_location": "L37"
     },
     {
       "id": "package_devdependencies_typescript",
@@ -45697,7 +46088,7 @@
       "file_type": "code",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L43"
+      "source_location": "L42"
     },
     {
       "id": "package_devdependencies_vite",
@@ -45708,7 +46099,7 @@
       "file_type": "code",
       "norm_label": "vite",
       "source_file": "package.json",
-      "source_location": "L44"
+      "source_location": "L43"
     },
     {
       "id": "package_devdependencies_vitejs_plugin_react",
@@ -45719,7 +46110,7 @@
       "file_type": "code",
       "norm_label": "@vitejs/plugin-react",
       "source_file": "package.json",
-      "source_location": "L39"
+      "source_location": "L38"
     },
     {
       "id": "dotenv",
@@ -45730,7 +46121,7 @@
       "file_type": "concept",
       "norm_label": "dotenv",
       "source_file": "package.json",
-      "source_location": "L40"
+      "source_location": "L39"
     },
     {
       "id": "drizzle_kit",
@@ -45741,7 +46132,7 @@
       "file_type": "concept",
       "norm_label": "drizzle-kit",
       "source_file": "package.json",
-      "source_location": "L41"
+      "source_location": "L40"
     },
     {
       "id": "tailwindcss",
@@ -45752,7 +46143,7 @@
       "file_type": "concept",
       "norm_label": "tailwindcss",
       "source_file": "package.json",
-      "source_location": "L42"
+      "source_location": "L41"
     },
     {
       "id": "tailwindcss_vite",
@@ -45763,7 +46154,7 @@
       "file_type": "concept",
       "norm_label": "@tailwindcss/vite",
       "source_file": "package.json",
-      "source_location": "L34"
+      "source_location": "L33"
     },
     {
       "id": "tanstack_router_plugin",
@@ -45774,7 +46165,7 @@
       "file_type": "concept",
       "norm_label": "@tanstack/router-plugin",
       "source_file": "package.json",
-      "source_location": "L35"
+      "source_location": "L34"
     },
     {
       "id": "types_node",
@@ -45785,7 +46176,7 @@
       "file_type": "concept",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L36"
+      "source_location": "L35"
     },
     {
       "id": "types_react",
@@ -45796,7 +46187,7 @@
       "file_type": "concept",
       "norm_label": "@types/react",
       "source_file": "package.json",
-      "source_location": "L37"
+      "source_location": "L36"
     },
     {
       "id": "types_react_dom",
@@ -45807,7 +46198,7 @@
       "file_type": "concept",
       "norm_label": "@types/react-dom",
       "source_file": "package.json",
-      "source_location": "L38"
+      "source_location": "L37"
     },
     {
       "id": "typescript",
@@ -45818,7 +46209,7 @@
       "file_type": "concept",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L43"
+      "source_location": "L42"
     },
     {
       "id": "vite",
@@ -45829,7 +46220,7 @@
       "file_type": "concept",
       "norm_label": "vite",
       "source_file": "package.json",
-      "source_location": "L44"
+      "source_location": "L43"
     },
     {
       "id": "vitejs_plugin_react",
@@ -45840,7 +46231,7 @@
       "file_type": "concept",
       "norm_label": "@vitejs/plugin-react",
       "source_file": "package.json",
-      "source_location": "L39"
+      "source_location": "L38"
     },
     {
       "id": "agents_skills_revops_references_routing_rules_abm_routing_rules",
@@ -49360,17 +49751,6 @@
       "source_location": "L55"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_fontsize_xl",
-      "label": "xl",
-      "_origin": "ast",
-      "community": 27,
-      "community_name": "fontSize",
-      "file_type": "code",
-      "norm_label": "xl",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L57"
-    },
-    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_fontsize_xs",
       "label": "xs",
       "_origin": "ast",
@@ -49391,39 +49771,6 @@
       "norm_label": "fontsize",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L52"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_radius_xl",
-      "label": "xl",
-      "_origin": "ast",
-      "community": 27,
-      "community_name": "fontSize",
-      "file_type": "code",
-      "norm_label": "xl",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L68"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_xl_type",
-      "label": "$type",
-      "_origin": "ast",
-      "community": 27,
-      "community_name": "fontSize",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L57"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_xl_value",
-      "label": "$value",
-      "_origin": "ast",
-      "community": 27,
-      "community_name": "fontSize",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L57"
     },
     {
       "id": "agents_skills_design_system_templates_design_tokens_starter_xs_type",
@@ -55525,90 +55872,6 @@
       "source_location": "L1"
     },
     {
-      "id": "agents_skills_ads_references_rsa_output_spec_google_rsa_output_spec",
-      "label": "Google RSA Output Spec",
-      "_origin": "ast",
-      "community": 307,
-      "community_name": "ads/SKILL.md",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "google rsa output spec",
-      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "agents_skills_ads_references_rsa_output_spec_hard_limits_per_rsa_enforce_before_responding",
-      "label": "Hard limits per RSA (enforce before responding)",
-      "_origin": "ast",
-      "community": 307,
-      "community_name": "ads/SKILL.md",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "hard limits per rsa (enforce before responding)",
-      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
-      "source_location": "L5"
-    },
-    {
-      "id": "agents_skills_ads_references_rsa_output_spec_medical_cfm_compliance_when_product_context_indicates_pt_br_medical_practice",
-      "label": "Medical / CFM compliance (when product context indicates pt-BR medical practice)",
-      "_origin": "ast",
-      "community": 307,
-      "community_name": "ads/SKILL.md",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "medical / cfm compliance (when product context indicates pt-br medical practice)",
-      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
-      "source_location": "L20"
-    },
-    {
-      "id": "agents_skills_ads_references_rsa_output_spec_output_order_mandatory_emit_in_this_order_to_avoid_truncation",
-      "label": "Output ORDER (mandatory \u2014 emit in this order to avoid truncation)",
-      "_origin": "ast",
-      "community": 307,
-      "community_name": "ads/SKILL.md",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "output order (mandatory \u2014 emit in this order to avoid truncation)",
-      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
-      "source_location": "L30"
-    },
-    {
-      "id": "agents_skills_ads_references_rsa_output_spec_output_template_mandatory_shape",
-      "label": "Output template (mandatory shape)",
-      "_origin": "ast",
-      "community": 307,
-      "community_name": "ads/SKILL.md",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "output template (mandatory shape)",
-      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
-      "source_location": "L38"
-    },
-    {
-      "id": "agents_skills_ads_references_rsa_output_spec_required_sidecar_artifacts_always_include_with_rsa_request",
-      "label": "Required sidecar artifacts (always include with RSA request)",
-      "_origin": "ast",
-      "community": 307,
-      "community_name": "ads/SKILL.md",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "required sidecar artifacts (always include with rsa request)",
-      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
-      "source_location": "L14"
-    },
-    {
-      "id": "agents_skills_ads_references_rsa_output_spec_self_check_before_responding",
-      "label": "Self-check before responding",
-      "_origin": "ast",
-      "community": 307,
-      "community_name": "ads/SKILL.md",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "self-check before responding",
-      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
-      "source_location": "L78"
-    },
-    {
       "id": "agents_skills_ai_seo_references_content_patterns_aeo_and_geo_content_patterns",
       "label": "AEO and GEO Content Patterns",
       "_origin": "ast",
@@ -55873,169 +56136,88 @@
       "source_location": "L65"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_500_type",
-      "label": "$type",
+      "id": "agents_skills_ad_creative_references_short_form_video_specs_audio_defaults_and_the_organic_vs_baked_decision",
+      "label": "Audio defaults (and the organic-vs-baked decision)",
       "_origin": "ast",
       "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "community_name": "Part 1 \u2014 The Vertical Video Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "audio defaults (and the organic-vs-baked decision)",
+      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
+      "source_location": "L41"
+    },
+    {
+      "id": "agents_skills_ad_creative_references_short_form_video_specs_canvas",
+      "label": "Canvas",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "Part 1 \u2014 The Vertical Video Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "canvas",
+      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
       "source_location": "L11"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_500_value",
-      "label": "$value",
+      "id": "agents_skills_ad_creative_references_short_form_video_specs_caption_style_classic_tiktok",
+      "label": "Caption style (classic TikTok)",
       "_origin": "ast",
       "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L11"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_500",
-      "label": "500",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "500",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L20"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_color_green",
-      "label": "green",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "green",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L30"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_color_red",
-      "label": "red",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "red",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L25"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_color_white",
-      "label": "white",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "white",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L37"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_color_yellow",
-      "label": "yellow",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "yellow",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L34"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_500",
-      "label": "500",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "500",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L11"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_green_500",
-      "label": "500",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "500",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L31"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_green_600",
-      "label": "600",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "600",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L32"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_primitive_color",
-      "label": "color",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "color",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L4"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_red_500",
-      "label": "500",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "500",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "community_name": "Part 1 \u2014 The Vertical Video Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "caption style (classic tiktok)",
+      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
       "source_location": "L26"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_white_type",
-      "label": "$type",
+      "id": "agents_skills_ad_creative_references_short_form_video_specs_determinism_if_you_generate_programmatically",
+      "label": "Determinism (if you generate programmatically)",
       "_origin": "ast",
       "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L37"
+      "community_name": "Part 1 \u2014 The Vertical Video Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "determinism (if you generate programmatically)",
+      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
+      "source_location": "L46"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_white_value",
-      "label": "$value",
+      "id": "agents_skills_ad_creative_references_short_form_video_specs_part_1_the_vertical_video_spec",
+      "label": "Part 1 \u2014 The Vertical Video Spec",
       "_origin": "ast",
       "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L37"
+      "community_name": "Part 1 \u2014 The Vertical Video Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "part 1 \u2014 the vertical video spec",
+      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
+      "source_location": "L9"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_yellow_500",
-      "label": "500",
+      "id": "agents_skills_ad_creative_references_short_form_video_specs_safe_zones_the_single_most_missed_constraint",
+      "label": "Safe zones (the single most-missed constraint)",
       "_origin": "ast",
       "community": 31,
-      "community_name": "color",
-      "file_type": "code",
-      "norm_label": "500",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L35"
+      "community_name": "Part 1 \u2014 The Vertical Video Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "safe zones (the single most-missed constraint)",
+      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "agents_skills_ad_creative_references_short_form_video_specs_short_form_vertical_video_production_spec_creator_formats",
+      "label": "Short-Form Vertical Video \u2014 Production Spec & Creator Formats",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "Part 1 \u2014 The Vertical Video Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "short-form vertical video \u2014 production spec & creator formats",
+      "source_file": ".agents/skills/ad-creative/references/short-form-video-specs.md",
+      "source_location": "L1"
     },
     {
       "id": "agents_skills_brand_references_visual_identity",
@@ -63344,114 +63526,88 @@
       "source_location": "L997"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_50_type",
-      "label": "$type",
+      "id": "agents_skills_ads_references_rsa_output_spec_google_rsa_output_spec",
+      "label": "Google RSA Output Spec",
       "_origin": "ast",
       "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L6"
+      "community_name": "Google RSA Output Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "google rsa output spec",
+      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
+      "source_location": "L1"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_50_value",
-      "label": "$value",
+      "id": "agents_skills_ads_references_rsa_output_spec_hard_limits_per_rsa_enforce_before_responding",
+      "label": "Hard limits per RSA (enforce before responding)",
       "_origin": "ast",
       "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L6"
+      "community_name": "Google RSA Output Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "hard limits per rsa (enforce before responding)",
+      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
+      "source_location": "L5"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_600_type",
-      "label": "$type",
+      "id": "agents_skills_ads_references_rsa_output_spec_medical_cfm_compliance_when_product_context_indicates_pt_br_medical_practice",
+      "label": "Medical / CFM compliance (when product context indicates pt-BR medical practice)",
       "_origin": "ast",
       "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L12"
+      "community_name": "Google RSA Output Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "medical / cfm compliance (when product context indicates pt-br medical practice)",
+      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
+      "source_location": "L20"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_600_value",
-      "label": "$value",
+      "id": "agents_skills_ads_references_rsa_output_spec_output_order_mandatory_emit_in_this_order_to_avoid_truncation",
+      "label": "Output ORDER (mandatory \u2014 emit in this order to avoid truncation)",
       "_origin": "ast",
       "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L12"
+      "community_name": "Google RSA Output Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "output order (mandatory \u2014 emit in this order to avoid truncation)",
+      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
+      "source_location": "L30"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_50",
-      "label": "50",
+      "id": "agents_skills_ads_references_rsa_output_spec_output_template_mandatory_shape",
+      "label": "Output template (mandatory shape)",
       "_origin": "ast",
       "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "50",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L19"
+      "community_name": "Google RSA Output Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "output template (mandatory shape)",
+      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
+      "source_location": "L38"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_600",
-      "label": "600",
+      "id": "agents_skills_ads_references_rsa_output_spec_required_sidecar_artifacts_always_include_with_rsa_request",
+      "label": "Required sidecar artifacts (always include with RSA request)",
       "_origin": "ast",
       "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "600",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L21"
+      "community_name": "Google RSA Output Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "required sidecar artifacts (always include with rsa request)",
+      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
+      "source_location": "L14"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_color_blue",
-      "label": "blue",
+      "id": "agents_skills_ads_references_rsa_output_spec_self_check_before_responding",
+      "label": "Self-check before responding",
       "_origin": "ast",
       "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "blue",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L18"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_50",
-      "label": "50",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "50",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L6"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_600",
-      "label": "600",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "600",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L12"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_red_600",
-      "label": "600",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "blue",
-      "file_type": "code",
-      "norm_label": "600",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L27"
+      "community_name": "Google RSA Output Spec",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "self-check before responding",
+      "source_file": ".agents/skills/ads/references/rsa-output-spec.md",
+      "source_location": "L78"
     },
     {
       "id": "agents_skills_ai_seo_references_agent_readiness",
@@ -72740,48 +72896,76 @@
       "source_location": "L324"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_800_type",
-      "label": "$type",
+      "id": "agents_skills_ad_creative_references_static_ad_templates_batch_distribution",
+      "label": "Batch Distribution",
       "_origin": "ast",
       "community": 459,
-      "community_name": "800",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L14"
+      "community_name": "Static Ad Template Library",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "batch distribution",
+      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
+      "source_location": "L306"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_800_value",
-      "label": "$value",
+      "id": "agents_skills_ad_creative_references_static_ad_templates_generation_rules",
+      "label": "Generation Rules",
       "_origin": "ast",
       "community": 459,
-      "community_name": "800",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L14"
+      "community_name": "Static Ad Template Library",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "generation rules",
+      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
+      "source_location": "L26"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_blue_800",
-      "label": "800",
+      "id": "agents_skills_ad_creative_references_static_ad_templates_how_to_use_this_library",
+      "label": "How to Use This Library",
       "_origin": "ast",
       "community": 459,
-      "community_name": "800",
-      "file_type": "code",
-      "norm_label": "800",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L23"
+      "community_name": "Static Ad Template Library",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "how to use this library",
+      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
+      "source_location": "L19"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_gray_800",
-      "label": "800",
+      "id": "agents_skills_ad_creative_references_static_ad_templates_per_concept_output_format",
+      "label": "Per-Concept Output Format",
       "_origin": "ast",
       "community": 459,
-      "community_name": "800",
-      "file_type": "code",
-      "norm_label": "800",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L14"
+      "community_name": "Static Ad Template Library",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "per-concept output format",
+      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
+      "source_location": "L290"
+    },
+    {
+      "id": "agents_skills_ad_creative_references_static_ad_templates_static_ad_template_library",
+      "label": "Static Ad Template Library",
+      "_origin": "ast",
+      "community": 459,
+      "community_name": "Static Ad Template Library",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "static ad template library",
+      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_skills_ad_creative_references_static_ad_templates_unicorn_scaler_vs_supporting_cast_read_tiers_this_way",
+      "label": "Unicorn Scaler vs. Supporting Cast (read tiers this way)",
+      "_origin": "ast",
+      "community": 459,
+      "community_name": "Static Ad Template Library",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "unicorn scaler vs. supporting cast (read tiers this way)",
+      "source_file": ".agents/skills/ad-creative/references/static-ad-templates.md",
+      "source_location": "L7"
     },
     {
       "id": "agents_skills_ui_styling_scripts_shadcn_add",
@@ -75974,50 +76158,6 @@
       "source_location": "L49"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_16_type",
-      "label": "$type",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L50"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_16_value",
-      "label": "$value",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L50"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_1_type",
-      "label": "$type",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L41"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_1_value",
-      "label": "$value",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L41"
-    },
-    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_2_type",
       "label": "$type",
       "_origin": "ast",
@@ -76038,28 +76178,6 @@
       "norm_label": "$value",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L42"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_3_type",
-      "label": "$type",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L43"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_3_value",
-      "label": "$value",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L43"
     },
     {
       "id": "agents_skills_design_system_templates_design_tokens_starter_4_type",
@@ -76128,28 +76246,6 @@
       "source_location": "L46"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_8_type",
-      "label": "$type",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L47"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_8_value",
-      "label": "$value",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L47"
-    },
-    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_primitive_spacing",
       "label": "spacing",
       "_origin": "ast",
@@ -76170,17 +76266,6 @@
       "norm_label": "0",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L40"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_1",
-      "label": "1",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "1",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L41"
     },
     {
       "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_10",
@@ -76205,17 +76290,6 @@
       "source_location": "L49"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_16",
-      "label": "16",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "16",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L50"
-    },
-    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_2",
       "label": "2",
       "_origin": "ast",
@@ -76225,17 +76299,6 @@
       "norm_label": "2",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L42"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_3",
-      "label": "3",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "3",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L43"
     },
     {
       "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_4",
@@ -76269,17 +76332,6 @@
       "norm_label": "6",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L46"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_8",
-      "label": "8",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "spacing",
-      "file_type": "code",
-      "norm_label": "8",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L47"
     },
     {
       "id": "agents_skills_brand_scripts_inject_brand_context",
@@ -82876,17 +82928,6 @@
       "source_location": "L10"
     },
     {
-      "id": "package_scripts_test_security",
-      "label": "test:security",
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "scripts",
-      "file_type": "code",
-      "norm_label": "test:security",
-      "source_file": "package.json",
-      "source_location": "L16"
-    },
-    {
       "id": "package_scripts_test_simulate",
       "label": "test:simulate",
       "_origin": "ast",
@@ -85809,17 +85850,6 @@
       "source_location": "L65"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_fontsize_sm",
-      "label": "sm",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "sm",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L54"
-    },
-    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_full_type",
       "label": "$type",
       "_origin": "ast",
@@ -85862,28 +85892,6 @@
       "norm_label": "$value",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L66"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_none_type",
-      "label": "$type",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L63"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_none_value",
-      "label": "$value",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L63"
     },
     {
       "id": "agents_skills_design_system_templates_design_tokens_starter_primitive",
@@ -85952,28 +85960,6 @@
       "source_location": "L66"
     },
     {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_radius_none",
-      "label": "none",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "none",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L63"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_radius_sm",
-      "label": "sm",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "sm",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L64"
-    },
-    {
       "id": "agents_skills_design_system_templates_design_tokens_starter_shadow_default",
       "label": "default",
       "_origin": "ast",
@@ -85994,50 +85980,6 @@
       "norm_label": "md",
       "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
       "source_location": "L75"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_shadow_none",
-      "label": "none",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "none",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L72"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_shadow_sm",
-      "label": "sm",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "sm",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L73"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_sm_type",
-      "label": "$type",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "$type",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L54"
-    },
-    {
-      "id": "agents_skills_design_system_templates_design_tokens_starter_sm_value",
-      "label": "$value",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "radius",
-      "file_type": "code",
-      "norm_label": "$value",
-      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
-      "source_location": "L54"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_rationale_154",
@@ -87768,7 +87710,7 @@
       "file_type": "code",
       "norm_label": "serve",
       "source_file": "package.json",
-      "source_location": "L30"
+      "source_location": "L29"
     },
     {
       "id": "serve",
@@ -87779,7 +87721,7 @@
       "file_type": "concept",
       "norm_label": "serve",
       "source_file": "package.json",
-      "source_location": "L30"
+      "source_location": "L29"
     },
     {
       "id": "drizzle_config",
@@ -88354,160 +88296,220 @@
       "source_location": "L1"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_core_principles",
-      "label": "Core Principles",
+      "id": "agents_skills_ad_creative_skill_bulk_csv_output",
+      "label": "Bulk CSV Output",
       "_origin": "ast",
       "community": 697,
-      "community_name": "Core Principles",
+      "community_name": "Output Formats",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "core principles",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L41"
+      "norm_label": "bulk csv output",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L309"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_sales_uses_what_sales_trusts",
-      "label": "Sales Uses What Sales Trusts",
+      "id": "agents_skills_ad_creative_skill_creative_review_page_client_stakeholder_approval",
+      "label": "Creative Review Page (client / stakeholder approval)",
       "_origin": "ast",
       "community": 697,
-      "community_name": "Core Principles",
+      "community_name": "Output Formats",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "sales uses what sales trusts",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L43"
+      "norm_label": "creative review page (client / stakeholder approval)",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L331"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_scannable_over_comprehensive",
-      "label": "Scannable Over Comprehensive",
+      "id": "agents_skills_ad_creative_skill_iteration_report",
+      "label": "Iteration Report",
       "_origin": "ast",
       "community": 697,
-      "community_name": "Core Principles",
+      "community_name": "Output Formats",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "scannable over comprehensive",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
+      "norm_label": "iteration report",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L335"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_output_formats",
+      "label": "Output Formats",
+      "_origin": "ast",
+      "community": 697,
+      "community_name": "Output Formats",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "output formats",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L289"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_standard_output",
+      "label": "Standard Output",
+      "_origin": "ast",
+      "community": 697,
+      "community_name": "Output Formats",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "standard output",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L291"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_static_batch_output_mode_3",
+      "label": "Static Batch Output (Mode 3)",
+      "_origin": "ast",
+      "community": 697,
+      "community_name": "Output Formats",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "static batch output (mode 3)",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L318"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_google_ads_responsive_search_ads",
+      "label": "Google Ads (Responsive Search Ads)",
+      "_origin": "ast",
+      "community": 698,
+      "community_name": "Platform Specs",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "google ads (responsive search ads)",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L101"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_linkedin_ads",
+      "label": "LinkedIn Ads",
+      "_origin": "ast",
+      "community": 698,
+      "community_name": "Platform Specs",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "linkedin ads",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L125"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_meta_ads_facebook_instagram",
+      "label": "Meta Ads (Facebook/Instagram)",
+      "_origin": "ast",
+      "community": 698,
+      "community_name": "Platform Specs",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "meta ads (facebook/instagram)",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L116"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_platform_specs",
+      "label": "Platform Specs",
+      "_origin": "ast",
+      "community": 698,
+      "community_name": "Platform Specs",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "platform specs",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L97"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_tiktok_ads",
+      "label": "TikTok Ads",
+      "_origin": "ast",
+      "community": 698,
+      "community_name": "Platform Specs",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "tiktok ads",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L133"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_twitter_x_ads",
+      "label": "Twitter/X Ads",
+      "_origin": "ast",
+      "community": 698,
+      "community_name": "Platform Specs",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "twitter/x ads",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L140"
+    },
+    {
+      "id": "agents_skills_ads_references_conversion_tracking_enhanced_conversions",
+      "label": "Enhanced Conversions",
+      "_origin": "ast",
+      "community": 699,
+      "community_name": "Google Ads",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "enhanced conversions",
+      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
+      "source_location": "L79"
+    },
+    {
+      "id": "agents_skills_ads_references_conversion_tracking_fire_conversion_events",
+      "label": "Fire conversion events",
+      "_origin": "ast",
+      "community": 699,
+      "community_name": "Google Ads",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "fire conversion events",
+      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
+      "source_location": "L60"
+    },
+    {
+      "id": "agents_skills_ads_references_conversion_tracking_google_ads",
+      "label": "Google Ads",
+      "_origin": "ast",
+      "community": 699,
+      "community_name": "Google Ads",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "google ads",
+      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
+      "source_location": "L31"
+    },
+    {
+      "id": "agents_skills_ads_references_conversion_tracking_google_tag_manager_alternative",
+      "label": "Google Tag Manager alternative",
+      "_origin": "ast",
+      "community": 699,
+      "community_name": "Google Ads",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "google tag manager alternative",
+      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
+      "source_location": "L90"
+    },
+    {
+      "id": "agents_skills_ads_references_conversion_tracking_install_the_google_tag",
+      "label": "Install the Google tag",
+      "_origin": "ast",
+      "community": 699,
+      "community_name": "Google Ads",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "install the google tag",
+      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
+      "source_location": "L33"
+    },
+    {
+      "id": "agents_skills_ads_references_conversion_tracking_set_up_conversion_actions",
+      "label": "Set up conversion actions",
+      "_origin": "ast",
+      "community": 699,
+      "community_name": "Google Ads",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "set up conversion actions",
+      "source_file": ".agents/skills/ads/references/conversion-tracking.md",
       "source_location": "L49"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_situation_specific_not_generic",
-      "label": "Situation-Specific, Not Generic",
-      "_origin": "ast",
-      "community": 697,
-      "community_name": "Core Principles",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "situation-specific, not generic",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L46"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_tie_back_to_business_outcomes",
-      "label": "Tie Back to Business Outcomes",
-      "_origin": "ast",
-      "community": 697,
-      "community_name": "Core Principles",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "tie back to business outcomes",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L52"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_calculator_design",
-      "label": "Calculator Design",
-      "_origin": "ast",
-      "community": 698,
-      "community_name": "ROI Calculators & Value Props",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "calculator design",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L152"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_implementation_options",
-      "label": "Implementation Options",
-      "_origin": "ast",
-      "community": 698,
-      "community_name": "ROI Calculators & Value Props",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "implementation options",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L179"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_roi_calculators_value_props",
-      "label": "ROI Calculators & Value Props",
-      "_origin": "ast",
-      "community": 698,
-      "community_name": "ROI Calculators & Value Props",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "roi calculators & value props",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L150"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_value_prop_by_persona",
-      "label": "Value Prop by Persona",
-      "_origin": "ast",
-      "community": 698,
-      "community_name": "ROI Calculators & Value Props",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "value prop by persona",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L170"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_case_study_briefs_sales_format",
-      "label": "Case Study Briefs (Sales Format)",
-      "_origin": "ast",
-      "community": 699,
-      "community_name": "Case Study Briefs (Sales Format)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "case study briefs (sales format)",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L216"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_how_sales_case_studies_differ",
-      "label": "How Sales Case Studies Differ",
-      "_origin": "ast",
-      "community": 699,
-      "community_name": "Case Study Briefs (Sales Format)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "how sales case studies differ",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L218"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_organization",
-      "label": "Organization",
-      "_origin": "ast",
-      "community": 699,
-      "community_name": "Case Study Briefs (Sales Format)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "organization",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L231"
-    },
-    {
-      "id": "agents_skills_sales_enablement_skill_structure_222",
-      "label": "Structure",
-      "_origin": "ast",
-      "community": 699,
-      "community_name": "Case Study Briefs (Sales Format)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "structure",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L222"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_core",
@@ -88636,192 +88638,267 @@
       "source_location": "L21"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_demo_scripts_talk_tracks",
-      "label": "Demo Scripts & Talk Tracks",
+      "id": "agents_skills_ad_creative_skill_generating_ad_copy",
+      "label": "Generating Ad Copy",
       "_origin": "ast",
       "community": 700,
-      "community_name": "Demo Scripts & Talk Tracks",
+      "community_name": "Generating Ad Copy",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "demo scripts & talk tracks",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L187"
+      "norm_label": "generating ad copy",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L181"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_key_principles",
-      "label": "Key Principles",
+      "id": "agents_skills_ad_creative_skill_step_1_define_your_angles",
+      "label": "Step 1: Define Your Angles",
       "_origin": "ast",
       "community": 700,
-      "community_name": "Demo Scripts & Talk Tracks",
+      "community_name": "Generating Ad Copy",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "key principles",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L206"
+      "norm_label": "step 1: define your angles",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L183"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_script_structure",
-      "label": "Script Structure",
+      "id": "agents_skills_ad_creative_skill_step_2_generate_variations_per_angle",
+      "label": "Step 2: Generate Variations per Angle",
       "_origin": "ast",
       "community": 700,
-      "community_name": "Demo Scripts & Talk Tracks",
+      "community_name": "Generating Ad Copy",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "script structure",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L189"
+      "norm_label": "step 2: generate variations per angle",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L200"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_talk_track_types",
-      "label": "Talk Track Types",
+      "id": "agents_skills_ad_creative_skill_step_3_validate_against_specs",
+      "label": "Step 3: Validate Against Specs",
       "_origin": "ast",
       "community": 700,
-      "community_name": "Demo Scripts & Talk Tracks",
+      "community_name": "Generating Ad Copy",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "talk track types",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L197"
+      "norm_label": "step 3: validate against specs",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L208"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_design_principles",
-      "label": "Design Principles",
+      "id": "agents_skills_ad_creative_skill_step_4_organize_for_upload",
+      "label": "Step 4: Organize for Upload",
+      "_origin": "ast",
+      "community": 700,
+      "community_name": "Generating Ad Copy",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "step 4: organize for upload",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L212"
+    },
+    {
+      "id": "agents_skills_ad_creative_skill_how_this_skill_works",
+      "label": "How This Skill Works",
       "_origin": "ast",
       "community": 701,
-      "community_name": "One-Pagers / Leave-Behinds",
+      "community_name": "How This Skill Works",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "design principles",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L107"
+      "norm_label": "how this skill works",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L47"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_one_pagers_leave_behinds",
-      "label": "One-Pagers / Leave-Behinds",
+      "id": "agents_skills_ad_creative_skill_mode_1_generate_from_scratch",
+      "label": "Mode 1: Generate from Scratch",
       "_origin": "ast",
       "community": 701,
-      "community_name": "One-Pagers / Leave-Behinds",
+      "community_name": "How This Skill Works",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "one-pagers / leave-behinds",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L91"
+      "norm_label": "mode 1: generate from scratch",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L51"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_structure",
-      "label": "Structure",
+      "id": "agents_skills_ad_creative_skill_mode_2_iterate_from_performance_data",
+      "label": "Mode 2: Iterate from Performance Data",
       "_origin": "ast",
       "community": 701,
-      "community_name": "One-Pagers / Leave-Behinds",
+      "community_name": "How This Skill Works",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "structure",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L99"
+      "norm_label": "mode 2: iterate from performance data",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L54"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_when_to_use",
-      "label": "When to Use",
+      "id": "agents_skills_ad_creative_skill_mode_3_scaled_static_batches_grounded",
+      "label": "Mode 3: Scaled Static Batches (Grounded)",
       "_origin": "ast",
       "community": 701,
-      "community_name": "One-Pagers / Leave-Behinds",
+      "community_name": "How This Skill Works",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "when to use",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L93"
+      "norm_label": "mode 3: scaled static batches (grounded)",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L63"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_keeping_it_living",
-      "label": "Keeping It Living",
+      "id": "agents_skills_ad_creative_skill_mode_4_creative_strategy_loop",
+      "label": "Mode 4: Creative Strategy Loop",
+      "_origin": "ast",
+      "community": 701,
+      "community_name": "How This Skill Works",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "mode 4: creative strategy loop",
+      "source_file": ".agents/skills/ad-creative/SKILL.md",
+      "source_location": "L66"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_fontsize_sm",
+      "label": "sm",
       "_origin": "ast",
       "community": 702,
-      "community_name": "Sales Playbooks",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "keeping it living",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L283"
+      "community_name": "sm",
+      "file_type": "code",
+      "norm_label": "sm",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L54"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_sales_playbooks",
-      "label": "Sales Playbooks",
+      "id": "agents_skills_design_system_templates_design_tokens_starter_radius_sm",
+      "label": "sm",
       "_origin": "ast",
       "community": 702,
-      "community_name": "Sales Playbooks",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "sales playbooks",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L265"
+      "community_name": "sm",
+      "file_type": "code",
+      "norm_label": "sm",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L64"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_what_goes_in_a_playbook",
-      "label": "What Goes in a Playbook",
+      "id": "agents_skills_design_system_templates_design_tokens_starter_shadow_sm",
+      "label": "sm",
       "_origin": "ast",
       "community": 702,
-      "community_name": "Sales Playbooks",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "what goes in a playbook",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L267"
+      "community_name": "sm",
+      "file_type": "code",
+      "norm_label": "sm",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L73"
     },
     {
-      "id": "agents_skills_sales_enablement_skill_when_to_build",
-      "label": "When to Build",
+      "id": "agents_skills_design_system_templates_design_tokens_starter_sm_type",
+      "label": "$type",
       "_origin": "ast",
       "community": 702,
-      "community_name": "Sales Playbooks",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "when to build",
-      "source_file": ".agents/skills/sales-enablement/SKILL.md",
-      "source_location": "L277"
+      "community_name": "sm",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L54"
     },
     {
-      "id": "package_dependencies_tanstack_react_router",
-      "label": "@tanstack/react-router",
+      "id": "agents_skills_design_system_templates_design_tokens_starter_sm_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 702,
+      "community_name": "sm",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L54"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_fontsize_xl",
+      "label": "xl",
       "_origin": "ast",
       "community": 703,
-      "community_name": "@tanstack/react-router",
+      "community_name": "xl",
       "file_type": "code",
-      "norm_label": "@tanstack/react-router",
-      "source_file": "package.json",
-      "source_location": "L21"
+      "norm_label": "xl",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L57"
     },
     {
-      "id": "tanstack_react_router",
-      "label": "@tanstack/react-router",
+      "id": "agents_skills_design_system_templates_design_tokens_starter_radius_xl",
+      "label": "xl",
       "_origin": "ast",
       "community": 703,
-      "community_name": "@tanstack/react-router",
-      "file_type": "concept",
-      "norm_label": "@tanstack/react-router",
-      "source_file": "package.json",
-      "source_location": "L21"
-    },
-    {
-      "id": "package_dependencies_tanstack_react_start",
-      "label": "@tanstack/react-start",
-      "_origin": "ast",
-      "community": 704,
-      "community_name": "@tanstack/react-start",
+      "community_name": "xl",
       "file_type": "code",
-      "norm_label": "@tanstack/react-start",
-      "source_file": "package.json",
-      "source_location": "L22"
+      "norm_label": "xl",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L68"
     },
     {
-      "id": "tanstack_react_start",
-      "label": "@tanstack/react-start",
+      "id": "agents_skills_design_system_templates_design_tokens_starter_xl_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 703,
+      "community_name": "xl",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_xl_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 703,
+      "community_name": "xl",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_none_type",
+      "label": "$type",
       "_origin": "ast",
       "community": 704,
-      "community_name": "@tanstack/react-start",
-      "file_type": "concept",
-      "norm_label": "@tanstack/react-start",
-      "source_file": "package.json",
-      "source_location": "L22"
+      "community_name": "none",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L63"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_none_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "none",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L63"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_radius_none",
+      "label": "none",
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "none",
+      "file_type": "code",
+      "norm_label": "none",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L63"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_shadow_none",
+      "label": "none",
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "none",
+      "file_type": "code",
+      "norm_label": "none",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L72"
     },
     {
       "id": "agents_skills_social_skill_analytics_optimization",
@@ -89148,18 +89225,6 @@
       "source_location": "L12"
     },
     {
-      "id": "agents_skills_ad_creative_skill_bulk_csv_output",
-      "label": "Bulk CSV Output",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "bulk csv output",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L309"
-    },
-    {
       "id": "agents_skills_ad_creative_skill_common_mistakes",
       "label": "Common Mistakes",
       "_origin": "ast",
@@ -89170,18 +89235,6 @@
       "norm_label": "common mistakes",
       "source_file": ".agents/skills/ad-creative/SKILL.md",
       "source_location": "L377"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_creative_review_page_client_stakeholder_approval",
-      "label": "Creative Review Page (client / stakeholder approval)",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "creative review page (client / stakeholder approval)",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L331"
     },
     {
       "id": "agents_skills_ad_creative_skill_descriptions_that_convert",
@@ -89196,18 +89249,6 @@
       "source_location": "L279"
     },
     {
-      "id": "agents_skills_ad_creative_skill_generating_ad_copy",
-      "label": "Generating Ad Copy",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "generating ad copy",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L181"
-    },
-    {
       "id": "agents_skills_ad_creative_skill_generating_ad_visuals",
       "label": "Generating Ad Visuals",
       "_origin": "ast",
@@ -89218,18 +89259,6 @@
       "norm_label": "generating ad visuals",
       "source_file": ".agents/skills/ad-creative/SKILL.md",
       "source_location": "L152"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_google_ads_responsive_search_ads",
-      "label": "Google Ads (Responsive Search Ads)",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "google ads (responsive search ads)",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L101"
     },
     {
       "id": "agents_skills_ad_creative_skill_grounded_inputs",
@@ -89256,18 +89285,6 @@
       "source_location": "L265"
     },
     {
-      "id": "agents_skills_ad_creative_skill_how_this_skill_works",
-      "label": "How This Skill Works",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "how this skill works",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L47"
-    },
-    {
       "id": "agents_skills_ad_creative_skill_iterating_from_performance_data",
       "label": "Iterating from Performance Data",
       "_origin": "ast",
@@ -89278,114 +89295,6 @@
       "norm_label": "iterating from performance data",
       "source_file": ".agents/skills/ad-creative/SKILL.md",
       "source_location": "L218"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_iteration_report",
-      "label": "Iteration Report",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "iteration report",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L335"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_linkedin_ads",
-      "label": "LinkedIn Ads",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "linkedin ads",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L125"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_meta_ads_facebook_instagram",
-      "label": "Meta Ads (Facebook/Instagram)",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "meta ads (facebook/instagram)",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L116"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_mode_1_generate_from_scratch",
-      "label": "Mode 1: Generate from Scratch",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "mode 1: generate from scratch",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L51"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_mode_2_iterate_from_performance_data",
-      "label": "Mode 2: Iterate from Performance Data",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "mode 2: iterate from performance data",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L54"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_mode_3_scaled_static_batches_grounded",
-      "label": "Mode 3: Scaled Static Batches (Grounded)",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "mode 3: scaled static batches (grounded)",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L63"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_mode_4_creative_strategy_loop",
-      "label": "Mode 4: Creative Strategy Loop",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "mode 4: creative strategy loop",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L66"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_output_formats",
-      "label": "Output Formats",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "output formats",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L289"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_platform_specs",
-      "label": "Platform Specs",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "platform specs",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L97"
     },
     {
       "id": "agents_skills_ad_creative_skill_related_skills",
@@ -89400,30 +89309,6 @@
       "source_location": "L417"
     },
     {
-      "id": "agents_skills_ad_creative_skill_standard_output",
-      "label": "Standard Output",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "standard output",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L291"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_static_batch_output_mode_3",
-      "label": "Static Batch Output (Mode 3)",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "static batch output (mode 3)",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L318"
-    },
-    {
       "id": "agents_skills_ad_creative_skill_step_1_analyze_winners",
       "label": "Step 1: Analyze Winners",
       "_origin": "ast",
@@ -89434,18 +89319,6 @@
       "norm_label": "step 1: analyze winners",
       "source_file": ".agents/skills/ad-creative/SKILL.md",
       "source_location": "L222"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_step_1_define_your_angles",
-      "label": "Step 1: Define Your Angles",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "step 1: define your angles",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L183"
     },
     {
       "id": "agents_skills_ad_creative_skill_step_2_analyze_losers",
@@ -89460,18 +89333,6 @@
       "source_location": "L231"
     },
     {
-      "id": "agents_skills_ad_creative_skill_step_2_generate_variations_per_angle",
-      "label": "Step 2: Generate Variations per Angle",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "step 2: generate variations per angle",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L200"
-    },
-    {
       "id": "agents_skills_ad_creative_skill_step_3_generate_new_variations",
       "label": "Step 3: Generate New Variations",
       "_origin": "ast",
@@ -89482,18 +89343,6 @@
       "norm_label": "step 3: generate new variations",
       "source_file": ".agents/skills/ad-creative/SKILL.md",
       "source_location": "L238"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_step_3_validate_against_specs",
-      "label": "Step 3: Validate Against Specs",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "step 3: validate against specs",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L208"
     },
     {
       "id": "agents_skills_ad_creative_skill_step_4_document_the_iteration",
@@ -89508,30 +89357,6 @@
       "source_location": "L246"
     },
     {
-      "id": "agents_skills_ad_creative_skill_step_4_organize_for_upload",
-      "label": "Step 4: Organize for Upload",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "step 4: organize for upload",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L212"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_tiktok_ads",
-      "label": "TikTok Ads",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "tiktok ads",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L133"
-    },
-    {
       "id": "agents_skills_ad_creative_skill_tool_integrations",
       "label": "Tool Integrations",
       "_origin": "ast",
@@ -89542,18 +89367,6 @@
       "norm_label": "tool integrations",
       "source_file": ".agents/skills/ad-creative/SKILL.md",
       "source_location": "L392"
-    },
-    {
-      "id": "agents_skills_ad_creative_skill_twitter_x_ads",
-      "label": "Twitter/X Ads",
-      "_origin": "ast",
-      "community": 71,
-      "community_name": "Ad Creative",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "twitter/x ads",
-      "source_file": ".agents/skills/ad-creative/SKILL.md",
-      "source_location": "L140"
     },
     {
       "id": "agents_skills_ad_creative_skill_workflow_pull_data_analyze_generate",
@@ -89578,6 +89391,182 @@
       "norm_label": "writing quality standards",
       "source_file": ".agents/skills/ad-creative/SKILL.md",
       "source_location": "L263"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_16_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 710,
+      "community_name": "16",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_16_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 710,
+      "community_name": "16",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_16",
+      "label": "16",
+      "_origin": "ast",
+      "community": 710,
+      "community_name": "16",
+      "file_type": "code",
+      "norm_label": "16",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_1_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 711,
+      "community_name": "1",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_1_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 711,
+      "community_name": "1",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_1",
+      "label": "1",
+      "_origin": "ast",
+      "community": 711,
+      "community_name": "1",
+      "file_type": "code",
+      "norm_label": "1",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_3_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 712,
+      "community_name": "3",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_3_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 712,
+      "community_name": "3",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_3",
+      "label": "3",
+      "_origin": "ast",
+      "community": 712,
+      "community_name": "3",
+      "file_type": "code",
+      "norm_label": "3",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_8_type",
+      "label": "$type",
+      "_origin": "ast",
+      "community": 713,
+      "community_name": "8",
+      "file_type": "code",
+      "norm_label": "$type",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_8_value",
+      "label": "$value",
+      "_origin": "ast",
+      "community": 713,
+      "community_name": "8",
+      "file_type": "code",
+      "norm_label": "$value",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "agents_skills_design_system_templates_design_tokens_starter_spacing_8",
+      "label": "8",
+      "_origin": "ast",
+      "community": 713,
+      "community_name": "8",
+      "file_type": "code",
+      "norm_label": "8",
+      "source_file": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "package_dependencies_drizzle_orm",
+      "label": "drizzle-orm",
+      "_origin": "ast",
+      "community": 714,
+      "community_name": "drizzle-orm",
+      "file_type": "code",
+      "norm_label": "drizzle-orm",
+      "source_file": "package.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "drizzle_orm",
+      "label": "drizzle-orm",
+      "_origin": "ast",
+      "community": 714,
+      "community_name": "drizzle-orm",
+      "file_type": "concept",
+      "norm_label": "drizzle-orm",
+      "source_file": "package.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "package_dependencies_tailwind_merge",
+      "label": "tailwind-merge",
+      "_origin": "ast",
+      "community": 715,
+      "community_name": "tailwind-merge",
+      "file_type": "code",
+      "norm_label": "tailwind-merge",
+      "source_file": "package.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "tailwind_merge",
+      "label": "tailwind-merge",
+      "_origin": "ast",
+      "community": 715,
+      "community_name": "tailwind-merge",
+      "file_type": "concept",
+      "norm_label": "tailwind-merge",
+      "source_file": "package.json",
+      "source_location": "L30"
     },
     {
       "id": "docs_codebase_audit_5_full_postgresql_schema_dump",
@@ -107120,7 +107109,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -107132,7 +107121,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -107144,7 +107133,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -107156,7 +107145,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -107168,7 +107157,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L28",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -107180,7 +107169,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L29",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -107192,7 +107181,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L30",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -107204,7 +107193,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L31",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -107216,7 +107205,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -107228,7 +107217,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -107240,7 +107229,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -107252,7 +107241,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -107264,7 +107253,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -107276,7 +107265,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -107288,7 +107277,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -107300,7 +107289,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
@@ -107312,7 +107301,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -107324,7 +107313,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -107336,7 +107325,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -107348,7 +107337,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -107360,7 +107349,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -107372,7 +107361,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L43",
+      "source_location": "L42",
       "weight": 1.0
     },
     {
@@ -107384,7 +107373,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L44",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -107396,7 +107385,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -185119,7 +185108,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -185152,7 +185141,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -185196,7 +185185,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -185207,7 +185196,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -185218,7 +185207,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -185229,7 +185218,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -185240,7 +185229,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -185251,7 +185240,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -185262,7 +185251,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -185273,7 +185262,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -185284,7 +185273,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -185295,7 +185284,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L28",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -185306,7 +185295,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L29",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -185317,7 +185306,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L30",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -185328,7 +185317,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L31",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -185339,7 +185328,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -185350,7 +185339,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -185361,7 +185350,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -185372,7 +185361,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -185383,7 +185372,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -185394,7 +185383,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -185405,7 +185394,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -185416,7 +185405,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -185427,7 +185416,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
@@ -185438,7 +185427,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L43",
+      "source_location": "L42",
       "weight": 1.0
     },
     {
@@ -185449,7 +185438,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L44",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -185516,17 +185505,6 @@
       "confidence_score": 1.0,
       "source_file": "package.json",
       "source_location": "L15",
-      "weight": 1.0
-    },
-    {
-      "source": "package_scripts",
-      "target": "package_scripts_test_security",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "package.json",
-      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -197394,5 +197372,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d3f8a4119c5a73fdf7c61ee651c56c60581310cc"
+  "built_at_commit": "aab366293633ef351555d501f1050a1a24c2a6df"
 }
