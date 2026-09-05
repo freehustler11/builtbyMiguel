@@ -12,8 +12,7 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "node scripts/migrate.mjs",
     "db:studio": "drizzle-kit studio",
-    "test:simulate": "tsx scripts/simulate.ts",
-    "test:security": "tsx scripts/security-audit.ts"
+    "test:simulate": "tsx scripts/simulate.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.67.2",
