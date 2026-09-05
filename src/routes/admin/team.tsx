@@ -1029,12 +1029,12 @@ function AdminTeamPage() {
         </div>
       )}
 
-      {/* Revoke Confirmation Modal */}
+      {/* Archive / Revoke Confirmation Modal */}
       <ConfirmModal
         isOpen={!!employeeToDelete}
-        title="Revoke Team Member Access"
-        description={`Are you sure you want to revoke access for ${employeeToDelete?.name || employeeToDelete?.email}? This will delete their login credentials immediately.`}
-        confirmText="Yes, Revoke Access"
+        title="Archive Team Member Account"
+        description={`Are you sure you want to archive ${employeeToDelete?.name || employeeToDelete?.email}? Their login access will be immediately terminated, but past report authorship and activity history will be retained.`}
+        confirmText="Archive Account"
         cancelText="Cancel"
         variant="danger"
         isLoading={isSubmitting}

@@ -56,8 +56,32 @@ This document serves as the single source of truth for architectural standards, 
 - **Drizzle-Kit Migrations Inert / Obsolete**: The `drizzle/` directory has been removed. `drizzle-kit generate` migrations are **inert** and do not run in production. All CRM tables, foreign keys, and indexes must go through `scripts/migrate.mjs` exclusively.
 
 ### Database Conventions
-- **Soft Deletes**: `clients` and `users` use soft delete via `deleted_at` (`timestamptz`). Never hard delete. All queries must filter with `isNull(table.deletedAt)`.
+- **Soft Deletes**: `clients` and `users` use soft delete via `deleted_at` (`timestamptz`). Never hard delete. All queries must filter with `isNull(table.deletedAt)`. Active session checks and logins reject archived users immediately. Reports for archived clients survive and remain renderable via `leftJoin`. Un-archive / restore flows and "Archived Items" filter views are deliberate future follow-ups.
 - **Foreign Key Integrity**: `reports.client_id` uses `ON DELETE RESTRICT` to prevent cascade deletions.
-- **Report Immutability**: `reports.client_snapshot` (`jsonb`) freezes `businessName`, `name`, `websiteUrl`, `logoUrl`, `primaryColor`, `secondaryColor`, `isWhiteLabel`, `partnerName`, and `partnerLogoUrl` upon report creation and update.
-- **Report Periods**: Stored as UTC `timestamptz NOT NULL` in `reports.period_start` and `reports.period_end`. `report_month` text is preserved for UI display.
+- **Report Immutability**: `reports.client_snapshot` (`jsonb`) freezes `businessName`, `name`, `websiteUrl`, `logoUrl`, `primaryColor`, `secondaryColor`, `isWhiteLabel`, `partnerName`, and `partnerLogoUrl` upon report creation and update. Historical reports created prior to snapshot introduction have `client_snapshot = NULL` and render via the live client fallback path; their snapshots are deliberately NOT backfilled to preserve historical live-join rendering.
+- **Report Periods**: Stored as UTC `timestamptz NOT NULL` in `reports.period_start` and `reports.period_end`. `report_month` text is preserved for UI display. UTC is the strict system assumption for all period calculations; per-partner/client local timezones are a known future architectural decision.
+
+---
+
+## FUTURE API SEAM: AUTOMATED METRICS INGESTION
+
+### Metric Ingestion Gateway: `recordMonthlyMetrics`
+- Location: `app/server/crm.ts`
+- Purpose: Provides a single, canonical entry surface for writing monthly KPI metrics into the database.
+- Signature:
+  ```ts
+  export async function recordMonthlyMetrics(params: {
+    clientId: string
+    month: number
+    year: number
+    metrics: MonthlyMetricsInput
+    auth?: ActiveSession
+    isSystemSync?: boolean
+  }): Promise<MonthlyMetric>
+  ```
+- **Unified Ingestion Model**:
+  - The manual Monthly KPI Form (`saveMonthlyMetricsServerFn`) and future automated sync jobs (Google Search Console API, Google Analytics 4 Data API, Google Business Profile API OAuth sync) MUST call this identical function.
+  - Performs an idempotent upsert on `(client_id, month, year)` using `ON CONFLICT (client_id, month, year) DO UPDATE SET ...`.
+  - The database shape for `monthly_metrics` NEVER changes between manual human entry and automated API ingestion — automated workers simply populate the exact same fields (`gscClicks`, `gaSessions`, `gbpCalls`, etc.) without diverging storage models.
+
 

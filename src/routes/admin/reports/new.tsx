@@ -23,6 +23,8 @@ import {
   Zap,
   Search,
   FileSpreadsheet,
+  AlertCircle,
+  CheckCircle,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { ThemedNumberInput } from '../../../components/ThemedNumberInput'
@@ -34,10 +36,18 @@ import {
   updateReportServerFn,
   getReportByIdServerFn,
   getLatestReportForClientServerFn,
-  parseDecimalValue,
+  getReportPreflightDataServerFn,
   type QueryItem,
   type PageItem,
 } from '../../../server/reports'
+
+function parseDecimalValue(val: unknown): number {
+  if (val === null || val === undefined || val === '') return 0
+  if (typeof val === 'number') return isNaN(val) ? 0 : val
+  const cleaned = String(val).replace(/[^0-9.-]/g, '')
+  const num = parseFloat(cleaned)
+  return isNaN(num) ? 0 : num
+}
 
 interface NewReportSearch {
   clientId?: string
@@ -269,6 +279,38 @@ function AdminReportFormPage() {
   const [workCompleted, setWorkCompleted] = useState(existingReport?.workCompleted || '')
   const [nextSteps, setNextSteps] = useState(existingReport?.nextSteps || '')
 
+  // Pre-flight & CRM Metric Ingestion State
+  const [preflightData, setPreflightData] = useState<any>(null)
+  const [isCheckingPreflight, setIsCheckingPreflight] = useState(false)
+  const [autoFilledFields, setAutoFilledFields] = useState<Set<string>>(new Set())
+  const [manuallyEditedFields, setManuallyEditedFields] = useState<Set<string>>(new Set())
+
+  const markFieldEdited = (fieldName: string) => {
+    setManuallyEditedFields((prev) => {
+      const next = new Set(prev)
+      next.add(fieldName)
+      return next
+    })
+  }
+
+  const renderFieldBadge = (fieldName: string) => {
+    if (manuallyEditedFields.has(fieldName)) {
+      return (
+        <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 ml-1.5 inline-block">
+          Edited
+        </span>
+      )
+    }
+    if (autoFilledFields.has(fieldName)) {
+      return (
+        <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 ml-1.5 inline-block">
+          Auto
+        </span>
+      )
+    }
+    return null
+  }
+
   const [formError, setFormError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isPullingPrior, setIsPullingPrior] = useState(false)
@@ -295,6 +337,161 @@ function AdminReportFormPage() {
       setTitle(`${selectedClient.businessName} - Monthly Performance Report (${reportMonth})`)
     }
   }, [selectedClient, reportMonth, hasManuallyEditedTitle, isEditing])
+
+  // Pre-flight check & auto-population effect
+  useEffect(() => {
+    if (!selectedClientId || !reportMonth) return
+
+    let isMounted = true
+    setIsCheckingPreflight(true)
+
+    getReportPreflightDataServerFn({
+      data: {
+        clientId: selectedClientId,
+        reportMonth,
+      },
+    })
+      .then((data) => {
+        if (!isMounted) return
+        setPreflightData(data)
+        setIsCheckingPreflight(false)
+
+        // If ready and creating new report (not editing an existing snapshot), auto-populate metrics
+        if (data.ready && data.metrics && !isEditing) {
+          const filled = new Set<string>()
+
+          // GBP Current
+          if (data.metrics.gbpCalls !== null && data.metrics.gbpCalls !== undefined) {
+            setGbpCalls(data.metrics.gbpCalls)
+            filled.add('gbpCalls')
+          }
+          if (data.metrics.gbpDirections !== null && data.metrics.gbpDirections !== undefined) {
+            setGbpDirections(data.metrics.gbpDirections)
+            filled.add('gbpDirections')
+          }
+          if (data.metrics.gbpViews !== null && data.metrics.gbpViews !== undefined) {
+            setGbpViews(data.metrics.gbpViews)
+            filled.add('gbpViews')
+          }
+          if (data.metrics.gbpWebsiteClicks !== null && data.metrics.gbpWebsiteClicks !== undefined) {
+            setGbpWebsiteClicks(data.metrics.gbpWebsiteClicks)
+            filled.add('gbpWebsiteClicks')
+          }
+          if (data.metrics.gbpRating !== null && data.metrics.gbpRating !== undefined) {
+            setGbpRating(data.metrics.gbpRating)
+            filled.add('gbpRating')
+          }
+          if (data.metrics.gbpReviewsCount !== null && data.metrics.gbpReviewsCount !== undefined) {
+            setGbpReviewCount(data.metrics.gbpReviewsCount)
+            setGbpReviewsCount(data.metrics.gbpReviewsCount)
+            filled.add('gbpReviewCount')
+          }
+
+          // GSC Current
+          if (data.metrics.gscClicks !== null && data.metrics.gscClicks !== undefined) {
+            setGscClicks(data.metrics.gscClicks)
+            filled.add('gscClicks')
+          }
+          if (data.metrics.gscImpressions !== null && data.metrics.gscImpressions !== undefined) {
+            setGscImpressions(data.metrics.gscImpressions)
+            filled.add('gscImpressions')
+          }
+          if (data.metrics.gscPosition !== null && data.metrics.gscPosition !== undefined) {
+            setGscPosition(data.metrics.gscPosition)
+            filled.add('gscPosition')
+          }
+          if (data.metrics.gscCtr !== null && data.metrics.gscCtr !== undefined) {
+            setGscCtr(data.metrics.gscCtr)
+            filled.add('gscCtr')
+          }
+
+          // GA4 Current
+          if (data.metrics.gaUsers !== null && data.metrics.gaUsers !== undefined) {
+            setGaUsers(data.metrics.gaUsers)
+            filled.add('gaUsers')
+          }
+          if (data.metrics.gaNewUsers !== null && data.metrics.gaNewUsers !== undefined) {
+            setGaNewUsers(data.metrics.gaNewUsers)
+            filled.add('gaNewUsers')
+          }
+          if (data.metrics.gaSessions !== null && data.metrics.gaSessions !== undefined) {
+            setGaSessions(data.metrics.gaSessions)
+            filled.add('gaSessions')
+          }
+          if (data.metrics.gaViews !== null && data.metrics.gaViews !== undefined) {
+            setGaViews(data.metrics.gaViews)
+            filled.add('gaViews')
+          }
+
+          // Previous Month Metrics (Auto-populate comparison figures)
+          if (data.prevMetrics) {
+            if (data.prevMetrics.gbpCalls !== null && data.prevMetrics.gbpCalls !== undefined) {
+              setPrevGbpCalls(data.prevMetrics.gbpCalls)
+              filled.add('prevGbpCalls')
+            }
+            if (data.prevMetrics.gbpDirections !== null && data.prevMetrics.gbpDirections !== undefined) {
+              setPrevGbpDirections(data.prevMetrics.gbpDirections)
+              filled.add('prevGbpDirections')
+            }
+            if (data.prevMetrics.gbpViews !== null && data.prevMetrics.gbpViews !== undefined) {
+              setPrevGbpViews(data.prevMetrics.gbpViews)
+              filled.add('prevGbpViews')
+            }
+            if (data.prevMetrics.gbpWebsiteClicks !== null && data.prevMetrics.gbpWebsiteClicks !== undefined) {
+              setPrevGbpWebsiteClicks(data.prevMetrics.gbpWebsiteClicks)
+              filled.add('prevGbpWebsiteClicks')
+            }
+            if (data.prevMetrics.gbpReviewsCount !== null && data.prevMetrics.gbpReviewsCount !== undefined) {
+              setPrevGbpReviewsCount(data.prevMetrics.gbpReviewsCount)
+              filled.add('prevGbpReviewsCount')
+            }
+            if (data.prevMetrics.gscClicks !== null && data.prevMetrics.gscClicks !== undefined) {
+              setPrevGscClicks(data.prevMetrics.gscClicks)
+              filled.add('prevGscClicks')
+            }
+            if (data.prevMetrics.gscImpressions !== null && data.prevMetrics.gscImpressions !== undefined) {
+              setPrevGscImpressions(data.prevMetrics.gscImpressions)
+              filled.add('prevGscImpressions')
+            }
+            if (data.prevMetrics.gscPosition !== null && data.prevMetrics.gscPosition !== undefined) {
+              setPrevGscPosition(data.prevMetrics.gscPosition)
+              filled.add('prevGscPosition')
+            }
+            if (data.prevMetrics.gscCtr !== null && data.prevMetrics.gscCtr !== undefined) {
+              setPrevGscCtr(data.prevMetrics.gscCtr)
+              filled.add('prevGscCtr')
+            }
+            if (data.prevMetrics.gaUsers !== null && data.prevMetrics.gaUsers !== undefined) {
+              setPrevGaUsers(data.prevMetrics.gaUsers)
+              filled.add('prevGaUsers')
+            }
+            if (data.prevMetrics.gaNewUsers !== null && data.prevMetrics.gaNewUsers !== undefined) {
+              setPrevGaNewUsers(data.prevMetrics.gaNewUsers)
+              filled.add('prevGaNewUsers')
+            }
+            if (data.prevMetrics.gaSessions !== null && data.prevMetrics.gaSessions !== undefined) {
+              setPrevGaSessions(data.prevMetrics.gaSessions)
+              filled.add('prevGaSessions')
+            }
+            if (data.prevMetrics.gaViews !== null && data.prevMetrics.gaViews !== undefined) {
+              setPrevGaViews(data.prevMetrics.gaViews)
+              filled.add('prevGaViews')
+            }
+          }
+
+          setAutoFilledFields(filled)
+        }
+      })
+      .catch((err) => {
+        if (!isMounted) return
+        setIsCheckingPreflight(false)
+        console.error('Pre-flight check failed:', err)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [selectedClientId, reportMonth, isEditing])
 
   // Handler: Auto-pull prior month metrics from latest client report
   const handleAutoPullPriorMonth = async () => {
@@ -601,6 +798,65 @@ function AdminReportFormPage() {
           </div>
         )}
 
+        {/* PRE-FLIGHT CHECK WARNING BANNER */}
+        {preflightData && !preflightData.ready && preflightData.missing === 'monthly_metrics' && !isEditing && (
+          <div className="p-5 rounded-3xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800/80 shadow-xs space-y-3 animate-in fade-in duration-200">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 shrink-0 mt-0.5">
+                <AlertCircle className="w-5 h-5" />
+              </div>
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <h3 className="text-sm font-bold text-amber-900 dark:text-amber-200">
+                  Missing Monthly KPI Metrics
+                </h3>
+                <p className="text-xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
+                  Monthly KPI metrics for <strong>{reportMonth}</strong> have not been recorded for{' '}
+                  <strong>{preflightData.clientName || 'this client'}</strong>. Report generation is blocked to prevent producing reports of empty or zeroed figures.
+                </p>
+                <div className="pt-2 flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/admin/workspace"
+                    search={{ tab: 'metrics', client: selectedClientId }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-500 shadow-xs transition"
+                  >
+                    <span>Enter Monthly Metrics</span>
+                    <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+                  </Link>
+                  <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400">
+                    Takes ~60 seconds or import Semrush CSV
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PRE-FLIGHT SUCCESS DELIVERABLES PREVIEW */}
+        {preflightData && preflightData.ready && preflightData.deliverables && !isEditing && (
+          <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span className="font-semibold text-emerald-900 dark:text-emerald-200">
+                CRM Metrics & Deliverables Synchronized for {reportMonth}:
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
+              <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold">
+                {preflightData.deliverables.landingPages?.length || 0} Landing Pages
+              </span>
+              <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold">
+                {preflightData.deliverables.articles?.length || 0} Articles
+              </span>
+              <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold">
+                {preflightData.deliverables.tasks?.length || 0} Tasks Completed
+              </span>
+              <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold">
+                {preflightData.deliverables.nextKeywords?.length || 0} Target Keywords
+              </span>
+            </div>
+          </div>
+        )}
+
         {clients.length === 0 ? (
           <div className="p-8 text-center rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-3">
             <h3 className="text-base font-bold text-slate-900 dark:text-white">No Clients Found</h3>
@@ -773,25 +1029,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Calls (Current)
+                        Calls (Current) {renderFieldBadge('gbpCalls')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
                         min="0"
                         value={gbpCalls}
-                        onChange={(e) => setGbpCalls(e.target.value)}
+                        onChange={(e) => {
+                          setGbpCalls(e.target.value)
+                          markFieldEdited('gbpCalls')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGbpCalls')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
                         min="0"
                         value={prevGbpCalls}
-                        onChange={(e) => setPrevGbpCalls(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGbpCalls(e.target.value)
+                          markFieldEdited('prevGbpCalls')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -801,25 +1063,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Directions (Current)
+                        Directions (Current) {renderFieldBadge('gbpDirections')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
                         min="0"
                         value={gbpDirections}
-                        onChange={(e) => setGbpDirections(e.target.value)}
+                        onChange={(e) => {
+                          setGbpDirections(e.target.value)
+                          markFieldEdited('gbpDirections')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGbpDirections')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
                         min="0"
                         value={prevGbpDirections}
-                        onChange={(e) => setPrevGbpDirections(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGbpDirections(e.target.value)
+                          markFieldEdited('prevGbpDirections')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -829,7 +1097,7 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Website Clicks (Current)
+                        Website Clicks (Current) {renderFieldBadge('gbpWebsiteClicks')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
@@ -838,13 +1106,14 @@ function AdminReportFormPage() {
                         onChange={(e) => {
                           setGbpWebsiteClicks(e.target.value)
                           setGbpViews(e.target.value)
+                          markFieldEdited('gbpWebsiteClicks')
                         }}
                         inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGbpWebsiteClicks')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
@@ -853,6 +1122,7 @@ function AdminReportFormPage() {
                         onChange={(e) => {
                           setPrevGbpWebsiteClicks(e.target.value)
                           setPrevGbpViews(e.target.value)
+                          markFieldEdited('prevGbpWebsiteClicks')
                         }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
@@ -863,7 +1133,7 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Reviews (Current)
+                        Reviews (Current) {renderFieldBadge('gbpReviewsCount')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
@@ -872,19 +1142,23 @@ function AdminReportFormPage() {
                         onChange={(e) => {
                           setGbpReviewsCount(e.target.value)
                           setGbpReviewCount(e.target.value)
+                          markFieldEdited('gbpReviewsCount')
                         }}
                         inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGbpReviewsCount')}
                       </label>
                       <ThemedNumberInput
                         theme="blue"
                         min="0"
                         value={prevGbpReviewsCount}
-                        onChange={(e) => setPrevGbpReviewsCount(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGbpReviewsCount(e.target.value)
+                          markFieldEdited('prevGbpReviewsCount')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -902,25 +1176,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Clicks (Current)
+                        Clicks (Current) {renderFieldBadge('gscClicks')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
                         min="0"
                         value={gscClicks}
-                        onChange={(e) => setGscClicks(e.target.value)}
+                        onChange={(e) => {
+                          setGscClicks(e.target.value)
+                          markFieldEdited('gscClicks')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGscClicks')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
                         min="0"
                         value={prevGscClicks}
-                        onChange={(e) => setPrevGscClicks(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGscClicks(e.target.value)
+                          markFieldEdited('prevGscClicks')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -930,25 +1210,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Impr. (Current)
+                        Impr. (Current) {renderFieldBadge('gscImpressions')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
                         min="0"
                         value={gscImpressions}
-                        onChange={(e) => setGscImpressions(e.target.value)}
+                        onChange={(e) => {
+                          setGscImpressions(e.target.value)
+                          markFieldEdited('gscImpressions')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGscImpressions')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
                         min="0"
                         value={prevGscImpressions}
-                        onChange={(e) => setPrevGscImpressions(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGscImpressions(e.target.value)
+                          markFieldEdited('prevGscImpressions')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -958,27 +1244,33 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Avg Pos (Current)
+                        Avg Pos (Current) {renderFieldBadge('gscPosition')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
                         step="0.1"
                         min="0"
                         value={gscPosition}
-                        onChange={(e) => setGscPosition(e.target.value)}
+                        onChange={(e) => {
+                          setGscPosition(e.target.value)
+                          markFieldEdited('gscPosition')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGscPosition')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
                         step="0.1"
                         min="0"
                         value={prevGscPosition}
-                        onChange={(e) => setPrevGscPosition(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGscPosition(e.target.value)
+                          markFieldEdited('prevGscPosition')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -988,7 +1280,7 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        CTR % (Current)
+                        CTR % (Current) {renderFieldBadge('gscCtr')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
@@ -996,13 +1288,16 @@ function AdminReportFormPage() {
                         min="0"
                         placeholder="e.g. 2.6"
                         value={gscCtr}
-                        onChange={(e) => setGscCtr(e.target.value)}
+                        onChange={(e) => {
+                          setGscCtr(e.target.value)
+                          markFieldEdited('gscCtr')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGscCtr')}
                       </label>
                       <ThemedNumberInput
                         theme="emerald"
@@ -1010,7 +1305,10 @@ function AdminReportFormPage() {
                         min="0"
                         placeholder="e.g. 2.2"
                         value={prevGscCtr}
-                        onChange={(e) => setPrevGscCtr(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGscCtr(e.target.value)
+                          markFieldEdited('prevGscCtr')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -1028,25 +1326,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Total Users (Current)
+                        Total Users (Current) {renderFieldBadge('gaUsers')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={gaUsers}
-                        onChange={(e) => setGaUsers(e.target.value)}
+                        onChange={(e) => {
+                          setGaUsers(e.target.value)
+                          markFieldEdited('gaUsers')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block" title="Total Users (Prior Month)">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGaUsers')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={prevGaUsers}
-                        onChange={(e) => setPrevGaUsers(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGaUsers(e.target.value)
+                          markFieldEdited('prevGaUsers')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -1056,25 +1360,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Sessions (Current)
+                        Sessions (Current) {renderFieldBadge('gaSessions')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={gaSessions}
-                        onChange={(e) => setGaSessions(e.target.value)}
+                        onChange={(e) => {
+                          setGaSessions(e.target.value)
+                          markFieldEdited('gaSessions')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGaSessions')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={prevGaSessions}
-                        onChange={(e) => setPrevGaSessions(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGaSessions(e.target.value)
+                          markFieldEdited('prevGaSessions')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -1084,25 +1394,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Views (Current)
+                        Views (Current) {renderFieldBadge('gaViews')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={gaViews}
-                        onChange={(e) => setGaViews(e.target.value)}
+                        onChange={(e) => {
+                          setGaViews(e.target.value)
+                          markFieldEdited('gaViews')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGaViews')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={prevGaViews}
-                        onChange={(e) => setPrevGaViews(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGaViews(e.target.value)
+                          markFieldEdited('prevGaViews')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -1112,25 +1428,31 @@ function AdminReportFormPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        New Users (Current)
+                        New Users (Current) {renderFieldBadge('gaNewUsers')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={gaNewUsers}
-                        onChange={(e) => setGaNewUsers(e.target.value)}
+                        onChange={(e) => {
+                          setGaNewUsers(e.target.value)
+                          markFieldEdited('gaNewUsers')
+                        }}
                         inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month
+                        Prior Month {renderFieldBadge('prevGaNewUsers')}
                       </label>
                       <ThemedNumberInput
                         theme="indigo"
                         min="0"
                         value={prevGaNewUsers}
-                        onChange={(e) => setPrevGaNewUsers(e.target.value)}
+                        onChange={(e) => {
+                          setPrevGaNewUsers(e.target.value)
+                          markFieldEdited('prevGaNewUsers')
+                        }}
                         inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
                       />
                     </div>
@@ -1422,10 +1744,16 @@ function AdminReportFormPage() {
               </Link>
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-sm transition disabled:opacity-50 cursor-pointer"
+                disabled={isSubmitting || Boolean(preflightData && !preflightData.ready && !isEditing)}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-sm transition disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                title={preflightData && !preflightData.ready && !isEditing ? 'Monthly KPI metrics must be recorded first' : undefined}
               >
-                {isSubmitting ? (
+                {preflightData && !preflightData.ready && !isEditing ? (
+                  <>
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Monthly Metrics Required</span>
+                  </>
+                ) : isSubmitting ? (
                   <>
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                     <span>{isEditing ? 'Updating Report...' : 'Generating Report...'}</span>

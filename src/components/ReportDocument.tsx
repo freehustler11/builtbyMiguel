@@ -23,8 +23,11 @@ import {
   Sparkles,
   MapPin,
   Compass,
+  FileText,
+  ExternalLink,
+  Bookmark,
 } from 'lucide-react'
-import type { Report, Client } from '../db/schema'
+import type { Report, Client, DeliverablesSnapshot } from '../db/schema'
 import type { DisplayOptions, QueryItem, PageItem } from '../server/reports'
 
 interface ReportDocumentProps {
@@ -129,7 +132,7 @@ function getMoMPositionChange(
 }
 
 export function ReportDocument({ report, client, displayOptions: customDisplayOptions }: ReportDocumentProps) {
-  const snapshot = (report as any).clientSnapshot
+  const snapshot = report.clientSnapshot
   const businessName = snapshot?.businessName ?? client?.businessName ?? ''
   const logoUrl = snapshot?.logoUrl !== undefined ? snapshot.logoUrl : client?.logoUrl
   const primaryColor = snapshot?.primaryColor || client?.primaryColor || (client as any)?.primary_color || '#2563eb'
@@ -157,6 +160,16 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
   const topQueries = (Array.isArray(report.topQueries) ? report.topQueries : []) as QueryItem[]
   const topPages = (Array.isArray(report.topPages) ? report.topPages : []) as PageItem[]
+
+  // Deliverables Snapshot (from CRM wiring)
+  const deliverables = (report.deliverablesSnapshot || null) as DeliverablesSnapshot | null
+  const hasDeliverables = Boolean(
+    deliverables &&
+      ((deliverables.landingPages && deliverables.landingPages.length > 0) ||
+        (deliverables.articles && deliverables.articles.length > 0) ||
+        (deliverables.tasks && deliverables.tasks.length > 0) ||
+        (deliverables.nextKeywords && deliverables.nextKeywords.length > 0))
+  )
 
   // GBP Metrics & Comparisons
   const reviewsCount = report.gbpReviewsCount ?? report.gbpReviewCount ?? 0
@@ -867,10 +880,159 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             </div>
           )}
 
+          {/* Deliverables Section (From CRM Wiring Snapshot) */}
+          {hasDeliverables && (
+            <div className="space-y-3 pt-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-3">
+                {/* Deliverables Column 1: Published Articles & Live Landing Pages */}
+                <div
+                  className="p-3 rounded-xl border space-y-2.5 print:break-inside-avoid bg-white shadow-2xs"
+                  style={{
+                    borderTop: `3px solid ${primaryColor}`,
+                    borderColor: '#e2e8f0',
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
+                  }}
+                >
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
+                    <Globe className="w-4 h-4" style={{ color: primaryColor }} />
+                    <span>Live Deliverables & Content Published</span>
+                  </div>
+
+                  <div className="space-y-2 text-xs">
+                    {/* Landing Pages */}
+                    {deliverables?.landingPages && deliverables.landingPages.length > 0 && (
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block">
+                          Landing Pages ({deliverables.landingPages.length})
+                        </span>
+                        <ul className="space-y-1">
+                          {deliverables.landingPages.map((lp) => (
+                            <li key={lp.id} className="flex items-center justify-between gap-2 p-1 rounded bg-slate-50 border border-slate-100">
+                              <span className="font-medium text-slate-800 truncate">{lp.title}</span>
+                              {lp.targetUrl ? (
+                                <a
+                                  href={lp.targetUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[10px] font-mono text-blue-600 hover:underline inline-flex items-center gap-0.5 shrink-0"
+                                >
+                                  <span>View</span>
+                                  <ExternalLink className="w-2.5 h-2.5" />
+                                </a>
+                              ) : (
+                                <span className="text-[10px] font-mono text-emerald-600 font-bold">Live</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Articles */}
+                    {deliverables?.articles && deliverables.articles.length > 0 && (
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block">
+                          Articles & Resources ({deliverables.articles.length})
+                        </span>
+                        <ul className="space-y-1">
+                          {deliverables.articles.map((art) => (
+                            <li key={art.id} className="flex items-center justify-between gap-2 p-1 rounded bg-slate-50 border border-slate-100">
+                              <span className="font-medium text-slate-800 truncate">{art.title}</span>
+                              {art.liveUrl ? (
+                                <a
+                                  href={art.liveUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[10px] font-mono text-blue-600 hover:underline inline-flex items-center gap-0.5 shrink-0"
+                                >
+                                  <span>Read</span>
+                                  <ExternalLink className="w-2.5 h-2.5" />
+                                </a>
+                              ) : (
+                                <span className="text-[10px] font-mono text-emerald-600 font-bold">Live</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {(!deliverables?.landingPages || deliverables.landingPages.length === 0) &&
+                      (!deliverables?.articles || deliverables.articles.length === 0) && (
+                        <p className="text-[11px] text-slate-400 italic">No public URLs scheduled for this period.</p>
+                      )}
+                  </div>
+                </div>
+
+                {/* Deliverables Column 2: Completed Campaign Tasks */}
+                <div
+                  className="p-3 rounded-xl border space-y-2.5 print:break-inside-avoid bg-white shadow-2xs"
+                  style={{
+                    borderTop: `3px solid ${secondaryColor}`,
+                    borderColor: '#e2e8f0',
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
+                  }}
+                >
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
+                    <ListChecks className="w-4 h-4" style={{ color: secondaryColor }} />
+                    <span>Completed Campaign Tasks</span>
+                  </div>
+
+                  {deliverables?.tasks && deliverables.tasks.length > 0 ? (
+                    <ul className="space-y-1.5 text-xs">
+                      {deliverables.tasks.map((task) => (
+                        <li key={task.id} className="flex items-start gap-1.5">
+                          <CheckCircle2
+                            className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-600"
+                            style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+                          />
+                          <div className="min-w-0">
+                            <span className="text-slate-800 leading-snug">{task.title}</span>
+                            <span className="ml-2 text-[9px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-slate-100 text-slate-500">
+                              {task.category.replace('_', ' ')}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-[11px] text-slate-400 italic">No deliverable tasks closed in this window.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Next Strategic Targets (Keywords) */}
+              {deliverables?.nextKeywords && deliverables.nextKeywords.length > 0 && (
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/50 print:bg-white print:break-inside-avoid">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/80 mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-slate-900">
+                      <Target className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Next Organic Search Targets</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400">Targeting Next Phase</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {deliverables.nextKeywords.slice(0, 8).map((kw) => (
+                      <div key={kw.id} className="p-1.5 rounded bg-white border border-slate-200 flex flex-col justify-between text-xs">
+                        <span className="font-semibold text-slate-900 truncate" title={kw.keyword}>{kw.keyword}</span>
+                        <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-0.5">
+                          <span>Vol: {kw.searchVolume?.toLocaleString() || '–'}</span>
+                          <span className="font-bold text-slate-700">Rank: #{kw.currentRank || '–'}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Row 2: Work Completed & Next Steps - Side-by-Side 2-Column Grid (Hidden if both empty) */}
           {options.show_next_steps && (completedBullets.length > 0 || nextStepBullets.length > 0) && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-3 pt-1">
-              {/* Work Completed */}
+              {/* Work Completed (Manual Narrative Text) */}
               {completedBullets.length > 0 && (
                 <div
                   className={`p-3 rounded-xl border space-y-2 print:break-inside-avoid bg-white shadow-2xs ${
@@ -885,7 +1047,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 >
                   <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 pb-1.5 border-b border-slate-100">
                     <ListChecks className="w-4 h-4" style={{ color: primaryColor }} />
-                    <span>Work Completed This Month</span>
+                    <span>Work Completed Highlights</span>
                   </div>
 
                   <ul className="space-y-1.5 text-xs text-slate-700 leading-relaxed">

@@ -21,6 +21,7 @@ import {
   Users,
   Edit3,
   Award,
+  Share2,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { AdminNav } from '../../../components/AdminNav'
@@ -257,13 +258,13 @@ function AdminReportsListPage() {
                             className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs text-white shadow-2xs shrink-0"
                             style={{ backgroundColor: primary }}
                           >
-                            {report.clientBusinessName.substring(0, 2).toUpperCase()}
+                            {(report.clientBusinessName || report.title || 'RP').substring(0, 2).toUpperCase()}
                           </div>
                         )}
 
                         <div className="min-w-0">
                           <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400 block truncate">
-                            {report.clientBusinessName}
+                            {report.clientBusinessName || 'Archived / Unassigned Client'}
                           </span>
                           <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
                             {report.title}
@@ -293,6 +294,14 @@ function AdminReportsListPage() {
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-[10px] font-mono font-bold bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
                           <Award className="w-2.5 h-2.5" />
                           <span>White-Label</span>
+                        </span>
+                      )}
+
+                      {/* Public share link active indicator */}
+                      {report.shareToken && !report.shareRevokedAt && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                          <Share2 className="w-2.5 h-2.5" />
+                          <span>Public Link Active</span>
                         </span>
                       )}
 

@@ -1,5 +1,5 @@
-import { createFileRoute, redirect, Link } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
+import { createFileRoute, redirect, Link, useNavigate } from '@tanstack/react-router'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Building2,
   Users,
@@ -17,6 +17,9 @@ import {
   User,
   Briefcase,
   ExternalLink,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { AdminNav } from '../../../components/AdminNav'
@@ -33,7 +36,20 @@ import {
   type ClientWithReportCount,
 } from '../../../server/clients'
 
+export interface AgenciesSearch {
+  sort?: 'name' | 'email' | 'status' | 'staff' | 'clients' | 'reports'
+  order?: 'asc' | 'desc'
+}
+
 export const Route = createFileRoute('/admin/agencies/')({
+  validateSearch: (search: Record<string, unknown>): AgenciesSearch => {
+    const sort = search.sort as AgenciesSearch['sort']
+    const order = search.order as AgenciesSearch['order']
+    return {
+      sort: ['name', 'email', 'status', 'staff', 'clients', 'reports'].includes(sort || '') ? sort : undefined,
+      order: order === 'desc' ? 'desc' : order === 'asc' ? 'asc' : undefined,
+    }
+  },
   beforeLoad: async ({ location }) => {
     const auth = await requireAdmin({ location })
     if (auth.role !== 'superadmin' && auth.role !== 'admin') {
@@ -41,9 +57,13 @@ export const Route = createFileRoute('/admin/agencies/')({
     }
     return { auth }
   },
-  loader: async ({ context }) => {
+  loaderDeps: ({ search }) => ({
+    sort: search.sort,
+    order: search.order,
+  }),
+  loader: async ({ deps, context }) => {
     const [partnersRes, clientsRes] = await Promise.all([
-      getPartnersServerFn(),
+      getPartnersServerFn({ data: { sort: deps.sort, order: deps.order } }),
       getClientsServerFn(),
     ])
     return {
@@ -66,6 +86,8 @@ export const Route = createFileRoute('/admin/agencies/')({
 })
 
 function AdminAgenciesPage() {
+  const search = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
   const {
     partners: initialPartners,
     unassignedClientCount,
@@ -78,6 +100,26 @@ function AdminAgenciesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'agencies' | 'all_clients'>('agencies')
   const [toasts, setToasts] = useState<ToastMessage[]>([])
+
+  useEffect(() => {
+    setPartners(initialPartners)
+  }, [initialPartners])
+
+  const handleHeaderSort = (columnKey: 'name' | 'email' | 'status' | 'staff' | 'clients' | 'reports') => {
+    let nextOrder: 'asc' | 'desc' = 'asc'
+    if (search.sort === columnKey) {
+      nextOrder = search.order === 'asc' ? 'desc' : 'asc'
+    } else if (columnKey === 'staff' || columnKey === 'clients' || columnKey === 'reports') {
+      nextOrder = 'desc'
+    }
+    navigate({
+      search: (prev: any) => ({
+        ...prev,
+        sort: columnKey,
+        order: nextOrder,
+      }),
+    })
+  }
 
   // Create Partner Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -328,12 +370,114 @@ function AdminAgenciesPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 font-mono text-[11px] text-slate-500 dark:text-slate-400">
-                    <th className="py-3.5 px-6 font-semibold">Agency Name</th>
-                    <th className="py-3.5 px-6 font-semibold">Owner Email</th>
-                    <th className="py-3.5 px-6 font-semibold">Status</th>
-                    <th className="py-3.5 px-6 font-semibold text-center">Staff</th>
-                    <th className="py-3.5 px-6 font-semibold text-center">Clients</th>
-                    <th className="py-3.5 px-6 font-semibold text-center">Reports This Month</th>
+                    <th className="py-3.5 px-6 font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('name')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                      >
+                        <span>Agency Name</span>
+                        {search.sort === 'name' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3.5 px-6 font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('email')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                      >
+                        <span>Owner Email</span>
+                        {search.sort === 'email' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3.5 px-6 font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('status')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                      >
+                        <span>Status</span>
+                        {search.sort === 'status' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3.5 px-6 font-semibold text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('staff')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold mx-auto"
+                      >
+                        <span>Staff</span>
+                        {search.sort === 'staff' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3.5 px-6 font-semibold text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('clients')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold mx-auto"
+                      >
+                        <span>Clients</span>
+                        {search.sort === 'clients' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3.5 px-6 font-semibold text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('reports')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold mx-auto"
+                      >
+                        <span>Reports This Month</span>
+                        {search.sort === 'reports' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
                     <th className="py-3.5 px-6 font-semibold text-right">Actions</th>
                   </tr>
                 </thead>

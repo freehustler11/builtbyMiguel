@@ -482,11 +482,11 @@ function AdminClientsPage() {
     try {
       await deleteClientServerFn({ data: { id: targetId } })
       setClients((prev) => prev.filter((c) => c.id !== targetId))
-      addToast('Client Deleted', `Removed ${clientToDelete.businessName} and associated reports.`)
+      addToast('Client Archived', `Archived ${clientToDelete.businessName}. Historical reports have been retained.`)
       setClientToDelete(null)
       await router.invalidate()
     } catch (err: unknown) {
-      addToast('Delete Failed', err instanceof Error ? err.message : 'Could not delete client.', 'error')
+      addToast('Archive Failed', err instanceof Error ? err.message : 'Could not archive client.', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -1257,21 +1257,21 @@ function AdminClientsPage() {
         }}
       />
 
-      {/* Confirm Delete Client Modal */}
+      {/* Confirm Archive Client Modal */}
       <ConfirmModal
         isOpen={Boolean(clientToDelete)}
         onClose={() => setClientToDelete(null)}
         onConfirm={handleDeleteClient}
-        title="Delete Client Account?"
+        title="Archive Client Account?"
         description={
           clientToDelete ? (
             <span>
-              Are you sure you want to delete <strong>{clientToDelete.businessName}</strong>? All associated monthly
-              reports ({clientToDelete.reportCount}) will also be permanently deleted.
+              Are you sure you want to archive <strong>{clientToDelete.businessName}</strong>? The client will be hidden
+              from your active roster, but all historical monthly reports ({clientToDelete.reportCount}) will be permanently preserved.
             </span>
           ) : null
         }
-        confirmText="Delete Client and Reports"
+        confirmText="Archive Client (Retain Reports)"
         variant="danger"
         isLoading={isSubmitting}
       />

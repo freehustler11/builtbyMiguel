@@ -19,6 +19,7 @@ import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as LocalSeoGbpRouteImport } from './routes/local-seo-gbp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as MyWorkRouteImport } from './routes/my-work'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SuperadminRouteImport } from './routes/superadmin'
@@ -32,13 +33,16 @@ import { Route as AdminClientsRouteImport } from './routes/admin/clients'
 import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminTeamRouteImport } from './routes/admin/team'
+import { Route as AdminWorkspaceRouteImport } from './routes/admin/workspace'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
+import { Route as RShareTokenRouteImport } from './routes/r/$shareToken'
 import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
 import { Route as AdminAgenciesIndexRouteImport } from './routes/admin/agencies/index'
 import { Route as AdminAgenciesPartnerIdRouteImport } from './routes/admin/agencies/$partnerId'
 import { Route as AdminAgenciesUnassignedRouteImport } from './routes/admin/agencies/unassigned'
+import { Route as AdminClientsClientIdRouteImport } from './routes/admin/clients_.$clientId'
 import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/index'
 import { Route as AdminReportsIdRouteImport } from './routes/admin/reports/$id'
 import { Route as AdminReportsNewRouteImport } from './routes/admin/reports/new'
@@ -93,6 +97,11 @@ const LoginRoute = LoginRouteImport.update({
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyWorkRoute = MyWorkRouteImport.update({
+  id: '/my-work',
+  path: '/my-work',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortalRoute = PortalRouteImport.update({
@@ -160,6 +169,11 @@ const AdminTeamRoute = AdminTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminWorkspaceRoute = AdminWorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => AdminRoute,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -174,6 +188,11 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PortalRoute,
+} as any)
+const RShareTokenRoute = RShareTokenRouteImport.update({
+  id: '/r/$shareToken',
+  path: '/r/$shareToken',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SuperadminActivityRoute = SuperadminActivityRouteImport.update({
   id: '/activity',
@@ -193,6 +212,11 @@ const AdminAgenciesPartnerIdRoute = AdminAgenciesPartnerIdRouteImport.update({
 const AdminAgenciesUnassignedRoute = AdminAgenciesUnassignedRouteImport.update({
   id: '/agencies/unassigned',
   path: '/agencies/unassigned',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminClientsClientIdRoute = AdminClientsClientIdRouteImport.update({
+  id: '/clients_/$clientId',
+  path: '/clients/$clientId',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminReportsIndexRoute = AdminReportsIndexRouteImport.update({
@@ -232,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/my-work': typeof MyWorkRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/superadmin': typeof SuperadminRouteWithChildren
@@ -244,13 +269,16 @@ export interface FileRoutesByFullPath {
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
+  '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/r/$shareToken': typeof RShareTokenRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/admin/agencies/$partnerId': typeof AdminAgenciesPartnerIdRoute
   '/admin/agencies/unassigned': typeof AdminAgenciesUnassignedRoute
+  '/admin/clients/$clientId': typeof AdminClientsClientIdRoute
   '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
@@ -268,6 +296,7 @@ export interface FileRoutesByTo {
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/my-work': typeof MyWorkRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/superadmin': typeof SuperadminRouteWithChildren
   '/systems-auto': typeof SystemsAutoRoute
@@ -279,13 +308,16 @@ export interface FileRoutesByTo {
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
+  '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/r/$shareToken': typeof RShareTokenRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/portal': typeof PortalIndexRoute
   '/admin/agencies/$partnerId': typeof AdminAgenciesPartnerIdRoute
   '/admin/agencies/unassigned': typeof AdminAgenciesUnassignedRoute
+  '/admin/clients/$clientId': typeof AdminClientsClientIdRoute
   '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
@@ -305,6 +337,7 @@ export interface FileRoutesById {
   '/local-seo-gbp': typeof LocalSeoGbpRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/my-work': typeof MyWorkRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/superadmin': typeof SuperadminRouteWithChildren
@@ -317,13 +350,16 @@ export interface FileRoutesById {
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
+  '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/r/$shareToken': typeof RShareTokenRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/admin/agencies/$partnerId': typeof AdminAgenciesPartnerIdRoute
   '/admin/agencies/unassigned': typeof AdminAgenciesUnassignedRoute
+  '/admin/clients_/$clientId': typeof AdminClientsClientIdRoute
   '/admin/reports/$id': typeof AdminReportsIdRouteWithChildren
   '/admin/reports/new': typeof AdminReportsNewRoute
   '/portal/reports/$id': typeof PortalReportsIdRoute
@@ -344,6 +380,7 @@ export interface FileRouteTypes {
     | '/local-seo-gbp'
     | '/login'
     | '/messages'
+    | '/my-work'
     | '/portal'
     | '/privacy-policy'
     | '/superadmin'
@@ -356,13 +393,16 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/posts'
     | '/admin/team'
+    | '/admin/workspace'
     | '/blog/$slug'
+    | '/r/$shareToken'
     | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
     | '/portal/'
     | '/admin/agencies/$partnerId'
     | '/admin/agencies/unassigned'
+    | '/admin/clients/$clientId'
     | '/admin/reports/$id'
     | '/admin/reports/new'
     | '/portal/reports/$id'
@@ -380,6 +420,7 @@ export interface FileRouteTypes {
     | '/local-seo-gbp'
     | '/login'
     | '/messages'
+    | '/my-work'
     | '/privacy-policy'
     | '/superadmin'
     | '/systems-auto'
@@ -391,13 +432,16 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/posts'
     | '/admin/team'
+    | '/admin/workspace'
     | '/blog/$slug'
+    | '/r/$shareToken'
     | '/superadmin/activity'
     | '/admin'
     | '/blog'
     | '/portal'
     | '/admin/agencies/$partnerId'
     | '/admin/agencies/unassigned'
+    | '/admin/clients/$clientId'
     | '/admin/reports/$id'
     | '/admin/reports/new'
     | '/portal/reports/$id'
@@ -416,6 +460,7 @@ export interface FileRouteTypes {
     | '/local-seo-gbp'
     | '/login'
     | '/messages'
+    | '/my-work'
     | '/portal'
     | '/privacy-policy'
     | '/superadmin'
@@ -428,13 +473,16 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/posts'
     | '/admin/team'
+    | '/admin/workspace'
     | '/blog/$slug'
+    | '/r/$shareToken'
     | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
     | '/portal/'
     | '/admin/agencies/$partnerId'
     | '/admin/agencies/unassigned'
+    | '/admin/clients_/$clientId'
     | '/admin/reports/$id'
     | '/admin/reports/new'
     | '/portal/reports/$id'
@@ -454,6 +502,7 @@ export interface RootRouteChildren {
   LocalSeoGbpRoute: typeof LocalSeoGbpRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  MyWorkRoute: typeof MyWorkRoute
   PortalRoute: typeof PortalRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SuperadminRoute: typeof SuperadminRouteWithChildren
@@ -463,6 +512,7 @@ export interface RootRouteChildren {
   WebsitesCareRoute: typeof WebsitesCareRoute
   WorkRoute: typeof WorkRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  RShareTokenRoute: typeof RShareTokenRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
@@ -536,6 +586,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-work': {
+      id: '/my-work'
+      path: '/my-work'
+      fullPath: '/my-work'
+      preLoaderRoute: typeof MyWorkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portal': {
@@ -629,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTeamRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/workspace': {
+      id: '/admin/workspace'
+      path: '/workspace'
+      fullPath: '/admin/workspace'
+      preLoaderRoute: typeof AdminWorkspaceRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -649,6 +713,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/portal/'
       preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof PortalRoute
+    }
+    '/r/$shareToken': {
+      id: '/r/$shareToken'
+      path: '/r/$shareToken'
+      fullPath: '/r/$shareToken'
+      preLoaderRoute: typeof RShareTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/superadmin/activity': {
       id: '/superadmin/activity'
@@ -676,6 +747,13 @@ declare module '@tanstack/react-router' {
       path: '/agencies/unassigned'
       fullPath: '/admin/agencies/unassigned'
       preLoaderRoute: typeof AdminAgenciesUnassignedRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/clients_/$clientId': {
+      id: '/admin/clients_/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/admin/clients/$clientId'
+      preLoaderRoute: typeof AdminClientsClientIdRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/reports/': {
@@ -733,9 +811,11 @@ interface AdminRouteChildren {
   AdminMediaRoute: typeof AdminMediaRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminTeamRoute: typeof AdminTeamRoute
+  AdminWorkspaceRoute: typeof AdminWorkspaceRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminAgenciesPartnerIdRoute: typeof AdminAgenciesPartnerIdRoute
   AdminAgenciesUnassignedRoute: typeof AdminAgenciesUnassignedRoute
+  AdminClientsClientIdRoute: typeof AdminClientsClientIdRoute
   AdminReportsIdRoute: typeof AdminReportsIdRouteWithChildren
   AdminReportsNewRoute: typeof AdminReportsNewRoute
   AdminAgenciesIndexRoute: typeof AdminAgenciesIndexRoute
@@ -747,9 +827,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMediaRoute: AdminMediaRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminTeamRoute: AdminTeamRoute,
+  AdminWorkspaceRoute: AdminWorkspaceRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminAgenciesPartnerIdRoute: AdminAgenciesPartnerIdRoute,
   AdminAgenciesUnassignedRoute: AdminAgenciesUnassignedRoute,
+  AdminClientsClientIdRoute: AdminClientsClientIdRoute,
   AdminReportsIdRoute: AdminReportsIdRouteWithChildren,
   AdminReportsNewRoute: AdminReportsNewRoute,
   AdminAgenciesIndexRoute: AdminAgenciesIndexRoute,
@@ -794,6 +876,7 @@ const rootRouteChildren: RootRouteChildren = {
   LocalSeoGbpRoute: LocalSeoGbpRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  MyWorkRoute: MyWorkRoute,
   PortalRoute: PortalRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SuperadminRoute: SuperadminRouteWithChildren,
@@ -803,6 +886,7 @@ const rootRouteChildren: RootRouteChildren = {
   WebsitesCareRoute: WebsitesCareRoute,
   WorkRoute: WorkRoute,
   BlogSlugRoute: BlogSlugRoute,
+  RShareTokenRoute: RShareTokenRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport

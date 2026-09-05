@@ -13,13 +13,15 @@ import {
   Building2,
   UserCheck,
   KeyRound,
+  LayoutGrid,
+  CheckSquare,
 } from 'lucide-react'
 import { LogoutButton } from './LogoutButton'
 import { ThemeToggle } from './ThemeToggle'
 import { ChangePasswordModal } from './ChangePasswordModal'
 
 interface AdminNavProps {
-  activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports' | 'team' | 'activity' | 'agencies'
+  activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports' | 'team' | 'activity' | 'agencies' | 'workspace' | 'my-work'
   title: string
   description?: string
   actions?: React.ReactNode
@@ -162,6 +164,34 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
                 <span>Team</span>
               </Link>
             )}
+
+            {/* CRM Workspace (Dual-scope roll-up) */}
+            <Link
+              to="/admin/workspace"
+              preload="intent"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'workspace'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Workspace</span>
+            </Link>
+
+            {/* My Work cross-client user dashboard */}
+            <Link
+              to="/my-work"
+              preload="intent"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'my-work'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <CheckSquare className="w-3.5 h-3.5" />
+              <span>My Work</span>
+            </Link>
           </nav>
         </div>
 

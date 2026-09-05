@@ -158,6 +158,41 @@ export interface ClientSnapshot {
   partnerLogoUrl?: string | null
 }
 
+export interface DeliverablesSnapshot {
+  landingPages: Array<{
+    id: string
+    title: string
+    targetUrl?: string | null
+    wentLiveAt: string | null
+  }>
+  articles: Array<{
+    id: string
+    title: string
+    liveUrl?: string | null
+    publishedAt: string | null
+  }>
+  tasks: Array<{
+    id: string
+    title: string
+    category: string
+    completedAt: string | null
+  }>
+  nextKeywords: Array<{
+    id: string
+    keyword: string
+    searchVolume?: number | null
+    currentRank?: number | null
+    previousRank?: number | null
+    targetUrl?: string | null
+  }>
+  keywordRankHistory: Array<{
+    keyword: string
+    month: number
+    year: number
+    rank: number | null
+  }>
+}
+
 /**
  * Reports table for monthly performance and analytics reports
  */
@@ -169,6 +204,8 @@ export const reports = pgTable('reports', {
   periodStart: timestamp('period_start', { withTimezone: true }).notNull(),
   periodEnd: timestamp('period_end', { withTimezone: true }).notNull(),
   clientSnapshot: jsonb('client_snapshot').$type<ClientSnapshot>(),
+  deliverablesSnapshot: jsonb('deliverables_snapshot').$type<DeliverablesSnapshot>(),
+  version: integer('version').default(1).notNull(),
   previousReportId: uuid('previous_report_id').references((): AnyPgColumn => reports.id, { onDelete: 'set null' }),
   // GBP Metrics (Current)
   gbpCalls: integer('gbp_calls').default(0),
@@ -232,8 +269,16 @@ export const reports = pgTable('reports', {
   workCompleted: text('work_completed'),
   nextSteps: text('next_steps'),
   createdByUserId: uuid('created_by_user_id').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
+  // Public share link configuration
+  shareToken: text('share_token'),
+  shareRevokedAt: timestamp('share_revoked_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-})
+},
+(table) => [
+  uniqueIndex('reports_share_token_idx').on(table.shareToken),
+  index('reports_period_start_idx').on(table.periodStart),
+  index('reports_client_period_version_idx').on(table.clientId, table.periodStart, table.version),
+])
 
 export type Report = typeof reports.$inferSelect
 export type NewReport = typeof reports.$inferInsert

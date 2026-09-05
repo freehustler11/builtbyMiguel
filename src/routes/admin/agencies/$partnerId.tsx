@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, Link } from '@tanstack/react-router'
+import { createFileRoute, redirect, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import {
   Building2,
@@ -14,13 +14,30 @@ import {
   Plus,
   ArrowLeft,
   FileSpreadsheet,
+  LayoutGrid,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { AdminNav } from '../../../components/AdminNav'
 import { ClientCard } from '../../../components/ClientCard'
 import { getAgencyDetailServerFn, type AgencyDetailData } from '../../../server/partners'
 
+export interface AgencyDetailSearch {
+  sort?: 'name' | 'email' | 'status' | 'createdAt'
+  order?: 'asc' | 'desc'
+}
+
 export const Route = createFileRoute('/admin/agencies/$partnerId')({
+  validateSearch: (search: Record<string, unknown>): AgencyDetailSearch => {
+    const sort = search.sort as AgencyDetailSearch['sort']
+    const order = search.order as AgencyDetailSearch['order']
+    return {
+      sort: ['name', 'email', 'status', 'createdAt'].includes(sort || '') ? sort : undefined,
+      order: order === 'desc' ? 'desc' : order === 'asc' ? 'asc' : undefined,
+    }
+  },
   beforeLoad: async ({ location }) => {
     const auth = await requireAdmin({ location })
     if (auth.role !== 'superadmin' && auth.role !== 'admin') {
@@ -28,9 +45,17 @@ export const Route = createFileRoute('/admin/agencies/$partnerId')({
     }
     return { auth }
   },
-  loader: async ({ params, context }) => {
+  loaderDeps: ({ search }) => ({
+    sort: search.sort,
+    order: search.order,
+  }),
+  loader: async ({ params, deps, context }) => {
     const detail = await getAgencyDetailServerFn({
-      data: { partnerId: params.partnerId },
+      data: {
+        partnerId: params.partnerId,
+        sort: deps.sort,
+        order: deps.order,
+      },
     })
     return {
       detail,
@@ -62,11 +87,29 @@ function formatDate(dateInput: string | Date | null) {
 }
 
 function AdminAgencyDetailPage() {
+  const search = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
   const { detail, currentAdmin } = Route.useLoaderData()
   const { partner, staff, clients, counts } = detail
 
   const agencyDisplayName = partner.name || partner.email
   const isSuspended = !partner.isActive
+
+  const handleStaffSort = (columnKey: 'name' | 'email' | 'status' | 'createdAt') => {
+    let nextOrder: 'asc' | 'desc' = 'asc'
+    if (search.sort === columnKey) {
+      nextOrder = search.order === 'asc' ? 'desc' : 'asc'
+    } else if (columnKey === 'createdAt') {
+      nextOrder = 'desc'
+    }
+    navigate({
+      search: (prev: any) => ({
+        ...prev,
+        sort: columnKey,
+        order: nextOrder,
+      }),
+    })
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
@@ -78,6 +121,14 @@ function AdminAgencyDetailPage() {
           userRole={currentAdmin?.role}
           actions={
             <div className="flex items-center gap-3">
+              <Link
+                to="/admin/workspace"
+                search={{ partnerId: partner.id }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-sm transition"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Agency Workspace</span>
+              </Link>
               <Link
                 to="/admin/agencies"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
@@ -202,10 +253,78 @@ function AdminAgencyDetailPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 font-mono text-[11px] text-slate-500 dark:text-slate-400">
-                    <th className="py-3 px-6 font-semibold">Staff Member</th>
-                    <th className="py-3 px-6 font-semibold">Email</th>
-                    <th className="py-3 px-6 font-semibold">Status</th>
-                    <th className="py-3 px-6 font-semibold">Date Added</th>
+                    <th className="py-3 px-6 font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => handleStaffSort('name')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                      >
+                        <span>Staff Member</span>
+                        {search.sort === 'name' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3 px-6 font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => handleStaffSort('email')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                      >
+                        <span>Email</span>
+                        {search.sort === 'email' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3 px-6 font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => handleStaffSort('status')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                      >
+                        <span>Status</span>
+                        {search.sort === 'status' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
+                    <th className="py-3 px-6 font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => handleStaffSort('createdAt')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                      >
+                        <span>Date Added</span>
+                        {search.sort === 'createdAt' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">

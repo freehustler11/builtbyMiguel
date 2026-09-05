@@ -42,123 +42,166 @@ export interface AgencyDetailData {
   }
 }
 
+function getPartnersOrderBy(
+  sort?: string,
+  order: 'asc' | 'desc' = 'asc',
+  staffCountSql?: ReturnType<typeof sql>,
+  clientCountSql?: ReturnType<typeof sql>,
+  reportsThisMonthSql?: ReturnType<typeof sql>
+) {
+  const isDesc = order === 'desc'
+  if (sort === 'name') {
+    return isDesc
+      ? sql`coalesce(lower(${users.name}), lower(${users.email})) desc nulls last`
+      : sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'email') {
+    return isDesc
+      ? sql`lower(${users.email}) desc nulls last`
+      : sql`lower(${users.email}) asc nulls last`
+  }
+  if (sort === 'status') {
+    return isDesc
+      ? sql`case when ${users.isActive} = true then 1 else 0 end desc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+      : sql`case when ${users.isActive} = true then 1 else 0 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'staff' && staffCountSql) {
+    return isDesc
+      ? sql`${staffCountSql} desc nulls last, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+      : sql`${staffCountSql} asc nulls last, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'clients' && clientCountSql) {
+    return isDesc
+      ? sql`${clientCountSql} desc nulls last, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+      : sql`${clientCountSql} asc nulls last, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'reports' && reportsThisMonthSql) {
+    return isDesc
+      ? sql`${reportsThisMonthSql} desc nulls last, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+      : sql`${reportsThisMonthSql} asc nulls last, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  // Default: coalesce(lower(name), lower(email)) ASC nulls last
+  return sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+}
+
+function getAgencyStaffOrderBy(sort?: string, order: 'asc' | 'desc' = 'asc') {
+  const isDesc = order === 'desc'
+  if (sort === 'name') {
+    return isDesc
+      ? sql`coalesce(lower(${users.name}), lower(${users.email})) desc nulls last`
+      : sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'email') {
+    return isDesc
+      ? sql`lower(${users.email}) desc nulls last`
+      : sql`lower(${users.email}) asc nulls last`
+  }
+  if (sort === 'status') {
+    return isDesc
+      ? sql`case when ${users.isActive} = true then 1 else 0 end desc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+      : sql`case when ${users.isActive} = true then 1 else 0 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'createdAt' || sort === 'date') {
+    return isDesc
+      ? sql`${users.createdAt} desc nulls last`
+      : sql`${users.createdAt} asc nulls last`
+  }
+  // Default: active staff first, then case-insensitive name ASC with nulls last
+  return sql`case when ${users.isActive} = true then 0 else 1 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+}
+
 /**
  * Server Function: Get all partner agency accounts with their assigned client counts, staff counts,
  * and reports generated this month (counted from period_start) (Superadmin only)
  */
-export const getPartnersServerFn = createServerFn({ method: 'GET' }).handler(
-  async (): Promise<{
-    partners: PartnerItem[]
-    unassignedClientCount: number
-    unassignedReportsThisMonthCount: number
-  }> => {
-    await assertSuperadminSession()
+export const getPartnersServerFn = createServerFn({ method: 'GET' })
+  .validator((data?: { sort?: string; order?: 'asc' | 'desc' }) => {
+    return data || {}
+  })
+  .handler(
+    async ({ data }): Promise<{
+      partners: PartnerItem[]
+      unassignedClientCount: number
+      unassignedReportsThisMonthCount: number
+    }> => {
+      await assertSuperadminSession()
 
-    const partnerUsers = await db
-      .select({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        isActive: users.isActive,
-        createdAt: users.createdAt,
-      })
-      .from(users)
-      .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
-      .orderBy(sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
+      const now = new Date()
+      const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0))
+      const startOfNextMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0))
 
-    const allClients = await db
-      .select({
-        id: clients.id,
-        partnerId: clients.partnerId,
-      })
-      .from(clients)
-      .where(isNull(clients.deletedAt))
+      const clientCountSql = sql<number>`cast((select count(*) from clients where clients.partner_id = "users"."id" and clients.deleted_at is null) as int)`
+      const staffCountSql = sql<number>`cast((select count(*) from users staff where staff.partner_id = "users"."id" and staff.role = 'partner_employee' and staff.deleted_at is null) as int)`
+      const reportsThisMonthSql = sql<number>`cast((select count(*) from reports inner join clients on reports.client_id = clients.id where clients.partner_id = "users"."id" and clients.deleted_at is null and reports.period_start >= ${startOfMonth.toISOString()}::timestamptz and reports.period_start < ${startOfNextMonth.toISOString()}::timestamptz) as int)`
 
-    let unassignedClientCount = 0
-    const clientCountMap: Record<string, number> = {}
-    for (const c of allClients) {
-      if (c.partnerId) {
-        clientCountMap[c.partnerId] = (clientCountMap[c.partnerId] || 0) + 1
-      } else {
-        unassignedClientCount++
-      }
-    }
+      const orderByClause = getPartnersOrderBy(data?.sort, data?.order, staffCountSql, clientCountSql, reportsThisMonthSql)
 
-    const allStaff = await db
-      .select({
-        id: users.id,
-        partnerId: users.partnerId,
-      })
-      .from(users)
-      .where(and(eq(users.role, 'partner_employee'), isNull(users.deletedAt)))
+      const partnerUsers = await db
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          isActive: users.isActive,
+          createdAt: users.createdAt,
+          clientCount: clientCountSql,
+          staffCount: staffCountSql,
+          reportsThisMonthCount: reportsThisMonthSql,
+        })
+        .from(users)
+        .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
+        .orderBy(orderByClause)
 
-    const staffCountMap: Record<string, number> = {}
-    for (const s of allStaff) {
-      if (s.partnerId) {
-        staffCountMap[s.partnerId] = (staffCountMap[s.partnerId] || 0) + 1
-      }
-    }
+      const [unassignedClientsRes] = await db
+        .select({ count: sql<number>`cast(count(*) as int)` })
+        .from(clients)
+        .where(and(isNull(clients.partnerId), isNull(clients.deletedAt)))
 
-    // Reports generated this month (counted from period_start)
-    const now = new Date()
-    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0))
-    const startOfNextMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0))
-
-    const monthReports = await db
-      .select({
-        id: reports.id,
-        clientId: reports.clientId,
-        partnerId: clients.partnerId,
-      })
-      .from(reports)
-      .innerJoin(clients, eq(reports.clientId, clients.id))
-      .where(
-        and(
-          isNull(clients.deletedAt),
-          sql`${reports.periodStart} >= ${startOfMonth.toISOString()}::timestamptz`,
-          sql`${reports.periodStart} < ${startOfNextMonth.toISOString()}::timestamptz`
+      const [unassignedReportsRes] = await db
+        .select({ count: sql<number>`cast(count(*) as int)` })
+        .from(reports)
+        .innerJoin(clients, eq(reports.clientId, clients.id))
+        .where(
+          and(
+            isNull(clients.partnerId),
+            isNull(clients.deletedAt),
+            sql`${reports.periodStart} >= ${startOfMonth.toISOString()}::timestamptz`,
+            sql`${reports.periodStart} < ${startOfNextMonth.toISOString()}::timestamptz`
+          )
         )
-      )
 
-    let unassignedReportsThisMonthCount = 0
-    const reportsThisMonthMap: Record<string, number> = {}
-    for (const r of monthReports) {
-      if (r.partnerId) {
-        reportsThisMonthMap[r.partnerId] = (reportsThisMonthMap[r.partnerId] || 0) + 1
-      } else {
-        unassignedReportsThisMonthCount++
+      const partners: PartnerItem[] = partnerUsers.map((p) => ({
+        id: p.id,
+        name: p.name,
+        email: p.email,
+        isActive: p.isActive,
+        createdAt: p.createdAt,
+        clientCount: Number(p.clientCount) || 0,
+        staffCount: Number(p.staffCount) || 0,
+        reportsThisMonthCount: Number(p.reportsThisMonthCount) || 0,
+      }))
+
+      return {
+        partners,
+        unassignedClientCount: Number(unassignedClientsRes?.count) || 0,
+        unassignedReportsThisMonthCount: Number(unassignedReportsRes?.count) || 0,
       }
     }
-
-    const partners: PartnerItem[] = partnerUsers.map((p) => ({
-      id: p.id,
-      name: p.name,
-      email: p.email,
-      isActive: p.isActive,
-      createdAt: p.createdAt,
-      clientCount: clientCountMap[p.id] || 0,
-      staffCount: staffCountMap[p.id] || 0,
-      reportsThisMonthCount: reportsThisMonthMap[p.id] || 0,
-    }))
-
-    return {
-      partners,
-      unassignedClientCount,
-      unassignedReportsThisMonthCount,
-    }
-  }
-)
+  )
 
 /**
  * Server Function: Get complete agency detail including partner profile, staff, clients,
  * and aggregate counts in ONE round trip (Superadmin only).
  */
 export const getAgencyDetailServerFn = createServerFn({ method: 'GET' })
-  .validator((data: { partnerId: string }) => {
+  .validator((data: { partnerId: string; sort?: string; order?: 'asc' | 'desc' }) => {
     if (!data?.partnerId?.trim()) {
       throw new Error('Partner ID is required')
     }
-    return { partnerId: data.partnerId.trim() }
+    return {
+      partnerId: data.partnerId.trim(),
+      sort: data.sort,
+      order: data.order,
+    }
   })
   .handler(async ({ data }): Promise<AgencyDetailData> => {
     await assertSuperadminSession()
@@ -192,7 +235,7 @@ export const getAgencyDetailServerFn = createServerFn({ method: 'GET' })
       })
       .from(users)
       .where(and(eq(users.partnerId, data.partnerId), eq(users.role, 'partner_employee'), isNull(users.deletedAt)))
-      .orderBy(sql`case when ${users.isActive} = true then 0 else 1 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
+      .orderBy(getAgencyStaffOrderBy(data.sort, data.order))
 
     // 3. Fetch clients for this partner
     const agencyClients = await db

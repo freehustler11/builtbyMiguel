@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState, useTransition } from 'react'
 import {
   Download,
@@ -12,13 +12,21 @@ import {
   User,
   Calendar,
   FileText,
-  Table,
   Target,
+  Share2,
+  Copy,
+  CheckCircle,
+  XCircle,
+  Table,
+  RefreshCw,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import {
   getReportByIdServerFn,
   updateReportDisplayOptionsServerFn,
+  generateReportShareLinkServerFn,
+  revokeReportShareLinkServerFn,
+  regenerateReportServerFn,
   type DisplayOptions,
 } from '../../../server/reports'
 import { ReportDocument } from '../../../components/ReportDocument'
@@ -63,9 +71,34 @@ function BrandedReportViewPage() {
   const client = loaderData?.client
   const params = Route.useParams()
   const reportId = report?.id || params?.id || ''
+  const navigate = useNavigate()
 
   const [isPending, startTransition] = useTransition()
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
+  const [isRegenerating, setIsRegenerating] = useState(false)
+
+  const handleRegenerate = async () => {
+    if (!reportId) return
+    const currentVer = report?.version || 1
+    const confirmed = window.confirm(
+      `Regenerate this report? This will create version ${currentVer + 1} with the latest CRM deliverables and metrics without deleting prior versions.`
+    )
+    if (!confirmed) return
+    try {
+      setIsRegenerating(true)
+      const res = await regenerateReportServerFn({ data: { reportId } })
+      if (res?.report?.id) {
+        navigate({
+          to: '/admin/reports/$id',
+          params: { id: res.report.id },
+        })
+      }
+    } catch (err: any) {
+      alert(err?.message || 'Failed to regenerate report')
+    } finally {
+      setIsRegenerating(false)
+    }
+  }
 
   // Section Display Options state
   const [displayOptions, setDisplayOptions] = useState<DisplayOptions>(() => ({
@@ -77,6 +110,52 @@ function BrandedReportViewPage() {
     show_next_steps: true,
     ...(report?.displayOptions || {}),
   }))
+
+  // Public Share Link State
+  const [shareToken, setShareToken] = useState<string | null>(report?.shareToken || null)
+  const [shareRevokedAt, setShareRevokedAt] = useState<string | Date | null>(report?.shareRevokedAt || null)
+  const [isShareLoading, setIsShareLoading] = useState(false)
+  const [copiedLink, setCopiedLink] = useState(false)
+  const isShareActive = Boolean(shareToken && !shareRevokedAt)
+
+  const handleGenerateShareLink = async () => {
+    if (!reportId) return
+    try {
+      setIsShareLoading(true)
+      const res = await generateReportShareLinkServerFn({ data: { reportId } })
+      if (res.shareToken) {
+        setShareToken(res.shareToken)
+        setShareRevokedAt(null)
+      }
+    } catch (err) {
+      console.error('Failed to generate share link:', err)
+    } finally {
+      setIsShareLoading(false)
+    }
+  }
+
+  const handleRevokeShareLink = async () => {
+    if (!reportId) return
+    const confirmed = window.confirm('Are you sure you want to revoke this public share link? Anyone with the link will immediately lose access.')
+    if (!confirmed) return
+    try {
+      setIsShareLoading(true)
+      await revokeReportShareLinkServerFn({ data: { reportId } })
+      setShareRevokedAt(new Date())
+    } catch (err) {
+      console.error('Failed to revoke share link:', err)
+    } finally {
+      setIsShareLoading(false)
+    }
+  }
+
+  const handleCopyShareLink = () => {
+    if (!shareToken) return
+    const url = `${window.location.origin}/r/${shareToken}`
+    navigator.clipboard.writeText(url)
+    setCopiedLink(true)
+    setTimeout(() => setCopiedLink(false), 2000)
+  }
 
   useEffect(() => {
     if (client?.businessName && report?.reportMonth) {
@@ -161,6 +240,10 @@ function BrandedReportViewPage() {
               <Building2 className="w-3.5 h-3.5" />
               <span>{client?.businessName || 'Client'}</span>
             </Link>
+
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+              v{report?.version || 1}
+            </span>
           </div>
 
           {/* Right Actions: Edit Data & Print */}
@@ -188,6 +271,58 @@ function BrandedReportViewPage() {
               <Edit3 className="w-3.5 h-3.5 text-slate-400" />
               <span>Edit Data</span>
             </Link>
+
+            {/* Regenerate Report (v+1) */}
+            <button
+              type="button"
+              disabled={isRegenerating}
+              onClick={handleRegenerate}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer disabled:opacity-50"
+              title={`Regenerate report (v${(report?.version || 1) + 1}) pulling latest CRM deliverables`}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-slate-400 ${isRegenerating ? 'animate-spin' : ''}`} />
+              <span>{isRegenerating ? 'Regenerating...' : `Regenerate (v${(report?.version || 1) + 1})`}</span>
+            </button>
+
+            {/* Public Share Link Management */}
+            {isShareActive ? (
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Public Link Active</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopyShareLink}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-mono font-semibold bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-slate-800 text-emerald-800 dark:text-emerald-200 transition cursor-pointer"
+                  title="Copy public read-only link"
+                >
+                  {copiedLink ? <CheckCircle className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-emerald-600" />}
+                  <span>{copiedLink ? 'Copied!' : 'Copy Link'}</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={isShareLoading}
+                  onClick={handleRevokeShareLink}
+                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-[11px] font-mono font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950/60 transition cursor-pointer disabled:opacity-50"
+                  title="Revoke public link immediately"
+                >
+                  <XCircle className="w-3 h-3" />
+                  <span>Revoke</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                disabled={isShareLoading}
+                onClick={handleGenerateShareLink}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer disabled:opacity-50"
+                title="Create a secure public read-only link for clients or stakeholders"
+              >
+                <Share2 className="w-3.5 h-3.5 text-blue-500" />
+                <span>{isShareLoading ? 'Generating...' : 'Create Share Link'}</span>
+              </button>
+            )}
 
             <ThemeToggle variant="pill" />
 

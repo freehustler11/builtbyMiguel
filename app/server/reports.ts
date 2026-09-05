@@ -1,50 +1,24 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and, isNull, sql } from 'drizzle-orm'
-import { db, clients, reports, users, type Report, type Client, type ClientSnapshot } from '../db'
+import { desc, eq, and, isNull, sql, inArray } from 'drizzle-orm'
+import crypto from 'crypto'
+import {
+  db,
+  clients,
+  reports,
+  users,
+  monthlyMetrics,
+  type Report,
+  type Client,
+  type ClientSnapshot,
+  type DeliverablesSnapshot,
+} from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { logActivity } from './activity-logger'
-
-const MONTHS: Record<string, number> = {
-  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
-  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
-}
-
-export function parseReportPeriod(monthStr: string): { periodStart: Date; periodEnd: Date } {
-  if (!monthStr || typeof monthStr !== 'string') {
-    const now = new Date()
-    const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0))
-    const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999))
-    return { periodStart: start, periodEnd: end }
-  }
-
-  const parts = monthStr.trim().split(/\s+/)
-  if (parts.length === 2) {
-    const mName = parts[0].toLowerCase()
-    const year = parseInt(parts[1], 10)
-    if (mName in MONTHS && !isNaN(year)) {
-      const monthIdx = MONTHS[mName]
-      const start = new Date(Date.UTC(year, monthIdx, 1, 0, 0, 0, 0))
-      const end = new Date(Date.UTC(year, monthIdx + 1, 0, 23, 59, 59, 999))
-      return { periodStart: start, periodEnd: end }
-    }
-  }
-
-  const parsed = new Date(monthStr)
-  if (!isNaN(parsed.getTime())) {
-    const y = parsed.getUTCFullYear()
-    const m = parsed.getUTCMonth()
-    return {
-      periodStart: new Date(Date.UTC(y, m, 1, 0, 0, 0, 0)),
-      periodEnd: new Date(Date.UTC(y, m + 1, 0, 23, 59, 59, 999)),
-    }
-  }
-
-  const now = new Date()
-  return {
-    periodStart: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)),
-    periodEnd: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999)),
-  }
-}
+import {
+  parseReportPeriod,
+  parseDecimalValue,
+  collectDeliverablesSnapshot,
+} from './reports-helpers'
 
 export interface QueryItem {
   query: string
@@ -73,13 +47,6 @@ export interface DisplayOptions {
 /**
  * Safely parse integer or decimal strings/numbers (e.g. 2.6, '2.6%', ' 2.6 ') into a clean float
  */
-export function parseDecimalValue(val: unknown): number {
-  if (val === null || val === undefined || val === '') return 0
-  if (typeof val === 'number') return isNaN(val) ? 0 : val
-  const cleaned = String(val).replace(/[^0-9.-]/g, '')
-  const num = parseFloat(cleaned)
-  return isNaN(num) ? 0 : num
-}
 
 export interface ReportWithClient extends Report {
   clientName: string
@@ -171,7 +138,11 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         summary: reports.summary,
         workCompleted: reports.workCompleted,
         nextSteps: reports.nextSteps,
+        version: reports.version,
+        deliverablesSnapshot: reports.deliverablesSnapshot,
         createdByUserId: reports.createdByUserId,
+        shareToken: reports.shareToken,
+        shareRevokedAt: reports.shareRevokedAt,
         createdAt: reports.createdAt,
         // Creator Join
         creatorName: users.name,
@@ -190,7 +161,7 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
       .from(reports)
       .leftJoin(clients, eq(reports.clientId, clients.id))
       .leftJoin(users, eq(reports.createdByUserId, users.id))
-      .orderBy(sql`${reports.periodStart} desc nulls last`)
+      .orderBy(sql`${reports.periodStart} desc nulls last`, sql`${reports.version} desc nulls last`)
 
     if (conditions.length === 1) {
       // @ts-expect-error drizzle query builder with where
@@ -341,10 +312,21 @@ export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handle
       .select()
       .from(reports)
       .where(eq(reports.clientId, targetClientId))
-      .orderBy(sql`${reports.periodStart} desc nulls last`)
+      .orderBy(sql`${reports.periodStart} desc nulls last`, sql`${reports.version} desc nulls last`)
 
-    // Strictly internal: never expose createdByUserId to client portal
-    const sanitizedReports = clientReports.map(({ createdByUserId: _omitted, ...rest }) => rest)
+    // Strictly internal: never expose createdByUserId to client portal.
+    // Also deduplicate: if multiple versions exist for the same periodStart, show only the latest version.
+    const seenPeriods = new Set<string>()
+    const sanitizedReports: Array<Omit<Report, 'createdByUserId'>> = []
+
+    for (const rep of clientReports) {
+      const periodKey = rep.periodStart ? new Date(rep.periodStart).toISOString() : rep.reportMonth
+      if (!seenPeriods.has(periodKey)) {
+        seenPeriods.add(periodKey)
+        const { createdByUserId: _omitted, ...rest } = rep
+        sanitizedReports.push(rest)
+      }
+    }
 
     return {
       client,
@@ -352,6 +334,98 @@ export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handle
     }
   }
 )
+
+
+/**
+ * Server Function: Pre-flight check and auto-population data endpoint
+ * Returns monthly_metrics, prior metrics, deliverables count, or blocks if metrics are missing.
+ */
+export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
+  .validator((data: { clientId: string; reportMonth: string }) => {
+    if (!data.clientId) throw new Error('Client ID is required')
+    if (!data.reportMonth) throw new Error('Report month is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const [targetClient] = await db
+      .select()
+      .from(clients)
+      .where(
+        effectivePartnerId
+          ? and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt))
+          : and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt))
+      )
+    if (!targetClient) {
+      throw new Error(effectivePartnerId ? 'Unauthorized: Client does not belong to your partner account' : 'Client not found')
+    }
+
+    const { periodStart, periodEnd, nextMonthStart, month, year } = parseReportPeriod(data.reportMonth)
+
+    // Compute previous month
+    const prevMonth = month === 1 ? 12 : month - 1
+    const prevYear = month === 1 ? year - 1 : year
+
+    // Check monthly_metrics for current period
+    const [currentMetrics] = await db
+      .select()
+      .from(monthlyMetrics)
+      .where(
+        and(
+          eq(monthlyMetrics.clientId, targetClient.id),
+          eq(monthlyMetrics.month, month),
+          eq(monthlyMetrics.year, year)
+        )
+      )
+
+    // Check monthly_metrics for prior month
+    const [prevMetrics] = await db
+      .select()
+      .from(monthlyMetrics)
+      .where(
+        and(
+          eq(monthlyMetrics.clientId, targetClient.id),
+          eq(monthlyMetrics.month, prevMonth),
+          eq(monthlyMetrics.year, prevYear)
+        )
+      )
+
+    if (!currentMetrics) {
+      return {
+        ready: false,
+        missing: 'monthly_metrics' as const,
+        month,
+        year,
+        clientName: targetClient.businessName || targetClient.name,
+        message: `Monthly metrics for ${data.reportMonth} have not been recorded for ${targetClient.businessName || targetClient.name}. You must enter monthly metrics before generating a report.`,
+        metricsFormUrl: `/admin/workspace?tab=metrics&client=${targetClient.id}`,
+        metrics: null,
+        prevMetrics: null,
+        deliverables: null,
+      }
+    }
+
+    // Collect deliverables snapshot preview
+    const deliverables = await collectDeliverablesSnapshot(targetClient.id, periodStart, nextMonthStart)
+
+    return {
+      ready: true,
+      missing: null,
+      month,
+      year,
+      clientName: targetClient.businessName || targetClient.name,
+      message: null,
+      metricsFormUrl: null,
+      metrics: currentMetrics,
+      prevMetrics: prevMetrics || null,
+      deliverables,
+    }
+  })
 
 /**
  * Server Function: Create a new report (Admin or Partner)
@@ -426,7 +500,38 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       throw new Error(effectivePartnerId ? 'Unauthorized: You can only create reports for your assigned clients' : 'Client not found')
     }
 
-    const { periodStart, periodEnd } = parseReportPeriod(data.reportMonth)
+    const { periodStart, periodEnd, nextMonthStart, month, year } = parseReportPeriod(data.reportMonth)
+
+    // PRE-FLIGHT CHECK: Block report creation if monthly_metrics is missing
+    const [currentMetrics] = await db
+      .select()
+      .from(monthlyMetrics)
+      .where(
+        and(
+          eq(monthlyMetrics.clientId, targetClient.id),
+          eq(monthlyMetrics.month, month),
+          eq(monthlyMetrics.year, year)
+        )
+      )
+
+    if (!currentMetrics) {
+      throw new Error(
+        `Cannot generate report: Monthly KPI metrics have not been recorded for ${targetClient.businessName || targetClient.name} for ${data.reportMonth}. Please complete the monthly metrics form before generating a report.`
+      )
+    }
+
+    // Determine version: Find existing reports for this client and periodStart
+    const existingReportsForPeriod = await db
+      .select({ version: reports.version })
+      .from(reports)
+      .where(and(eq(reports.clientId, targetClient.id), eq(reports.periodStart, periodStart)))
+      .orderBy(desc(reports.version))
+
+    const nextVersion = existingReportsForPeriod.length > 0 ? (existingReportsForPeriod[0].version || 1) + 1 : 1
+
+    // Collect and freeze period-scoped deliverables
+    const deliverablesSnapshot = await collectDeliverablesSnapshot(targetClient.id, periodStart, nextMonthStart)
+
     const clientSnapshot: ClientSnapshot = {
       businessName: targetClient.businessName || targetClient.name,
       name: targetClient.name || null,
@@ -450,6 +555,8 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         periodStart,
         periodEnd,
         clientSnapshot,
+        deliverablesSnapshot,
+        version: nextVersion,
         previousReportId: data.previousReportId || null,
         // GBP Current
         gbpCalls: Number(data.gbpCalls) || 0,
@@ -517,6 +624,178 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
     })
 
     return { success: true, report: created }
+  })
+
+/**
+ * Server Function: Regenerate report (creates version N+1)
+ * Preserves prior versions for auditing while refreshing CRM metrics and deliverables
+ */
+export const regenerateReportServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { reportId: string }) => {
+    if (!data.reportId) throw new Error('Report ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
+    }
+
+    const [existing] = await db.select().from(reports).where(eq(reports.id, data.reportId))
+    if (!existing || !existing.clientId) {
+      throw new Error('Report not found')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const [targetClient] = await db
+      .select()
+      .from(clients)
+      .where(
+        effectivePartnerId
+          ? and(eq(clients.id, existing.clientId), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt))
+          : and(eq(clients.id, existing.clientId), isNull(clients.deletedAt))
+      )
+    if (!targetClient) {
+      throw new Error('Unauthorized: You do not have permission to regenerate this report')
+    }
+
+    const { periodStart, periodEnd, nextMonthStart, month, year } = parseReportPeriod(existing.reportMonth)
+
+    // Pull current and prior metrics from monthlyMetrics table
+    const prevMonth = month === 1 ? 12 : month - 1
+    const prevYear = month === 1 ? year - 1 : year
+
+    const [currentMetrics] = await db
+      .select()
+      .from(monthlyMetrics)
+      .where(
+        and(
+          eq(monthlyMetrics.clientId, existing.clientId),
+          eq(monthlyMetrics.month, month),
+          eq(monthlyMetrics.year, year)
+        )
+      )
+
+    if (!currentMetrics) {
+      throw new Error(
+        `Cannot regenerate report: Monthly KPI metrics for ${existing.reportMonth} are missing in the database.`
+      )
+    }
+
+    const [prevMetrics] = await db
+      .select()
+      .from(monthlyMetrics)
+      .where(
+        and(
+          eq(monthlyMetrics.clientId, existing.clientId),
+          eq(monthlyMetrics.month, prevMonth),
+          eq(monthlyMetrics.year, prevYear)
+        )
+      )
+
+    // Find highest version
+    const allVersions = await db
+      .select({ version: reports.version })
+      .from(reports)
+      .where(and(eq(reports.clientId, existing.clientId), eq(reports.periodStart, existing.periodStart)))
+      .orderBy(desc(reports.version))
+
+    const nextVersion = (allVersions[0]?.version || existing.version || 1) + 1
+
+    // Collect fresh deliverables snapshot
+    const deliverablesSnapshot = await collectDeliverablesSnapshot(existing.clientId, periodStart, nextMonthStart)
+
+    // Update client branding snapshot
+    const clientSnapshot: ClientSnapshot = {
+      businessName: targetClient.businessName || targetClient.name,
+      name: targetClient.name || null,
+      websiteUrl: targetClient.websiteUrl || null,
+      logoUrl: targetClient.logoUrl ?? null,
+      primaryColor: targetClient.primaryColor || '#2563eb',
+      secondaryColor: targetClient.secondaryColor || '#1e293b',
+      isWhiteLabel: Boolean(targetClient.isWhiteLabel),
+      partnerName: targetClient.partnerName ?? null,
+      partnerLogoUrl: targetClient.partnerLogoUrl ?? null,
+    }
+
+    // Insert new version
+    const [newReport] = await db
+      .insert(reports)
+      .values({
+        clientId: existing.clientId,
+        title: existing.title,
+        reportMonth: existing.reportMonth,
+        periodStart,
+        periodEnd,
+        clientSnapshot,
+        deliverablesSnapshot,
+        version: nextVersion,
+        previousReportId: existing.previousReportId,
+        // GBP Current (from monthly_metrics or fallback to existing)
+        gbpCalls: currentMetrics.gbpCalls ?? existing.gbpCalls ?? 0,
+        gbpDirections: currentMetrics.gbpDirections ?? existing.gbpDirections ?? 0,
+        gbpViews: currentMetrics.gbpViews ?? existing.gbpViews ?? 0,
+        gbpWebsiteClicks: currentMetrics.gbpWebsiteClicks ?? existing.gbpWebsiteClicks ?? 0,
+        // GBP Previous
+        prevGbpCalls: prevMetrics?.gbpCalls ?? existing.prevGbpCalls ?? 0,
+        prevGbpDirections: prevMetrics?.gbpDirections ?? existing.prevGbpDirections ?? 0,
+        prevGbpViews: prevMetrics?.gbpViews ?? existing.prevGbpViews ?? 0,
+        prevGbpWebsiteClicks: prevMetrics?.gbpWebsiteClicks ?? existing.prevGbpWebsiteClicks ?? 0,
+        // Reputation
+        gbpRating: currentMetrics.gbpRating ?? existing.gbpRating ?? 5.0,
+        gbpReviewCount: currentMetrics.gbpReviewsCount ?? existing.gbpReviewCount ?? 0,
+        gbpReviewsCount: currentMetrics.gbpReviewsCount ?? existing.gbpReviewsCount ?? 0,
+        prevGbpReviewsCount: prevMetrics?.gbpReviewsCount ?? existing.prevGbpReviewsCount ?? 0,
+        // GSC Current
+        gscClicks: currentMetrics.gscClicks ?? existing.gscClicks ?? 0,
+        gscImpressions: currentMetrics.gscImpressions ?? existing.gscImpressions ?? 0,
+        gscCtr: currentMetrics.gscCtr ?? existing.gscCtr ?? 0,
+        gscPosition: currentMetrics.gscPosition ?? existing.gscPosition ?? 0,
+        // GSC Previous
+        prevGscClicks: prevMetrics?.gscClicks ?? existing.prevGscClicks ?? 0,
+        prevGscImpressions: prevMetrics?.gscImpressions ?? existing.prevGscImpressions ?? 0,
+        prevGscCtr: prevMetrics?.gscCtr ?? existing.prevGscCtr ?? 0,
+        prevGscPosition: prevMetrics?.gscPosition ?? existing.prevGscPosition ?? 0,
+        // GA4 Current
+        gaUsers: currentMetrics.gaUsers ?? existing.gaUsers ?? 0,
+        gaNewUsers: currentMetrics.gaNewUsers ?? existing.gaNewUsers ?? 0,
+        gaEngagementRate: currentMetrics.gaEngagementRate ?? existing.gaEngagementRate ?? 0,
+        gaSessions: currentMetrics.gaSessions ?? existing.gaSessions ?? 0,
+        gaViews: currentMetrics.gaViews ?? existing.gaViews ?? 0,
+        // GA4 Previous
+        prevGaUsers: prevMetrics?.gaUsers ?? existing.prevGaUsers ?? 0,
+        prevGaNewUsers: prevMetrics?.gaNewUsers ?? existing.prevGaNewUsers ?? 0,
+        prevGaEngagementRate: prevMetrics?.gaEngagementRate ?? existing.prevGaEngagementRate ?? 0,
+        prevGaSessions: prevMetrics?.gaSessions ?? existing.prevGaSessions ?? 0,
+        prevGaViews: prevMetrics?.gaViews ?? existing.prevGaViews ?? 0,
+        // Retain display options, deep tables & narrative
+        displayOptions: existing.displayOptions,
+        topQueries: existing.topQueries,
+        topPages: existing.topPages,
+        summaryTitle: existing.summaryTitle,
+        summary: existing.summary,
+        workCompleted: existing.workCompleted,
+        nextSteps: existing.nextSteps,
+        createdByUserId: auth.userId || null,
+        // Re-link shareToken to newest version if active
+        shareToken: existing.shareToken,
+        shareRevokedAt: existing.shareRevokedAt,
+      })
+      .returning()
+
+    // If existing had shareToken, null it on the old version so the unique constraint points to the latest
+    if (existing.shareToken) {
+      await db.update(reports).set({ shareToken: null }).where(eq(reports.id, existing.id))
+    }
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'regenerate_report',
+    })
+
+    return { success: true, report: newReport }
   })
 
 /**
@@ -605,6 +884,20 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       .from(clients)
       .where(and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt)))
 
+    const clientSnapshot: ClientSnapshot | undefined = clientRow
+      ? {
+          businessName: clientRow.businessName || clientRow.name,
+          name: clientRow.name || null,
+          websiteUrl: clientRow.websiteUrl || null,
+          logoUrl: clientRow.logoUrl ?? null,
+          primaryColor: clientRow.primaryColor || '#2563eb',
+          secondaryColor: clientRow.secondaryColor || '#1e293b',
+          isWhiteLabel: Boolean(clientRow.isWhiteLabel),
+          partnerName: clientRow.partnerName || null,
+          partnerLogoUrl: clientRow.partnerLogoUrl || null,
+        }
+      : undefined
+
     const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
 
     const updatePayload: Record<string, any> = {
@@ -613,6 +906,7 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       reportMonth: data.reportMonth.trim(),
       periodStart,
       periodEnd,
+      ...(clientSnapshot ? { clientSnapshot } : {}),
       previousReportId: data.previousReportId || null,
       // GBP Current
       gbpCalls: Number(data.gbpCalls) || 0,
@@ -784,5 +1078,234 @@ export const deleteReportServerFn = createServerFn({ method: 'POST' })
 
     return { success: true }
   })
+
+/**
+ * Server Function: Generate a public share link for a report (Admin or Partner)
+ * Generates a crypto-secure 32-char URL-safe token.
+ */
+export const generateReportShareLinkServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { reportId: string }) => {
+    if (!data.reportId) throw new Error('Report ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
+    }
+
+    const [targetReport] = await db
+      .select({ id: reports.id, clientId: reports.clientId })
+      .from(reports)
+      .where(eq(reports.id, data.reportId))
+
+    if (!targetReport) {
+      throw new Error('Report not found')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      if (!targetReport.clientId) throw new Error('Report not associated with any client')
+      const [targetClient] = await db
+        .select({ id: clients.id })
+        .from(clients)
+        .where(
+          and(
+            eq(clients.id, targetReport.clientId),
+            eq(clients.partnerId, effectivePartnerId),
+            isNull(clients.deletedAt)
+          )
+        )
+      if (!targetClient) {
+        throw new Error('Unauthorized: You can only generate share links for your assigned clients')
+      }
+    }
+
+    // High entropy 32-character URL-safe string
+    const newToken = crypto.randomBytes(24).toString('base64url')
+
+    const [updated] = await db
+      .update(reports)
+      .set({
+        shareToken: newToken,
+        shareRevokedAt: null,
+      })
+      .where(eq(reports.id, data.reportId))
+      .returning({
+        id: reports.id,
+        shareToken: reports.shareToken,
+        shareRevokedAt: reports.shareRevokedAt,
+      })
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'generate_report_share_link',
+    })
+
+    return {
+      success: true,
+      shareToken: updated.shareToken,
+      shareRevokedAt: updated.shareRevokedAt,
+      shareUrl: `/r/${updated.shareToken}`,
+    }
+  })
+
+/**
+ * Server Function: Revoke a public share link for a report (Admin or Partner)
+ */
+export const revokeReportShareLinkServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { reportId: string }) => {
+    if (!data.reportId) throw new Error('Report ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Admin or Partner access required')
+    }
+
+    const [targetReport] = await db
+      .select({ id: reports.id, clientId: reports.clientId })
+      .from(reports)
+      .where(eq(reports.id, data.reportId))
+
+    if (!targetReport) {
+      throw new Error('Report not found')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      if (!targetReport.clientId) throw new Error('Report not associated with any client')
+      const [targetClient] = await db
+        .select({ id: clients.id })
+        .from(clients)
+        .where(
+          and(
+            eq(clients.id, targetReport.clientId),
+            eq(clients.partnerId, effectivePartnerId),
+            isNull(clients.deletedAt)
+          )
+        )
+      if (!targetClient) {
+        throw new Error('Unauthorized: You can only revoke share links for your assigned clients')
+      }
+    }
+
+    const [updated] = await db
+      .update(reports)
+      .set({
+        shareRevokedAt: new Date(),
+      })
+      .where(eq(reports.id, data.reportId))
+      .returning({
+        id: reports.id,
+        shareToken: reports.shareToken,
+        shareRevokedAt: reports.shareRevokedAt,
+      })
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'revoke_report_share_link',
+    })
+
+    return {
+      success: true,
+      shareToken: updated.shareToken,
+      shareRevokedAt: updated.shareRevokedAt,
+    }
+  })
+
+/**
+ * Server Function: Public, unauthenticated endpoint to fetch report by shareToken
+ * - Strictly snapshot-only rendering (clientSnapshot, deliverablesSnapshot, frozen metric columns)
+ * - NO joins on `users` table
+ * - Excludes user IDs, creator emails, creator names, internal database keys
+ * - Returns `{ found: false }` if token is missing or revoked
+ */
+export const getPublicReportByShareTokenServerFn = createServerFn({ method: 'GET' })
+  .validator((data: { shareToken: string }) => {
+    if (!data.shareToken || typeof data.shareToken !== 'string') {
+      throw new Error('Share token is required')
+    }
+    return data
+  })
+  .handler(async ({ data }) => {
+    const trimmedToken = data.shareToken.trim()
+    if (!trimmedToken) {
+      return { found: false, report: null }
+    }
+
+    const [reportRow] = await db
+      .select({
+        id: reports.id,
+        title: reports.title,
+        reportMonth: reports.reportMonth,
+        periodStart: reports.periodStart,
+        periodEnd: reports.periodEnd,
+        clientSnapshot: reports.clientSnapshot,
+        // GBP Metrics
+        gbpCalls: reports.gbpCalls,
+        gbpDirections: reports.gbpDirections,
+        gbpViews: reports.gbpViews,
+        gbpWebsiteClicks: reports.gbpWebsiteClicks,
+        prevGbpCalls: reports.prevGbpCalls,
+        prevGbpDirections: reports.prevGbpDirections,
+        prevGbpViews: reports.prevGbpViews,
+        prevGbpWebsiteClicks: reports.prevGbpWebsiteClicks,
+        gbpRating: reports.gbpRating,
+        gbpReviewCount: reports.gbpReviewCount,
+        gbpReviewsCount: reports.gbpReviewsCount,
+        prevGbpReviewsCount: reports.prevGbpReviewsCount,
+        // GSC Metrics
+        gscClicks: reports.gscClicks,
+        gscImpressions: reports.gscImpressions,
+        gscCtr: reports.gscCtr,
+        gscPosition: reports.gscPosition,
+        prevGscClicks: reports.prevGscClicks,
+        prevGscImpressions: reports.prevGscImpressions,
+        prevGscCtr: reports.prevGscCtr,
+        prevGscPosition: reports.prevGscPosition,
+        // GA4 Metrics
+        gaUsers: reports.gaUsers,
+        gaNewUsers: reports.gaNewUsers,
+        gaEngagementRate: reports.gaEngagementRate,
+        gaSessions: reports.gaSessions,
+        gaViews: reports.gaViews,
+        prevGaUsers: reports.prevGaUsers,
+        prevGaNewUsers: reports.prevGaNewUsers,
+        prevGaEngagementRate: reports.prevGaEngagementRate,
+        prevGaSessions: reports.prevGaSessions,
+        prevGaViews: reports.prevGaViews,
+        // Display Options
+        displayOptions: reports.displayOptions,
+        // Deep Metric Tables
+        topQueries: reports.topQueries,
+        topPages: reports.topPages,
+        // Narrative Fields
+        summaryTitle: reports.summaryTitle,
+        summary: reports.summary,
+        workCompleted: reports.workCompleted,
+        nextSteps: reports.nextSteps,
+        createdAt: reports.createdAt,
+        shareRevokedAt: reports.shareRevokedAt,
+      })
+      .from(reports)
+      .where(eq(reports.shareToken, trimmedToken))
+
+    // If report does not exist or share link has been revoked, return not found
+    if (!reportRow || reportRow.shareRevokedAt !== null) {
+      return { found: false, report: null }
+    }
+
+    return {
+      found: true,
+      report: reportRow as unknown as Report,
+    }
+  })
+
 
 

@@ -3,6 +3,7 @@ import { desc, eq, and, isNull, sql } from 'drizzle-orm'
 import { db, users } from '../db'
 import { hashPassword } from '../lib/auth'
 import { assertActiveSession } from './auth'
+import { logActivity } from './activity-logger'
 
 export interface EmployeeItem {
   id: string
@@ -321,6 +322,13 @@ export const deleteTeamMemberServerFn = createServerFn({ method: 'POST' })
         updatedAt: new Date(),
       })
       .where(eq(users.id, data.id))
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'delete_user',
+    })
 
     return { success: true }
   })
