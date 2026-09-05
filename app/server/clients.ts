@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, inArray, and, isNull } from 'drizzle-orm'
+import { desc, eq, inArray, and, isNull, sql } from 'drizzle-orm'
 import { db, clients, reports, users, type Client } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { logActivity } from './activity-logger'
@@ -38,7 +38,7 @@ export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
         .select()
         .from(clients)
         .where(and(eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
-        .orderBy(desc(clients.createdAt))
+        .orderBy(sql`lower(${clients.businessName}) asc nulls last`)
 
       const clientIds = partnerClients.map((c) => c.id)
       const countMap: Record<string, number> = {}
@@ -68,7 +68,7 @@ export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
       .select()
       .from(clients)
       .where(isNull(clients.deletedAt))
-      .orderBy(desc(clients.createdAt))
+      .orderBy(sql`lower(${clients.businessName}) asc nulls last`)
 
     const allReports = await db.select({ clientId: reports.clientId }).from(reports)
     const countMap: Record<string, number> = {}
@@ -87,6 +87,7 @@ export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
       })
       .from(users)
       .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
+      .orderBy(sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
 
     const partnerMap: Record<string, { id: string; name: string | null; email: string }> = {}
     for (const p of partnerUsers) {

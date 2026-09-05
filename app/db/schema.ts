@@ -2,6 +2,7 @@ import {
   type AnyPgColumn,
   boolean,
   doublePrecision,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -9,6 +10,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm'
 
 /**
  * Messages table for storing Audit and Contact form inquiries
@@ -73,19 +75,25 @@ export type NewPost = typeof posts.$inferInsert
 /**
  * Users table for role-based access control (Superadmin vs Partner Agency)
  */
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  email: text('email').unique().notNull(),
-  passwordHash: text('password_hash').notNull(),
-  role: text('role', { enum: ['superadmin', 'partner', 'client', 'partner_employee'] }).default('partner').notNull(),
-  clientId: uuid('client_id'),
-  partnerId: uuid('partner_id').references((): AnyPgColumn => users.id, { onDelete: 'cascade' }),
-  isActive: boolean('is_active').default(true).notNull(),
-  name: text('name'),
-  deletedAt: timestamp('deleted_at', { withTimezone: true }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-})
+export const users = pgTable(
+  'users',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    email: text('email').unique().notNull(),
+    passwordHash: text('password_hash').notNull(),
+    role: text('role', { enum: ['superadmin', 'partner', 'client', 'partner_employee'] }).default('partner').notNull(),
+    clientId: uuid('client_id'),
+    partnerId: uuid('partner_id').references((): AnyPgColumn => users.id, { onDelete: 'cascade' }),
+    isActive: boolean('is_active').default(true).notNull(),
+    name: text('name'),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('users_lower_name_idx').on(sql`lower(${table.name})`),
+  ]
+)
 
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
@@ -110,23 +118,29 @@ export type NewMedia = typeof media.$inferInsert
 /**
  * Clients table for managing agency clients and their branding
  */
-export const clients = pgTable('clients', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  businessName: text('business_name').notNull(),
-  websiteUrl: text('website_url'),
-  logoUrl: text('logo_url'),
-  primaryColor: text('primary_color').default('#2563eb'),
-  secondaryColor: text('secondary_color').default('#1e293b'),
-  // White-labeling configuration
-  isWhiteLabel: boolean('is_white_label').default(false).notNull(),
-  partnerName: text('partner_name'),
-  partnerLogoUrl: text('partner_logo_url'),
-  // Partner assignment (null = direct Superadmin client)
-  partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'set null' }),
-  deletedAt: timestamp('deleted_at', { withTimezone: true }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-})
+export const clients = pgTable(
+  'clients',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    businessName: text('business_name').notNull(),
+    websiteUrl: text('website_url'),
+    logoUrl: text('logo_url'),
+    primaryColor: text('primary_color').default('#2563eb'),
+    secondaryColor: text('secondary_color').default('#1e293b'),
+    // White-labeling configuration
+    isWhiteLabel: boolean('is_white_label').default(false).notNull(),
+    partnerName: text('partner_name'),
+    partnerLogoUrl: text('partner_logo_url'),
+    // Partner assignment (null = direct Superadmin client)
+    partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'set null' }),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('clients_lower_business_name_idx').on(sql`lower(${table.businessName})`),
+  ]
+)
 
 export type Client = typeof clients.$inferSelect
 export type NewClient = typeof clients.$inferInsert

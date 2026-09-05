@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
 import { db, messages, type Message } from '../db'
 import { assertSuperadminSession } from './auth'
 
@@ -19,17 +19,22 @@ export const getMessagesServerFn = createServerFn({ method: 'GET' })
     let query = db.select().from(messages)
 
     let results: Message[]
+    const orderByClause = [
+      sql`case when ${messages.status} = 'new' then 0 else 1 end asc`,
+      sql`${messages.createdAt} desc nulls last`,
+    ]
+
     if (status && status !== 'all') {
       results = await db
         .select()
         .from(messages)
         .where(eq(messages.status, status))
-        .orderBy(desc(messages.createdAt))
+        .orderBy(...orderByClause)
     } else {
       results = await db
         .select()
         .from(messages)
-        .orderBy(desc(messages.createdAt))
+        .orderBy(...orderByClause)
     }
 
     // Filter by search query in memory if provided

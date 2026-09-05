@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { db } from '../app/db/index'
-import { users, clients, reports } from '../app/db/schema'
-import { eq } from 'drizzle-orm'
+import { users, clients, reports, messages, media, activityLogs } from '../app/db/schema'
+import { eq, sql, inArray } from 'drizzle-orm'
 import { hashPassword, verifyPassword, createSessionToken, verifySessionToken, getSessionData } from '../app/lib/auth'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
@@ -763,6 +763,206 @@ async function runSimulations() {
     assert(true, 'Snapshot test client and report cleanly purged')
   } catch (err: any) {
     assert(false, 'Immutable report snapshot simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 13: SQL-Level Sorting Defaults & Case-Insensitive Nulls Last
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 13: SQL-Level Sorting Defaults & Case-Insensitive Nulls Last')
+  try {
+    // 1. Clients: lower(business_name) ASC with nulls last
+    const [cZebra] = await db.insert(clients).values({
+      name: 'Zebra Contact',
+      businessName: 'zebra analytics',
+    }).returning()
+    const [cApple] = await db.insert(clients).values({
+      name: 'Apple Contact',
+      businessName: 'Apple Orchard',
+    }).returning()
+    const [cBanana] = await db.insert(clients).values({
+      name: 'Banana Contact',
+      businessName: 'banana bakery',
+    }).returning()
+
+    const sortedClients = await db
+      .select({ id: clients.id, businessName: clients.businessName })
+      .from(clients)
+      .where(inArray(clients.id, [cZebra.id, cApple.id, cBanana.id]))
+      .orderBy(sql`lower(${clients.businessName}) asc nulls last`)
+
+    assert(
+      sortedClients[0].id === cApple.id &&
+      sortedClients[1].id === cBanana.id &&
+      sortedClients[2].id === cZebra.id,
+      'Clients default sort is case-insensitive lower(business_name) ASC (Apple Orchard -> banana bakery -> zebra analytics)'
+    )
+
+    await db.delete(clients).where(inArray(clients.id, [cZebra.id, cApple.id, cBanana.id]))
+
+    // 2. Partners: coalesce(lower(name), lower(email)) ASC nulls last
+    const dummyPassword = await hashPassword('TestSortPass123!')
+    const [pZebra] = await db.insert(users).values({
+      name: 'Zebra Digital',
+      email: 'zebra-agency@sort-test.com',
+      passwordHash: dummyPassword,
+      role: 'partner',
+    }).returning()
+    const [pAlpha] = await db.insert(users).values({
+      name: null,
+      email: 'alpha-agency@sort-test.com',
+      passwordHash: dummyPassword,
+      role: 'partner',
+    }).returning()
+    const [pBeta] = await db.insert(users).values({
+      name: 'beta agency',
+      email: 'z-beta@sort-test.com',
+      passwordHash: dummyPassword,
+      role: 'partner',
+    }).returning()
+
+    const sortedPartners = await db
+      .select({ id: users.id, name: users.name, email: users.email })
+      .from(users)
+      .where(inArray(users.id, [pZebra.id, pAlpha.id, pBeta.id]))
+      .orderBy(sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
+
+    assert(
+      sortedPartners[0].id === pAlpha.id &&
+      sortedPartners[1].id === pBeta.id &&
+      sortedPartners[2].id === pZebra.id,
+      'Partners default sort is lower(name) ASC falling back to lower(email) when name is null (alpha email -> beta -> Zebra)'
+    )
+
+    await db.delete(users).where(inArray(users.id, [pZebra.id, pAlpha.id, pBeta.id]))
+
+    // 3. Team members: active first (case-insensitive name ASC), inactive last
+    const [uInactive] = await db.insert(users).values({
+      name: 'Aaron Inactive',
+      email: 'aaron-inactive@sort-test.com',
+      passwordHash: dummyPassword,
+      role: 'partner_employee',
+      isActive: false,
+    }).returning()
+    const [uBobActive] = await db.insert(users).values({
+      name: 'bob active',
+      email: 'bob-active@sort-test.com',
+      passwordHash: dummyPassword,
+      role: 'partner_employee',
+      isActive: true,
+    }).returning()
+    const [uCharlieActive] = await db.insert(users).values({
+      name: 'Charlie Active',
+      email: 'charlie-active@sort-test.com',
+      passwordHash: dummyPassword,
+      role: 'partner_employee',
+      isActive: true,
+    }).returning()
+
+    const sortedTeam = await db
+      .select({ id: users.id, name: users.name, isActive: users.isActive })
+      .from(users)
+      .where(inArray(users.id, [uInactive.id, uBobActive.id, uCharlieActive.id]))
+      .orderBy(sql`case when ${users.isActive} = true then 0 else 1 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
+
+    assert(
+      sortedTeam[0].id === uBobActive.id &&
+      sortedTeam[1].id === uCharlieActive.id &&
+      sortedTeam[2].id === uInactive.id,
+      'Team members default sort orders active users first alphabetically, inactive last (bob -> Charlie -> Aaron Inactive)'
+    )
+
+    await db.delete(users).where(inArray(users.id, [uInactive.id, uBobActive.id, uCharlieActive.id]))
+
+    // 4. Reports: period_start DESC nulls last
+    const [repClient] = await db.insert(clients).values({
+      name: 'Report Sort Contact',
+      businessName: 'Report Sort Test Client',
+    }).returning()
+
+    const [rJan] = await db.insert(reports).values({
+      clientId: repClient.id,
+      title: 'January Report',
+      periodStart: new Date('2026-01-01T00:00:00Z'),
+      periodEnd: new Date('2026-01-31T23:59:59Z'),
+      reportMonth: 'January 2026',
+    }).returning()
+    const [rMarch] = await db.insert(reports).values({
+      clientId: repClient.id,
+      title: 'March Report',
+      periodStart: new Date('2026-03-01T00:00:00Z'),
+      periodEnd: new Date('2026-03-31T23:59:59Z'),
+      reportMonth: 'March 2026',
+    }).returning()
+    const [rFeb] = await db.insert(reports).values({
+      clientId: repClient.id,
+      title: 'February Report',
+      periodStart: new Date('2026-02-01T00:00:00Z'),
+      periodEnd: new Date('2026-02-28T23:59:59Z'),
+      reportMonth: 'February 2026',
+    }).returning()
+
+    const sortedReports = await db
+      .select({ id: reports.id, periodStart: reports.periodStart })
+      .from(reports)
+      .where(inArray(reports.id, [rJan.id, rMarch.id, rFeb.id]))
+      .orderBy(sql`${reports.periodStart} desc nulls last`)
+
+    assert(
+      sortedReports[0].id === rMarch.id &&
+      sortedReports[1].id === rFeb.id &&
+      sortedReports[2].id === rJan.id,
+      'Reports default sort is period_start DESC (March -> February -> January)'
+    )
+
+    await db.delete(reports).where(inArray(reports.id, [rJan.id, rMarch.id, rFeb.id]))
+    await db.delete(clients).where(eq(clients.id, repClient.id))
+
+    // 5. Inbound Leads / Messages: status = 'new' first, then created_at DESC
+    const now = Date.now()
+    const [mArchived] = await db.insert(messages).values({
+      type: 'contact',
+      name: 'Old Archived Lead',
+      businessName: 'Archived Corp',
+      email: 'archived@lead.com',
+      message: 'Hello',
+      status: 'archived',
+      createdAt: new Date(now - 10000),
+    }).returning()
+    const [mNewRecent] = await db.insert(messages).values({
+      type: 'audit',
+      name: 'New Recent Lead',
+      businessName: 'Recent Corp',
+      email: 'recent@new.com',
+      message: 'Hello',
+      status: 'new',
+      createdAt: new Date(now),
+    }).returning()
+    const [mNewOlder] = await db.insert(messages).values({
+      type: 'contact',
+      name: 'New Older Lead',
+      businessName: 'Older Corp',
+      email: 'older@new.com',
+      message: 'Hello',
+      status: 'new',
+      createdAt: new Date(now - 5000),
+    }).returning()
+
+    const sortedMessages = await db
+      .select({ id: messages.id, status: messages.status, createdAt: messages.createdAt })
+      .from(messages)
+      .where(inArray(messages.id, [mArchived.id, mNewRecent.id, mNewOlder.id]))
+      .orderBy(sql`case when ${messages.status} = 'new' then 0 else 1 end asc, ${messages.createdAt} desc nulls last`)
+
+    assert(
+      sortedMessages[0].id === mNewRecent.id &&
+      sortedMessages[1].id === mNewOlder.id &&
+      sortedMessages[2].id === mArchived.id,
+      'Messages default sort is status = "new" first, then created_at DESC (New Recent -> New Older -> Archived)'
+    )
+
+    await db.delete(messages).where(inArray(messages.id, [mArchived.id, mNewRecent.id, mNewOlder.id]))
+  } catch (err: any) {
+    assert(false, 'SQL-level sorting defaults simulation failed', err.message)
   }
 
   // ---------------------------------------------------------------

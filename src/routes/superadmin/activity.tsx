@@ -21,6 +21,9 @@ import {
   Globe,
   Clock,
   User as UserIcon,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react'
 import { AdminNav } from '../../components/AdminNav'
 import { getActivityLogsServerFn, type ActivityLogItem, type ActivityLogsResponse, type ActivityAction } from '../../server/activity'
@@ -36,18 +39,28 @@ export interface ActivitySearch {
     | 'delete_report'
   page?: number
   pageSize?: number
+  sort?: 'user' | 'role' | 'event' | 'ip' | 'device' | 'createdAt'
+  order?: 'asc' | 'desc'
 }
 
 export const Route = createFileRoute('/superadmin/activity')({
-  validateSearch: (search: Record<string, unknown>): ActivitySearch => ({
-    filter: typeof search.filter === 'string' ? (search.filter as ActivitySearch['filter']) : undefined,
-    page: search.page ? Math.max(1, Number(search.page)) : undefined,
-    pageSize: search.pageSize ? Math.min(100, Math.max(10, Number(search.pageSize))) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): ActivitySearch => {
+    const sort = search.sort as ActivitySearch['sort']
+    const order = search.order as ActivitySearch['order']
+    return {
+      filter: typeof search.filter === 'string' ? (search.filter as ActivitySearch['filter']) : undefined,
+      page: search.page ? Math.max(1, Number(search.page)) : undefined,
+      pageSize: search.pageSize ? Math.min(100, Math.max(10, Number(search.pageSize))) : undefined,
+      sort: ['user', 'role', 'event', 'ip', 'device', 'createdAt'].includes(sort || '') ? sort : undefined,
+      order: order === 'asc' ? 'asc' : order === 'desc' ? 'desc' : undefined,
+    }
+  },
   loaderDeps: ({ search }) => ({
     filter: search.filter || 'all',
     page: search.page || 1,
     pageSize: search.pageSize || 25,
+    sort: search.sort,
+    order: search.order,
   }),
   loader: async ({ deps }) => {
     return await getActivityLogsServerFn({ data: deps })
@@ -97,7 +110,7 @@ function SuperadminActivityPage() {
   const pageSize: number = data.pageSize || 25
   const totalPages: number = data.totalPages || 1
 
-  const search = Route.useSearch() as { filter?: string; page?: number; pageSize?: number }
+  const search = Route.useSearch()
   const currentFilter = search.filter || 'all'
   const navigate = useNavigate({ from: Route.fullPath })
   const [isPending, startTransition] = useTransition()
@@ -122,6 +135,24 @@ function SuperadminActivityPage() {
         search: (prev: any) => ({
           ...prev,
           page: newPage,
+        }),
+      })
+    })
+  }
+
+  const handleHeaderSort = (columnKey: 'user' | 'role' | 'event' | 'ip' | 'device' | 'createdAt') => {
+    startTransition(() => {
+      let nextOrder: 'asc' | 'desc' = 'asc'
+      if (search.sort === columnKey) {
+        nextOrder = search.order === 'asc' ? 'desc' : 'asc'
+      } else if (columnKey === 'createdAt') {
+        nextOrder = 'desc'
+      }
+      navigate({
+        search: (prev: any) => ({
+          ...prev,
+          sort: columnKey,
+          order: nextOrder,
         }),
       })
     })
@@ -378,22 +409,112 @@ function SuperadminActivityPage() {
                 <thead className="bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-200/80 dark:border-slate-800 font-mono text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <tr>
                     <th scope="col" className="py-3.5 px-4 font-bold">
-                      User
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('user')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-bold uppercase tracking-wider"
+                      >
+                        <span>User</span>
+                        {search.sort === 'user' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
                     </th>
                     <th scope="col" className="py-3.5 px-4 font-bold">
-                      Role
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('role')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-bold uppercase tracking-wider"
+                      >
+                        <span>Role</span>
+                        {search.sort === 'role' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
                     </th>
                     <th scope="col" className="py-3.5 px-4 font-bold">
-                      Event
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('event')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-bold uppercase tracking-wider"
+                      >
+                        <span>Event</span>
+                        {search.sort === 'event' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
                     </th>
                     <th scope="col" className="py-3.5 px-4 font-bold">
-                      IP Address
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('ip')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-bold uppercase tracking-wider"
+                      >
+                        <span>IP Address</span>
+                        {search.sort === 'ip' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
                     </th>
                     <th scope="col" className="py-3.5 px-4 font-bold">
-                      Device
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('device')}
+                        className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-bold uppercase tracking-wider"
+                      >
+                        <span>Device</span>
+                        {search.sort === 'device' ? (
+                          search.order === 'desc' ? (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
                     </th>
                     <th scope="col" className="py-3.5 px-4 font-bold text-right">
-                      Date / Time
+                      <button
+                        type="button"
+                        onClick={() => handleHeaderSort('createdAt')}
+                        className="inline-flex items-center gap-1.5 ml-auto hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-bold uppercase tracking-wider"
+                      >
+                        <span>Date / Time</span>
+                        {search.sort === 'createdAt' || !search.sort ? (
+                          search.order === 'asc' ? (
+                            <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                          ) : (
+                            <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </button>
                     </th>
                   </tr>
                 </thead>

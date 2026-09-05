@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and, isNull } from 'drizzle-orm'
+import { desc, eq, and, isNull, sql } from 'drizzle-orm'
 import { db, users } from '../db'
 import { hashPassword } from '../lib/auth'
 import { assertActiveSession } from './auth'
@@ -22,12 +22,43 @@ export interface AgencyOwnerInfo {
   role: 'partner' | 'superadmin'
 }
 
+function getTeamOrderBy(sort?: string, order: 'asc' | 'desc' = 'asc') {
+  const isDesc = order === 'desc'
+  if (sort === 'name') {
+    return isDesc
+      ? sql`coalesce(lower(${users.name}), lower(${users.email})) desc nulls last`
+      : sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'role') {
+    return isDesc
+      ? sql`lower(${users.role}) desc nulls last`
+      : sql`lower(${users.role}) asc nulls last`
+  }
+  if (sort === 'createdAt') {
+    return isDesc
+      ? sql`${users.createdAt} desc nulls last`
+      : sql`${users.createdAt} asc nulls last`
+  }
+  if (sort === 'status') {
+    return isDesc
+      ? sql`case when ${users.isActive} = true then 1 else 0 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+      : sql`case when ${users.isActive} = true then 0 else 1 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'agency') {
+    return isDesc
+      ? sql`${users.partnerId} desc nulls last`
+      : sql`${users.partnerId} asc nulls last`
+  }
+  // Default: lower(name) ASC, with is_active = false rows last
+  return sql`case when ${users.isActive} = true then 0 else 1 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+}
+
 /**
  * Server Function: Get team members (employees) for the active partner agency or superadmin.
  * Strictly blocked for partner_employee accounts.
  */
 export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
-  .validator((data?: { partnerId?: string }) => {
+  .validator((data?: { partnerId?: string; sort?: string; order?: 'asc' | 'desc' }) => {
     return data || {}
   })
   .handler(async ({ data }): Promise<{
@@ -46,6 +77,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
     }
 
     const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+    const orderByClause = getTeamOrderBy(data?.sort, data?.order)
 
     if (!isSuperadmin) {
       // Partner agency owner: fetch agency owner info and their own employees
@@ -77,7 +109,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
             isNull(users.deletedAt)
           )
         )
-        .orderBy(desc(users.createdAt))
+        .orderBy(orderByClause)
 
       return {
         employees: employees as EmployeeItem[],
@@ -108,7 +140,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
       })
       .from(users)
       .where(and(...conditions))
-      .orderBy(desc(users.createdAt))
+      .orderBy(orderByClause)
 
     // Attach partner agency names
     const partnerOwners = await db

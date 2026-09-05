@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter, useNavigate } from '@tanstack/react-router'
 import React, { useState, useMemo, useEffect } from 'react'
 import {
   Users,
@@ -23,6 +23,9 @@ import {
   Loader2,
   KeyRound,
   User,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react'
 import { AdminNav } from '../../components/AdminNav'
 import { ConfirmModal } from '../../components/ConfirmModal'
@@ -42,7 +45,20 @@ import {
   type ManagedUserItem,
 } from '../../server/passwords'
 
+interface TeamSearch {
+  sort?: 'name' | 'role' | 'agency' | 'createdAt' | 'status'
+  order?: 'asc' | 'desc'
+}
+
 export const Route = createFileRoute('/admin/team')({
+  validateSearch: (search: Record<string, unknown>): TeamSearch => {
+    const sort = search.sort as TeamSearch['sort']
+    const order = search.order as TeamSearch['order']
+    return {
+      sort: ['name', 'role', 'agency', 'createdAt', 'status'].includes(sort || '') ? sort : undefined,
+      order: order === 'desc' ? 'desc' : order === 'asc' ? 'asc' : undefined,
+    }
+  },
   beforeLoad: async ({ location }) => {
     const auth = await checkAuthServerFn()
     if (!auth.isAuthenticated) {
@@ -59,12 +75,18 @@ export const Route = createFileRoute('/admin/team')({
     }
     return { auth }
   },
-  loader: async ({ context }) => {
+  loaderDeps: ({ search }) => ({
+    sort: search.sort,
+    order: search.order,
+  }),
+  loader: async ({ deps, context }) => {
     const auth = (context as any)?.auth || (await checkAuthServerFn())
     const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
     const [teamData, allUsersData] = await Promise.all([
-      getTeamMembersServerFn(),
-      isSuperadmin ? getAllUsersForAdminServerFn() : Promise.resolve({ users: [] }),
+      getTeamMembersServerFn({ data: { sort: deps.sort, order: deps.order } }),
+      isSuperadmin
+        ? getAllUsersForAdminServerFn({ data: { sort: deps.sort, order: deps.order } })
+        : Promise.resolve({ users: [] }),
     ])
     return {
       ...teamData,
@@ -95,6 +117,8 @@ function formatDate(dateInput: string | Date | null) {
 
 function AdminTeamPage() {
   const router = useRouter()
+  const search = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
   const {
     employees: initialEmployees,
     agencyOwner,
@@ -109,6 +133,22 @@ function AdminTeamPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [employeeToDelete, setEmployeeToDelete] = useState<EmployeeItem | null>(null)
+
+  const handleHeaderSort = (columnKey: 'name' | 'role' | 'agency' | 'createdAt' | 'status') => {
+    let nextOrder: 'asc' | 'desc' = 'asc'
+    if (search.sort === columnKey) {
+      nextOrder = search.order === 'asc' ? 'desc' : 'asc'
+    } else if (columnKey === 'createdAt') {
+      nextOrder = 'desc'
+    }
+    navigate({
+      search: (prev: any) => ({
+        ...prev,
+        sort: columnKey,
+        order: nextOrder,
+      }),
+    })
+  }
   const [userToResetPassword, setUserToResetPassword] = useState<{
     id: string
     name: string | null
@@ -518,11 +558,98 @@ function AdminTeamPage() {
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/40 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">
-                      <th className="py-3.5 px-4 sm:px-6">Team Member / Account</th>
-                      <th className="py-3.5 px-4">Role &amp; Permissions</th>
-                      {isSuperadmin && <th className="py-3.5 px-4">Agency / Details</th>}
-                      <th className="py-3.5 px-4">Date Added</th>
-                      <th className="py-3.5 px-4">Status</th>
+                      <th className="py-3.5 px-4 sm:px-6">
+                        <button
+                          type="button"
+                          onClick={() => handleHeaderSort('name')}
+                          className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                        >
+                          <span>Team Member / Account</span>
+                          {search.sort === 'name' ? (
+                            search.order === 'desc' ? (
+                              <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                            ) : (
+                              <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                          )}
+                        </button>
+                      </th>
+                      <th className="py-3.5 px-4">
+                        <button
+                          type="button"
+                          onClick={() => handleHeaderSort('role')}
+                          className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                        >
+                          <span>Role &amp; Permissions</span>
+                          {search.sort === 'role' ? (
+                            search.order === 'desc' ? (
+                              <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                            ) : (
+                              <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                          )}
+                        </button>
+                      </th>
+                      {isSuperadmin && (
+                        <th className="py-3.5 px-4">
+                          <button
+                            type="button"
+                            onClick={() => handleHeaderSort('agency')}
+                            className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                          >
+                            <span>Agency / Details</span>
+                            {search.sort === 'agency' ? (
+                              search.order === 'desc' ? (
+                                <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                              ) : (
+                                <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                              )
+                            ) : (
+                              <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                            )}
+                          </button>
+                        </th>
+                      )}
+                      <th className="py-3.5 px-4">
+                        <button
+                          type="button"
+                          onClick={() => handleHeaderSort('createdAt')}
+                          className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                        >
+                          <span>Date Added</span>
+                          {search.sort === 'createdAt' ? (
+                            search.order === 'desc' ? (
+                              <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                            ) : (
+                              <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                          )}
+                        </button>
+                      </th>
+                      <th className="py-3.5 px-4">
+                        <button
+                          type="button"
+                          onClick={() => handleHeaderSort('status')}
+                          className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition cursor-pointer font-semibold"
+                        >
+                          <span>Status</span>
+                          {search.sort === 'status' ? (
+                            search.order === 'desc' ? (
+                              <ArrowDown className="w-3.5 h-3.5 text-rose-500" />
+                            ) : (
+                              <ArrowUp className="w-3.5 h-3.5 text-rose-500" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                          )}
+                        </button>
+                      </th>
                       <th className="py-3.5 px-4 sm:px-6 text-right">Actions</th>
                     </tr>
                   </thead>

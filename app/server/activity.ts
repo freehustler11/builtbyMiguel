@@ -33,6 +33,42 @@ export interface ActivityLogsResponse {
   totalPages: number
 }
 
+function getActivityOrderBy(sort?: string, order: 'asc' | 'desc' = 'desc') {
+  const isDesc = order === 'desc'
+  if (sort === 'user') {
+    return isDesc
+      ? sql`coalesce(lower(${users.name}), lower(${activityLogs.userEmail})) desc nulls last`
+      : sql`coalesce(lower(${users.name}), lower(${activityLogs.userEmail})) asc nulls last`
+  }
+  if (sort === 'role') {
+    return isDesc
+      ? sql`coalesce(lower(${activityLogs.role}), lower(${users.role})) desc nulls last`
+      : sql`coalesce(lower(${activityLogs.role}), lower(${users.role})) asc nulls last`
+  }
+  if (sort === 'event' || sort === 'action') {
+    return isDesc
+      ? sql`lower(${activityLogs.action}) desc nulls last`
+      : sql`lower(${activityLogs.action}) asc nulls last`
+  }
+  if (sort === 'ip' || sort === 'ipAddress') {
+    return isDesc
+      ? sql`${activityLogs.ipAddress} desc nulls last`
+      : sql`${activityLogs.ipAddress} asc nulls last`
+  }
+  if (sort === 'device') {
+    return isDesc
+      ? sql`${activityLogs.userAgent} desc nulls last`
+      : sql`${activityLogs.userAgent} asc nulls last`
+  }
+  if (sort === 'createdAt' || sort === 'date') {
+    return isDesc
+      ? sql`${activityLogs.createdAt} desc nulls last`
+      : sql`${activityLogs.createdAt} asc nulls last`
+  }
+  // Default: created_at DESC
+  return sql`${activityLogs.createdAt} desc nulls last`
+}
+
 /**
  * Server Function: Query activity logs with filtering and pagination (Superadmin only)
  */
@@ -42,11 +78,15 @@ export const getActivityLogsServerFn = createServerFn({ method: 'GET' })
       filter?: 'all' | 'login' | 'logout' | 'failed_login' | 'create_client' | 'create_report' | 'delete_report'
       page?: number
       pageSize?: number
+      sort?: string
+      order?: 'asc' | 'desc'
     }) => {
       return {
         filter: data?.filter || 'all',
         page: Math.max(1, Number(data?.page) || 1),
         pageSize: Math.min(100, Math.max(10, Number(data?.pageSize) || 25)),
+        sort: data?.sort,
+        order: data?.order || 'desc',
       }
     }
   )
@@ -56,7 +96,7 @@ export const getActivityLogsServerFn = createServerFn({ method: 'GET' })
       throw new Error('Unauthorized: Superadmin privileges required to view activity logs')
     }
 
-    const { filter, page, pageSize } = data
+    const { filter, page, pageSize, sort, order } = data
     const offset = (page - 1) * pageSize
 
     let whereClause = undefined
@@ -100,7 +140,7 @@ export const getActivityLogsServerFn = createServerFn({ method: 'GET' })
       .from(activityLogs)
       .leftJoin(users, eq(activityLogs.userId, users.id))
       .where(whereClause)
-      .orderBy(desc(activityLogs.createdAt))
+      .orderBy(getActivityOrderBy(sort, order))
       .limit(pageSize)
       .offset(offset)
 

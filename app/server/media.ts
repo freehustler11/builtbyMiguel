@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, isNull } from 'drizzle-orm'
+import { desc, eq, isNull, sql } from 'drizzle-orm'
 import { db, media, users, type Media } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { uploadFileToStorage, deleteFileFromStorage, getStorageProviderInfo } from './storage'
@@ -40,7 +40,7 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
         .select()
         .from(media)
         .where(eq(media.partnerId, effectivePartnerId))
-        .orderBy(desc(media.createdAt))
+        .orderBy(sql`${media.createdAt} desc nulls last`)
     } else {
       // Superadmin: can view all, direct agency files, or filter by specific partner
       if (partnerId && partnerId !== 'all') {
@@ -49,19 +49,19 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
             .select()
             .from(media)
             .where(isNull(media.partnerId))
-            .orderBy(desc(media.createdAt))
+            .orderBy(sql`${media.createdAt} desc nulls last`)
         } else {
           items = await db
             .select()
             .from(media)
             .where(eq(media.partnerId, partnerId))
-            .orderBy(desc(media.createdAt))
+            .orderBy(sql`${media.createdAt} desc nulls last`)
         }
       } else {
         items = await db
           .select()
           .from(media)
-          .orderBy(desc(media.createdAt))
+          .orderBy(sql`${media.createdAt} desc nulls last`)
       }
     }
 

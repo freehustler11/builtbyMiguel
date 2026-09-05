@@ -293,6 +293,10 @@ export async function runMigrations() {
     await sql`ALTER TABLE "reports" ALTER COLUMN "period_start" SET NOT NULL`
     await sql`ALTER TABLE "reports" ALTER COLUMN "period_end" SET NOT NULL`
 
+    // Ensure lowercase indexes for alphabetical directory sorting
+    await sql`CREATE INDEX IF NOT EXISTS "clients_lower_business_name_idx" ON "clients" (lower("business_name"))`
+    await sql`CREATE INDEX IF NOT EXISTS "users_lower_name_idx" ON "users" (lower("name"))`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

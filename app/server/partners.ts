@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and, isNull } from 'drizzle-orm'
+import { desc, eq, and, isNull, sql } from 'drizzle-orm'
 import { db, users, clients } from '../db'
 import { hashPassword } from '../lib/auth'
 import { assertSuperadminSession } from './auth'
@@ -30,7 +30,7 @@ export const getPartnersServerFn = createServerFn({ method: 'GET' }).handler(
       })
       .from(users)
       .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
-      .orderBy(desc(users.createdAt))
+      .orderBy(sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
 
     const allClients = await db
       .select({

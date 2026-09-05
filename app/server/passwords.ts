@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { eq, desc, and, isNull } from 'drizzle-orm'
+import { eq, desc, and, isNull, sql } from 'drizzle-orm'
 import { db, users } from '../db'
 import { hashPassword, verifyPassword, invalidateSessionCache } from '../lib/auth'
 import { assertActiveSession, assertSuperadminSession } from './auth'
@@ -179,37 +179,69 @@ export const adminResetUserPasswordServerFn = createServerFn({ method: 'POST' })
     }
   })
 
+function getUsersOrderBy(sort?: string, order: 'asc' | 'desc' = 'asc') {
+  const isDesc = order === 'desc'
+  if (sort === 'name') {
+    return isDesc
+      ? sql`coalesce(lower(${users.name}), lower(${users.email})) desc nulls last`
+      : sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'role') {
+    return isDesc
+      ? sql`lower(${users.role}) desc nulls last`
+      : sql`lower(${users.role}) asc nulls last`
+  }
+  if (sort === 'createdAt') {
+    return isDesc
+      ? sql`${users.createdAt} desc nulls last`
+      : sql`${users.createdAt} asc nulls last`
+  }
+  if (sort === 'status') {
+    return isDesc
+      ? sql`case when ${users.isActive} = true then 1 else 0 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+      : sql`case when ${users.isActive} = true then 0 else 1 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+  }
+  if (sort === 'agency') {
+    return isDesc
+      ? sql`${users.partnerId} desc nulls last`
+      : sql`${users.partnerId} asc nulls last`
+  }
+  return sql`case when ${users.isActive} = true then 0 else 1 end asc, coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`
+}
+
 /**
  * Server Function: Get all users across the system for superadmin password management.
  */
-export const getAllUsersForAdminServerFn = createServerFn({ method: 'GET' }).handler(
-  async (): Promise<{ users: ManagedUserItem[] }> => {
-    await assertSuperadminSession()
+export const getAllUsersForAdminServerFn = createServerFn({ method: 'GET' })
+  .validator((data?: { sort?: string; order?: 'asc' | 'desc' }) => data || {})
+  .handler(
+    async ({ data }): Promise<{ users: ManagedUserItem[] }> => {
+      await assertSuperadminSession()
 
-    const allUsers = await db
-      .select({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        role: users.role,
-        isActive: users.isActive,
-        createdAt: users.createdAt,
-        partnerId: users.partnerId,
-      })
-      .from(users)
-      .where(isNull(users.deletedAt))
-      .orderBy(desc(users.createdAt))
+      const allUsers = await db
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          role: users.role,
+          isActive: users.isActive,
+          createdAt: users.createdAt,
+          partnerId: users.partnerId,
+        })
+        .from(users)
+        .where(isNull(users.deletedAt))
+        .orderBy(getUsersOrderBy(data?.sort, data?.order))
 
-    // Map partner names
-    const partnerOwners = allUsers.filter((u) => u.role === 'partner')
-    const partnerMap = new Map(partnerOwners.map((p) => [p.id, p.name || p.email]))
+      // Map partner names
+      const partnerOwners = allUsers.filter((u) => u.role === 'partner')
+      const partnerMap = new Map(partnerOwners.map((p) => [p.id, p.name || p.email]))
 
-    const result: ManagedUserItem[] = allUsers.map((u) => ({
-      ...u,
-      role: u.role as 'superadmin' | 'partner' | 'partner_employee' | 'client',
-      partnerName: u.partnerId ? partnerMap.get(u.partnerId) || null : null,
-    }))
+      const result: ManagedUserItem[] = allUsers.map((u) => ({
+        ...u,
+        role: u.role as 'superadmin' | 'partner' | 'partner_employee' | 'client',
+        partnerName: u.partnerId ? partnerMap.get(u.partnerId) || null : null,
+      }))
 
-    return { users: result }
-  }
-)
+      return { users: result }
+    }
+  )

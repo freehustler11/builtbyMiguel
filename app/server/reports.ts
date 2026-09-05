@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and, isNull } from 'drizzle-orm'
+import { desc, eq, and, isNull, sql } from 'drizzle-orm'
 import { db, clients, reports, users, type Report, type Client, type ClientSnapshot } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { logActivity } from './activity-logger'
@@ -190,7 +190,7 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
       .from(reports)
       .leftJoin(clients, eq(reports.clientId, clients.id))
       .leftJoin(users, eq(reports.createdByUserId, users.id))
-      .orderBy(desc(reports.createdAt))
+      .orderBy(sql`${reports.periodStart} desc nulls last`)
 
     if (conditions.length === 1) {
       // @ts-expect-error drizzle query builder with where
@@ -248,7 +248,7 @@ export const getLatestReportForClientServerFn = createServerFn({ method: 'GET' }
       .select()
       .from(reports)
       .where(eq(reports.clientId, data.clientId))
-      .orderBy(desc(reports.createdAt))
+      .orderBy(sql`${reports.periodStart} desc nulls last`)
       .limit(1)
 
     return { report: latest || null }
@@ -341,7 +341,7 @@ export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handle
       .select()
       .from(reports)
       .where(eq(reports.clientId, targetClientId))
-      .orderBy(desc(reports.createdAt))
+      .orderBy(sql`${reports.periodStart} desc nulls last`)
 
     // Strictly internal: never expose createdByUserId to client portal
     const sanitizedReports = clientReports.map(({ createdByUserId: _omitted, ...rest }) => rest)
