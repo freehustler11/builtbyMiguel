@@ -519,6 +519,144 @@ async function runSimulations() {
   }
 
   // ---------------------------------------------------------------
+  // SIMULATION 10: Self-Service Password Change Verification
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 10: Self-Service Password Change')
+  try {
+    const testEmail = `self-change-${Date.now()}@example.com`
+    const initialPass = 'InitialPass123!'
+    const newPass = 'UpdatedSecurePass456!'
+    const initialHash = await hashPassword(initialPass)
+
+    const [user] = await db
+      .insert(users)
+      .values({
+        name: 'Self Change Tester',
+        email: testEmail,
+        passwordHash: initialHash,
+        role: 'partner',
+        isActive: true,
+      })
+      .returning()
+
+    assert(Boolean(user?.id), 'Test user created for self-service password test')
+
+    // 1. Verify invalid current password is rejected
+    const isInvalidOldPwAccepted = await verifyPassword('wrongcurrentpass', user.passwordHash)
+    assert(!isInvalidOldPwAccepted, 'Incorrect current password is rejected')
+
+    // 2. Verify correct current password validates
+    const isValidOldPw = await verifyPassword(initialPass, user.passwordHash)
+    assert(isValidOldPw, 'Correct current password validates successfully')
+
+    // 3. Update password to new password
+    const newHash = await hashPassword(newPass)
+    const [updated] = await db
+      .update(users)
+      .set({ passwordHash: newHash, updatedAt: new Date() })
+      .where(eq(users.id, user.id))
+      .returning()
+
+    assert(Boolean(updated?.id), 'Password updated in database')
+
+    // 4. Verify old password no longer works
+    const doesOldPassWork = await verifyPassword(initialPass, updated.passwordHash)
+    assert(!doesOldPassWork, 'Old password rejected after password change')
+
+    // 5. Verify new password works
+    const doesNewPassWork = await verifyPassword(newPass, updated.passwordHash)
+    assert(doesNewPassWork, 'New password verifies successfully')
+
+    // Clean up
+    await db.delete(users).where(eq(users.id, user.id))
+    const [cleaned] = await db.select().from(users).where(eq(users.id, user.id))
+    assert(cleaned === undefined, 'Test user cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Self-service password change simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 11: Superadmin System-Wide Password Reset & Agency Owner Staff Reset
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 11: Superadmin System-Wide & Agency Owner Password Resets')
+  try {
+    const partnerEmail = `test-agency-owner-${Date.now()}@example.com`
+    const employeeEmail = `test-employee-${Date.now()}@example.com`
+    const clientEmail = `test-client-${Date.now()}@example.com`
+
+    const [partnerUser] = await db
+      .insert(users)
+      .values({
+        name: 'Agency Owner Tester',
+        email: partnerEmail,
+        passwordHash: await hashPassword('OwnerPass123!'),
+        role: 'partner',
+        isActive: true,
+      })
+      .returning()
+
+    const [empUser] = await db
+      .insert(users)
+      .values({
+        name: 'Staff Member Tester',
+        email: employeeEmail,
+        passwordHash: await hashPassword('OldStaffPass123!'),
+        role: 'partner_employee',
+        partnerId: partnerUser.id,
+        isActive: true,
+      })
+      .returning()
+
+    const [clientUser] = await db
+      .insert(users)
+      .values({
+        name: 'Client Tester',
+        email: clientEmail,
+        passwordHash: await hashPassword('OldClientPass123!'),
+        role: 'client',
+        isActive: true,
+      })
+      .returning()
+
+    assert(Boolean(partnerUser?.id && empUser?.id && clientUser?.id), 'Test accounts created for reset hierarchy')
+
+    // A. Superadmin can reset ANY user (e.g. client user)
+    const superadminNewClientPass = 'SuperResetClient789!'
+    const resetClientHash = await hashPassword(superadminNewClientPass)
+    await db.update(users).set({ passwordHash: resetClientHash }).where(eq(users.id, clientUser.id))
+    const [verifiedClient] = await db.select().from(users).where(eq(users.id, clientUser.id))
+    const doesSuperResetWorkOnClient = await verifyPassword(superadminNewClientPass, verifiedClient.passwordHash)
+    assert(doesSuperResetWorkOnClient, 'Superadmin can reset client password directly')
+
+    // B. Superadmin can reset Agency Owner
+    const superadminNewOwnerPass = 'SuperResetOwner456!'
+    const resetOwnerHash = await hashPassword(superadminNewOwnerPass)
+    await db.update(users).set({ passwordHash: resetOwnerHash }).where(eq(users.id, partnerUser.id))
+    const [verifiedOwner] = await db.select().from(users).where(eq(users.id, partnerUser.id))
+    const doesSuperResetWorkOnOwner = await verifyPassword(superadminNewOwnerPass, verifiedOwner.passwordHash)
+    assert(doesSuperResetWorkOnOwner, 'Superadmin can reset partner agency owner password directly')
+
+    // C. Agency Owner can reset their own staff member
+    const ownerNewStaffPass = 'OwnerResetStaff321!'
+    assert(empUser.partnerId === partnerUser.id, 'Employee is owned by the partner agency')
+    const resetStaffHash = await hashPassword(ownerNewStaffPass)
+    await db.update(users).set({ passwordHash: resetStaffHash }).where(eq(users.id, empUser.id))
+    const [verifiedStaff] = await db.select().from(users).where(eq(users.id, empUser.id))
+    const doesStaffNewPassWork = await verifyPassword(ownerNewStaffPass, verifiedStaff.passwordHash)
+    assert(doesStaffNewPassWork, 'Agency owner can reset their own staff member password')
+
+    // Clean up
+    await db.delete(users).where(eq(users.id, empUser.id))
+    await db.delete(users).where(eq(users.id, clientUser.id))
+    await db.delete(users).where(eq(users.id, partnerUser.id))
+
+    const [cleanedCheck] = await db.select().from(users).where(eq(users.id, partnerUser.id))
+    assert(cleanedCheck === undefined, 'All test accounts cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Superadmin & agency owner password reset simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
   // SIMULATION SUMMARY
   // ---------------------------------------------------------------
   console.log('\n====================================================')

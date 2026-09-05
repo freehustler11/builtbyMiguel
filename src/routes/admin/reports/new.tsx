@@ -143,6 +143,7 @@ const DEFAULT_PAGE_ITEMS: PageItem[] = [
 ]
 
 function AdminReportFormPage() {
+  const router = useRouter()
   const navigate = useNavigate()
   const { clientId: queryClientId, editId } = Route.useSearch()
   const { clients, existingReport } = Route.useLoaderData()
@@ -532,6 +533,7 @@ function AdminReportFormPage() {
         })
         const targetId = updateRes?.report?.id || editId
         addToast('Report Updated', 'Saved changes successfully!')
+        await router.invalidate()
         navigate({
           to: '/admin/reports/$id',
           params: { id: targetId },
@@ -545,6 +547,7 @@ function AdminReportFormPage() {
           throw new Error('Failed to create report: ID not returned from server.')
         }
         addToast('Report Created', 'Redirecting to your branded report...')
+        await router.invalidate()
         navigate({
           to: '/admin/reports/$id',
           params: { id: newReportId },

@@ -411,6 +411,20 @@ function AdminClientsPage() {
         })
 
         if (res.success && res.client) {
+          const updated = res.client
+          setClients((prev) =>
+            prev.map((c) =>
+              c.id === updated.id
+                ? {
+                    ...c,
+                    ...updated,
+                    partner: updated.partnerId
+                      ? partnersList.find((p) => p.id === updated.partnerId) || c.partner
+                      : null,
+                  }
+                : c
+            )
+          )
           addToast('Client Updated', `Updated ${res.client.businessName}.`)
           setIsModalOpen(false)
           await router.invalidate()
@@ -432,6 +446,18 @@ function AdminClientsPage() {
         })
 
         if (res.success && res.client) {
+          const created = res.client
+          const matchedPartner = created.partnerId
+            ? partnersList.find((p) => p.id === created.partnerId) || null
+            : null
+          const newClientItem: ClientWithReportCount = {
+            ...created,
+            reportCount: 0,
+            partner: matchedPartner
+              ? { id: matchedPartner.id, name: matchedPartner.name, email: matchedPartner.email }
+              : null,
+          }
+          setClients((prev) => [newClientItem, ...prev])
           addToast('Client Created', `Created ${res.client.businessName}.`)
           setIsModalOpen(false)
           await router.invalidate()
@@ -447,9 +473,11 @@ function AdminClientsPage() {
   const handleDeleteClient = async () => {
     if (!clientToDelete) return
 
+    const targetId = clientToDelete.id
     setIsSubmitting(true)
     try {
-      await deleteClientServerFn({ data: { id: clientToDelete.id } })
+      await deleteClientServerFn({ data: { id: targetId } })
+      setClients((prev) => prev.filter((c) => c.id !== targetId))
       addToast('Client Deleted', `Removed ${clientToDelete.businessName} and associated reports.`)
       setClientToDelete(null)
       await router.invalidate()

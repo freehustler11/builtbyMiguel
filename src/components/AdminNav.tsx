@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import {
   MessageSquare,
@@ -11,9 +12,11 @@ import {
   Database,
   Building2,
   UserCheck,
+  KeyRound,
 } from 'lucide-react'
 import { LogoutButton } from './LogoutButton'
 import { ThemeToggle } from './ThemeToggle'
+import { ChangePasswordModal } from './ChangePasswordModal'
 
 interface AdminNavProps {
   activeTab: 'messages' | 'posts' | 'media' | 'clients' | 'reports' | 'team' | 'activity'
@@ -24,6 +27,7 @@ interface AdminNavProps {
 }
 
 export function AdminNav({ activeTab, title, description, actions, userRole }: AdminNavProps) {
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const isPartner = userRole === 'partner' || userRole === 'partner_employee'
   const isEmployee = userRole === 'partner_employee'
 
@@ -171,9 +175,24 @@ export function AdminNav({ activeTab, title, description, actions, userRole }: A
 
           <ThemeToggle variant="pill" />
 
+          <button
+            type="button"
+            onClick={() => setIsPasswordModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition shadow-xs hover:border-blue-300 dark:hover:border-blue-700 cursor-pointer"
+            title="Change Account Password"
+          >
+            <KeyRound className="w-3.5 h-3.5 text-blue-500" />
+            <span className="hidden sm:inline">Password</span>
+          </button>
+
           <LogoutButton />
         </div>
       </div>
+
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
 
       {/* Page Title & Actions Row */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">

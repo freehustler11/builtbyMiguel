@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   Users,
   UserPlus,
@@ -21,10 +21,13 @@ import {
   Lock,
   UserCheck,
   Loader2,
+  KeyRound,
+  User,
 } from 'lucide-react'
 import { AdminNav } from '../../components/AdminNav'
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../components/Toast'
+import { ResetUserPasswordModal } from '../../components/ResetUserPasswordModal'
 import { checkAuthServerFn } from '../../lib/auth'
 import {
   getTeamMembersServerFn,
@@ -34,6 +37,10 @@ import {
   type EmployeeItem,
   type AgencyOwnerInfo,
 } from '../../server/team'
+import {
+  getAllUsersForAdminServerFn,
+  type ManagedUserItem,
+} from '../../server/passwords'
 
 export const Route = createFileRoute('/admin/team')({
   beforeLoad: async ({ location }) => {
@@ -53,10 +60,16 @@ export const Route = createFileRoute('/admin/team')({
     return { auth }
   },
   loader: async ({ context }) => {
-    const data = await getTeamMembersServerFn()
+    const auth = (context as any)?.auth || (await checkAuthServerFn())
+    const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+    const [teamData, allUsersData] = await Promise.all([
+      getTeamMembersServerFn(),
+      isSuperadmin ? getAllUsersForAdminServerFn() : Promise.resolve({ users: [] }),
+    ])
     return {
-      ...data,
-      currentAdmin: (context as any)?.auth || (await checkAuthServerFn()),
+      ...teamData,
+      allUsers: allUsersData?.users || [],
+      currentAdmin: auth,
     }
   },
   head: () => ({
@@ -82,15 +95,39 @@ function formatDate(dateInput: string | Date | null) {
 
 function AdminTeamPage() {
   const router = useRouter()
-  const { employees: initialEmployees, agencyOwner, isSuperadmin, currentAdmin } = Route.useLoaderData()
+  const {
+    employees: initialEmployees,
+    agencyOwner,
+    isSuperadmin,
+    currentAdmin,
+    allUsers: initialAllUsers = [],
+  } = Route.useLoaderData()
 
   const [employees, setEmployees] = useState<EmployeeItem[]>(initialEmployees)
+  const [allUsers, setAllUsers] = useState<ManagedUserItem[]>(initialAllUsers)
+  const [roleFilter, setRoleFilter] = useState<'all' | 'partner_employee' | 'partner' | 'client' | 'superadmin'>('partner_employee')
   const [searchQuery, setSearchQuery] = useState('')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [employeeToDelete, setEmployeeToDelete] = useState<EmployeeItem | null>(null)
+  const [userToResetPassword, setUserToResetPassword] = useState<{
+    id: string
+    name: string | null
+    email: string
+    role: string
+    partnerName?: string | null
+  } | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
+
+  // Keep state perfectly synchronized with router loader data
+  useEffect(() => {
+    setEmployees(initialEmployees)
+  }, [initialEmployees])
+
+  useEffect(() => {
+    setAllUsers(initialAllUsers)
+  }, [initialAllUsers])
 
   // Form State
   const [name, setName] = useState('')
@@ -111,6 +148,9 @@ function AdminTeamPage() {
   const addToast = (type: 'success' | 'error' | 'info', title: string, message?: string) => {
     const id = `${Date.now()}-${Math.random()}`
     setToasts((prev: ToastMessage[]) => [...prev, { id, title, message, type }])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 4000)
   }
 
   const removeToast = (id: string) => {
@@ -164,6 +204,15 @@ function AdminTeamPage() {
       })
 
       if (res.success && res.employee) {
+        const createdEmp = res.employee as EmployeeItem
+        setEmployees((prev) => [createdEmp, ...prev])
+        setAllUsers((prev) => [
+          {
+            ...createdEmp,
+            partnerName: agencyOwner?.name || null,
+          },
+          ...prev,
+        ])
         setIsAddModalOpen(false)
         addToast('success', 'Team Member Added', `${res.employee.name} can now sign in.`)
         setCreatedCredentials({
@@ -183,11 +232,14 @@ function AdminTeamPage() {
 
   const handleDeleteMember = async () => {
     if (!employeeToDelete) return
+    const targetId = employeeToDelete.id
     setIsSubmitting(true)
     try {
       await deleteTeamMemberServerFn({
-        data: { id: employeeToDelete.id },
+        data: { id: targetId },
       })
+      setEmployees((prev) => prev.filter((e) => e.id !== targetId))
+      setAllUsers((prev) => prev.filter((u) => u.id !== targetId))
       addToast('success', 'Access Revoked', `Removed login access for ${employeeToDelete.name || employeeToDelete.email}.`)
       setEmployeeToDelete(null)
       await router.invalidate()
@@ -199,13 +251,16 @@ function AdminTeamPage() {
     }
   }
 
-  const handleToggleStatus = async (emp: EmployeeItem) => {
+  const handleToggleStatus = async (emp: { id: string; name: string | null; email: string; isActive: boolean }) => {
     try {
       setUpdatingId(emp.id)
       const nextActive = !emp.isActive
-      // Optimistically update local state for instant toggle switch animation
+      // Optimistically update local state for 0ms instant toggle animation
       setEmployees((prev) =>
         prev.map((e) => (e.id === emp.id ? { ...e, isActive: nextActive } : e))
+      )
+      setAllUsers((prev) =>
+        prev.map((u) => (u.id === emp.id ? { ...u, isActive: nextActive } : u))
       )
 
       const res = await toggleTeamMemberActiveServerFn({
@@ -223,11 +278,17 @@ function AdminTeamPage() {
         setEmployees((prev) =>
           prev.map((e) => (e.id === emp.id ? { ...e, isActive: emp.isActive } : e))
         )
+        setAllUsers((prev) =>
+          prev.map((u) => (u.id === emp.id ? { ...u, isActive: emp.isActive } : u))
+        )
       }
     } catch (err: unknown) {
       // Revert on failure
       setEmployees((prev) =>
         prev.map((e) => (e.id === emp.id ? { ...e, isActive: emp.isActive } : e))
+      )
+      setAllUsers((prev) =>
+        prev.map((u) => (u.id === emp.id ? { ...u, isActive: emp.isActive } : u))
       )
       const msg = err instanceof Error ? err.message : 'Failed to update status.'
       addToast('error', 'Update Failed', msg)
@@ -245,17 +306,22 @@ function AdminTeamPage() {
     addToast('success', 'Copied to Clipboard', 'Login credentials copied.')
   }
 
-  // Filtered employees
-  const filteredEmployees = useMemo(() => {
-    if (!searchQuery.trim()) return initialEmployees
+  // Filtered employees or users
+  const displayedUsers = useMemo(() => {
+    let source: (EmployeeItem | ManagedUserItem)[] = employees
+    if (isSuperadmin && roleFilter !== 'partner_employee') {
+      source = roleFilter === 'all' ? allUsers : allUsers.filter((u) => u.role === roleFilter)
+    }
+
+    if (!searchQuery.trim()) return source
     const q = searchQuery.toLowerCase().trim()
-    return initialEmployees.filter(
-      (e: EmployeeItem) =>
+    return source.filter(
+      (e) =>
         (e.name && e.name.toLowerCase().includes(q)) ||
         e.email.toLowerCase().includes(q) ||
         (e.partnerName && e.partnerName.toLowerCase().includes(q))
     )
-  }, [initialEmployees, searchQuery])
+  }, [employees, allUsers, isSuperadmin, roleFilter, searchQuery])
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0c111d] text-slate-900 dark:text-slate-100 transition-colors">
@@ -339,42 +405,96 @@ function AdminTeamPage() {
 
         {/* Team Members List Section */}
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
               <h3 className="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                 <Users className="w-5 h-5 text-blue-500" />
-                <span>Active Team Members</span>
+                <span>{isSuperadmin && roleFilter !== 'partner_employee' ? 'System Accounts & Logins' : 'Active Team Members'}</span>
                 <span className="px-2 py-0.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                  {filteredEmployees.length}
+                  {displayedUsers.length}
                 </span>
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Staff members with access to your agency's clients, reports, and media.
+                {isSuperadmin
+                  ? 'Manage team members, agency owners, and reset passwords for any account.'
+                  : "Staff members with access to your agency's clients, reports, and media."}
               </p>
             </div>
 
-            {/* Search Filter */}
-            <div className="relative w-full sm:w-72">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by name or email..."
-                className="w-full pl-9 pr-3.5 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              {/* Role filter switcher for superadmin */}
+              {isSuperadmin && (
+                <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-xs font-semibold shadow-inner">
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('partner_employee')}
+                    className={`px-3 py-1.5 rounded-xl transition ${
+                      roleFilter === 'partner_employee'
+                        ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-bold shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Staff ({employees.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('all')}
+                    className={`px-3 py-1.5 rounded-xl transition ${
+                      roleFilter === 'all'
+                        ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-bold shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    All ({allUsers.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('partner')}
+                    className={`px-3 py-1.5 rounded-xl transition ${
+                      roleFilter === 'partner'
+                        ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-bold shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Owners ({allUsers.filter((u) => u.role === 'partner').length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoleFilter('client')}
+                    className={`px-3 py-1.5 rounded-xl transition ${
+                      roleFilter === 'client'
+                        ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-bold shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Clients ({allUsers.filter((u) => u.role === 'client').length})
+                  </button>
+                </div>
+              )}
+
+              {/* Search Filter */}
+              <div className="relative w-full sm:w-64">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by name or email..."
+                  className="w-full pl-9 pr-3.5 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+              </div>
             </div>
           </div>
 
           {/* Table / Cards */}
-          {filteredEmployees.length === 0 ? (
+          {displayedUsers.length === 0 ? (
             <div className="p-12 text-center rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4">
               <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-900/50 flex items-center justify-center mx-auto text-blue-600 dark:text-blue-400">
                 <Users className="w-7 h-7" />
               </div>
               <div className="space-y-1 max-w-md mx-auto">
                 <h4 className="text-base font-bold text-slate-900 dark:text-white">
-                  {searchQuery ? 'No matching team members found' : 'No team members added yet'}
+                  {searchQuery ? 'No matching users found' : 'No team members added yet'}
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   {searchQuery
@@ -385,7 +505,7 @@ function AdminTeamPage() {
               {!searchQuery && (
                 <button
                   onClick={openAddModal}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow transition"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow transition cursor-pointer"
                 >
                   <UserPlus className="w-4 h-4" />
                   <span>Add First Employee</span>
@@ -398,18 +518,18 @@ function AdminTeamPage() {
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/40 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">
-                      <th className="py-3.5 px-4 sm:px-6">Team Member</th>
+                      <th className="py-3.5 px-4 sm:px-6">Team Member / Account</th>
                       <th className="py-3.5 px-4">Role &amp; Permissions</th>
-                      {isSuperadmin && <th className="py-3.5 px-4">Agency</th>}
+                      {isSuperadmin && <th className="py-3.5 px-4">Agency / Details</th>}
                       <th className="py-3.5 px-4">Date Added</th>
                       <th className="py-3.5 px-4">Status</th>
                       <th className="py-3.5 px-4 sm:px-6 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                    {filteredEmployees.map((employee: EmployeeItem) => {
-                      const initials = employee.name
-                        ? employee.name
+                    {displayedUsers.map((user) => {
+                      const initials = user.name
+                        ? user.name
                             .split(' ')
                             .map((p: string) => p[0])
                             .slice(0, 2)
@@ -419,7 +539,7 @@ function AdminTeamPage() {
 
                       return (
                         <tr
-                          key={employee.id}
+                          key={user.id}
                           className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
                         >
                           <td className="py-4 px-4 sm:px-6">
@@ -429,21 +549,38 @@ function AdminTeamPage() {
                               </div>
                               <div className="min-w-0">
                                 <div className="font-bold text-slate-900 dark:text-white truncate">
-                                  {employee.name || 'Staff Member'}
+                                  {user.name || 'Account User'}
                                 </div>
                                 <div className="text-slate-500 dark:text-slate-400 text-[11px] truncate flex items-center gap-1.5 mt-0.5">
                                   <Mail className="w-3 h-3 text-slate-400" />
-                                  <span>{employee.email}</span>
+                                  <span>{user.email}</span>
                                 </div>
                               </div>
                             </div>
                           </td>
 
                           <td className="py-4 px-4">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border border-blue-200/80 dark:border-blue-900/50">
-                              <UserCheck className="w-3 h-3" />
-                              Agency Staff
-                            </span>
+                            {user.role === 'superadmin' ? (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50">
+                                <ShieldCheck className="w-3 h-3" />
+                                Superadmin
+                              </span>
+                            ) : user.role === 'partner' ? (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-900/50">
+                                <Building2 className="w-3 h-3" />
+                                Agency Owner
+                              </span>
+                            ) : user.role === 'client' ? (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/50">
+                                <User className="w-3 h-3" />
+                                Client Portal
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border border-blue-200/80 dark:border-blue-900/50">
+                                <UserCheck className="w-3 h-3" />
+                                Agency Staff
+                              </span>
+                            )}
                           </td>
 
                           {isSuperadmin && (
@@ -451,7 +588,7 @@ function AdminTeamPage() {
                               <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                                 <Building2 className="w-3.5 h-3.5 text-slate-400" />
                                 <span className="font-medium">
-                                  {employee.partnerName || 'Unknown Partner'}
+                                  {user.partnerName || (user.role === 'partner' ? 'Partner Owner' : user.role === 'superadmin' ? 'Primary' : 'Direct')}
                                 </span>
                               </div>
                             </td>
@@ -460,7 +597,7 @@ function AdminTeamPage() {
                           <td className="py-4 px-4 text-slate-500 dark:text-slate-400 text-[11px]">
                             <div className="flex items-center gap-1.5">
                               <Calendar className="w-3 h-3 text-slate-400" />
-                              <span>{formatDate(employee.createdAt)}</span>
+                              <span>{formatDate(user.createdAt)}</span>
                             </div>
                           </td>
 
@@ -470,16 +607,16 @@ function AdminTeamPage() {
                               <button
                                 type="button"
                                 role="switch"
-                                aria-checked={employee.isActive}
-                                disabled={updatingId === employee.id}
-                                onClick={() => handleToggleStatus(employee)}
+                                aria-checked={user.isActive}
+                                disabled={updatingId === user.id || user.role === 'superadmin'}
+                                onClick={() => handleToggleStatus(user)}
                                 title={
-                                  employee.isActive
-                                    ? 'Click to suspend team member account'
-                                    : 'Click to reactivate team member account'
+                                  user.isActive
+                                    ? 'Click to suspend account'
+                                    : 'Click to reactivate account'
                                 }
                                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 ${
-                                  employee.isActive
+                                  user.isActive
                                     ? 'bg-emerald-500 hover:bg-emerald-600'
                                     : 'bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'
                                 }`}
@@ -488,14 +625,14 @@ function AdminTeamPage() {
                                 <span
                                   aria-hidden="true"
                                   className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                                    employee.isActive ? 'translate-x-5' : 'translate-x-0'
+                                    user.isActive ? 'translate-x-5' : 'translate-x-0'
                                   }`}
                                 />
                               </button>
 
                               {/* Status Label */}
                               <div className="flex items-center gap-1.5 min-w-[75px]">
-                                {updatingId === employee.id ? (
+                                {updatingId === user.id ? (
                                   <span className="inline-flex items-center gap-1 text-xs font-mono text-slate-400 animate-pulse">
                                     <Loader2 className="w-3 h-3 animate-spin text-blue-500" />
                                     <span>Updating...</span>
@@ -503,17 +640,17 @@ function AdminTeamPage() {
                                 ) : (
                                   <span
                                     className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                                      employee.isActive
+                                      user.isActive
                                         ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-900/40'
                                         : 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-900/40'
                                     }`}
                                   >
                                     <span
                                       className={`w-1.5 h-1.5 rounded-full ${
-                                        employee.isActive ? 'bg-emerald-500' : 'bg-amber-500'
+                                        user.isActive ? 'bg-emerald-500' : 'bg-amber-500'
                                       }`}
                                     />
-                                    <span>{employee.isActive ? 'Active' : 'Suspended'}</span>
+                                    <span>{user.isActive ? 'Active' : 'Suspended'}</span>
                                   </span>
                                 )}
                               </div>
@@ -521,14 +658,39 @@ function AdminTeamPage() {
                           </td>
 
                           <td className="py-4 px-4 sm:px-6 text-right">
-                            <button
-                              onClick={() => setEmployeeToDelete(employee)}
-                              title="Revoke access and delete login"
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/50 transition active:scale-95 shadow-2xs"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              <span>Revoke</span>
-                            </button>
+                            <div className="flex items-center justify-end gap-2">
+                              {/* Reset Password Button */}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setUserToResetPassword({
+                                    id: user.id,
+                                    name: user.name,
+                                    email: user.email,
+                                    role: user.role,
+                                    partnerName: user.partnerName,
+                                  })
+                                }
+                                title={`Reset password for ${user.name || user.email}`}
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200/80 dark:border-amber-900/50 transition active:scale-95 shadow-2xs cursor-pointer"
+                              >
+                                <Key className="w-3.5 h-3.5 text-amber-500" />
+                                <span>Password</span>
+                              </button>
+
+                              {/* Revoke / Delete Button (for staff and client accounts) */}
+                              {(user.role === 'partner_employee' || (isSuperadmin && user.role === 'client')) && (
+                                <button
+                                  type="button"
+                                  onClick={() => setEmployeeToDelete(user as EmployeeItem)}
+                                  title="Revoke access and delete login"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/50 transition active:scale-95 shadow-2xs cursor-pointer"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>Revoke</span>
+                                </button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       )
@@ -751,6 +913,14 @@ function AdminTeamPage() {
         isLoading={isSubmitting}
         onConfirm={handleDeleteMember}
         onClose={() => setEmployeeToDelete(null)}
+      />
+
+      {/* Reset User Password Modal */}
+      <ResetUserPasswordModal
+        isOpen={!!userToResetPassword}
+        targetUser={userToResetPassword}
+        onClose={() => setUserToResetPassword(null)}
+        onSuccess={(msg) => addToast('success', 'Password Reset', msg)}
       />
     </div>
   )

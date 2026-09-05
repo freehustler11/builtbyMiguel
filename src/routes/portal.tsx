@@ -1,8 +1,9 @@
 import { createFileRoute, Outlet, Link, useRouter, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { FileText, LogOut, User } from 'lucide-react'
+import { FileText, LogOut, User, KeyRound } from 'lucide-react'
 import { requireClient, checkAuthServerFn, logoutServerFn } from '../lib/auth'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { ChangePasswordModal } from '../components/ChangePasswordModal'
 
 export const Route = createFileRoute('/portal')({
   beforeLoad: async ({ location }) => {
@@ -28,6 +29,7 @@ function PortalLayout() {
   const router = useRouter()
   const navigate = useNavigate()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
 
   const handleLogout = async () => {
     try {
@@ -75,6 +77,16 @@ function PortalLayout() {
 
             <button
               type="button"
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+              title="Change Account Password"
+            >
+              <KeyRound className="w-3.5 h-3.5 text-blue-500" />
+              <span className="hidden sm:inline">Password</span>
+            </button>
+
+            <button
+              type="button"
               onClick={handleLogout}
               disabled={isLoggingOut}
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-slate-200 dark:border-slate-700 transition cursor-pointer disabled:opacity-50"
@@ -86,6 +98,11 @@ function PortalLayout() {
           </div>
         </div>
       </header>
+
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 print:p-0 print:m-0 print:max-w-none">
