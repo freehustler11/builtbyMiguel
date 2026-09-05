@@ -29,7 +29,7 @@ import type { DisplayOptions, QueryItem, PageItem } from '../server/reports'
 
 interface ReportDocumentProps {
   report: Report
-  client: Client
+  client?: Client | null
   displayOptions?: DisplayOptions
 }
 
@@ -129,9 +129,16 @@ function getMoMPositionChange(
 }
 
 export function ReportDocument({ report, client, displayOptions: customDisplayOptions }: ReportDocumentProps) {
-  const primaryColor = client.primaryColor || (client as any).primary_color || '#2563eb'
-  const secondaryColor = client.secondaryColor || (client as any).secondary_color || '#1e293b'
-  const isWhiteLabel = Boolean(client.isWhiteLabel)
+  const snapshot = (report as any).clientSnapshot
+  const businessName = snapshot?.businessName ?? client?.businessName ?? ''
+  const logoUrl = snapshot?.logoUrl !== undefined ? snapshot.logoUrl : client?.logoUrl
+  const primaryColor = snapshot?.primaryColor || client?.primaryColor || (client as any)?.primary_color || '#2563eb'
+  const secondaryColor = snapshot?.secondaryColor || client?.secondaryColor || (client as any)?.secondary_color || '#1e293b'
+  const isWhiteLabel = snapshot?.isWhiteLabel !== undefined ? Boolean(snapshot.isWhiteLabel) : Boolean(client?.isWhiteLabel)
+  const partnerName = (snapshot?.partnerName !== undefined && snapshot?.partnerName !== null) ? snapshot.partnerName : client?.partnerName
+  const partnerLogoUrl = (snapshot?.partnerLogoUrl !== undefined && snapshot?.partnerLogoUrl !== null) ? snapshot.partnerLogoUrl : client?.partnerLogoUrl
+  const contactName = client?.name
+  const websiteUrl = client?.websiteUrl
 
   // Merge display options with explicit defaults
   const options: Required<DisplayOptions> = {
@@ -211,11 +218,11 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 mb-2 border-b border-slate-200/80 print:border-slate-300">
             {/* Left: Client Logo & Business Identity */}
             <div className="flex items-center gap-3.5 min-w-0">
-              {client.logoUrl ? (
+              {logoUrl ? (
                 <div className="h-11 w-auto max-w-[170px] flex items-center justify-start shrink-0">
                   <img
-                    src={client.logoUrl}
-                    alt={client.businessName}
+                    src={logoUrl}
+                    alt={businessName}
                     className="h-full w-auto max-w-[170px] object-contain object-left"
                   />
                 </div>
@@ -224,20 +231,20 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   className="h-11 w-11 rounded-xl flex items-center justify-center text-white font-extrabold text-base shadow-xs shrink-0"
                   style={{ backgroundColor: primaryColor }}
                 >
-                  {client.businessName.substring(0, 2).toUpperCase()}
+                  {businessName.substring(0, 2).toUpperCase()}
                 </div>
               )}
 
               <div className="space-y-0.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">
-                    {client.businessName}
+                    {businessName}
                   </h1>
                   <span
                     className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-2xs shrink-0"
                     style={{ backgroundColor: primaryColor }}
                   >
-                    {report.title && !report.title.includes(client.businessName)
+                    {report.title && !report.title.includes(businessName)
                       ? report.title.toUpperCase()
                       : 'MONTHLY PERFORMANCE REPORT'}
                   </span>
@@ -245,22 +252,22 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
                 <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-slate-500 font-mono">
                   <span className="font-bold text-slate-800">Period: {report.reportMonth}</span>
-                  {options.show_contact_person && client.name && (
+                  {options.show_contact_person && contactName && (
                     <>
                       <span>•</span>
-                      <span className="truncate">Contact: {client.name}</span>
+                      <span className="truncate">Contact: {contactName}</span>
                     </>
                   )}
-                  {client.websiteUrl && (
+                  {websiteUrl && (
                     <>
                       <span>•</span>
                       <a
-                        href={client.websiteUrl.startsWith('http') ? client.websiteUrl : `https://${client.websiteUrl}`}
+                        href={websiteUrl.startsWith('http') ? websiteUrl : `https://${websiteUrl}`}
                         target="_blank"
                         rel="noreferrer"
                         className="hover:underline text-slate-600 print:text-black font-medium truncate max-w-[200px]"
                       >
-                        {client.websiteUrl.replace(/^https?:\/\//, '')}
+                        {websiteUrl.replace(/^https?:\/\//, '')}
                       </a>
                     </>
                   )}
@@ -277,24 +284,24 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             {/* Right: Agency / Partner Badge */}
             {options.show_agency_info && (
               isWhiteLabel ? (
-                client.partnerLogoUrl ? (
+                partnerLogoUrl ? (
                   <div className="shrink-0 flex items-center sm:justify-end">
                     <img
-                      src={client.partnerLogoUrl}
-                      alt={client.partnerName || 'Partner'}
+                      src={partnerLogoUrl}
+                      alt={partnerName || 'Partner'}
                       className="h-6 max-w-[140px] object-contain"
                     />
                   </div>
-                ) : client.partnerName ? (
+                ) : partnerName ? (
                   <div className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono font-bold text-slate-800">
                     <Award className="w-3.5 h-3.5 text-blue-600" />
-                    <span>{client.partnerName}</span>
+                    <span>{partnerName}</span>
                   </div>
                 ) : null
-              ) : client.partnerName ? (
+              ) : partnerName ? (
                 <div className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono font-bold text-slate-800">
                   <Award className="w-3.5 h-3.5 text-blue-600" />
-                  <span>{client.partnerName}</span>
+                  <span>{partnerName}</span>
                 </div>
               ) : null
             )}
@@ -696,10 +703,10 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
         <div className="pt-2.5 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
           <div className="flex items-center gap-2 truncate">
             <span className="font-bold text-slate-800 print:text-black">
-              {options.show_agency_info && client.partnerName ? client.partnerName : 'Monthly Performance Report'}
+              {options.show_agency_info && partnerName ? partnerName : 'Monthly Performance Report'}
             </span>
             <span>•</span>
-            <span className="truncate">Prepared exclusively for {client.businessName}</span>
+            <span className="truncate">Prepared exclusively for {businessName}</span>
           </div>
           <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold shrink-0">
             Page 1 of 2
@@ -743,7 +750,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
               </h3>
             </div>
             <span className="text-[11px] font-mono text-slate-500 font-semibold">
-              {client.businessName} • {report.reportMonth}
+              {businessName} • {report.reportMonth}
             </span>
           </div>
 
@@ -1060,13 +1067,13 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
         {/* Page 2 Bottom Footer */}
         <div className="pt-2.5 mt-auto border-t border-slate-200 print:border-slate-300 flex items-center justify-between text-xs font-mono text-slate-400 print:text-[10px] print:break-inside-avoid">
-          {options.show_agency_info && (client.partnerName || isWhiteLabel) ? (
+          {options.show_agency_info && (partnerName || isWhiteLabel) ? (
             <div className="flex items-center gap-2 truncate">
               <span className="font-bold text-slate-800 print:text-black">
-                {client.partnerName || 'Monthly Performance Report'}
+                {partnerName || 'Monthly Performance Report'}
               </span>
               <span>•</span>
-              <span className="truncate">Prepared exclusively for {client.businessName}</span>
+              <span className="truncate">Prepared exclusively for {businessName}</span>
             </div>
           ) : (
             <div className="flex items-center gap-2 truncate">
@@ -1074,7 +1081,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 Monthly Performance Report
               </span>
               <span>•</span>
-              <span className="truncate">Prepared exclusively for {client.businessName}</span>
+              <span className="truncate">Prepared exclusively for {businessName}</span>
             </div>
           )}
           <div className="text-[11px] print:text-[10px] text-slate-400 font-semibold shrink-0">

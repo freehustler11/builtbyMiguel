@@ -1,8 +1,50 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and } from 'drizzle-orm'
-import { db, clients, reports, users, type Report, type Client } from '../db'
+import { desc, eq, and, isNull } from 'drizzle-orm'
+import { db, clients, reports, users, type Report, type Client, type ClientSnapshot } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { logActivity } from './activity-logger'
+
+const MONTHS: Record<string, number> = {
+  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+}
+
+export function parseReportPeriod(monthStr: string): { periodStart: Date; periodEnd: Date } {
+  if (!monthStr || typeof monthStr !== 'string') {
+    const now = new Date()
+    const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0))
+    const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999))
+    return { periodStart: start, periodEnd: end }
+  }
+
+  const parts = monthStr.trim().split(/\s+/)
+  if (parts.length === 2) {
+    const mName = parts[0].toLowerCase()
+    const year = parseInt(parts[1], 10)
+    if (mName in MONTHS && !isNaN(year)) {
+      const monthIdx = MONTHS[mName]
+      const start = new Date(Date.UTC(year, monthIdx, 1, 0, 0, 0, 0))
+      const end = new Date(Date.UTC(year, monthIdx + 1, 0, 23, 59, 59, 999))
+      return { periodStart: start, periodEnd: end }
+    }
+  }
+
+  const parsed = new Date(monthStr)
+  if (!isNaN(parsed.getTime())) {
+    const y = parsed.getUTCFullYear()
+    const m = parsed.getUTCMonth()
+    return {
+      periodStart: new Date(Date.UTC(y, m, 1, 0, 0, 0, 0)),
+      periodEnd: new Date(Date.UTC(y, m + 1, 0, 23, 59, 59, 999)),
+    }
+  }
+
+  const now = new Date()
+  return {
+    periodStart: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)),
+    periodEnd: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999)),
+  }
+}
 
 export interface QueryItem {
   query: string
@@ -82,6 +124,9 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         clientId: reports.clientId,
         title: reports.title,
         reportMonth: reports.reportMonth,
+        periodStart: reports.periodStart,
+        periodEnd: reports.periodEnd,
+        clientSnapshot: reports.clientSnapshot,
         previousReportId: reports.previousReportId,
         // GBP Metrics
         gbpCalls: reports.gbpCalls,
@@ -143,7 +188,7 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         clientPartnerLogoUrl: clients.partnerLogoUrl,
       })
       .from(reports)
-      .innerJoin(clients, eq(reports.clientId, clients.id))
+      .leftJoin(clients, eq(reports.clientId, clients.id))
       .leftJoin(users, eq(reports.createdByUserId, users.id))
       .orderBy(desc(reports.createdAt))
 
@@ -156,10 +201,21 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
     }
 
     const rows = await query
-    const mapped = rows.map((r: any) => ({
-      ...r,
-      creatorNameOrEmail: r.creatorName || r.creatorEmail || null,
-    }))
+    const mapped = rows.map((r: any) => {
+      const snap = r.clientSnapshot
+      return {
+        ...r,
+        creatorNameOrEmail: r.creatorName || r.creatorEmail || null,
+        clientName: snap?.businessName || r.clientName || '',
+        clientBusinessName: snap?.businessName || r.clientBusinessName || '',
+        clientLogoUrl: snap?.logoUrl !== undefined ? snap.logoUrl : r.clientLogoUrl,
+        clientPrimaryColor: snap?.primaryColor || r.clientPrimaryColor,
+        clientSecondaryColor: snap?.secondaryColor || r.clientSecondaryColor,
+        clientIsWhiteLabel: snap?.isWhiteLabel !== undefined ? snap.isWhiteLabel : Boolean(r.clientIsWhiteLabel),
+        clientPartnerName: snap?.partnerName !== undefined ? snap.partnerName : r.clientPartnerName,
+        clientPartnerLogoUrl: snap?.partnerLogoUrl !== undefined ? snap.partnerLogoUrl : r.clientPartnerLogoUrl,
+      }
+    })
     return { reports: mapped as ReportWithClient[] }
   })
 
@@ -182,7 +238,7 @@ export const getLatestReportForClientServerFn = createServerFn({ method: 'GET' }
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, data.clientId), eq(clients.partnerId, effectivePartnerId)))
+        .where(and(eq(clients.id, data.clientId), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
       if (!targetClient) {
         throw new Error('Unauthorized: Client does not belong to your partner account')
       }
@@ -217,7 +273,7 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
         client: clients,
       })
       .from(reports)
-      .innerJoin(clients, eq(reports.clientId, clients.id))
+      .leftJoin(clients, eq(reports.clientId, clients.id))
       .where(eq(reports.id, data.id))
 
     if (!row) {
@@ -226,7 +282,7 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
 
     // Protection: Partner can ONLY view reports for their assigned clients
     const effectivePartnerId = getEffectivePartnerId(auth)
-    if (effectivePartnerId && row.client.partnerId !== effectivePartnerId) {
+    if (effectivePartnerId && row.client && row.client.partnerId !== effectivePartnerId) {
       throw new Error('Unauthorized: You do not have permission to view this report')
     }
 
@@ -235,7 +291,24 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
       throw new Error('Unauthorized: You do not have permission to view this report')
     }
 
-    return { report: row.report, client: row.client }
+    const snap = row.report.clientSnapshot
+    const client = row.client || {
+      id: row.report.clientId || '',
+      name: snap?.businessName || '',
+      businessName: snap?.businessName || '',
+      websiteUrl: null,
+      logoUrl: snap?.logoUrl || null,
+      primaryColor: snap?.primaryColor || '#2563eb',
+      secondaryColor: snap?.secondaryColor || '#1e293b',
+      isWhiteLabel: Boolean(snap?.isWhiteLabel),
+      partnerName: snap?.partnerName || null,
+      partnerLogoUrl: snap?.partnerLogoUrl || null,
+      partnerId: null,
+      createdAt: row.report.createdAt,
+      deletedAt: null,
+    }
+
+    return { report: row.report, client }
   })
 
 /**
@@ -249,7 +322,7 @@ export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handle
 
     // If admin is viewing portal without specific clientId, pick the first client
     if (auth.role === 'admin' && !targetClientId) {
-      const [firstClient] = await db.select().from(clients).limit(1)
+      const [firstClient] = await db.select().from(clients).where(isNull(clients.deletedAt)).limit(1)
       if (firstClient) {
         targetClientId = firstClient.id
       }
@@ -259,7 +332,7 @@ export const getPortalReportsServerFn = createServerFn({ method: 'GET' }).handle
       return { client: null, reports: [] }
     }
 
-    const [client] = await db.select().from(clients).where(eq(clients.id, targetClientId))
+    const [client] = await db.select().from(clients).where(and(eq(clients.id, targetClientId), isNull(clients.deletedAt)))
     if (!client) {
       throw new Error('Client profile not found')
     }
@@ -341,14 +414,27 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
     }
 
     const effectivePartnerId = getEffectivePartnerId(auth)
-    if (effectivePartnerId) {
-      const [targetClient] = await db
-        .select()
-        .from(clients)
-        .where(and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId)))
-      if (!targetClient) {
-        throw new Error('Unauthorized: You can only create reports for your assigned clients')
-      }
+    const [targetClient] = await db
+      .select()
+      .from(clients)
+      .where(
+        effectivePartnerId
+          ? and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt))
+          : and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt))
+      )
+    if (!targetClient) {
+      throw new Error(effectivePartnerId ? 'Unauthorized: You can only create reports for your assigned clients' : 'Client not found')
+    }
+
+    const { periodStart, periodEnd } = parseReportPeriod(data.reportMonth)
+    const clientSnapshot: ClientSnapshot = {
+      businessName: targetClient.businessName || targetClient.name,
+      logoUrl: targetClient.logoUrl ?? null,
+      primaryColor: targetClient.primaryColor || '#2563eb',
+      secondaryColor: targetClient.secondaryColor || '#1e293b',
+      isWhiteLabel: Boolean(targetClient.isWhiteLabel),
+      partnerName: targetClient.partnerName ?? null,
+      partnerLogoUrl: targetClient.partnerLogoUrl ?? null,
     }
 
     const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
@@ -359,6 +445,9 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         clientId: data.clientId.trim(),
         title: data.title.trim(),
         reportMonth: data.reportMonth.trim(),
+        periodStart,
+        periodEnd,
+        clientSnapshot,
         previousReportId: data.previousReportId || null,
         // GBP Current
         gbpCalls: Number(data.gbpCalls) || 0,
@@ -496,16 +585,23 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
         .select({ clientId: reports.clientId })
         .from(reports)
         .where(eq(reports.id, data.id))
-      if (!targetReport) throw new Error('Report not found')
+      if (!targetReport || !targetReport.clientId) throw new Error('Report not found')
 
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId)))
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
       if (!targetClient) {
         throw new Error('Unauthorized: You can only edit reports for your assigned clients')
       }
     }
+
+    const { periodStart, periodEnd } = parseReportPeriod(data.reportMonth)
+
+    const [clientRow] = await db
+      .select()
+      .from(clients)
+      .where(and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt)))
 
     const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
 
@@ -513,6 +609,8 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       clientId: data.clientId.trim(),
       title: data.title.trim(),
       reportMonth: data.reportMonth.trim(),
+      periodStart,
+      periodEnd,
       previousReportId: data.previousReportId || null,
       // GBP Current
       gbpCalls: Number(data.gbpCalls) || 0,
@@ -561,6 +659,18 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       nextSteps: data.nextSteps?.trim() || null,
     }
 
+    if (clientRow) {
+      updatePayload.clientSnapshot = {
+        businessName: clientRow.businessName || clientRow.name,
+        logoUrl: clientRow.logoUrl ?? null,
+        primaryColor: clientRow.primaryColor || '#2563eb',
+        secondaryColor: clientRow.secondaryColor || '#1e293b',
+        isWhiteLabel: Boolean(clientRow.isWhiteLabel),
+        partnerName: clientRow.partnerName ?? null,
+        partnerLogoUrl: clientRow.partnerLogoUrl ?? null,
+      }
+    }
+
     if (data.displayOptions) {
       updatePayload.displayOptions = data.displayOptions
     }
@@ -593,14 +703,14 @@ export const updateReportDisplayOptionsServerFn = createServerFn({ method: 'POST
       .from(reports)
       .where(eq(reports.id, data.id))
 
-    if (!targetReport) throw new Error('Report not found')
+    if (!targetReport || !targetReport.clientId) throw new Error('Report not found')
 
     const effectivePartnerId = getEffectivePartnerId(auth)
     if (effectivePartnerId) {
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId)))
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
       if (!targetClient) {
         throw new Error('Unauthorized: You can only edit reports for your assigned clients')
       }
@@ -648,12 +758,12 @@ export const deleteReportServerFn = createServerFn({ method: 'POST' })
         .select({ clientId: reports.clientId })
         .from(reports)
         .where(eq(reports.id, data.id))
-      if (!targetReport) throw new Error('Report not found')
+      if (!targetReport || !targetReport.clientId) throw new Error('Report not found')
 
       const [targetClient] = await db
         .select()
         .from(clients)
-        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId)))
+        .where(and(eq(clients.id, targetReport.clientId), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
       if (!targetClient) {
         throw new Error('Unauthorized: You can only delete reports for your assigned clients')
       }

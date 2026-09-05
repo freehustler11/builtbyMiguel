@@ -1,100 +1,120 @@
-# React + Vite + TanStack Router + TanStack Query + Tailwind CSS
+# Performance Marketing & Client Portal Platform
 
-A modern full-stack React starter with file-based routing, declarative server-state management, and utility-first styling, pre-configured for **GitHub** and **Dokploy** deployments.
+A full-stack SSR application built with **TanStack Start**, **React 19**, **PostgreSQL**, **Drizzle ORM**, and **Tailwind CSS v4**. Features multi-tenant partner isolation, client portals, real-time metrics dashboards, immutable report snapshot generation, and audit logging.
+
+---
 
 ## 🚀 Tech Stack
 
-- **Framework**: [React 19](https://react.dev/) + [Vite 6](https://vite.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
-- **Routing**: [TanStack Router](https://tanstack.com/router) (File-based with auto-generated route tree)
-- **Data Fetching & State**: [TanStack Query](https://tanstack.com/query) (v5)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (`@tailwindcss/vite`)
-- **Deployment**: [Dokploy](https://dokploy.com/) / Docker (Multi-stage NGINX with SPA fallback)
-- **CI/CD**: GitHub Actions
+- **Framework**: [TanStack Start](https://tanstack.com/start) (Full-stack SSR on [Nitro](https://nitro.unjs.io/) / Vite)
+- **Frontend / Routing**: [TanStack Router](https://tanstack.com/router) (Strictly typed file-based routing)
+- **Runtime**: **Node.js 22 LTS**
+- **Database**: **PostgreSQL** with [Drizzle ORM](https://orm.drizzle.team/)
+- **Migrations**: `scripts/migrate.mjs` (Automatic boot migration runner)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with Lucide React icons
+- **Deployment**: Docker (`node:22-alpine`), container port **3000**, orchestrated via Dokploy
+
+---
+
+## 🔐 Tenancy & Authentication
+
+The platform supports 4 distinct user tiers:
+1. **Superadmin**: Full unrestricted platform control, cross-partner management, user password resets, global audits.
+2. **Partner**: Agency owner managing their own assigned clients and team members.
+3. **Partner Employee**: Staff account scoped to a partner's assigned clients; cannot manage agency credentials or owners.
+4. **Client**: Authenticated client portal user scoped exclusively to their own organization's reports and profile.
+
+All client-scoped queries enforce partner isolation via `getEffectivePartnerId()`. Role checks strictly use allowlist assertions (`assertActiveSession`, `assertSuperadminSession`).
 
 ---
 
 ## 🛠️ Local Development
 
-### 1. Run Development Server
+### 1. Prerequisites
+- Node.js 22+
+- PostgreSQL database
+
+### 2. Environment Configuration
+Create a `.env` file in the project root:
+```env
+PORT=3000
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+ADMIN_PASSWORD=your_superadmin_password
+SESSION_SECRET=your_32_byte_session_encryption_secret
+```
+
+### 3. Install Dependencies & Run Migrations
+```bash
+npm install
+npm run db:migrate
+```
+
+### 4. Start Development Server
 ```bash
 npm run dev
 ```
-Open `http://localhost:5173` in your browser.
+The application will be accessible at `http://localhost:3000`.
 
-### 2. Build for Production
+### 5. Run Verification & Test Suite
 ```bash
-npm run build
+npm run test:simulate
 ```
-
-### 3. Run with Docker Locally
-```bash
-docker compose up --build
-```
-Then visit `http://localhost:8080`.
 
 ---
 
-## 🚢 Deploying with GitHub & Dokploy
+## 🚢 Docker & Production Deployment (Dokploy)
 
-### Step 1: Push Code to GitHub
-1. Initialize git (if not already):
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit: React + TanStack + Dokploy setup"
-   ```
-2. Create a new repository on GitHub and push:
-   ```bash
-   git remote add origin https://github.com/<your-username>/<your-repo-name>.git
-   git branch -M main
-   git push -u origin main
-   ```
+The application packages into a multi-stage Docker container running Node.js 22:
+- Builds client and server bundles (`npm run build`).
+- Bundles migration scripts and starts `node server.mjs`.
+- Automatically applies pending database migrations on container boot prior to binding HTTP listeners.
 
-### Step 2: Configure in Dokploy
-1. Log in to your **Dokploy Dashboard**.
-2. Click **Create Project** (or open an existing project) $\rightarrow$ click **Create Application**.
-3. Under **Provider**, select **GitHub**:
-   - Choose your GitHub account / organization.
-   - Select your repository.
-   - Set **Branch** to `main`.
-4. Under **Build Type**:
-   - Select **Dockerfile** (uses the root `Dockerfile` and `nginx.conf`).
-   *(Alternatively, selecting **Nixpacks** also works seamlessly)*.
-5. Under **General / Network Settings**:
-   - Set **Container Port** to `80`.
-6. (Optional) Under **Domains**:
-   - Add your custom domain (e.g. `app.example.com`) and enable automatic Let's Encrypt SSL.
-7. Click **Deploy**!
-8. Enable **Auto Deploy Webhook** so any subsequent `git push` to `main` automatically triggers a zero-downtime rebuild and redeployment.
+### Dokploy Configuration
+1. **Create Application** in your Dokploy project.
+2. Select **GitHub** provider and point to your repository (`main` branch).
+3. Set **Build Type** to **Dockerfile**.
+4. Set **Container Port** to **`3000`** (do **not** use port 80).
+5. Add Environment Variables:
+   - `PORT`: `3000`
+   - `DATABASE_URL`: `postgresql://...`
+   - `ADMIN_PASSWORD`: `<secure-password>`
+   - `SESSION_SECRET`: `<secure-random-key>`
+6. Enable automatic SSL under your Domain settings.
+7. Deploy!
 
 ---
 
 ## 📁 Project Structure
 
 ```
-├── .github/
-│   └── workflows/
-│       └── ci.yml             # GitHub Actions CI workflow
-├── src/
-│   ├── components/
-│   │   └── Navbar.tsx         # Shared top navigation with active route highlights
-│   ├── lib/
-│   │   └── utils.ts           # Styling helper (cn)
-│   ├── routes/
-│   │   ├── __root.tsx         # Root layout route (<Navbar />, <Outlet />, devtools)
-│   │   ├── index.tsx          # Home page route (/) with TanStack Query demo
-│   │   └── about.tsx          # About page route (/about)
-│   ├── routeTree.gen.ts       # Auto-generated route tree by TanStack Router
-│   ├── index.css              # Tailwind CSS entry stylesheet
-│   ├── main.tsx               # App entry, QueryClient & Router initialization
-│   └── vite-env.d.ts          # Vite client types
-├── Dockerfile                 # Multi-stage production container build
-├── nginx.conf                 # NGINX configuration with SPA fallback routing
-├── docker-compose.yml         # Local Docker compose configuration
-├── .dockerignore              # Excludes node_modules, dist, etc. from Docker build context
-├── index.html                 # HTML shell
-├── vite.config.ts             # Vite configuration with TanStack & Tailwind plugins
-├── tsconfig.json              # TypeScript root configuration
-└── package.json               # Dependencies and scripts
+├── app/                       # Canonical backend tree
+│   ├── db/                    # Drizzle connection & schema definitions
+│   │   ├── index.ts
+│   │   └── schema.ts
+│   ├── lib/                   # Server-side auth, crypto, and session utilities
+│   │   ├── auth.ts
+│   │   └── hostname.ts
+│   ├── server/                # TanStack Start RPC server functions (createServerFn)
+│   │   ├── activity-logger.ts
+│   │   ├── activity.ts
+│   │   ├── auth.ts
+│   │   ├── clients.ts
+│   │   ├── partners.ts
+│   │   ├── passwords.ts
+│   │   ├── reports.ts
+│   │   └── team.ts
+│   └── router.tsx             # Root TanStack router instantiation
+├── src/                       # Canonical frontend tree
+│   ├── components/            # React UI components (ReportDocument, Sidebar, etc.)
+│   ├── lib/                   # Client-side utilities & tsconfig shims
+│   ├── routes/                # File-based routes (/admin, /portal, /login, etc.)
+│   └── server/                # Re-export shims for tsconfig.app.json resolution
+├── scripts/
+│   ├── migrate.mjs            # Production migration script (runs on container boot)
+│   ├── simulate.ts            # Simulation and access-control integration tests
+│   └── security-audit.ts      # Automated security regression test suite
+├── Dockerfile                 # Production multi-stage Dockerfile (Node 22, Port 3000)
+├── server.mjs                 # Production server boot entry (runs migrations, starts SSR)
+├── AGENTS.md                  # Comprehensive AI & architectural documentation
+└── package.json
 ```

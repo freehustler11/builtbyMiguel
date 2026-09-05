@@ -311,12 +311,13 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
           clientId: users.clientId,
           partnerId: users.partnerId,
           email: users.email,
+          deletedAt: users.deletedAt,
         })
         .from(users)
         .where(userFilter)
 
       if (dbUser) {
-        if (!dbUser.isActive) {
+        if (!dbUser.isActive || dbUser.deletedAt) {
           invalidateSessionCache(token)
           const cookieOpts = await getSessionCookieOptions()
           deleteCookie(COOKIE_NAME, cookieOpts)
@@ -339,7 +340,7 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
         }
         sessionCache.set(token, { result, cachedAt: Date.now() })
         return result
-      } else if (session.role === 'client' || session.role === 'partner' || session.role === 'partner_employee') {
+      } else if (session.role !== 'superadmin' && session.role !== 'admin') {
         invalidateSessionCache(token)
         const cookieOpts = await getSessionCookieOptions()
         deleteCookie(COOKIE_NAME, cookieOpts)
@@ -394,7 +395,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       .where(eq(users.email, data.email))
 
     if (dbUser) {
-      if (!dbUser.isActive) {
+      if (!dbUser.isActive || dbUser.deletedAt) {
         await logActivity({
           userId: dbUser.id,
           userEmail: dbUser.email,
@@ -501,7 +502,7 @@ export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
 
 /**
  * Auth Route Guard: Require admin / agency access (Superadmin or Partner).
- * Blocks unauthenticated users and redirects clients to /portal.
+ * Allowlist: permits only superadmin, admin, partner, and partner_employee.
  */
 export async function requireAdmin({
   location,
@@ -517,9 +518,18 @@ export async function requireAdmin({
       },
     })
   }
-  if (auth.role === 'client') {
+  const ALLOWED_ADMIN_ROLES = ['superadmin', 'admin', 'partner', 'partner_employee']
+  if (!auth.role || !ALLOWED_ADMIN_ROLES.includes(auth.role)) {
+    if (auth.role === 'client') {
+      throw redirect({
+        to: '/portal',
+      })
+    }
     throw redirect({
-      to: '/portal',
+      to: '/login',
+      search: {
+        redirect: location.href,
+      },
     })
   }
   return auth
@@ -527,7 +537,7 @@ export async function requireAdmin({
 
 /**
  * Auth Route Guard: Require Superadmin privileges.
- * Blocks partners and partner employees, redirecting them back to /admin/clients.
+ * Allowlist: permits only superadmin and admin.
  */
 export async function requireSuperadmin({
   location,
@@ -543,6 +553,9 @@ export async function requireSuperadmin({
       },
     })
   }
+  if (auth.role === 'superadmin' || auth.role === 'admin') {
+    return auth
+  }
   if (auth.role === 'partner' || auth.role === 'partner_employee') {
     throw redirect({
       to: '/admin/clients',
@@ -553,11 +566,17 @@ export async function requireSuperadmin({
       to: '/portal',
     })
   }
-  return auth
+  throw redirect({
+    to: '/login',
+    search: {
+      redirect: location.href,
+    },
+  })
 }
 
 /**
- * Auth Route Guard: Require client or admin session for portal access.
+ * Auth Route Guard: Require client session for portal access (explicitly allows superadmin for support access).
+ * Allowlist: permits only client, superadmin, and admin.
  */
 export async function requireClient({
   location,
@@ -573,13 +592,27 @@ export async function requireClient({
       },
     })
   }
-  return auth
+  // Allowlist: permit client, and explicitly permit superadmin for support access
+  if (auth.role === 'client' || auth.role === 'superadmin' || auth.role === 'admin') {
+    return auth
+  }
+  if (auth.role === 'partner' || auth.role === 'partner_employee') {
+    throw redirect({
+      to: '/admin/clients',
+    })
+  }
+  throw redirect({
+    to: '/login',
+    search: {
+      redirect: location.href,
+    },
+  })
 }
 
 /**
- * Backward compatibility: Require authenticated superadmin session
+ * Auth Route Guard: Require authenticated superadmin session
  */
-export async function requireAuth({
+export async function requireSuperadminAuth({
   location,
 }: {
   location: { href: string }

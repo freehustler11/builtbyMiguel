@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and } from 'drizzle-orm'
+import { desc, eq, and, isNull } from 'drizzle-orm'
 import { db, users } from '../db'
 import { hashPassword } from '../lib/auth'
 import { assertActiveSession } from './auth'
@@ -57,7 +57,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
           role: users.role,
         })
         .from(users)
-        .where(eq(users.id, auth.userId!))
+        .where(and(eq(users.id, auth.userId!), isNull(users.deletedAt)))
 
       const employees = await db
         .select({
@@ -73,7 +73,8 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
         .where(
           and(
             eq(users.partnerId, auth.userId!),
-            eq(users.role, 'partner_employee')
+            eq(users.role, 'partner_employee'),
+            isNull(users.deletedAt)
           )
         )
         .orderBy(desc(users.createdAt))
@@ -86,7 +87,16 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
     }
 
     // Superadmin: can view employees across all agencies or filter by specific partner
-    let query = db
+    const conditions = [
+      eq(users.role, 'partner_employee'),
+      isNull(users.deletedAt),
+    ]
+
+    if (data?.partnerId && data.partnerId !== 'all') {
+      conditions.push(eq(users.partnerId, data.partnerId))
+    }
+
+    const allEmployees = await db
       .select({
         id: users.id,
         name: users.name,
@@ -97,20 +107,8 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
         partnerId: users.partnerId,
       })
       .from(users)
-      .where(eq(users.role, 'partner_employee'))
+      .where(and(...conditions))
       .orderBy(desc(users.createdAt))
-
-    if (data?.partnerId && data.partnerId !== 'all') {
-      // @ts-expect-error drizzle query builder with where
-      query = query.where(
-        and(
-          eq(users.role, 'partner_employee'),
-          eq(users.partnerId, data.partnerId)
-        )
-      )
-    }
-
-    const allEmployees = await query
 
     // Attach partner agency names
     const partnerOwners = await db
@@ -120,7 +118,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
         email: users.email,
       })
       .from(users)
-      .where(eq(users.role, 'partner'))
+      .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
 
     const partnerMap = new Map(partnerOwners.map((p) => [p.id, p.name || p.email]))
 
@@ -267,7 +265,7 @@ export const deleteTeamMemberServerFn = createServerFn({ method: 'POST' })
     const [targetUser] = await db
       .select()
       .from(users)
-      .where(eq(users.id, data.id))
+      .where(and(eq(users.id, data.id), isNull(users.deletedAt)))
 
     if (!targetUser) {
       throw new Error('User not found')
@@ -283,7 +281,14 @@ export const deleteTeamMemberServerFn = createServerFn({ method: 'POST' })
       throw new Error('Unauthorized: You can only remove employees from your own agency.')
     }
 
-    await db.delete(users).where(eq(users.id, data.id))
+    await db
+      .update(users)
+      .set({
+        deletedAt: new Date(),
+        isActive: false,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, data.id))
 
     return { success: true }
   })
@@ -306,7 +311,7 @@ export const toggleTeamMemberActiveServerFn = createServerFn({ method: 'POST' })
     const [targetUser] = await db
       .select()
       .from(users)
-      .where(eq(users.id, data.id))
+      .where(and(eq(users.id, data.id), isNull(users.deletedAt)))
 
     if (!targetUser) {
       throw new Error('User not found')

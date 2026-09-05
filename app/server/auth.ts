@@ -45,12 +45,13 @@ export async function assertActiveSession(): Promise<ActiveSession> {
         clientId: users.clientId,
         partnerId: users.partnerId,
         email: users.email,
+        deletedAt: users.deletedAt,
       })
       .from(users)
       .where(userFilter)
 
     if (dbUser) {
-      if (!dbUser.isActive) {
+      if (!dbUser.isActive || dbUser.deletedAt) {
         const cookieOpts = await getSessionCookieOptions()
         deleteCookie(COOKIE_NAME, cookieOpts)
         throw redirect({
@@ -69,7 +70,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
         email: dbUser.email,
         isActive: dbUser.isActive,
       }
-    } else if (session.role === 'client' || session.role === 'partner' || session.role === 'partner_employee') {
+    } else if (session.role !== 'superadmin' && session.role !== 'admin') {
       const cookieOpts = await getSessionCookieOptions()
       deleteCookie(COOKIE_NAME, cookieOpts)
       throw redirect({
@@ -92,11 +93,11 @@ export async function assertActiveSession(): Promise<ActiveSession> {
 }
 
 /**
- * Assert that the current session is a Superadmin (blocks partner agency accounts and employees)
+ * Assert that the current session is a Superadmin (allowlist: permits only superadmin)
  */
 export async function assertSuperadminSession(): Promise<ActiveSession> {
   const session = await assertActiveSession()
-  if (session.role === 'partner' || session.role === 'partner_employee') {
+  if (session.role !== 'superadmin') {
     throw new Error('Unauthorized: Superadmin privileges required')
   }
   return session

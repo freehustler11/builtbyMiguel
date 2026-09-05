@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, and, isNull } from 'drizzle-orm'
 import { db, users } from '../db'
 import { hashPassword, verifyPassword, invalidateSessionCache } from '../lib/auth'
 import { assertActiveSession, assertSuperadminSession } from './auth'
@@ -48,7 +48,7 @@ export const changeMyPasswordServerFn = createServerFn({ method: 'POST' })
       throw new Error('User record could not be resolved')
     }
 
-    let [dbUser] = await db.select().from(users).where(userFilter)
+    let [dbUser] = await db.select().from(users).where(and(userFilter, isNull(users.deletedAt)))
 
     // Fallback: If superadmin logged in via fallback without explicit DB row, create one
     if (!dbUser && (auth.role === 'superadmin' || auth.role === 'admin')) {
@@ -134,7 +134,10 @@ export const adminResetUserPasswordServerFn = createServerFn({ method: 'POST' })
       throw new Error('Unauthorized: Administrative privileges required')
     }
 
-    const [targetUser] = await db.select().from(users).where(eq(users.id, data.userId))
+    const [targetUser] = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.id, data.userId), isNull(users.deletedAt)))
     if (!targetUser) {
       throw new Error('Target user account not found')
     }
@@ -194,6 +197,7 @@ export const getAllUsersForAdminServerFn = createServerFn({ method: 'GET' }).han
         partnerId: users.partnerId,
       })
       .from(users)
+      .where(isNull(users.deletedAt))
       .orderBy(desc(users.createdAt))
 
     // Map partner names

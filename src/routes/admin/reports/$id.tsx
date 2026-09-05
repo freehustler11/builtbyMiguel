@@ -43,7 +43,7 @@ export const Route = createFileRoute('/admin/reports/$id')({
     }
   },
   head: ({ loaderData }) => {
-    const clientName = loaderData?.client?.businessName || 'Client'
+    const clientName = (loaderData?.report as any)?.clientSnapshot?.businessName || loaderData?.client?.businessName || 'Client'
     const reportMonth = loaderData?.report?.reportMonth || 'Monthly'
     return {
       meta: [

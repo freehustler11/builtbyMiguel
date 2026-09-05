@@ -98,7 +98,9 @@ export async function runMigrations() {
     await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "partner_name" text`
     await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "partner_logo_url" text`
     await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "partner_id" uuid REFERENCES "users"("id") ON DELETE SET NULL`
+    await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "deleted_at" timestamp with time zone`
     await sql`CREATE INDEX IF NOT EXISTS "clients_partner_id_idx" ON "clients" ("partner_id")`
+    await sql`CREATE INDEX IF NOT EXISTS "clients_deleted_at_idx" ON "clients" ("deleted_at")`
 
     // 7. Ensure users table exists (RBAC: Superadmin vs Partner Agency)
     await sql`
@@ -117,7 +119,9 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users" ("email")`
     await sql`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "is_active" boolean DEFAULT true NOT NULL`
     await sql`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "partner_id" uuid REFERENCES "users"("id") ON DELETE CASCADE`
+    await sql`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "deleted_at" timestamp with time zone`
     await sql`CREATE INDEX IF NOT EXISTS "users_partner_id_idx" ON "users" ("partner_id")`
+    await sql`CREATE INDEX IF NOT EXISTS "users_deleted_at_idx" ON "users" ("deleted_at")`
     await sql`UPDATE "users" SET "role" = 'superadmin' WHERE "role" = 'admin'`
     await sql`ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'partner'`
 
@@ -125,7 +129,7 @@ export async function runMigrations() {
     await sql`
       CREATE TABLE IF NOT EXISTS "reports" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE CASCADE,
+        "client_id" uuid REFERENCES "clients"("id") ON DELETE SET NULL,
         "title" text NOT NULL,
         "report_month" text NOT NULL,
         "gbp_calls" integer DEFAULT 0,
@@ -169,6 +173,10 @@ export async function runMigrations() {
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "gbp_website_clicks" integer DEFAULT 0`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "prev_gbp_website_clicks" integer DEFAULT 0`
     await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "summary_title" text DEFAULT 'Performance Highlights & Strategic Updates'`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "period_start" timestamp with time zone`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "period_end" timestamp with time zone`
+    await sql`ALTER TABLE "reports" ADD COLUMN IF NOT EXISTS "client_snapshot" jsonb`
+    await sql`CREATE INDEX IF NOT EXISTS "reports_period_start_idx" ON "reports" ("period_start")`
 
     // 9. Ensure media table isolation per partner
     await sql`ALTER TABLE "media" ADD COLUMN IF NOT EXISTS "uploaded_by" uuid REFERENCES "users"("id") ON DELETE SET NULL`
@@ -176,7 +184,8 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "media_partner_id_idx" ON "media" ("partner_id")`
     await sql`CREATE INDEX IF NOT EXISTS "media_uploaded_by_idx" ON "media" ("uploaded_by")`
 
-    // 10. Ensure reports.client_id has ON DELETE CASCADE in PostgreSQL
+    // 10. Ensure reports.client_id is nullable and has ON DELETE SET NULL in PostgreSQL
+    await sql`ALTER TABLE "reports" ALTER COLUMN "client_id" DROP NOT NULL`
     await sql`
       DO $$
       DECLARE
@@ -194,7 +203,7 @@ export async function runMigrations() {
         ) LOOP
           EXECUTE 'ALTER TABLE "reports" DROP CONSTRAINT ' || quote_ident(r.constraint_name);
         END LOOP;
-        ALTER TABLE "reports" ADD CONSTRAINT "reports_client_id_clients_id_fk" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE CASCADE;
+        ALTER TABLE "reports" ADD CONSTRAINT "reports_client_id_clients_id_fk" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE SET NULL;
       END $$;
     `
 
@@ -218,6 +227,63 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "activity_logs_created_at_idx" ON "activity_logs" ("created_at" DESC)`
     await sql`CREATE INDEX IF NOT EXISTS "activity_logs_action_idx" ON "activity_logs" ("action")`
     await sql`CREATE INDEX IF NOT EXISTS "activity_logs_user_id_idx" ON "activity_logs" ("user_id")`
+
+    // 13. Backfill period_start, period_end, and client_snapshot for reports
+    const monthNames = {
+      january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+      july: 6, august: 7, september: 8, october: 9, november: 10, december: 11
+    }
+
+    const unpopulatedReports = await sql`
+      SELECT r.id, r.report_month, r.client_id, r.period_start, r.client_snapshot,
+             c.business_name, c.logo_url, c.primary_color, c.secondary_color,
+             c.is_white_label, c.partner_name, c.partner_logo_url
+      FROM "reports" r
+      LEFT JOIN "clients" c ON r.client_id = c.id
+      WHERE r.period_start IS NULL OR r.client_snapshot IS NULL
+    `
+
+    for (const rep of unpopulatedReports) {
+      let pStart = rep.period_start
+      let pEnd = null
+
+      if (!pStart && rep.report_month) {
+        const parts = rep.report_month.trim().split(/\s+/)
+        if (parts.length >= 2) {
+          const mStr = parts[0].toLowerCase()
+          const yNum = parseInt(parts[1], 10)
+          if (monthNames[mStr] !== undefined && !isNaN(yNum)) {
+            const mIdx = monthNames[mStr]
+            pStart = new Date(Date.UTC(yNum, mIdx, 1, 0, 0, 0, 0))
+            pEnd = new Date(Date.UTC(yNum, mIdx + 1, 0, 23, 59, 59, 999))
+          }
+        }
+      }
+
+      let snapshot = rep.client_snapshot
+      if (!snapshot && rep.business_name) {
+        snapshot = {
+          businessName: rep.business_name,
+          logoUrl: rep.logo_url || null,
+          primaryColor: rep.primary_color || '#2563eb',
+          secondaryColor: rep.secondary_color || '#1e293b',
+          isWhiteLabel: Boolean(rep.is_white_label),
+          partnerName: rep.partner_name || null,
+          partnerLogoUrl: rep.partner_logo_url || null,
+        }
+      }
+
+      if (pStart || snapshot) {
+        await sql`
+          UPDATE "reports"
+          SET
+            "period_start" = COALESCE("period_start", ${pStart}),
+            "period_end" = COALESCE("period_end", ${pEnd}),
+            "client_snapshot" = COALESCE("client_snapshot", ${snapshot ? sql.json(snapshot) : null})
+          WHERE "id" = ${rep.id}
+        `
+      }
+    }
 
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {

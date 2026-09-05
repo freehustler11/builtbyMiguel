@@ -183,10 +183,18 @@ async function runSimulations() {
       primaryColor: '#059669',
       secondaryColor: '#047857',
     }
+    const whiteLabelReport: any = {
+      ...sampleReport,
+      clientSnapshot: {
+        ...(sampleReport.clientSnapshot || {}),
+        isWhiteLabel: true,
+        partnerName: 'Apex Growth Partners',
+      },
+    }
     const html3 = ReactDOMServer.renderToStaticMarkup(
       React.createElement(ReportDocument, {
         client: whiteLabelClient,
-        report: sampleReport,
+        report: whiteLabelReport,
         displayOptions: {
           show_agency_info: true,
           show_contact_person: true,
@@ -654,6 +662,105 @@ async function runSimulations() {
     assert(cleanedCheck === undefined, 'All test accounts cleanly purged')
   } catch (err: any) {
     assert(false, 'Superadmin & agency owner password reset simulation failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 12: Immutable Report Snapshot & Rename Invariance
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 12: Immutable Report Snapshot & Rename Invariance')
+  try {
+    const originalName = 'Original Bakery Co'
+    const [testClient] = await db
+      .insert(clients)
+      .values({
+        name: 'Snapshot Test Contact',
+        businessName: originalName,
+        websiteUrl: 'https://originalbakery.com',
+        logoUrl: 'https://originalbakery.com/logo.png',
+        primaryColor: '#ff0055',
+        secondaryColor: '#112233',
+        isWhiteLabel: true,
+        partnerName: 'Apex Marketing',
+        partnerLogoUrl: 'https://apex.com/logo.png',
+      })
+      .returning()
+
+    assert(Boolean(testClient?.id), 'Test client created for snapshot testing')
+
+    const clientSnapshot = {
+      businessName: testClient.businessName,
+      logoUrl: testClient.logoUrl,
+      primaryColor: testClient.primaryColor,
+      secondaryColor: testClient.secondaryColor,
+      isWhiteLabel: testClient.isWhiteLabel,
+      partnerName: testClient.partnerName,
+      partnerLogoUrl: testClient.partnerLogoUrl,
+    }
+
+    const [testReport] = await db
+      .insert(reports)
+      .values({
+        clientId: testClient.id,
+        title: 'Original Bakery Co Performance',
+        reportMonth: 'August 2026',
+        periodStart: new Date('2026-08-01T00:00:00.000Z'),
+        periodEnd: new Date('2026-08-31T23:59:59.999Z'),
+        clientSnapshot,
+        gbpCalls: 45,
+        gbpViews: 500,
+      })
+      .returning()
+
+    assert(Boolean(testReport?.id), 'Test report created with frozen clientSnapshot')
+    assert(Boolean(testReport.periodStart && testReport.periodEnd), 'Report periodStart and periodEnd populated')
+
+    // Render static HTML before rename
+    const htmlBefore = ReactDOMServer.renderToStaticMarkup(
+      React.createElement(ReportDocument, {
+        report: testReport as any,
+        client: testClient as any,
+      })
+    )
+    assert(htmlBefore.includes(originalName), 'HTML before rename displays original business name')
+    assert(htmlBefore.includes('MONTHLY PERFORMANCE REPORT'), 'Title badge compares against snapshot business name')
+
+    // Now rename client in database to completely different branding
+    const renamedName = 'Completely Different Donuts Inc'
+    await db
+      .update(clients)
+      .set({
+        businessName: renamedName,
+        logoUrl: 'https://differentdonuts.com/new-logo.png',
+        primaryColor: '#00ff00',
+        secondaryColor: '#999999',
+        isWhiteLabel: false,
+        partnerName: 'Brand New Agency',
+        partnerLogoUrl: 'https://brandnew.com/logo.png',
+      })
+      .where(eq(clients.id, testClient.id))
+
+    const [renamedClient] = await db.select().from(clients).where(eq(clients.id, testClient.id))
+    assert(renamedClient.businessName === renamedName, 'Live client table successfully renamed')
+
+    // Render report again with the renamed live client passed in
+    const htmlAfter = ReactDOMServer.renderToStaticMarkup(
+      React.createElement(ReportDocument, {
+        report: testReport as any,
+        client: renamedClient as any,
+      })
+    )
+
+    assert(htmlAfter === htmlBefore, 'Report HTML is 100% byte-for-byte identical after client rename')
+    assert(!htmlAfter.includes(renamedName), 'Report HTML does NOT leak renamed client business name')
+    assert(htmlAfter.includes(originalName), 'Report HTML retains original frozen business name from snapshot')
+    assert(htmlAfter.includes('MONTHLY PERFORMANCE REPORT'), 'Title badge comparison remains consistent using snapshot')
+
+    // Clean up
+    await db.delete(reports).where(eq(reports.id, testReport.id))
+    await db.delete(clients).where(eq(clients.id, testClient.id))
+    assert(true, 'Snapshot test client and report cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Immutable report snapshot simulation failed', err.message)
   }
 
   // ---------------------------------------------------------------

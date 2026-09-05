@@ -10,9 +10,10 @@
     "start": "node scripts/migrate.mjs && node server.mjs",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node scripts/migrate.mjs",
     "db:studio": "drizzle-kit studio",
-    "test:simulate": "tsx scripts/simulate.ts"
+    "test:simulate": "tsx scripts/simulate.ts",
+    "test:security": "tsx scripts/security-audit.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.67.2",

@@ -26,7 +26,7 @@ export const Route = createFileRoute('/portal/reports/$id')({
     }
   },
   head: ({ loaderData }) => {
-    const clientName = loaderData?.client?.businessName || 'Client'
+    const clientName = (loaderData?.report as any)?.clientSnapshot?.businessName || loaderData?.client?.businessName || 'Client'
     const reportMonth = loaderData?.report?.reportMonth || 'Monthly'
     return {
       meta: [
@@ -42,16 +42,17 @@ export const Route = createFileRoute('/portal/reports/$id')({
 
 function ClientPortalReportPage() {
   const { report, client } = Route.useLoaderData()
+  const businessName = (report as any)?.clientSnapshot?.businessName || client?.businessName || 'Client'
 
   useEffect(() => {
-    if (client?.businessName && report?.reportMonth) {
-      document.title = `${client.businessName} - ${report.reportMonth} Performance Report`
+    if (businessName && report?.reportMonth) {
+      document.title = `${businessName} - ${report.reportMonth} Performance Report`
     }
-  }, [client?.businessName, report?.reportMonth])
+  }, [businessName, report?.reportMonth])
 
   const handleDownloadPdf = () => {
-    if (client?.businessName && report?.reportMonth) {
-      document.title = `${client.businessName} - ${report.reportMonth} Performance Report`
+    if (businessName && report?.reportMonth) {
+      document.title = `${businessName} - ${report.reportMonth} Performance Report`
     }
     window.print()
   }

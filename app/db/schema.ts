@@ -82,6 +82,7 @@ export const users = pgTable('users', {
   partnerId: uuid('partner_id').references((): AnyPgColumn => users.id, { onDelete: 'cascade' }),
   isActive: boolean('is_active').default(true).notNull(),
   name: text('name'),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
@@ -123,22 +124,34 @@ export const clients = pgTable('clients', {
   partnerLogoUrl: text('partner_logo_url'),
   // Partner assignment (null = direct Superadmin client)
   partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'set null' }),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
 export type Client = typeof clients.$inferSelect
 export type NewClient = typeof clients.$inferInsert
 
+export interface ClientSnapshot {
+  businessName: string
+  logoUrl?: string | null
+  primaryColor?: string
+  secondaryColor?: string
+  isWhiteLabel?: boolean
+  partnerName?: string | null
+  partnerLogoUrl?: string | null
+}
+
 /**
  * Reports table for monthly performance and analytics reports
  */
 export const reports = pgTable('reports', {
   id: uuid('id').primaryKey().defaultRandom(),
-  clientId: uuid('client_id')
-    .notNull()
-    .references(() => clients.id, { onDelete: 'cascade' }),
+  clientId: uuid('client_id').references(() => clients.id, { onDelete: 'set null' }),
   title: text('title').notNull(),
   reportMonth: text('report_month').notNull(),
+  periodStart: timestamp('period_start', { withTimezone: true }),
+  periodEnd: timestamp('period_end', { withTimezone: true }),
+  clientSnapshot: jsonb('client_snapshot').$type<ClientSnapshot>(),
   previousReportId: uuid('previous_report_id').references((): AnyPgColumn => reports.id, { onDelete: 'set null' }),
   // GBP Metrics (Current)
   gbpCalls: integer('gbp_calls').default(0),

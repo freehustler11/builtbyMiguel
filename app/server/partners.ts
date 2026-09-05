@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and } from 'drizzle-orm'
+import { desc, eq, and, isNull } from 'drizzle-orm'
 import { db, users, clients } from '../db'
 import { hashPassword } from '../lib/auth'
 import { assertSuperadminSession } from './auth'
@@ -29,7 +29,7 @@ export const getPartnersServerFn = createServerFn({ method: 'GET' }).handler(
         createdAt: users.createdAt,
       })
       .from(users)
-      .where(eq(users.role, 'partner'))
+      .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
       .orderBy(desc(users.createdAt))
 
     const allClients = await db
@@ -38,6 +38,7 @@ export const getPartnersServerFn = createServerFn({ method: 'GET' }).handler(
         partnerId: clients.partnerId,
       })
       .from(clients)
+      .where(isNull(clients.deletedAt))
 
     const clientCountMap: Record<string, number> = {}
     for (const c of allClients) {
@@ -148,14 +149,17 @@ export const updatePartnerServerFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     await assertSuperadminSession()
 
-    const [partner] = await db.select().from(users).where(eq(users.id, data.id))
+    const [partner] = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.id, data.id), isNull(users.deletedAt)))
     if (!partner || partner.role !== 'partner') {
       throw new Error('Partner account not found')
     }
 
     // Check email clash if email changed
     if (data.email !== partner.email) {
-      const [clash] = await db.select().from(users).where(eq(users.email, data.email))
+      const [clash] = await db.select().from(users).where(and(eq(users.email, data.email), isNull(users.deletedAt)))
       if (clash) {
         throw new Error('An account with this email address already exists.')
       }
@@ -212,7 +216,10 @@ export const togglePartnerActiveServerFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     await assertSuperadminSession()
 
-    const [partner] = await db.select().from(users).where(eq(users.id, data.id))
+    const [partner] = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.id, data.id), isNull(users.deletedAt)))
     if (!partner || partner.role !== 'partner') {
       throw new Error('Partner account not found')
     }
@@ -253,7 +260,7 @@ export const assignClientPartnerServerFn = createServerFn({ method: 'POST' })
       const [partner] = await db
         .select()
         .from(users)
-        .where(and(eq(users.id, data.partnerId), eq(users.role, 'partner')))
+        .where(and(eq(users.id, data.partnerId), eq(users.role, 'partner'), isNull(users.deletedAt)))
 
       if (!partner) {
         throw new Error('Partner account not found')
@@ -265,7 +272,7 @@ export const assignClientPartnerServerFn = createServerFn({ method: 'POST' })
       .set({
         partnerId: data.partnerId,
       })
-      .where(eq(clients.id, data.clientId))
+      .where(and(eq(clients.id, data.clientId), isNull(clients.deletedAt)))
       .returning()
 
     return {

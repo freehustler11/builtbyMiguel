@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq } from 'drizzle-orm'
+import { desc, eq, inArray, and, isNull } from 'drizzle-orm'
 import { db, clients, reports, users, type Client } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { logActivity } from './activity-logger'
@@ -27,6 +27,9 @@ export interface PartnerSummary {
 export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
   async (): Promise<{ clients: ClientWithReportCount[]; partners: PartnerSummary[] }> => {
     const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Client accounts cannot view client listings')
+    }
 
     // 1. If user is a partner or partner employee, only fetch their assigned agency clients
     const effectivePartnerId = getEffectivePartnerId(auth)
@@ -34,13 +37,21 @@ export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
       const partnerClients = await db
         .select()
         .from(clients)
-        .where(eq(clients.partnerId, effectivePartnerId))
+        .where(and(eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
         .orderBy(desc(clients.createdAt))
 
-      const allReports = await db.select({ clientId: reports.clientId }).from(reports)
+      const clientIds = partnerClients.map((c) => c.id)
       const countMap: Record<string, number> = {}
-      for (const r of allReports) {
-        countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+      if (clientIds.length > 0) {
+        const partnerReports = await db
+          .select({ clientId: reports.clientId })
+          .from(reports)
+          .where(inArray(reports.clientId, clientIds))
+        for (const r of partnerReports) {
+          if (r.clientId) {
+            countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+          }
+        }
       }
 
       const clientList: ClientWithReportCount[] = partnerClients.map((c) => ({
@@ -56,12 +67,15 @@ export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
     const allClients = await db
       .select()
       .from(clients)
+      .where(isNull(clients.deletedAt))
       .orderBy(desc(clients.createdAt))
 
     const allReports = await db.select({ clientId: reports.clientId }).from(reports)
     const countMap: Record<string, number> = {}
     for (const r of allReports) {
-      countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+      if (r.clientId) {
+        countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+      }
     }
 
     const partnerUsers = await db
@@ -72,7 +86,7 @@ export const getClientsServerFn = createServerFn({ method: 'GET' }).handler(
         isActive: users.isActive,
       })
       .from(users)
-      .where(eq(users.role, 'partner'))
+      .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
 
     const partnerMap: Record<string, { id: string; name: string | null; email: string }> = {}
     for (const p of partnerUsers) {
@@ -103,7 +117,10 @@ export const getClientByIdServerFn = createServerFn({ method: 'GET' })
   .handler(async ({ data }) => {
     const auth = await assertActiveSession()
 
-    const [client] = await db.select().from(clients).where(eq(clients.id, data.id))
+    const [client] = await db
+      .select()
+      .from(clients)
+      .where(and(eq(clients.id, data.id), isNull(clients.deletedAt)))
     if (!client) {
       throw new Error('Client not found')
     }
@@ -215,7 +232,10 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const auth = await assertActiveSession()
 
-    const [existing] = await db.select().from(clients).where(eq(clients.id, data.id))
+    const [existing] = await db
+      .select()
+      .from(clients)
+      .where(and(eq(clients.id, data.id), isNull(clients.deletedAt)))
     if (!existing) throw new Error('Client not found')
 
     const updateFields: Record<string, any> = {
@@ -253,7 +273,7 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
   })
 
 /**
- * Server Function: Delete a client
+ * Server Function: Delete a client (Soft delete)
  */
 export const deleteClientServerFn = createServerFn({ method: 'POST' })
   .validator((data: { id: string }) => {
@@ -263,7 +283,10 @@ export const deleteClientServerFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const auth = await assertActiveSession()
 
-    const [existing] = await db.select().from(clients).where(eq(clients.id, data.id))
+    const [existing] = await db
+      .select()
+      .from(clients)
+      .where(and(eq(clients.id, data.id), isNull(clients.deletedAt)))
     if (!existing) throw new Error('Client not found')
 
     const effectivePartnerId = getEffectivePartnerId(auth)
@@ -271,6 +294,19 @@ export const deleteClientServerFn = createServerFn({ method: 'POST' })
       throw new Error('Unauthorized: You can only delete your own assigned clients')
     }
 
-    await db.delete(clients).where(eq(clients.id, data.id))
+    await db
+      .update(clients)
+      .set({
+        deletedAt: new Date(),
+      })
+      .where(eq(clients.id, data.id))
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'delete_client',
+    })
+
     return { success: true }
   })
