@@ -129,11 +129,13 @@ function AdminClientsPage() {
   const [businessName, setBusinessName] = useState('')
   const [websiteUrl, setWebsiteUrl] = useState('')
   const [logoUrl, setLogoUrl] = useState('')
+  const [logoBgColor, setLogoBgColor] = useState('#ffffff')
   const [primaryColor, setPrimaryColor] = useState('#2563eb')
   const [secondaryColor, setSecondaryColor] = useState('#1e293b')
   const [isWhiteLabel, setIsWhiteLabel] = useState(false)
   const [partnerName, setPartnerName] = useState('')
   const [partnerLogoUrl, setPartnerLogoUrl] = useState('')
+  const [partnerLogoBgColor, setPartnerLogoBgColor] = useState('#ffffff')
   const [formPartnerId, setFormPartnerId] = useState<string>('')
   const [isPartnerLogoModalOpen, setIsPartnerLogoModalOpen] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -202,11 +204,13 @@ function AdminClientsPage() {
     setBusinessName('')
     setWebsiteUrl('')
     setLogoUrl('')
+    setLogoBgColor('#ffffff')
     setPrimaryColor('#2563eb')
     setSecondaryColor('#1e293b')
     setIsWhiteLabel(false)
     setPartnerName('')
     setPartnerLogoUrl('')
+    setPartnerLogoBgColor('#ffffff')
     setFormPartnerId('')
     setFormError(null)
     setIsModalOpen(true)
@@ -218,11 +222,13 @@ function AdminClientsPage() {
     setBusinessName(client.businessName)
     setWebsiteUrl(client.websiteUrl || '')
     setLogoUrl(client.logoUrl || '')
+    setLogoBgColor((client as any).logoBgColor || '#ffffff')
     setPrimaryColor(client.primaryColor || '#2563eb')
     setSecondaryColor(client.secondaryColor || '#1e293b')
     setIsWhiteLabel(Boolean(client.isWhiteLabel))
     setPartnerName(client.partnerName || '')
     setPartnerLogoUrl(client.partnerLogoUrl || '')
+    setPartnerLogoBgColor((client as any).partnerLogoBgColor || '#ffffff')
     setFormPartnerId(client.partnerId || '')
     setFormError(null)
     setIsModalOpen(true)
@@ -405,11 +411,13 @@ function AdminClientsPage() {
             businessName: businessName.trim(),
             websiteUrl: websiteUrl.trim() || undefined,
             logoUrl: logoUrl.trim() || undefined,
+            logoBgColor: logoBgColor.trim() || '#ffffff',
             primaryColor,
             secondaryColor,
             isWhiteLabel,
             partnerName: partnerName.trim() || undefined,
             partnerLogoUrl: partnerLogoUrl.trim() || undefined,
+            partnerLogoBgColor: partnerLogoBgColor.trim() || '#ffffff',
             partnerId: isSuperadmin ? formPartnerId.trim() || null : undefined,
           },
         })
@@ -440,11 +448,13 @@ function AdminClientsPage() {
             businessName: businessName.trim(),
             websiteUrl: websiteUrl.trim() || undefined,
             logoUrl: logoUrl.trim() || undefined,
+            logoBgColor: logoBgColor.trim() || '#ffffff',
             primaryColor,
             secondaryColor,
             isWhiteLabel,
             partnerName: partnerName.trim() || undefined,
             partnerLogoUrl: partnerLogoUrl.trim() || undefined,
+            partnerLogoBgColor: partnerLogoBgColor.trim() || '#ffffff',
             partnerId: isSuperadmin ? formPartnerId.trim() || null : undefined,
           },
         })
@@ -1024,7 +1034,10 @@ function AdminClientsPage() {
                 </label>
                 <div className="flex items-center gap-3">
                   {logoUrl ? (
-                    <div className="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 p-1 bg-white flex items-center justify-center shrink-0">
+                    <div
+                      className="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-2xs"
+                      style={{ backgroundColor: logoBgColor !== 'transparent' ? logoBgColor : undefined }}
+                    >
                       <img src={logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
                     </div>
                   ) : (
@@ -1048,6 +1061,64 @@ function AdminClientsPage() {
                     >
                       Media Library
                     </button>
+                  </div>
+                </div>
+
+                {/* Logo Background Color Customization */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="space-y-0.5">
+                    <span className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400 block">
+                      Logo Background Color
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                      Set a dark, white, or custom background for white or transparent logos.
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <input
+                      type="color"
+                      value={logoBgColor.startsWith('#') ? logoBgColor : '#ffffff'}
+                      onChange={(e) => setLogoBgColor(e.target.value)}
+                      className="w-8 h-8 rounded-xl border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800 shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={logoBgColor}
+                      onChange={(e) => setLogoBgColor(e.target.value)}
+                      placeholder="#ffffff"
+                      className="w-20 px-2.5 py-1 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                    />
+                    <div className="flex items-center gap-1.5 pl-1">
+                      <button
+                        type="button"
+                        onClick={() => setLogoBgColor('#ffffff')}
+                        title="White"
+                        className={`w-5 h-5 rounded-full border border-slate-300 shadow-xs cursor-pointer transition ${logoBgColor === '#ffffff' ? 'ring-2 ring-blue-500 scale-110' : ''}`}
+                        style={{ backgroundColor: '#ffffff' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setLogoBgColor('#0f172a')}
+                        title="Dark Slate"
+                        className={`w-5 h-5 rounded-full border border-slate-700 shadow-xs cursor-pointer transition ${logoBgColor === '#0f172a' ? 'ring-2 ring-blue-500 scale-110' : ''}`}
+                        style={{ backgroundColor: '#0f172a' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setLogoBgColor('#000000')}
+                        title="Black"
+                        className={`w-5 h-5 rounded-full border border-slate-800 shadow-xs cursor-pointer transition ${logoBgColor === '#000000' ? 'ring-2 ring-blue-500 scale-110' : ''}`}
+                        style={{ backgroundColor: '#000000' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setLogoBgColor(primaryColor)}
+                        title="Brand Primary"
+                        className={`w-5 h-5 rounded-full border border-white shadow-xs cursor-pointer transition ${logoBgColor === primaryColor ? 'ring-2 ring-blue-500 scale-110' : ''}`}
+                        style={{ backgroundColor: primaryColor }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1168,7 +1239,10 @@ function AdminClientsPage() {
                       </label>
                       <div className="flex items-center gap-3">
                         {partnerLogoUrl ? (
-                          <div className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 p-1 bg-white flex items-center justify-center shrink-0">
+                          <div
+                            className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-2xs"
+                            style={{ backgroundColor: partnerLogoBgColor !== 'transparent' ? partnerLogoBgColor : undefined }}
+                          >
                             <img src={partnerLogoUrl} alt="Partner Logo" className="max-h-full max-w-full object-contain" />
                           </div>
                         ) : (
@@ -1192,6 +1266,26 @@ function AdminClientsPage() {
                           >
                             Browse
                           </button>
+                        </div>
+                      </div>
+
+                      {/* Partner Logo Background Selector */}
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <span className="text-[10px] text-slate-500 font-mono">Logo Background:</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={partnerLogoBgColor.startsWith('#') ? partnerLogoBgColor : '#ffffff'}
+                            onChange={(e) => setPartnerLogoBgColor(e.target.value)}
+                            className="w-6 h-6 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800"
+                          />
+                          <input
+                            type="text"
+                            value={partnerLogoBgColor}
+                            onChange={(e) => setPartnerLogoBgColor(e.target.value)}
+                            placeholder="#ffffff"
+                            className="w-20 px-2 py-0.5 rounded-lg text-[11px] font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                          />
                         </div>
                       </div>
                     </div>

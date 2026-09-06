@@ -7,6 +7,7 @@ import {
   Trash2,
   Globe,
   User,
+  Users,
   CheckCircle2,
   Clock,
   Sparkles,
@@ -15,6 +16,7 @@ import {
   MoveRight,
   Search,
   Filter,
+  FileText,
 } from 'lucide-react'
 import {
   getLandingPagesServerFn,
@@ -27,6 +29,7 @@ import {
   type TeamPickerMember,
 } from '../../server/crm'
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
+import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
 
 const STATUS_COLUMNS: Array<{
@@ -88,6 +91,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
   const [items, setItems] = useState<LandingPageItem[]>([])
   const [team, setTeam] = useState<TeamPickerMember[]>([])
   const [clientsList, setClientsList] = useState<ClientWithReportCount[]>([])
+  const [currentUser, setCurrentUser] = useState<ActiveSessionResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -104,6 +108,8 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
     clientId: string
     title: string
     targetUrl: string
+    draftUrl: string
+    notes: string
     focusKeyword: string
     ctaGoal: string
     assignedTo: string
@@ -112,6 +118,8 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
     clientId: clientId || '',
     title: '',
     targetUrl: '',
+    draftUrl: '',
+    notes: '',
     focusKeyword: '',
     ctaGoal: '',
     assignedTo: '',
@@ -124,16 +132,19 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
   const [isDeleting, setIsDeleting] = useState(false)
 
   const isRollup = !clientId
+  const isStaff = currentUser?.role === 'partner_employee'
 
   const loadData = async () => {
     try {
       setIsLoading(true)
-      const [lps, teamMembers] = await Promise.all([
+      const [lps, teamMembers, session] = await Promise.all([
         getLandingPagesServerFn({ data: { clientId, partnerId } }),
         getAgencyTeamPickerServerFn({ data: { partnerId } }),
+        checkAuthServerFn().catch(() => null),
       ])
       setItems(lps)
       setTeam(teamMembers)
+      if (session) setCurrentUser(session)
 
       if (isRollup) {
         const { clients } = await getClientsServerFn({ data: { partnerId } })
@@ -155,30 +166,33 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
     item: LandingPageItem,
     newStatus: 'planning' | 'copywriting' | 'design' | 'client_review' | 'live'
   ) => {
-    if (item.status === newStatus) return
-
-    if (newStatus === 'live') {
+    if (newStatus === 'live' && !item.targetUrl) {
       setLivePromptItem(item)
-      setLiveUrlInput(item.targetUrl || '')
+      setLiveUrlInput('')
       setIsLiveModalOpen(true)
       return
     }
 
     try {
       const updated = await updateLandingPageStatusServerFn({
-        data: { id: item.id, status: newStatus },
+        data: {
+          id: item.id,
+          status: newStatus,
+        },
       })
-      setItems((prev) => prev.map((it) => (it.id === item.id ? { ...it, ...updated } : it)))
+      setItems((prev) =>
+        prev.map((it) => (it.id === item.id ? { ...it, ...updated } : it))
+      )
     } catch (err) {
       console.error('Failed to update status:', err)
-      loadData()
     }
   }
 
-  const confirmLiveTransition = async () => {
+  const handleLivePromptSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     if (!livePromptItem) return
+
     try {
-      setIsSubmitting(true)
       const updated = await updateLandingPageStatusServerFn({
         data: {
           id: livePromptItem.id,
@@ -186,13 +200,13 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
           liveUrl: liveUrlInput.trim() || undefined,
         },
       })
-      setItems((prev) => prev.map((it) => (it.id === livePromptItem.id ? { ...it, ...updated } : it)))
+      setItems((prev) =>
+        prev.map((it) => (it.id === livePromptItem.id ? { ...it, ...updated } : it))
+      )
       setIsLiveModalOpen(false)
       setLivePromptItem(null)
     } catch (err) {
       console.error('Failed to mark landing page live:', err)
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -221,16 +235,18 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
     }
   }
 
-  // Open creation modal
+  // Open create modal
   const handleOpenCreate = () => {
     setEditingItem(null)
     setFormData({
       clientId: clientId || (clientsList[0]?.id || ''),
       title: '',
       targetUrl: '',
+      draftUrl: '',
+      notes: '',
       focusKeyword: '',
       ctaGoal: '',
-      assignedTo: team[0]?.id || '',
+      assignedTo: isStaff ? (currentUser?.userId || '') : (team[0]?.id || ''),
       status: 'planning',
     })
     setIsEditModalOpen(true)
@@ -243,6 +259,8 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
       clientId: item.clientId,
       title: item.title,
       targetUrl: item.targetUrl || '',
+      draftUrl: item.draftUrl || '',
+      notes: item.notes || '',
       focusKeyword: item.focusKeyword || '',
       ctaGoal: item.ctaGoal || '',
       assignedTo: item.assignedTo || '',
@@ -263,9 +281,11 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
             id: editingItem.id,
             title: formData.title,
             targetUrl: formData.targetUrl || undefined,
+            draftUrl: formData.draftUrl || undefined,
+            notes: formData.notes || undefined,
             focusKeyword: formData.focusKeyword || undefined,
             ctaGoal: formData.ctaGoal || undefined,
-            assignedTo: formData.assignedTo || null,
+            assignedTo: isStaff ? editingItem.assignedTo : formData.assignedTo || null,
             status: formData.status,
           },
         })
@@ -288,9 +308,11 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
             clientId: formData.clientId,
             title: formData.title,
             targetUrl: formData.targetUrl || undefined,
+            draftUrl: formData.draftUrl || undefined,
+            notes: formData.notes || undefined,
             focusKeyword: formData.focusKeyword || undefined,
             ctaGoal: formData.ctaGoal || undefined,
-            assignedTo: formData.assignedTo || undefined,
+            assignedTo: isStaff ? (currentUser?.userId || undefined) : formData.assignedTo || undefined,
             status: formData.status,
           },
         })
@@ -471,18 +493,40 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                         </div>
                       )}
 
-                      {/* Target / Live URL */}
-                      {item.targetUrl && (
-                        <a
-                          href={item.targetUrl.startsWith('http') ? item.targetUrl : `https://${item.targetUrl}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] font-mono text-blue-600 dark:text-blue-400 hover:underline truncate max-w-full"
-                        >
-                          <Globe className="w-3 h-3 shrink-0" />
-                          <span className="truncate">{item.targetUrl.replace(/^https?:\/\//, '')}</span>
-                          <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-                        </a>
+                      {/* Draft URL & Target / Live URL */}
+                      <div className="space-y-1">
+                        {item.draftUrl && (
+                          <a
+                            href={item.draftUrl.startsWith('http') ? item.draftUrl : `https://${item.draftUrl}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-[11px] font-mono text-purple-600 dark:text-purple-400 hover:underline truncate max-w-full"
+                            title="Open Google Doc / Draft"
+                          >
+                            <FileText className="w-3 h-3 shrink-0" />
+                            <span className="truncate">Draft Doc</span>
+                            <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                          </a>
+                        )}
+                        {item.targetUrl && (
+                          <a
+                            href={item.targetUrl.startsWith('http') ? item.targetUrl : `https://${item.targetUrl}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-[11px] font-mono text-blue-600 dark:text-blue-400 hover:underline truncate max-w-full"
+                          >
+                            <Globe className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{item.targetUrl.replace(/^https?:\/\//, '')}</span>
+                            <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                          </a>
+                        )}
+                      </div>
+
+                      {/* Deliverable Notes */}
+                      {item.notes && (
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                          {item.notes}
+                        </p>
                       )}
 
                       {/* Footer: Assignee & Live Timestamp */}
@@ -559,7 +603,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
               </button>
               <button
                 type="button"
-                onClick={confirmLiveTransition}
+                onClick={handleLivePromptSubmit}
                 disabled={isSubmitting}
                 className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition shadow-sm cursor-pointer disabled:opacity-50"
               >
@@ -626,17 +670,47 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                 />
               </div>
 
+              {/* Draft / Google Docs URL */}
+              <div className="space-y-1.5">
+                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                  <span>Google Docs / Draft Link</span>
+                  <span className="text-[11px] text-slate-400 font-normal">Optional</span>
+                </label>
+                <input
+                  type="url"
+                  value={formData.draftUrl}
+                  onChange={(e) => setFormData({ ...formData, draftUrl: e.target.value })}
+                  placeholder="https://docs.google.com/document/d/..."
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono text-xs"
+                />
+              </div>
+
               {/* Target / Destination URL */}
               <div className="space-y-1.5">
                 <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Target URL
+                  Live / Target URL
                 </label>
                 <input
                   type="url"
                   value={formData.targetUrl}
                   onChange={(e) => setFormData({ ...formData, targetUrl: e.target.value })}
                   placeholder="https://example.com/emergency"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono text-xs"
+                />
+              </div>
+
+              {/* Deliverable Notes */}
+              <div className="space-y-1.5">
+                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                  <span>Notes / Draft Outline</span>
+                  <span className="text-[11px] text-slate-400 font-normal">Internal context & instructions</span>
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Add notes, outline, target audience, or specific requirements..."
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs resize-y"
                 />
               </div>
 
@@ -695,23 +769,35 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                 </div>
 
                 {/* Assignee */}
-                <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Assigned Team Member
-                  </label>
-                  <select
-                    value={formData.assignedTo}
-                    onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
-                  >
-                    <option value="">Unassigned</option>
-                    {team.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name || t.email} ({t.role})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isStaff ? (
+                  <div className="space-y-1.5">
+                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                      Assigned Team Member
+                    </label>
+                    <div className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
+                      <Users className="w-3.5 h-3.5 text-blue-500" />
+                      <span>Assigned to You (automatically)</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                      Assigned Team Member
+                    </label>
+                    <select
+                      value={formData.assignedTo}
+                      onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    >
+                      <option value="">Unassigned</option>
+                      {team.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.name || t.email} ({t.role})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">

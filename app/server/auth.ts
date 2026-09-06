@@ -84,7 +84,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
 
   return {
     role: session.role === 'admin' ? 'superadmin' : session.role,
-    userId: null,
+    userId: session.userId || null,
     partnerId: session.partnerId || null,
     clientId: session.clientId || null,
     email: session.email || null,

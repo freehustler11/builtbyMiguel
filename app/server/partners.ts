@@ -3,6 +3,7 @@ import { desc, eq, and, isNull, sql, inArray } from 'drizzle-orm'
 import { db, users, clients, reports } from '../db'
 import { hashPassword } from '../lib/auth'
 import { assertSuperadminSession } from './auth'
+import { logActivity } from './activity-logger'
 import type { ClientWithReportCount } from './clients'
 
 export interface PartnerItem {
@@ -520,3 +521,84 @@ export const assignClientPartnerServerFn = createServerFn({ method: 'POST' })
       client: updated,
     }
   })
+
+/**
+ * Server Function: Soft-delete a partner agency, cascade soft-deletion to agency staff, and unassign clients to Direct Superadmin (Superadmin only)
+ */
+export const deletePartnerServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { partnerId: string }) => {
+    if (!data.partnerId?.trim()) throw new Error('Partner ID is required')
+    return { partnerId: data.partnerId.trim() }
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertSuperadminSession()
+
+    const [partner] = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.id, data.partnerId), eq(users.role, 'partner'), isNull(users.deletedAt)))
+
+    if (!partner) {
+      throw new Error('Partner agency account not found')
+    }
+
+    const now = new Date()
+
+    // 1. Soft-delete the partner agency user row
+    await db
+      .update(users)
+      .set({
+        deletedAt: now,
+        isActive: false,
+        updatedAt: now,
+      })
+      .where(eq(users.id, data.partnerId))
+
+    // 2. Cascade soft-delete to all partner employee / staff accounts
+    const deactivatedStaff = await db
+      .update(users)
+      .set({
+        deletedAt: now,
+        isActive: false,
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(users.partnerId, data.partnerId),
+          eq(users.role, 'partner_employee'),
+          isNull(users.deletedAt)
+        )
+      )
+      .returning({ id: users.id })
+
+    // 3. Unassign all managed clients so they safely transition to Direct Superadmin Unassigned
+    const unassignedClients = await db
+      .update(clients)
+      .set({
+        partnerId: null,
+      })
+      .where(
+        and(
+          eq(clients.partnerId, data.partnerId),
+          isNull(clients.deletedAt)
+        )
+      )
+      .returning({ id: clients.id })
+
+    // 4. Log audit activity
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'delete_partner',
+    })
+
+    return {
+      success: true,
+      partnerId: data.partnerId,
+      partnerName: partner.name || partner.email,
+      deactivatedStaffCount: deactivatedStaff.length,
+      unassignedClientsCount: unassignedClients.length,
+    }
+  })
+

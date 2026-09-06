@@ -29,7 +29,13 @@ export function isInternalPath(pathname: string): boolean {
     p === '/portal' ||
     p.startsWith('/portal/') ||
     p === '/messages' ||
-    p.startsWith('/messages/')
+    p.startsWith('/messages/') ||
+    p === '/my-work' ||
+    p.startsWith('/my-work/') ||
+    p === '/superadmin' ||
+    p.startsWith('/superadmin/') ||
+    p === '/r' ||
+    p.startsWith('/r/')
   )
 }
 

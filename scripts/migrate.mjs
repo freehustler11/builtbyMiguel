@@ -430,6 +430,35 @@ export async function runMigrations() {
     await sql`DROP TABLE IF EXISTS "drizzle"."__drizzle_migrations";`
     await sql`DROP SCHEMA IF EXISTS "drizzle" CASCADE;`
 
+    // 19. Ensure logo background color columns exist on clients table
+    await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "logo_bg_color" text DEFAULT '#ffffff';`
+    await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "partner_logo_bg_color" text DEFAULT '#ffffff';`
+
+    // 20. Ensure notes & draft_url on deliverables and create citations table
+    await sql`ALTER TABLE "landing_pages" ADD COLUMN IF NOT EXISTS "draft_url" text;`
+    await sql`ALTER TABLE "landing_pages" ADD COLUMN IF NOT EXISTS "notes" text;`
+    await sql`ALTER TABLE "client_articles" ADD COLUMN IF NOT EXISTS "notes" text;`
+    await sql`ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "draft_url" text;`
+    await sql`ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "notes" text;`
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS "citations" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "partner_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+        "directory" text NOT NULL,
+        "listing_url" text,
+        "username" text,
+        "password" text,
+        "status" text DEFAULT 'submitted' NOT NULL,
+        "notes" text,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "citations_client_id_idx" ON "citations" ("client_id");`
+    await sql`CREATE INDEX IF NOT EXISTS "citations_partner_id_idx" ON "citations" ("partner_id");`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

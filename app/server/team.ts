@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and, isNull, sql } from 'drizzle-orm'
+import { desc, eq, and, isNull, sql, or } from 'drizzle-orm'
 import { db, users } from '../db'
 import { hashPassword } from '../lib/auth'
 import { assertActiveSession } from './auth'
@@ -119,14 +119,36 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
       }
     }
 
-    // Superadmin: can view employees across all agencies or filter by specific partner
+    // Superadmin: can view employees across all agencies, specific partner, or Superadmin direct team
+    let superadminUserId = auth.userId
+    if (!superadminUserId) {
+      const [saUser] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(and(eq(users.role, 'superadmin'), isNull(users.deletedAt)))
+        .limit(1)
+      if (saUser) {
+        superadminUserId = saUser.id
+      }
+    }
+
     const conditions = [
       eq(users.role, 'partner_employee'),
       isNull(users.deletedAt),
     ]
 
-    if (data?.partnerId && data.partnerId !== 'all') {
+    if (data?.partnerId === 'all') {
+      // Query all employees across all agencies
+    } else if (data?.partnerId && data.partnerId !== 'superadmin') {
+      // Specific agency
       conditions.push(eq(users.partnerId, data.partnerId))
+    } else {
+      // Default: Superadmin direct workspace team (partnerId = superadminUserId or partnerId IS NULL)
+      if (superadminUserId) {
+        conditions.push(or(eq(users.partnerId, superadminUserId), isNull(users.partnerId))!)
+      } else {
+        conditions.push(isNull(users.partnerId))
+      }
     }
 
     const allEmployees = await db
@@ -158,17 +180,38 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
     const employeesWithPartner: EmployeeItem[] = allEmployees.map((e) => ({
       ...e,
       role: 'partner_employee',
-      partnerName: e.partnerId ? partnerMap.get(e.partnerId) || null : null,
+      partnerName: e.partnerId ? partnerMap.get(e.partnerId) || (e.partnerId === superadminUserId ? 'Superadmin Workspace' : null) : 'Superadmin Workspace',
     }))
+
+    let ownerInfo: AgencyOwnerInfo = {
+      id: superadminUserId || auth.userId || 'superadmin',
+      name: 'Superadmin Workspace',
+      email: auth.email || 'admin@builtbymiguel.net',
+      role: 'superadmin',
+    }
+
+    if (data?.partnerId && data.partnerId !== 'all' && data.partnerId !== 'superadmin') {
+      const [partnerOwner] = await db
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+        })
+        .from(users)
+        .where(and(eq(users.id, data.partnerId), isNull(users.deletedAt)))
+      if (partnerOwner) {
+        ownerInfo = {
+          id: partnerOwner.id,
+          name: partnerOwner.name || partnerOwner.email,
+          email: partnerOwner.email,
+          role: 'partner',
+        }
+      }
+    }
 
     return {
       employees: employeesWithPartner,
-      agencyOwner: {
-        id: auth.userId || 'superadmin',
-        name: 'Superadmin Workspace',
-        email: auth.email || 'admin@builtbymiguel.net',
-        role: 'superadmin',
-      },
+      agencyOwner: ownerInfo,
       isSuperadmin: true,
     }
   })
@@ -208,15 +251,27 @@ export const createTeamMemberServerFn = createServerFn({ method: 'POST' })
     }
 
     const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
-    let targetPartnerId: string
+    let targetPartnerId: string | null = null
 
     if (!isSuperadmin) {
       targetPartnerId = auth.userId!
     } else {
-      if (!data.partnerId) {
-        throw new Error('Superadmin must specify which partner agency this employee belongs to')
+      if (data.partnerId && data.partnerId !== 'superadmin' && data.partnerId !== 'none') {
+        targetPartnerId = data.partnerId
+      } else {
+        let superadminUserId = auth.userId
+        if (!superadminUserId) {
+          const [saUser] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(and(eq(users.role, 'superadmin'), isNull(users.deletedAt)))
+            .limit(1)
+          if (saUser) {
+            superadminUserId = saUser.id
+          }
+        }
+        targetPartnerId = superadminUserId || auth.userId || null
       }
-      targetPartnerId = data.partnerId
     }
 
     // Check if email is already taken

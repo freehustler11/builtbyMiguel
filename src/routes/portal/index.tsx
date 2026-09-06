@@ -69,7 +69,10 @@ function PortalDashboardPage() {
       <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           {client.logoUrl ? (
-            <div className="w-16 h-16 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white p-2 flex items-center justify-center shrink-0 shadow-2xs">
+            <div
+              className="w-16 h-16 rounded-2xl border border-slate-200 dark:border-slate-700 p-2 flex items-center justify-center shrink-0 shadow-2xs"
+              style={{ backgroundColor: (client as any).logoBgColor || '#ffffff' }}
+            >
               <img
                 src={client.logoUrl}
                 alt={client.businessName}

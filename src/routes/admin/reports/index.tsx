@@ -22,6 +22,9 @@ import {
   Edit3,
   Award,
   Share2,
+  ArrowLeft,
+  ChevronRight,
+  Briefcase,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { AdminNav } from '../../../components/AdminNav'
@@ -29,10 +32,12 @@ import { ConfirmModal } from '../../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../../components/Toast'
 import { getReportsServerFn, deleteReportServerFn, type ReportWithClient } from '../../../server/reports'
 import { getClientsServerFn } from '../../../server/clients'
+import { getPartnersServerFn, type PartnerItem } from '../../../server/partners'
 
 interface ReportsSearch {
   error?: string
   clientId?: string
+  partnerId?: string
 }
 
 export const Route = createFileRoute('/admin/reports/')({
@@ -40,6 +45,7 @@ export const Route = createFileRoute('/admin/reports/')({
     return {
       error: typeof search.error === 'string' ? search.error : undefined,
       clientId: typeof search.clientId === 'string' ? search.clientId : undefined,
+      partnerId: typeof search.partnerId === 'string' ? search.partnerId : undefined,
     }
   },
   beforeLoad: async ({ location }) => {
@@ -47,11 +53,17 @@ export const Route = createFileRoute('/admin/reports/')({
     return { auth }
   },
   loader: async ({ context }) => {
-    const [{ reports }, { clients }] = await Promise.all([
+    const [{ reports }, { clients }, partnersRes] = await Promise.all([
       getReportsServerFn(),
       getClientsServerFn(),
+      getPartnersServerFn().catch(() => ({ partners: [] })),
     ])
-    return { reports, clients, auth: (context as any)?.auth || (await checkAuthServerFn()) }
+    return {
+      reports,
+      clients,
+      partners: (partnersRes?.partners || []) as PartnerItem[],
+      auth: (context as any)?.auth || (await checkAuthServerFn()),
+    }
   },
   head: () => ({
     meta: [
@@ -77,8 +89,17 @@ function formatDate(dateInput: string | Date | null) {
 function AdminReportsListPage() {
   const router = useRouter()
   const search = Route.useSearch()
-  const { reports, clients, auth } = Route.useLoaderData()
+  const { reports, clients, partners, auth } = Route.useLoaderData()
 
+  const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+  const selectedPartnerId = isSuperadmin ? search.partnerId : undefined
+  const showAgenciesOverview = isSuperadmin && !selectedPartnerId
+
+  const activeAgency = selectedPartnerId
+    ? partners.find((p) => p.id === selectedPartnerId)
+    : null
+
+  const [agencySearchQuery, setAgencySearchQuery] = useState('')
   const [selectedClientId, setSelectedClientId] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [toasts, setToasts] = useState<ToastMessage[]>([])
@@ -103,8 +124,22 @@ function AdminReportsListPage() {
     setToasts((prev) => prev.filter((t) => t.id !== id))
   }
 
+  // Scoped clients for the active partner
+  const scopedClients = useMemo(() => {
+    if (!isSuperadmin || !selectedPartnerId) return clients
+    if (selectedPartnerId === 'unassigned') return clients.filter((c) => !c.partnerId)
+    return clients.filter((c) => c.partnerId === selectedPartnerId)
+  }, [clients, isSuperadmin, selectedPartnerId])
+
+  // Scoped reports for the active partner
+  const scopedReports = useMemo(() => {
+    if (!isSuperadmin || !selectedPartnerId) return reports
+    const clientIds = new Set(scopedClients.map((c) => c.id))
+    return reports.filter((r) => r.clientId ? clientIds.has(r.clientId) : false)
+  }, [reports, scopedClients, isSuperadmin, selectedPartnerId])
+
   const filteredReports = useMemo(() => {
-    return reports.filter((r) => {
+    return scopedReports.filter((r) => {
       const matchesClient = selectedClientId === 'all' || r.clientId === selectedClientId
       const matchesSearch =
         !searchQuery.trim() ||
@@ -113,7 +148,32 @@ function AdminReportsListPage() {
         r.reportMonth.toLowerCase().includes(searchQuery.toLowerCase())
       return matchesClient && matchesSearch
     })
-  }, [reports, selectedClientId, searchQuery])
+  }, [scopedReports, selectedClientId, searchQuery])
+
+  // Filter agencies for agency overview
+  const filteredPartners = useMemo(() => {
+    if (!agencySearchQuery.trim()) return partners
+    const q = agencySearchQuery.toLowerCase()
+    return partners.filter((p) => (p.name || '').toLowerCase().includes(q) || p.email.toLowerCase().includes(q))
+  }, [partners, agencySearchQuery])
+
+  // Compute reports count per partner
+  const partnerReportCounts = useMemo(() => {
+    const map: Record<string, number> = {}
+    const clientPartnerMap: Record<string, string> = {}
+    for (const c of clients) {
+      if (c.partnerId) clientPartnerMap[c.id] = c.partnerId
+    }
+    for (const r of reports) {
+      if (r.clientId) {
+        const pId = clientPartnerMap[r.clientId]
+        if (pId) {
+          map[pId] = (map[pId] || 0) + 1
+        }
+      }
+    }
+    return map
+  }, [clients, reports])
 
   const handleDeleteReport = async () => {
     if (!reportToDelete) return
@@ -148,8 +208,18 @@ function AdminReportsListPage() {
         <AdminNav
           activeTab="reports"
           userRole={auth?.role}
-          title="Client Performance Reports"
-          description="Create and generate professional monthly reports covering Google Business Profile, Search Console, and GA4 with client branding."
+          title={
+            showAgenciesOverview
+              ? 'Agency Performance Reports'
+              : activeAgency
+              ? `${activeAgency.name || activeAgency.email} · Reports`
+              : 'Client Performance Reports'
+          }
+          description={
+            showAgenciesOverview
+              ? 'Select an agency below to view its client reports, or generate reports for any client.'
+              : 'Create and generate professional monthly reports covering Google Business Profile, Search Console, and GA4 with client branding.'
+          }
           actions={
             <Link
               to="/admin/reports/new"
@@ -161,52 +231,174 @@ function AdminReportsListPage() {
           }
         />
 
-        {/* Filters & Search Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs">
-          <div className="flex flex-wrap items-center gap-3 flex-1">
-            {/* Search */}
-            <div className="relative flex-1 min-w-[220px] max-w-sm">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search reports or clients..."
-                className="w-full pl-10 pr-4 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
-              />
+        {/* Superadmin Agency-First Overview Mode */}
+        {showAgenciesOverview ? (
+          <div className="space-y-6">
+            {/* Search & Agency Stats Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs">
+              <div className="space-y-0.5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-rose-500" />
+                  <span>Partner Agencies ({partners.length})</span>
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Select an agency below to access its individual client performance reports.
+                </p>
+              </div>
+
+              <div className="relative min-w-[240px]">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={agencySearchQuery}
+                  onChange={(e) => setAgencySearchQuery(e.target.value)}
+                  placeholder="Search partner agencies..."
+                  className="w-full pl-10 pr-4 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
             </div>
 
-            {/* Client Filter Dropdown */}
-            <div className="flex items-center gap-1.5">
-              <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <select
-                value={selectedClientId}
-                onChange={(e) => setSelectedClientId(e.target.value)}
-                className="px-3 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
-              >
-                <option value="all">All Clients ({clients.length})</option>
-                {clients.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.businessName}
-                  </option>
-                ))}
-              </select>
+            {/* Agencies Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredPartners.map((partner) => {
+                const reportCount = partnerReportCounts[partner.id] || 0
+                return (
+                  <div
+                    key={partner.id}
+                    className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md transition flex flex-col justify-between space-y-5 group"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-center font-bold text-base shadow-xs">
+                          {(partner.name || partner.email).substring(0, 2).toUpperCase()}
+                        </div>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                          <Users className="w-3 h-3" />
+                          <span>{partner.clientCount} clients</span>
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition truncate">
+                          {partner.name || partner.email}
+                        </h3>
+                        <p className="text-xs font-mono text-slate-500 dark:text-slate-400 truncate">
+                          {partner.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                      <div className="text-xs font-mono text-slate-400">
+                        <span>Total Reports: </span>
+                        <strong className="text-slate-900 dark:text-white">{reportCount}</strong>
+                      </div>
+
+                      <Link
+                        to="/admin/reports"
+                        search={{ partnerId: partner.id }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-950/60 transition cursor-pointer"
+                      >
+                        <span>View Reports</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
+        ) : (
+          <>
+            {/* Superadmin Back Breadcrumb & Agency Switcher */}
+            {isSuperadmin && (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800">
+                <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+                  <Link
+                    to="/admin/reports"
+                    search={{}}
+                    className="hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1 underline-offset-4 hover:underline"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span>All Agencies</span>
+                  </Link>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="font-bold text-slate-900 dark:text-white">
+                    {activeAgency ? (activeAgency.name || activeAgency.email) : 'Reports'}
+                  </span>
+                </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono text-slate-500 dark:text-slate-400 shrink-0">
-            <span>
-              Total Reports: <strong className="text-slate-900 dark:text-white">{reports.length}</strong>
-            </span>
-            <span>•</span>
-            <span>
-              Showing: <strong className="text-rose-600 dark:text-rose-400">{filteredReports.length}</strong>
-            </span>
-          </div>
-        </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-slate-400 hidden sm:inline">Switch Agency:</span>
+                  <select
+                    value={selectedPartnerId || ''}
+                    onChange={(e) => {
+                      router.navigate({
+                        to: '/admin/reports',
+                        search: { partnerId: e.target.value || undefined },
+                      })
+                    }}
+                    className="px-3 py-1.5 rounded-2xl text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  >
+                    <option value="">All Agencies Overview</option>
+                    {partners.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name || p.email} ({p.clientCount} clients)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
 
-        {/* Reports Listing */}
-        {filteredReports.length === 0 ? (
+            {/* Filters & Search Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs">
+              <div className="flex flex-wrap items-center gap-3 flex-1">
+                {/* Search */}
+                <div className="relative flex-1 min-w-[220px] max-w-sm">
+                  <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search reports or clients..."
+                    className="w-full pl-10 pr-4 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  />
+                </div>
+
+                {/* Client Filter Dropdown */}
+                <div className="flex items-center gap-1.5">
+                  <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <select
+                    value={selectedClientId}
+                    onChange={(e) => setSelectedClientId(e.target.value)}
+                    className="px-3 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  >
+                    <option value="all">All Clients ({scopedClients.length})</option>
+                    {scopedClients.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.businessName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 text-xs font-mono text-slate-500 dark:text-slate-400 shrink-0">
+                <span>
+                  Total Reports: <strong className="text-slate-900 dark:text-white">{scopedReports.length}</strong>
+                </span>
+                <span>•</span>
+                <span>
+                  Showing: <strong className="text-rose-600 dark:text-rose-400">{filteredReports.length}</strong>
+                </span>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Reports Listing (Only when not showing agency overview) */}
+        {!showAgenciesOverview && (filteredReports.length === 0 ? (
           <div className="p-12 text-center rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-4">
             <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 inline-block">
               <BarChart3 className="w-8 h-8" />
@@ -290,6 +482,14 @@ function AdminReportsListPage() {
                         <span>{report.reportMonth}</span>
                       </span>
 
+                      {/* Version badge */}
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
+                        <span>v{report.version || 1}</span>
+                        {(report as any).versionCount > 1 && (
+                          <span className="text-slate-400">• {(report as any).versionCount} versions</span>
+                        )}
+                      </span>
+
                       {report.clientIsWhiteLabel && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-[10px] font-mono font-bold bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
                           <Award className="w-2.5 h-2.5" />
@@ -302,6 +502,14 @@ function AdminReportsListPage() {
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                           <Share2 className="w-2.5 h-2.5" />
                           <span>Public Link Active</span>
+                        </span>
+                      )}
+
+                      {/* Revoked link indicator */}
+                      {report.shareRevokedAt && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-[10px] font-mono font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                          <Share2 className="w-2.5 h-2.5" />
+                          <span>Link Revoked</span>
                         </span>
                       )}
 
@@ -381,7 +589,7 @@ function AdminReportsListPage() {
               )
             })}
           </div>
-        )}
+        ))}
       </div>
 
       {/* Delete Confirmation Modal */}

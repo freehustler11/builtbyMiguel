@@ -9,11 +9,13 @@ import {
   keywords,
   keywordRankHistory,
   tasks,
+  citations,
   monthlyMetrics,
   type LandingPage,
   type ClientArticle,
   type Keyword,
   type Task,
+  type Citation,
   type MonthlyMetric,
 } from '../db'
 export type { MonthlyMetric }
@@ -94,6 +96,8 @@ export const getLandingPagesServerFn = createServerFn({ method: 'GET' })
         clientId: landingPages.clientId,
         title: landingPages.title,
         targetUrl: landingPages.targetUrl,
+        draftUrl: landingPages.draftUrl,
+        notes: landingPages.notes,
         focusKeyword: landingPages.focusKeyword,
         ctaGoal: landingPages.ctaGoal,
         status: landingPages.status,
@@ -130,6 +134,8 @@ export const createLandingPageServerFn = createServerFn({ method: 'POST' })
       clientId: string
       title: string
       targetUrl?: string
+      draftUrl?: string
+      notes?: string
       focusKeyword?: string
       ctaGoal?: string
       assignedTo?: string
@@ -148,15 +154,23 @@ export const createLandingPageServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isLive = data.status === 'live'
 
+    // If staff/partner_employee, auto-assign to self
+    const assignedTo =
+      auth.role === 'partner_employee'
+        ? auth.userId
+        : data.assignedTo || null
+
     const [created] = await db
       .insert(landingPages)
       .values({
         clientId: data.clientId,
         title: data.title.trim(),
         targetUrl: data.targetUrl?.trim() || null,
+        draftUrl: data.draftUrl?.trim() || null,
+        notes: data.notes?.trim() || null,
         focusKeyword: data.focusKeyword?.trim() || null,
         ctaGoal: data.ctaGoal?.trim() || null,
-        assignedTo: data.assignedTo || null,
+        assignedTo,
         status: data.status || 'planning',
         wentLiveAt: isLive ? now : null,
         createdAt: now,
@@ -221,6 +235,8 @@ export const updateLandingPageServerFn = createServerFn({ method: 'POST' })
       id: string
       title: string
       targetUrl?: string
+      draftUrl?: string
+      notes?: string
       focusKeyword?: string
       ctaGoal?: string
       assignedTo?: string | null
@@ -239,6 +255,7 @@ export const updateLandingPageServerFn = createServerFn({ method: 'POST' })
         clientId: landingPages.clientId,
         status: landingPages.status,
         wentLiveAt: landingPages.wentLiveAt,
+        assignedTo: landingPages.assignedTo,
       })
       .from(landingPages)
       .where(eq(landingPages.id, data.id))
@@ -253,14 +270,23 @@ export const updateLandingPageServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isTransitioningToLive = data.status === 'live' && existing.status !== 'live'
 
+    const assignedTo =
+      auth.role === 'partner_employee'
+        ? existing.assignedTo || auth.userId
+        : data.assignedTo !== undefined
+          ? data.assignedTo
+          : existing.assignedTo
+
     const [updated] = await db
       .update(landingPages)
       .set({
         title: data.title.trim(),
         targetUrl: data.targetUrl?.trim() || null,
+        draftUrl: data.draftUrl !== undefined ? data.draftUrl?.trim() || null : undefined,
+        notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
         focusKeyword: data.focusKeyword?.trim() || null,
         ctaGoal: data.ctaGoal?.trim() || null,
-        assignedTo: data.assignedTo || null,
+        assignedTo,
         status: data.status,
         wentLiveAt: isTransitioningToLive ? now : existing.wentLiveAt,
         updatedAt: now,
@@ -328,6 +354,7 @@ export const getClientArticlesServerFn = createServerFn({ method: 'GET' })
         draftUrl: clientArticles.draftUrl,
         liveUrl: clientArticles.liveUrl,
         targetKeyword: clientArticles.targetKeyword,
+        notes: clientArticles.notes,
         status: clientArticles.status,
         publishedAt: clientArticles.publishedAt,
         writerId: clientArticles.writerId,
@@ -364,6 +391,7 @@ export const createClientArticleServerFn = createServerFn({ method: 'POST' })
       draftUrl?: string
       liveUrl?: string
       targetKeyword?: string
+      notes?: string
       writerId?: string
       status?: 'idea' | 'drafting' | 'review' | 'approved' | 'live'
     }) => data
@@ -380,6 +408,12 @@ export const createClientArticleServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isLive = data.status === 'live'
 
+    // If staff/partner_employee, auto-assign writer to self
+    const writerId =
+      auth.role === 'partner_employee'
+        ? auth.userId
+        : data.writerId || null
+
     const [created] = await db
       .insert(clientArticles)
       .values({
@@ -388,7 +422,8 @@ export const createClientArticleServerFn = createServerFn({ method: 'POST' })
         draftUrl: data.draftUrl?.trim() || null,
         liveUrl: data.liveUrl?.trim() || null,
         targetKeyword: data.targetKeyword?.trim() || null,
-        writerId: data.writerId || null,
+        notes: data.notes?.trim() || null,
+        writerId,
         status: data.status || 'idea',
         publishedAt: isLive ? now : null,
         createdAt: now,
@@ -455,6 +490,7 @@ export const updateClientArticleServerFn = createServerFn({ method: 'POST' })
       draftUrl?: string
       liveUrl?: string
       targetKeyword?: string
+      notes?: string
       writerId?: string | null
       status: 'idea' | 'drafting' | 'review' | 'approved' | 'live'
     }) => data
@@ -471,6 +507,7 @@ export const updateClientArticleServerFn = createServerFn({ method: 'POST' })
         clientId: clientArticles.clientId,
         status: clientArticles.status,
         publishedAt: clientArticles.publishedAt,
+        writerId: clientArticles.writerId,
       })
       .from(clientArticles)
       .where(eq(clientArticles.id, data.id))
@@ -485,6 +522,13 @@ export const updateClientArticleServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isTransitioningToLive = data.status === 'live' && existing.status !== 'live'
 
+    const writerId =
+      auth.role === 'partner_employee'
+        ? existing.writerId || auth.userId
+        : data.writerId !== undefined
+          ? data.writerId
+          : existing.writerId
+
     const [updated] = await db
       .update(clientArticles)
       .set({
@@ -492,7 +536,8 @@ export const updateClientArticleServerFn = createServerFn({ method: 'POST' })
         draftUrl: data.draftUrl?.trim() || null,
         liveUrl: data.liveUrl?.trim() || null,
         targetKeyword: data.targetKeyword?.trim() || null,
-        writerId: data.writerId || null,
+        notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
+        writerId,
         status: data.status,
         publishedAt: isTransitioningToLive ? now : existing.publishedAt,
         updatedAt: now,
@@ -824,6 +869,8 @@ export const getTasksServerFn = createServerFn({ method: 'GET' })
         partnerId: tasks.partnerId,
         title: tasks.title,
         category: tasks.category,
+        draftUrl: tasks.draftUrl,
+        notes: tasks.notes,
         status: tasks.status,
         completedAt: tasks.completedAt,
         assignedTo: tasks.assignedTo,
@@ -861,6 +908,8 @@ export const createTaskServerFn = createServerFn({ method: 'POST' })
       clientId?: string | null
       title: string
       category: 'citations' | 'technical_seo' | 'on_page' | 'backlinks' | 'schema' | 'gbp'
+      draftUrl?: string | null
+      notes?: string | null
       assignedTo?: string | null
       status?: 'todo' | 'done'
     }) => data
@@ -893,6 +942,12 @@ export const createTaskServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isDone = data.status === 'done'
 
+    // If staff/partner_employee, auto-assign to self
+    const assignedTo =
+      auth.role === 'partner_employee'
+        ? auth.userId
+        : data.assignedTo || null
+
     const [created] = await db
       .insert(tasks)
       .values({
@@ -900,7 +955,9 @@ export const createTaskServerFn = createServerFn({ method: 'POST' })
         partnerId,
         title: data.title.trim(),
         category: data.category,
-        assignedTo: data.assignedTo || null,
+        draftUrl: data.draftUrl?.trim() || null,
+        notes: data.notes?.trim() || null,
+        assignedTo,
         status: data.status || 'todo',
         completedAt: isDone ? now : null,
         createdAt: now,
@@ -961,6 +1018,8 @@ export const updateTaskServerFn = createServerFn({ method: 'POST' })
       id: string
       title: string
       category: 'citations' | 'technical_seo' | 'on_page' | 'backlinks' | 'schema' | 'gbp'
+      draftUrl?: string | null
+      notes?: string | null
       assignedTo?: string | null
       status: 'todo' | 'done'
       clientId?: string | null
@@ -994,13 +1053,22 @@ export const updateTaskServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isNowDone = data.status === 'done' && existing.status !== 'done'
 
+    const assignedTo =
+      auth.role === 'partner_employee'
+        ? existing.assignedTo || auth.userId
+        : data.assignedTo !== undefined
+          ? data.assignedTo
+          : existing.assignedTo
+
     const [updated] = await db
       .update(tasks)
       .set({
         title: data.title.trim(),
         category: data.category,
         clientId: data.clientId === undefined ? existing.clientId : data.clientId || null,
-        assignedTo: data.assignedTo || null,
+        draftUrl: data.draftUrl !== undefined ? data.draftUrl?.trim() || null : undefined,
+        notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
+        assignedTo,
         status: data.status,
         completedAt: isNowDone ? now : data.status === 'todo' ? null : existing.completedAt,
         updatedAt: now,
@@ -1079,6 +1147,8 @@ export const getMyWorkServerFn = createServerFn({ method: 'GET' }).handler(
         clientId: landingPages.clientId,
         title: landingPages.title,
         targetUrl: landingPages.targetUrl,
+        draftUrl: landingPages.draftUrl,
+        notes: landingPages.notes,
         focusKeyword: landingPages.focusKeyword,
         ctaGoal: landingPages.ctaGoal,
         status: landingPages.status,
@@ -1106,6 +1176,7 @@ export const getMyWorkServerFn = createServerFn({ method: 'GET' }).handler(
         draftUrl: clientArticles.draftUrl,
         liveUrl: clientArticles.liveUrl,
         targetKeyword: clientArticles.targetKeyword,
+        notes: clientArticles.notes,
         status: clientArticles.status,
         publishedAt: clientArticles.publishedAt,
         writerId: clientArticles.writerId,
@@ -1130,6 +1201,8 @@ export const getMyWorkServerFn = createServerFn({ method: 'GET' }).handler(
         partnerId: tasks.partnerId,
         title: tasks.title,
         category: tasks.category,
+        draftUrl: tasks.draftUrl,
+        notes: tasks.notes,
         status: tasks.status,
         completedAt: tasks.completedAt,
         assignedTo: tasks.assignedTo,
@@ -1565,4 +1638,187 @@ export const commitSemrushCsvImportServerFn = createServerFn({ method: 'POST' })
       updatedCount,
       createdCount,
     }
+  })
+
+// =================================================================
+// 6. CITATIONS (DIRECTORY CITATIONS & CREDENTIALS TRACKING)
+// =================================================================
+
+export interface CitationItem extends Citation {
+  clientName?: string | null
+  clientBusinessName?: string | null
+}
+
+export const getCitationsServerFn = createServerFn({ method: 'GET' })
+  .validator((data?: { clientId?: string; partnerId?: string; status?: string }) => data || {})
+  .handler(async ({ data }): Promise<CitationItem[]> => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Access restricted to agencies and administrators')
+    }
+
+    const effectivePartnerId = resolveQueryPartnerId(auth, data?.partnerId)
+
+    if (data?.clientId) {
+      await assertClientAccess(data.clientId, auth, effectivePartnerId)
+    }
+
+    const query = db
+      .select({
+        id: citations.id,
+        clientId: citations.clientId,
+        partnerId: citations.partnerId,
+        directory: citations.directory,
+        listingUrl: citations.listingUrl,
+        username: citations.username,
+        password: citations.password,
+        status: citations.status,
+        notes: citations.notes,
+        createdAt: citations.createdAt,
+        updatedAt: citations.updatedAt,
+        clientName: clients.name,
+        clientBusinessName: clients.businessName,
+      })
+      .from(citations)
+      .innerJoin(clients, eq(citations.clientId, clients.id))
+      .where(
+        and(
+          isNull(clients.deletedAt),
+          data?.clientId
+            ? eq(citations.clientId, data.clientId)
+            : effectivePartnerId
+              ? eq(citations.partnerId, effectivePartnerId)
+              : sql`1=1`,
+          data?.status ? eq(citations.status, data.status as any) : sql`1=1`
+        )
+      )
+      .orderBy(desc(citations.updatedAt))
+
+    return (await query) as CitationItem[]
+  })
+
+export const createCitationServerFn = createServerFn({ method: 'POST' })
+  .validator(
+    (data: {
+      clientId: string
+      directory: string
+      listingUrl?: string
+      username?: string
+      password?: string
+      status?: 'submitted' | 'pending' | 'live' | 'needs_update'
+      notes?: string
+    }) => data
+  )
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Citations creation restricted')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const clientRecord = await assertClientAccess(data.clientId, auth, effectivePartnerId)
+
+    const partnerId = effectivePartnerId || clientRecord.partnerId || auth.userId
+    if (!partnerId) {
+      throw new Error('Partner ID required for citation creation')
+    }
+
+    const now = new Date()
+
+    const [created] = await db
+      .insert(citations)
+      .values({
+        clientId: data.clientId,
+        partnerId,
+        directory: data.directory.trim(),
+        listingUrl: data.listingUrl?.trim() || null,
+        username: data.username?.trim() || null,
+        password: data.password?.trim() || null,
+        status: data.status || 'submitted',
+        notes: data.notes?.trim() || null,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning()
+
+    return created
+  })
+
+export const updateCitationServerFn = createServerFn({ method: 'POST' })
+  .validator(
+    (data: {
+      id: string
+      directory: string
+      listingUrl?: string
+      username?: string
+      password?: string
+      status: 'submitted' | 'pending' | 'live' | 'needs_update'
+      notes?: string
+    }) => data
+  )
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Citations update restricted')
+    }
+
+    const [existing] = await db
+      .select()
+      .from(citations)
+      .where(eq(citations.id, data.id))
+
+    if (!existing) {
+      throw new Error('Citation not found')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+    if (!isSuperadmin && existing.partnerId !== effectivePartnerId) {
+      throw new Error('Unauthorized: Citation does not belong to your agency')
+    }
+
+    const now = new Date()
+
+    const [updated] = await db
+      .update(citations)
+      .set({
+        directory: data.directory.trim(),
+        listingUrl: data.listingUrl?.trim() || null,
+        username: data.username?.trim() || null,
+        password: data.password?.trim() || null,
+        status: data.status,
+        notes: data.notes?.trim() || null,
+        updatedAt: now,
+      })
+      .where(eq(citations.id, data.id))
+      .returning()
+
+    return updated
+  })
+
+export const deleteCitationServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Citations deletion restricted')
+    }
+
+    const [existing] = await db
+      .select()
+      .from(citations)
+      .where(eq(citations.id, data.id))
+
+    if (!existing) {
+      throw new Error('Citation not found')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+    if (!isSuperadmin && existing.partnerId !== effectivePartnerId) {
+      throw new Error('Unauthorized: Citation does not belong to your agency')
+    }
+
+    await db.delete(citations).where(eq(citations.id, data.id))
+    return { success: true, id: data.id }
   })

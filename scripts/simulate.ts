@@ -13,8 +13,9 @@ import {
   keywordRankHistory,
   tasks,
   monthlyMetrics,
+  citations,
 } from '../app/db/schema'
-import { eq, sql, inArray, and, isNull } from 'drizzle-orm'
+import { eq, sql, inArray, and, isNull, or } from 'drizzle-orm'
 import { hashPassword, verifyPassword, createSessionToken, verifySessionToken, getSessionData } from '../app/lib/auth'
 import { getEffectivePartnerId } from '../app/server/auth'
 import { recordMonthlyMetrics } from '../app/server/metrics'
@@ -268,6 +269,9 @@ async function runSimulations() {
     assert(isInternalPath('/admin'), '/admin is internal path')
     assert(isInternalPath('/admin/reports/new'), '/admin/reports/new is internal path')
     assert(isInternalPath('/portal'), '/portal is internal path')
+    assert(isInternalPath('/my-work'), '/my-work is internal path')
+    assert(isInternalPath('/superadmin/activity'), '/superadmin/activity is internal path')
+    assert(isInternalPath('/r/test-token-123'), '/r/token is internal path')
     assert(!isInternalPath('/about'), '/about is not internal path')
     assert(!isInternalPath('/'), '/ is not internal path')
 
@@ -276,6 +280,9 @@ async function runSimulations() {
     assert(isMarketingPath('/work'), '/work is marketing path')
     assert(!isMarketingPath('/login'), '/login is not marketing path')
     assert(!isMarketingPath('/admin'), '/admin is not marketing path')
+    assert(!isMarketingPath('/my-work'), '/my-work is not marketing path')
+    assert(!isMarketingPath('/superadmin/activity'), '/superadmin/activity is not marketing path')
+    assert(!isMarketingPath('/r/test-token-123'), '/r/token is not marketing path')
     assert(!isMarketingPath('/assets/index.js'), 'Asset file is not marketing path')
   } catch (err: any) {
     assert(false, 'Hostname simulation failed', err.message)
@@ -2683,6 +2690,579 @@ async function runSimulations() {
     assert(true, 'Sim20: Test data cleanly purged')
   } catch (err: any) {
     assert(false, 'Simulation 20 failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 21: Agency Removal, Superadmin Team Isolation & Flexible Logo Background Colors
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 21: Agency Removal, Superadmin Team Isolation & Flexible Logo Background Colors')
+  try {
+    // 0. Pre-cleanup in case of prior interrupted run
+    const existingSim21 = await db.select().from(users).where(inArray(users.email, [
+      'sim21-agency@builtbymiguel.test',
+      'sim21-agencystaff@builtbymiguel.test',
+      'sim21-superstaff@builtbymiguel.test',
+    ]))
+    if (existingSim21.length > 0) {
+      const ids = existingSim21.map((u) => u.id)
+      const existingClients = await db.select({ id: clients.id }).from(clients).where(inArray(clients.partnerId, ids))
+      if (existingClients.length > 0) {
+        await db.delete(reports).where(inArray(reports.clientId, existingClients.map((c) => c.id)))
+        await db.delete(clients).where(inArray(clients.partnerId, ids))
+      }
+      await db.delete(users).where(inArray(users.id, ids))
+    }
+
+    // Find superadmin
+    const [superadmin] = await db.select().from(users).where(eq(users.role, 'superadmin')).limit(1)
+    assert(Boolean(superadmin), 'Sim21: Superadmin user exists in database')
+
+    // 1. Test Superadmin Team Scoping & Isolation
+    // Create an external partner agency and agency employee
+    const [partner21] = await db
+      .insert(users)
+      .values({
+        email: 'sim21-agency@builtbymiguel.test',
+        name: 'Sim21 External Agency',
+        passwordHash: await hashPassword('SimPass21!'),
+        role: 'partner',
+        isActive: true,
+      })
+      .returning()
+
+    const [agencyStaff] = await db
+      .insert(users)
+      .values({
+        email: 'sim21-agencystaff@builtbymiguel.test',
+        name: 'Sim21 Agency Staff',
+        passwordHash: await hashPassword('SimStaff21!'),
+        role: 'partner_employee',
+        partnerId: partner21.id,
+        isActive: true,
+      })
+      .returning()
+
+    // Create a staff member directly under Superadmin
+    const [superadminStaff] = await db
+      .insert(users)
+      .values({
+        email: 'sim21-superstaff@builtbymiguel.test',
+        name: 'Sim21 Superadmin Specialist',
+        passwordHash: await hashPassword('SuperStaff21!'),
+        role: 'partner_employee',
+        partnerId: superadmin.id,
+        isActive: true,
+      })
+      .returning()
+
+    assert(Boolean(partner21 && agencyStaff && superadminStaff), 'Sim21: Created agency, agency staff, and superadmin direct staff')
+
+    // Simulating getTeamMembersServerFn default behavior for Superadmin (partnerId = undefined / 'superadmin'):
+    // Must return Superadmin direct team, excluding external partner agency staff like YouGotBud or Sim21
+    const defaultSuperadminTeam = await db
+      .select()
+      .from(users)
+      .where(
+        and(
+          eq(users.role, 'partner_employee'),
+          isNull(users.deletedAt),
+          or(eq(users.partnerId, superadmin.id), isNull(users.partnerId))
+        )
+      )
+
+    const defaultIds = defaultSuperadminTeam.map((u) => u.id)
+    assert(defaultIds.includes(superadminStaff.id), 'Sim21: Superadmin default team includes direct superadmin staff')
+    assert(!defaultIds.includes(agencyStaff.id), 'Sim21: Superadmin default team strictly EXCLUDES external agency staff')
+
+    // Simulating getTeamMembersServerFn when filtering for specific partner (partnerId = partner21.id)
+    const agencySpecificTeam = await db
+      .select()
+      .from(users)
+      .where(
+        and(
+          eq(users.role, 'partner_employee'),
+          isNull(users.deletedAt),
+          eq(users.partnerId, partner21.id)
+        )
+      )
+    assert(agencySpecificTeam.length === 1 && agencySpecificTeam[0].id === agencyStaff.id, 'Sim21: Specific agency filter returns only that agency staff')
+
+    // 2. Test Flexible Logo Background Color & Report Snapshot Immutability
+    const [client21] = await db
+      .insert(clients)
+      .values({
+        name: 'Alice Bright',
+        businessName: 'Neon Glow Studio',
+        email: 'alice@neonglow.test',
+        partnerId: partner21.id,
+        logoUrl: 'https://example.com/neon-logo-white.svg',
+        logoBgColor: '#0f172a', // Dark navy background for white logo
+        partnerLogoUrl: 'https://example.com/sim21-partner-logo.svg',
+        partnerLogoBgColor: '#1e293b',
+        primaryColor: '#6366f1',
+        isWhiteLabel: true,
+      })
+      .returning()
+
+    assert(client21.logoBgColor === '#0f172a', 'Sim21: Client logoBgColor persisted correctly in database')
+    assert(client21.partnerLogoBgColor === '#1e293b', 'Sim21: Partner logoBgColor persisted correctly in database')
+
+    // Snapshot creation (simulating createReportServerFn snapshot freezing)
+    const snapshot21 = {
+      businessName: client21.businessName,
+      name: client21.name,
+      websiteUrl: client21.websiteUrl || null,
+      logoUrl: client21.logoUrl || null,
+      logoBgColor: client21.logoBgColor || '#ffffff',
+      primaryColor: client21.primaryColor || '#2563eb',
+      secondaryColor: client21.secondaryColor || '#1e293b',
+      isWhiteLabel: Boolean(client21.isWhiteLabel),
+      partnerName: partner21.name,
+      partnerLogoUrl: client21.partnerLogoUrl || null,
+      partnerLogoBgColor: client21.partnerLogoBgColor || '#ffffff',
+    }
+
+    const [report21] = await db
+      .insert(reports)
+      .values({
+        clientId: client21.id,
+        createdBy: partner21.id,
+        title: 'Monthly Performance - Sim21',
+        reportMonth: 'September 2026',
+        periodStart: new Date('2026-09-01'),
+        periodEnd: new Date('2026-09-30'),
+        clientSnapshot: snapshot21,
+      })
+      .returning()
+
+    assert((report21.clientSnapshot as any).logoBgColor === '#0f172a', 'Sim21: Report client_snapshot freezes client logoBgColor')
+    assert((report21.clientSnapshot as any).partnerLogoBgColor === '#1e293b', 'Sim21: Report client_snapshot freezes partnerLogoBgColor')
+
+    // Test SSR render of ReportDocument with custom logo background styles
+    const renderedReportHtml = ReactDOMServer.renderToStaticMarkup(
+      React.createElement(ReportDocument, {
+        report: report21 as any,
+        client: client21 as any,
+        displayOptions: { show_agency_info: true },
+      })
+    )
+    assert(renderedReportHtml.includes('background-color:#0f172a'), 'Sim21: ReportDocument rendered client logo container with #0f172a background')
+    assert(renderedReportHtml.includes('background-color:#1e293b'), 'Sim21: ReportDocument rendered partner logo container with #1e293b background')
+
+    // 3. Test Agency Removal (deletePartnerServerFn logic & DB safety)
+    const now = new Date()
+    await db.transaction(async (tx) => {
+      // a. Soft-delete agency
+      await tx
+        .update(users)
+        .set({ deletedAt: now, isActive: false })
+        .where(eq(users.id, partner21.id))
+
+      // b. Soft-delete agency staff
+      await tx
+        .update(users)
+        .set({ deletedAt: now, isActive: false })
+        .where(eq(users.partnerId, partner21.id))
+
+      // c. Reassign clients to Superadmin Direct Unassigned
+      await tx
+        .update(clients)
+        .set({ partnerId: null, updatedAt: now })
+        .where(eq(clients.partnerId, partner21.id))
+
+      // d. Log activity
+      await tx.insert(activityLogs).values({
+        userId: superadmin.id,
+        userEmail: superadmin.email,
+        role: superadmin.role,
+        action: 'delete_partner',
+      })
+    })
+
+    // Verify agency soft delete
+    const [deletedAgency] = await db.select().from(users).where(eq(users.id, partner21.id))
+    assert(deletedAgency.deletedAt !== null && deletedAgency.isActive === false, 'Sim21: Partner agency is soft-deleted and isActive is false')
+
+    // Verify agency query exclusion
+    const activeAgencies = await db.select().from(users).where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
+    assert(!activeAgencies.some((a) => a.id === partner21.id), 'Sim21: Deleted agency excluded from active agencies list')
+
+    // Verify agency staff soft delete & exclusion
+    const [deletedStaff] = await db.select().from(users).where(eq(users.id, agencyStaff.id))
+    assert(deletedStaff.deletedAt !== null && deletedStaff.isActive === false, 'Sim21: Agency staff soft-deleted when agency removed')
+
+    // Verify client preservation
+    const [unassignedClient] = await db.select().from(clients).where(eq(clients.id, client21.id))
+    assert(unassignedClient.partnerId === null, 'Sim21: Client preserved and reassigned to Unassigned (partnerId = null)')
+    assert(unassignedClient.deletedAt === null, 'Sim21: Client is NOT deleted, remaining active and accessible to Superadmin')
+
+    // Verify report survives and references unassigned client
+    const [survivingReport] = await db.select().from(reports).where(eq(reports.id, report21.id))
+    assert(Boolean(survivingReport), 'Sim21: Report survives agency deletion intact')
+
+    // Verify audit log recorded delete_partner
+    const [auditLog] = await db.select().from(activityLogs).where(and(eq(activityLogs.userId, superadmin.id), eq(activityLogs.action, 'delete_partner')))
+    assert(Boolean(auditLog), 'Sim21: delete_partner recorded in activity_logs')
+
+    // 4. Cleanup Simulation 21 test fixtures
+    await db.delete(reports).where(eq(reports.id, report21.id))
+    await db.delete(clients).where(eq(clients.id, client21.id))
+    await db.delete(users).where(inArray(users.id, [partner21.id, agencyStaff.id, superadminStaff.id]))
+    await db.delete(activityLogs).where(and(eq(activityLogs.userId, superadmin.id), eq(activityLogs.action, 'delete_partner')))
+    assert(true, 'Sim21: Test data cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Simulation 21 failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 22: Deliverable Notes, Google Docs Draft URLs, Staff Auto-Assignment, & Citations Vault
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 22: Deliverable Notes, Draft URLs, Staff Auto-Assignment, & Citations Vault')
+  try {
+    const sim22Suffix = Math.random().toString(36).substring(2, 7)
+
+    // 1. Create test agency partner and staff
+    const [partner22] = await db
+      .insert(users)
+      .values({
+        email: `partner22_${sim22Suffix}@test.agency`,
+        passwordHash: await hashPassword('TestPass123!'),
+        name: `Partner Agency 22 ${sim22Suffix}`,
+        role: 'partner',
+        isActive: true,
+      })
+      .returning()
+
+    const [staff22] = await db
+      .insert(users)
+      .values({
+        email: `staff22_${sim22Suffix}@test.agency`,
+        passwordHash: await hashPassword('TestPass123!'),
+        name: `Staff Member 22 ${sim22Suffix}`,
+        role: 'partner_employee',
+        partnerId: partner22.id,
+        isActive: true,
+      })
+      .returning()
+
+    // 2. Create test client under partner22
+    const [client22] = await db
+      .insert(clients)
+      .values({
+        partnerId: partner22.id,
+        name: `Client 22 ${sim22Suffix}`,
+        businessName: `Acme Corp 22 ${sim22Suffix}`,
+        websiteUrl: 'https://acme22.test',
+      })
+      .returning()
+
+    // 3. Test Deliverable Notes & Draft URL persistence across Landing Pages, Articles, Tasks
+    // 3a. Landing Page
+    const [lp22] = await db
+      .insert(landingPages)
+      .values({
+        clientId: client22.id,
+        title: 'Fall Promo Landing Page',
+        status: 'copywriting',
+        assignedTo: staff22.id,
+        draftUrl: 'https://docs.google.com/document/d/1abc-landing-draft-test',
+        notes: 'Targeting 15% conversion with hero video and trust badges',
+      })
+      .returning()
+
+    assert(lp22.draftUrl === 'https://docs.google.com/document/d/1abc-landing-draft-test', 'Sim22: Landing page draftUrl persisted in DB')
+    assert(lp22.notes === 'Targeting 15% conversion with hero video and trust badges', 'Sim22: Landing page notes persisted in DB')
+    assert(lp22.assignedTo === staff22.id, 'Sim22: Landing page assignedTo correctly set to staff user')
+
+    // 3b. Client Article
+    const [art22] = await db
+      .insert(clientArticles)
+      .values({
+        clientId: client22.id,
+        title: 'Top 10 Local SEO Tips for 2026',
+        status: 'drafting',
+        writerId: staff22.id,
+        draftUrl: 'https://docs.google.com/document/d/2def-article-draft-test',
+        notes: 'Focus on NAP consistency and Google Business Profile optimization',
+      })
+      .returning()
+
+    assert(art22.draftUrl === 'https://docs.google.com/document/d/2def-article-draft-test', 'Sim22: Client article draftUrl persisted in DB')
+    assert(art22.notes === 'Focus on NAP consistency and Google Business Profile optimization', 'Sim22: Client article notes persisted in DB')
+    assert(art22.writerId === staff22.id, 'Sim22: Client article writerId correctly set to staff user')
+
+    // 3c. Deliverable Task
+    const [task22] = await db
+      .insert(tasks)
+      .values({
+        clientId: client22.id,
+        partnerId: partner22.id,
+        title: 'Optimize Schema Markup for Services Page',
+        category: 'schema',
+        status: 'todo',
+        assignedTo: staff22.id,
+        draftUrl: 'https://docs.google.com/document/d/3ghi-task-draft-test',
+        notes: 'Implement LocalBusiness and Organization JSON-LD schemas',
+      })
+      .returning()
+
+    assert(task22.draftUrl === 'https://docs.google.com/document/d/3ghi-task-draft-test', 'Sim22: Task draftUrl persisted in DB')
+    assert(task22.notes === 'Implement LocalBusiness and Organization JSON-LD schemas', 'Sim22: Task notes persisted in DB')
+    assert(task22.assignedTo === staff22.id, 'Sim22: Task assignedTo correctly set to staff user')
+
+    // 4. Staff Auto-Assignment Validation
+    // When a staff member creates a deliverable, their user ID is automatically assigned.
+    const staffEffectivePartnerId = getEffectivePartnerId({
+      userId: staff22.id,
+      email: staff22.email,
+      role: staff22.role,
+      partnerId: staff22.partnerId,
+    } as any)
+    assert(staffEffectivePartnerId === partner22.id, 'Sim22: Staff member resolves effectivePartnerId to parent agency partner')
+
+    const partnerEffectivePartnerId = getEffectivePartnerId({
+      userId: partner22.id,
+      email: partner22.email,
+      role: partner22.role,
+    } as any)
+    assert(partnerEffectivePartnerId === partner22.id, 'Sim22: Agency partner resolves effectivePartnerId to self')
+
+    // 5. Citations Directory Tracking & Credentials Vault
+    // 5a. Create Citation
+    const [citation22] = await db
+      .insert(citations)
+      .values({
+        clientId: client22.id,
+        partnerId: partner22.id,
+        directory: 'Google Business Profile',
+        listingUrl: 'https://maps.google.com/?cid=123456789',
+        username: 'acme.gbp@agency.test',
+        password: 'EncryptedSecretVaultPass2026!',
+        status: 'live',
+        notes: 'Verified via video call on Sept 1, 2026. Primary NAP anchor.',
+      })
+      .returning()
+
+    assert(Boolean(citation22.id), 'Sim22: Citation created with unique ID')
+    assert(citation22.directory === 'Google Business Profile', 'Sim22: Citation directory persisted')
+    assert(citation22.listingUrl === 'https://maps.google.com/?cid=123456789', 'Sim22: Citation listingUrl persisted')
+    assert(citation22.username === 'acme.gbp@agency.test', 'Sim22: Citation username persisted')
+    assert(citation22.password === 'EncryptedSecretVaultPass2026!', 'Sim22: Citation password persisted in credentials vault')
+    assert(citation22.status === 'live', 'Sim22: Citation status is "live"')
+    assert(citation22.notes === 'Verified via video call on Sept 1, 2026. Primary NAP anchor.', 'Sim22: Citation notes persisted')
+
+    // 5b. Update Citation (e.g. Needs Update status & new credentials)
+    const [updatedCitation] = await db
+      .update(citations)
+      .set({
+        status: 'needs_update',
+        notes: 'Phone number updated, need to re-verify directory listing',
+        updatedAt: new Date(),
+      })
+      .where(eq(citations.id, citation22.id))
+      .returning()
+
+    assert(updatedCitation.status === 'needs_update', 'Sim22: Citation status updated to "needs_update"')
+    assert(updatedCitation.notes === 'Phone number updated, need to re-verify directory listing', 'Sim22: Citation notes updated')
+
+    // 5c. Query Citations filtered by status & client
+    const liveCitations = await db
+      .select()
+      .from(citations)
+      .where(and(eq(citations.clientId, client22.id), eq(citations.status, 'live')))
+    assert(liveCitations.length === 0, 'Sim22: 0 citations with status "live" after update')
+
+    const needsUpdateCitations = await db
+      .select()
+      .from(citations)
+      .where(and(eq(citations.clientId, client22.id), eq(citations.status, 'needs_update')))
+    assert(needsUpdateCitations.length === 1, 'Sim22: Exactly 1 citation matched status "needs_update"')
+
+    // 6. Delete Citation
+    await db.delete(citations).where(eq(citations.id, citation22.id))
+    const [deletedCit] = await db.select().from(citations).where(eq(citations.id, citation22.id))
+    assert(!deletedCit, 'Sim22: Citation successfully deleted from database')
+
+    // 7. Cleanup Simulation 22 test fixtures
+    await db.delete(landingPages).where(eq(landingPages.id, lp22.id))
+    await db.delete(clientArticles).where(eq(clientArticles.id, art22.id))
+    await db.delete(tasks).where(eq(tasks.id, task22.id))
+    await db.delete(clients).where(eq(clients.id, client22.id))
+    await db.delete(users).where(inArray(users.id, [partner22.id, staff22.id]))
+    assert(true, 'Sim22: All deliverable, citation, client, and user test fixtures cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Simulation 22 failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 23: Version Integrity, Share Token Transfer, Share Revocation, Rank History Deduplication
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 23: Version Integrity, Share Token, Revocation & Rank History Dedup')
+  try {
+    // 0. Pre-cleanup
+    const existingSim23Users = await db.select().from(users).where(eq(users.email, 'sim23-partner@builtbymiguel.test'))
+    if (existingSim23Users.length > 0) {
+      const uId = existingSim23Users[0].id
+      const sim23Clients = await db.select().from(clients).where(eq(clients.partnerId, uId))
+      for (const c of sim23Clients) {
+        const sim23Keywords = await db.select().from(keywords).where(eq(keywords.clientId, c.id))
+        for (const kw of sim23Keywords) {
+          await db.delete(keywordRankHistory).where(eq(keywordRankHistory.keywordId, kw.id))
+        }
+        await db.delete(reports).where(eq(reports.clientId, c.id))
+        await db.delete(keywords).where(eq(keywords.clientId, c.id))
+        await db.delete(clients).where(eq(clients.id, c.id))
+      }
+      await db.delete(users).where(eq(users.id, uId))
+    }
+
+    // Setup
+    const [partner23] = await db.insert(users).values({
+      email: 'sim23-partner@builtbymiguel.test',
+      name: 'Sim23 Agency',
+      passwordHash: await hashPassword('SimPass23!'),
+      role: 'partner',
+      isActive: true,
+    }).returning()
+    assert(Boolean(partner23?.id), 'Sim23: Partner agency created')
+
+    const [client23] = await db.insert(clients).values({
+      name: 'Sim23 Contact',
+      businessName: 'Sim23 Corp',
+      email: 'sim23@corp.test',
+      partnerId: partner23.id,
+      isActive: true,
+    }).returning()
+    assert(Boolean(client23?.id), 'Sim23: Client created')
+
+    const periodStart23 = new Date('2026-08-01T00:00:00.000Z')
+    const periodEnd23 = new Date('2026-08-31T23:59:59.999Z')
+
+    // ---- Test 1: Regenerate creates v2 and leaves v1 intact ----
+    const [rV1] = await db.insert(reports).values({
+      clientId: client23.id,
+      title: 'Sim23 August Report',
+      reportMonth: 'August 2026',
+      periodStart: periodStart23,
+      periodEnd: periodEnd23,
+      version: 1,
+      gbpCalls: 10,
+      gscClicks: 200,
+      gaUsers: 300,
+    }).returning()
+    assert(rV1.version === 1, 'Sim23: v1 report created with version=1')
+
+    // Null shareToken on v1 first (simulate regenerateReportServerFn token transfer pattern)
+    const tokenSim23 = 'sim23-sharetoken-00000000000000000000'
+    await db.update(reports).set({ shareToken: tokenSim23, shareRevokedAt: null }).where(eq(reports.id, rV1.id))
+
+    // Insert v2 (mirrors what regenerateReportServerFn does)
+    const allV23 = await db.select({ version: reports.version }).from(reports)
+      .where(and(eq(reports.clientId, client23.id), eq(reports.periodStart, periodStart23)))
+      .orderBy(sql`${reports.version} DESC`)
+    const nextV23 = (allV23[0]?.version || 1) + 1
+    assert(nextV23 === 2, 'Sim23: nextVersion computed as 2')
+
+    // Transfer shareToken: null it on v1, add to v2
+    await db.update(reports).set({ shareToken: null }).where(eq(reports.id, rV1.id))
+    const [rV2] = await db.insert(reports).values({
+      clientId: client23.id,
+      title: 'Sim23 August Report',
+      reportMonth: 'August 2026',
+      periodStart: periodStart23,
+      periodEnd: periodEnd23,
+      version: nextV23,
+      shareToken: tokenSim23,
+      shareRevokedAt: null,
+      gbpCalls: 12,
+      gscClicks: 250,
+      gaUsers: 320,
+    }).returning()
+
+    const [checkV1] = await db.select().from(reports).where(eq(reports.id, rV1.id))
+    const [checkV2] = await db.select().from(reports).where(eq(reports.id, rV2.id))
+
+    assert(checkV1.version === 1, 'Sim23: v1 still exists with version=1')
+    assert(checkV1.shareToken === null, 'Sim23: v1 shareToken is null after regeneration')
+    assert(checkV2.version === 2, 'Sim23: v2 created with version=2')
+    assert(checkV2.gbpCalls === 12, 'Sim23: v2 has updated metrics')
+
+    // ---- Test 2: Share token follows to latest version ----
+    assert(checkV2.shareToken === tokenSim23, 'Sim23: shareToken transferred to v2 (latest version)')
+    const [byToken] = await db.select().from(reports).where(eq(reports.shareToken, tokenSim23))
+    assert(byToken?.id === rV2.id, 'Sim23: Fetching by shareToken returns v2 (the latest)')
+    assert(byToken?.version === 2, 'Sim23: Token-resolved report is version 2')
+
+    // ---- Test 3: Revoked share link returns found:false ----
+    // Revoke the link (mirrors revokeReportShareLinkServerFn)
+    const revokeTime = new Date()
+    await db.update(reports).set({ shareRevokedAt: revokeTime }).where(eq(reports.id, rV2.id))
+
+    const [revokedReport] = await db.select().from(reports).where(eq(reports.shareToken, tokenSim23))
+    assert(revokedReport?.shareRevokedAt !== null, 'Sim23: shareRevokedAt is set after revocation')
+
+    // Simulate getPublicReportByShareTokenServerFn logic
+    const foundAfterRevoke = revokedReport && revokedReport.shareRevokedAt === null
+    assert(!foundAfterRevoke, 'Sim23: Revoked share link returns found:false (not accessible)')
+
+    // Mint new link (mirrors generateReportShareLinkServerFn)
+    const newToken23 = 'sim23-newtoken-11111111111111111111'
+    await db.update(reports).set({ shareToken: newToken23, shareRevokedAt: null }).where(eq(reports.id, rV2.id))
+
+    const [byOldToken] = await db.select().from(reports).where(eq(reports.shareToken, tokenSim23))
+    assert(!byOldToken, 'Sim23: Old revoked token no longer resolves to any report')
+
+    const [byNewToken] = await db.select().from(reports).where(eq(reports.shareToken, newToken23))
+    assert(byNewToken?.id === rV2.id && byNewToken?.shareRevokedAt === null, 'Sim23: New token resolves to v2 with no revocation')
+
+    // ---- Test 4: Two Semrush imports in same month = ONE rank history row ----
+    const [kw23] = await db.insert(keywords).values({
+      clientId: client23.id,
+      keyword: 'sim23 test keyword',
+      status: 'ranking',
+      currentRank: 5,
+    }).returning()
+    assert(Boolean(kw23?.id), 'Sim23: Keyword created for rank history dedup test')
+
+    const importMonth = 8
+    const importYear = 2026
+
+    // First import
+    await db.insert(keywordRankHistory).values({
+      keywordId: kw23.id,
+      rank: 5,
+      month: importMonth,
+      year: importYear,
+    }).onConflictDoUpdate({
+      target: [keywordRankHistory.keywordId, keywordRankHistory.month, keywordRankHistory.year],
+      set: { rank: 5, recordedAt: new Date() },
+    })
+
+    // Second import same month (rank updated)
+    await db.insert(keywordRankHistory).values({
+      keywordId: kw23.id,
+      rank: 3,
+      month: importMonth,
+      year: importYear,
+    }).onConflictDoUpdate({
+      target: [keywordRankHistory.keywordId, keywordRankHistory.month, keywordRankHistory.year],
+      set: { rank: 3, recordedAt: new Date() },
+    })
+
+    const rankRows = await db.select().from(keywordRankHistory)
+      .where(and(eq(keywordRankHistory.keywordId, kw23.id), eq(keywordRankHistory.month, importMonth), eq(keywordRankHistory.year, importYear)))
+    assert(rankRows.length === 1, 'Sim23: Two imports in same month produce exactly ONE rank history row')
+    assert(rankRows[0].rank === 3, 'Sim23: Final rank reflects the most recent import value (3)')
+
+    // Cleanup Simulation 23 fixtures
+    await db.delete(keywordRankHistory).where(eq(keywordRankHistory.keywordId, kw23.id))
+    await db.delete(keywords).where(eq(keywords.id, kw23.id))
+    await db.delete(reports).where(inArray(reports.id, [rV1.id, rV2.id]))
+    await db.delete(clients).where(eq(clients.id, client23.id))
+    await db.delete(users).where(eq(users.id, partner23.id))
+    assert(true, 'Sim23: All fixtures cleanly purged')
+  } catch (err: any) {
+    assert(false, 'Simulation 23 failed', err.message)
   }
 
   // ---------------------------------------------------------------

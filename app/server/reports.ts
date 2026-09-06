@@ -67,7 +67,7 @@ export interface ReportWithClient extends Report {
  * Server Function: Get all reports with associated client branding info (Admin only)
  */
 export const getReportsServerFn = createServerFn({ method: 'GET' })
-  .validator((data?: { clientId?: string }) => {
+  .validator((data?: { clientId?: string; partnerId?: string }) => {
     return data || {}
   })
   .handler(async ({ data }) => {
@@ -80,6 +80,8 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
     const effectivePartnerId = getEffectivePartnerId(auth)
     if (effectivePartnerId) {
       conditions.push(eq(clients.partnerId, effectivePartnerId))
+    } else if (data?.partnerId && (auth.role === 'superadmin' || auth.role === 'admin')) {
+      conditions.push(eq(clients.partnerId, data.partnerId))
     }
     if (data?.clientId) {
       conditions.push(eq(reports.clientId, data.clientId))
@@ -172,10 +174,31 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
     }
 
     const rows = await query
-    const mapped = rows.map((r: any) => {
+
+    // Deduplicate: keep only the latest version per (clientId, periodStart).
+    // Rows are already ordered by periodStart DESC, version DESC so the first
+    // occurrence of each (clientId+periodStart) key is the latest version.
+    // We also count how many versions exist so the UI can show history badges.
+    const seenKeys = new Map<string, number>() // key -> index in deduped
+    const deduped: typeof rows = []
+    for (const r of rows) {
+      const key = `${r.clientId ?? ''}|${r.periodStart ? new Date(r.periodStart as any).toISOString() : ''}`
+      if (seenKeys.has(key)) {
+        // Increment version count for the already-selected latest row
+        const idx = seenKeys.get(key)!
+        ;(deduped[idx] as any).__versionCount = ((deduped[idx] as any).__versionCount || 1) + 1
+      } else {
+        seenKeys.set(key, deduped.length)
+        ;(r as any).__versionCount = 1
+        deduped.push(r)
+      }
+    }
+
+    const mapped = deduped.map((r: any) => {
       const snap = r.clientSnapshot
       return {
         ...r,
+        versionCount: r.__versionCount ?? 1,
         creatorNameOrEmail: r.creatorName || r.creatorEmail || null,
         clientName: snap?.businessName || r.clientName || '',
         clientBusinessName: snap?.businessName || r.clientBusinessName || '',
@@ -187,7 +210,7 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         clientPartnerLogoUrl: snap?.partnerLogoUrl !== undefined ? snap.partnerLogoUrl : r.clientPartnerLogoUrl,
       }
     })
-    return { reports: mapped as ReportWithClient[] }
+    return { reports: mapped as (ReportWithClient & { versionCount: number })[] }
   })
 
 /**
@@ -269,17 +292,30 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
       businessName: snap?.businessName || '',
       websiteUrl: snap?.websiteUrl || null,
       logoUrl: snap?.logoUrl || null,
+      logoBgColor: snap?.logoBgColor || '#ffffff',
       primaryColor: snap?.primaryColor || '#2563eb',
       secondaryColor: snap?.secondaryColor || '#1e293b',
       isWhiteLabel: Boolean(snap?.isWhiteLabel),
       partnerName: snap?.partnerName || null,
       partnerLogoUrl: snap?.partnerLogoUrl || null,
+      partnerLogoBgColor: snap?.partnerLogoBgColor || '#ffffff',
       partnerId: null,
       createdAt: row.report.createdAt,
       deletedAt: null,
     }
 
-    return { report: row.report, client }
+    // Fetch all versions for the same (clientId, periodStart) so the UI can render
+    // a version switcher. Only available for admin-level roles (not client portal).
+    let availableVersions: Array<{ id: string; version: number; createdAt: Date | string | null }> = []
+    if (auth.role !== 'client' && row.report.clientId && row.report.periodStart) {
+      availableVersions = await db
+        .select({ id: reports.id, version: reports.version, createdAt: reports.createdAt })
+        .from(reports)
+        .where(and(eq(reports.clientId, row.report.clientId), eq(reports.periodStart, row.report.periodStart)))
+        .orderBy(sql`${reports.version} desc nulls last`)
+    }
+
+    return { report: row.report, client, availableVersions }
   })
 
 /**
@@ -537,11 +573,13 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       name: targetClient.name || null,
       websiteUrl: targetClient.websiteUrl || null,
       logoUrl: targetClient.logoUrl ?? null,
+      logoBgColor: targetClient.logoBgColor ?? '#ffffff',
       primaryColor: targetClient.primaryColor || '#2563eb',
       secondaryColor: targetClient.secondaryColor || '#1e293b',
       isWhiteLabel: Boolean(targetClient.isWhiteLabel),
       partnerName: targetClient.partnerName ?? null,
       partnerLogoUrl: targetClient.partnerLogoUrl ?? null,
+      partnerLogoBgColor: targetClient.partnerLogoBgColor ?? '#ffffff',
     }
 
     const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
@@ -711,11 +749,13 @@ export const regenerateReportServerFn = createServerFn({ method: 'POST' })
       name: targetClient.name || null,
       websiteUrl: targetClient.websiteUrl || null,
       logoUrl: targetClient.logoUrl ?? null,
+      logoBgColor: targetClient.logoBgColor ?? '#ffffff',
       primaryColor: targetClient.primaryColor || '#2563eb',
       secondaryColor: targetClient.secondaryColor || '#1e293b',
       isWhiteLabel: Boolean(targetClient.isWhiteLabel),
       partnerName: targetClient.partnerName ?? null,
       partnerLogoUrl: targetClient.partnerLogoUrl ?? null,
+      partnerLogoBgColor: targetClient.partnerLogoBgColor ?? '#ffffff',
     }
 
     // Insert new version
@@ -890,11 +930,13 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
           name: clientRow.name || null,
           websiteUrl: clientRow.websiteUrl || null,
           logoUrl: clientRow.logoUrl ?? null,
+          logoBgColor: clientRow.logoBgColor ?? '#ffffff',
           primaryColor: clientRow.primaryColor || '#2563eb',
           secondaryColor: clientRow.secondaryColor || '#1e293b',
           isWhiteLabel: Boolean(clientRow.isWhiteLabel),
           partnerName: clientRow.partnerName || null,
           partnerLogoUrl: clientRow.partnerLogoUrl || null,
+          partnerLogoBgColor: clientRow.partnerLogoBgColor || '#ffffff',
         }
       : undefined
 

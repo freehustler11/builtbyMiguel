@@ -178,11 +178,13 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
       businessName: string
       websiteUrl?: string
       logoUrl?: string
+      logoBgColor?: string
       primaryColor?: string
       secondaryColor?: string
       isWhiteLabel?: boolean
       partnerName?: string
       partnerLogoUrl?: string
+      partnerLogoBgColor?: string
       partnerId?: string | null
     }) => {
       if (!data.name?.trim()) throw new Error('Contact name is required')
@@ -209,11 +211,13 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
         businessName: data.businessName.trim(),
         websiteUrl: data.websiteUrl?.trim() || null,
         logoUrl: data.logoUrl?.trim() || null,
+        logoBgColor: data.logoBgColor?.trim() || '#ffffff',
         primaryColor: data.primaryColor?.trim() || '#2563eb',
         secondaryColor: data.secondaryColor?.trim() || '#1e293b',
         isWhiteLabel: !!data.isWhiteLabel,
         partnerName: data.partnerName?.trim() || null,
         partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
+        partnerLogoBgColor: data.partnerLogoBgColor?.trim() || '#ffffff',
         partnerId: assignedPartnerId,
       })
       .returning()
@@ -239,11 +243,13 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
       businessName: string
       websiteUrl?: string
       logoUrl?: string
+      logoBgColor?: string
       primaryColor?: string
       secondaryColor?: string
       isWhiteLabel?: boolean
       partnerName?: string
       partnerLogoUrl?: string
+      partnerLogoBgColor?: string
       partnerId?: string | null
     }) => {
       if (!data.id) throw new Error('Client ID is required')
@@ -266,11 +272,13 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
       businessName: data.businessName.trim(),
       websiteUrl: data.websiteUrl?.trim() || null,
       logoUrl: data.logoUrl?.trim() || null,
+      logoBgColor: data.logoBgColor?.trim() || '#ffffff',
       primaryColor: data.primaryColor?.trim() || '#2563eb',
       secondaryColor: data.secondaryColor?.trim() || '#1e293b',
       isWhiteLabel: !!data.isWhiteLabel,
       partnerName: data.partnerName?.trim() || null,
       partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
+      partnerLogoBgColor: data.partnerLogoBgColor?.trim() || '#ffffff',
     }
 
     const effectivePartnerId = getEffectivePartnerId(auth)

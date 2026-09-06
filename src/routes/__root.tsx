@@ -216,12 +216,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
   const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
-  const isIsolated =
-    currentPath === '/login' ||
-    currentPath.startsWith('/login/') ||
-    currentPath.startsWith('/admin') ||
-    currentPath.startsWith('/portal') ||
-    currentPath.startsWith('/messages')
+  const isIsolated = isInternalPath(currentPath)
 
   const topProgressBar = isNavigating ? (
     <div className="fixed top-0 left-0 right-0 z-[99999] pointer-events-none">

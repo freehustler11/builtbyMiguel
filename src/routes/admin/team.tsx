@@ -44,8 +44,10 @@ import {
   getAllUsersForAdminServerFn,
   type ManagedUserItem,
 } from '../../server/passwords'
+import { getPartnersServerFn, type PartnerItem } from '../../server/partners'
 
 interface TeamSearch {
+  partnerId?: string
   sort?: 'name' | 'role' | 'agency' | 'createdAt' | 'status'
   order?: 'asc' | 'desc'
 }
@@ -54,7 +56,9 @@ export const Route = createFileRoute('/admin/team')({
   validateSearch: (search: Record<string, unknown>): TeamSearch => {
     const sort = search.sort as TeamSearch['sort']
     const order = search.order as TeamSearch['order']
+    const partnerId = typeof search.partnerId === 'string' ? search.partnerId : undefined
     return {
+      partnerId,
       sort: ['name', 'role', 'agency', 'createdAt', 'status'].includes(sort || '') ? sort : undefined,
       order: order === 'desc' ? 'desc' : order === 'asc' ? 'asc' : undefined,
     }
@@ -76,21 +80,26 @@ export const Route = createFileRoute('/admin/team')({
     return { auth }
   },
   loaderDeps: ({ search }) => ({
+    partnerId: search.partnerId,
     sort: search.sort,
     order: search.order,
   }),
   loader: async ({ deps, context }) => {
     const auth = (context as any)?.auth || (await checkAuthServerFn())
     const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
-    const [teamData, allUsersData] = await Promise.all([
-      getTeamMembersServerFn({ data: { sort: deps.sort, order: deps.order } }),
+    const [teamData, allUsersData, partnersData] = await Promise.all([
+      getTeamMembersServerFn({ data: { partnerId: deps.partnerId, sort: deps.sort, order: deps.order } }),
       isSuperadmin
         ? getAllUsersForAdminServerFn({ data: { sort: deps.sort, order: deps.order } })
         : Promise.resolve({ users: [] }),
+      isSuperadmin
+        ? getPartnersServerFn({})
+        : Promise.resolve({ partners: [] }),
     ])
     return {
       ...teamData,
       allUsers: allUsersData?.users || [],
+      partners: (partnersData?.partners || []) as PartnerItem[],
       currentAdmin: auth,
     }
   },
@@ -125,6 +134,7 @@ function AdminTeamPage() {
     isSuperadmin,
     currentAdmin,
     allUsers: initialAllUsers = [],
+    partners = [],
   } = Route.useLoaderData()
 
   const [employees, setEmployees] = useState<EmployeeItem[]>(initialEmployees)
@@ -132,6 +142,9 @@ function AdminTeamPage() {
   const [roleFilter, setRoleFilter] = useState<'all' | 'partner_employee' | 'partner' | 'client' | 'superadmin'>('partner_employee')
   const [searchQuery, setSearchQuery] = useState('')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string>(
+    search.partnerId && search.partnerId !== 'all' ? search.partnerId : ''
+  )
   const [employeeToDelete, setEmployeeToDelete] = useState<EmployeeItem | null>(null)
 
   const handleHeaderSort = (columnKey: 'name' | 'role' | 'agency' | 'createdAt' | 'status') => {
@@ -240,6 +253,7 @@ function AdminTeamPage() {
           name: name.trim(),
           email: email.trim(),
           password: password.trim(),
+          partnerId: isSuperadmin ? (selectedPartnerId || undefined) : undefined,
         },
       })
 
@@ -442,6 +456,51 @@ function AdminTeamPage() {
             </div>
           </div>
         </div>
+
+        {/* Superadmin Agency Scope Switcher */}
+        {isSuperadmin && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50 flex items-center justify-center shrink-0">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white">Workspace / Agency Scope</h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                  {search.partnerId === 'all'
+                    ? 'Viewing employees across all partner agencies combined'
+                    : search.partnerId
+                    ? 'Viewing staff members assigned to selected agency'
+                    : 'Viewing internal staff accounts added under Superadmin'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <select
+                value={search.partnerId || ''}
+                onChange={(e) => {
+                  const val = e.target.value
+                  navigate({
+                    search: (prev: any) => ({
+                      ...prev,
+                      partnerId: val || undefined,
+                    }),
+                  })
+                }}
+                className="text-xs font-mono font-medium px-3.5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              >
+                <option value="">Superadmin Workspace (Internal Staff)</option>
+                <option value="all">All Agencies Staff (Combined)</option>
+                {partners.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    Agency: {p.name || p.email}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
         {/* Team Members List Section */}
         <div className="space-y-4">
@@ -863,6 +922,26 @@ function AdminTeamPage() {
                 <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 flex items-start gap-2.5 text-xs text-rose-700 dark:text-rose-400">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>{formError}</span>
+                </div>
+              )}
+
+              {isSuperadmin && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Assign To Workspace / Agency
+                  </label>
+                  <select
+                    value={selectedPartnerId}
+                    onChange={(e) => setSelectedPartnerId(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl text-xs font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  >
+                    <option value="">Superadmin Workspace (Internal Staff)</option>
+                    {partners.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        Agency: {p.name || p.email}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
 

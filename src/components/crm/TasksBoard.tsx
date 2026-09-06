@@ -5,6 +5,7 @@ import {
   Circle,
   Clock,
   User,
+  Users,
   Building2,
   ShieldCheck,
   Search,
@@ -13,6 +14,8 @@ import {
   Edit2,
   Briefcase,
   Layers,
+  FileText,
+  ExternalLink,
 } from 'lucide-react'
 import {
   getTasksServerFn,
@@ -25,6 +28,7 @@ import {
   type TeamPickerMember,
 } from '../../server/crm'
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
+import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
 
 const CATEGORIES: Array<{
@@ -49,6 +53,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
   const [items, setItems] = useState<TaskItem[]>([])
   const [team, setTeam] = useState<TeamPickerMember[]>([])
   const [clientsList, setClientsList] = useState<ClientWithReportCount[]>([])
+  const [currentUser, setCurrentUser] = useState<ActiveSessionResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [statusFilter, setStatusFilter] = useState<'all' | 'todo' | 'done'>('all')
@@ -61,12 +66,16 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
     clientId: string
     title: string
     category: 'citations' | 'technical_seo' | 'on_page' | 'backlinks' | 'schema' | 'gbp'
+    draftUrl: string
+    notes: string
     assignedTo: string
     status: 'todo' | 'done'
   }>({
     clientId: clientId || '',
     title: '',
     category: 'technical_seo',
+    draftUrl: '',
+    notes: '',
     assignedTo: '',
     status: 'todo',
   })
@@ -77,11 +86,12 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const isRollup = !clientId
+  const isStaff = currentUser?.role === 'partner_employee'
 
   const loadData = async () => {
     try {
       setIsLoading(true)
-      const [tasksData, teamMembers] = await Promise.all([
+      const [tasksData, teamMembers, session] = await Promise.all([
         getTasksServerFn({
           data: {
             clientId,
@@ -90,9 +100,11 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
           },
         }),
         getAgencyTeamPickerServerFn({ data: { partnerId } }),
+        checkAuthServerFn().catch(() => null),
       ])
       setItems(tasksData)
       setTeam(teamMembers)
+      if (session) setCurrentUser(session)
 
       if (isRollup) {
         const { clients } = await getClientsServerFn({ data: { partnerId } })
@@ -128,7 +140,9 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
       clientId: clientId || '',
       title: '',
       category: 'technical_seo',
-      assignedTo: team[0]?.id || '',
+      draftUrl: '',
+      notes: '',
+      assignedTo: isStaff ? (currentUser?.userId || '') : (team[0]?.id || ''),
       status: 'todo',
     })
     setIsEditModalOpen(true)
@@ -140,6 +154,8 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
       clientId: item.clientId || '',
       title: item.title,
       category: item.category,
+      draftUrl: item.draftUrl || '',
+      notes: item.notes || '',
       assignedTo: item.assignedTo || '',
       status: item.status,
     })
@@ -158,7 +174,9 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
             id: editingItem.id,
             title: formData.title,
             category: formData.category,
-            assignedTo: formData.assignedTo || null,
+            draftUrl: formData.draftUrl || undefined,
+            notes: formData.notes || undefined,
+            assignedTo: isStaff ? editingItem.assignedTo : formData.assignedTo || null,
             status: formData.status,
             clientId: formData.clientId ? formData.clientId : null,
           },
@@ -185,7 +203,9 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
             clientId: formData.clientId ? formData.clientId : null,
             title: formData.title,
             category: formData.category,
-            assignedTo: formData.assignedTo || null,
+            draftUrl: formData.draftUrl || undefined,
+            notes: formData.notes || undefined,
+            assignedTo: isStaff ? (currentUser?.userId || undefined) : formData.assignedTo || null,
             status: formData.status,
           },
         })
@@ -300,6 +320,29 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
                       {item.category.replace('_', ' ')}
                     </span>
                   </div>
+
+                  {/* Draft URL */}
+                  {item.draftUrl && (
+                    <div>
+                      <a
+                        href={item.draftUrl.startsWith('http') ? item.draftUrl : `https://${item.draftUrl}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] font-mono text-purple-600 dark:text-purple-400 hover:underline truncate max-w-full"
+                      >
+                        <FileText className="w-3 h-3 shrink-0" />
+                        <span className="truncate">Draft Doc</span>
+                        <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Task Notes */}
+                  {item.notes && (
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                      {item.notes}
+                    </p>
+                  )}
 
                   {/* Assignee & completed date */}
                   <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono">
@@ -508,6 +551,34 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
                 />
               </div>
 
+              {/* Draft Document URL */}
+              <div className="space-y-1.5">
+                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  Draft URL (Google Doc / Spec Link)
+                </label>
+                <input
+                  type="url"
+                  value={formData.draftUrl}
+                  onChange={(e) => setFormData({ ...formData, draftUrl: e.target.value })}
+                  placeholder="https://docs.google.com/..."
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono"
+                />
+              </div>
+
+              {/* Task Notes */}
+              <div className="space-y-1.5">
+                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  Task Notes / Instructions
+                </label>
+                <textarea
+                  rows={2}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Additional context, action steps, guidelines..."
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 resize-none"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Category */}
                 <div className="space-y-1.5">
@@ -528,23 +599,35 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
                 </div>
 
                 {/* Assignee */}
-                <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Assignee
-                  </label>
-                  <select
-                    value={formData.assignedTo}
-                    onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
-                  >
-                    <option value="">Unassigned</option>
-                    {team.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name || t.email} ({t.role})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isStaff ? (
+                  <div className="space-y-1.5">
+                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                      Assignee
+                    </label>
+                    <div className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
+                      <Users className="w-3.5 h-3.5 text-rose-500" />
+                      <span>Assigned to You (automatically)</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                      Assignee
+                    </label>
+                    <select
+                      value={formData.assignedTo}
+                      onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    >
+                      <option value="">Unassigned</option>
+                      {team.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.name || t.email} ({t.role})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               {/* Status */}

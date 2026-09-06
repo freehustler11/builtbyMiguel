@@ -127,12 +127,14 @@ export const clients = pgTable(
     businessName: text('business_name').notNull(),
     websiteUrl: text('website_url'),
     logoUrl: text('logo_url'),
+    logoBgColor: text('logo_bg_color').default('#ffffff'),
     primaryColor: text('primary_color').default('#2563eb'),
     secondaryColor: text('secondary_color').default('#1e293b'),
     // White-labeling configuration
     isWhiteLabel: boolean('is_white_label').default(false).notNull(),
     partnerName: text('partner_name'),
     partnerLogoUrl: text('partner_logo_url'),
+    partnerLogoBgColor: text('partner_logo_bg_color').default('#ffffff'),
     // Partner assignment (null = direct Superadmin client)
     partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'set null' }),
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -151,11 +153,13 @@ export interface ClientSnapshot {
   name?: string | null
   websiteUrl?: string | null
   logoUrl?: string | null
+  logoBgColor?: string | null
   primaryColor?: string
   secondaryColor?: string
   isWhiteLabel?: boolean
   partnerName?: string | null
   partnerLogoUrl?: string | null
+  partnerLogoBgColor?: string | null
 }
 
 export interface DeliverablesSnapshot {
@@ -316,6 +320,8 @@ export const landingPages = pgTable(
       .default('planning')
       .notNull(),
     wentLiveAt: timestamp('went_live_at', { withTimezone: true }),
+    draftUrl: text('draft_url'),
+    notes: text('notes'),
     assignedTo: uuid('assigned_to').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -340,6 +346,7 @@ export const clientArticles = pgTable(
     draftUrl: text('draft_url'),
     liveUrl: text('live_url'),
     targetKeyword: text('target_keyword'),
+    notes: text('notes'),
     status: text('status', { enum: ['idea', 'drafting', 'review', 'approved', 'live'] })
       .default('idea')
       .notNull(),
@@ -421,6 +428,8 @@ export const tasks = pgTable(
     category: text('category', { enum: ['citations', 'technical_seo', 'on_page', 'backlinks', 'schema', 'gbp'] }).notNull(),
     status: text('status', { enum: ['todo', 'done'] }).default('todo').notNull(),
     completedAt: timestamp('completed_at', { withTimezone: true }),
+    draftUrl: text('draft_url'),
+    notes: text('notes'),
     assignedTo: uuid('assigned_to').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -434,6 +443,35 @@ export const tasks = pgTable(
 
 export type Task = typeof tasks.$inferSelect
 export type NewTask = typeof tasks.$inferInsert
+
+/**
+ * Citations directory tracking table
+ */
+export const citations = pgTable(
+  'citations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').notNull().references(() => clients.id, { onDelete: 'restrict' }),
+    partnerId: uuid('partner_id').notNull().references((): AnyPgColumn => users.id, { onDelete: 'cascade' }),
+    directory: text('directory').notNull(),
+    listingUrl: text('listing_url'),
+    username: text('username'),
+    password: text('password'),
+    status: text('status', { enum: ['submitted', 'pending', 'live', 'needs_update'] })
+      .default('submitted')
+      .notNull(),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('citations_client_id_idx').on(table.clientId),
+    index('citations_partner_id_idx').on(table.partnerId),
+  ]
+)
+
+export type Citation = typeof citations.$inferSelect
+export type NewCitation = typeof citations.$inferInsert
 
 /**
  * Monthly metrics table (living editable entry surface and source of MoM history)

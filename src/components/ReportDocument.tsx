@@ -135,11 +135,13 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
   const snapshot = report.clientSnapshot
   const businessName = snapshot?.businessName ?? client?.businessName ?? ''
   const logoUrl = snapshot?.logoUrl !== undefined ? snapshot.logoUrl : client?.logoUrl
+  const logoBgColor = snapshot?.logoBgColor ?? (client as any)?.logoBgColor ?? (client as any)?.logo_bg_color ?? null
   const primaryColor = snapshot?.primaryColor || client?.primaryColor || (client as any)?.primary_color || '#2563eb'
   const secondaryColor = snapshot?.secondaryColor || client?.secondaryColor || (client as any)?.secondary_color || '#1e293b'
   const isWhiteLabel = snapshot?.isWhiteLabel !== undefined ? Boolean(snapshot.isWhiteLabel) : Boolean(client?.isWhiteLabel)
   const partnerName = (snapshot?.partnerName !== undefined && snapshot?.partnerName !== null) ? snapshot.partnerName : client?.partnerName
   const partnerLogoUrl = (snapshot?.partnerLogoUrl !== undefined && snapshot?.partnerLogoUrl !== null) ? snapshot.partnerLogoUrl : client?.partnerLogoUrl
+  const partnerLogoBgColor = snapshot?.partnerLogoBgColor ?? (client as any)?.partnerLogoBgColor ?? (client as any)?.partner_logo_bg_color ?? null
   const contactName = snapshot?.name ?? client?.name
   const websiteUrl = snapshot?.websiteUrl ?? client?.websiteUrl
 
@@ -232,7 +234,15 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             {/* Left: Client Logo & Business Identity */}
             <div className="flex items-center gap-3.5 min-w-0">
               {logoUrl ? (
-                <div className="h-11 w-auto max-w-[170px] flex items-center justify-start shrink-0">
+                <div
+                  className="h-11 w-auto max-w-[170px] flex items-center justify-start shrink-0 rounded-xl px-2 py-1"
+                  style={{
+                    backgroundColor:
+                      logoBgColor && logoBgColor !== 'transparent'
+                        ? logoBgColor
+                        : undefined,
+                  }}
+                >
                   <img
                     src={logoUrl}
                     alt={businessName}
@@ -298,7 +308,15 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
             {options.show_agency_info && (
               isWhiteLabel ? (
                 partnerLogoUrl ? (
-                  <div className="shrink-0 flex items-center sm:justify-end">
+                  <div
+                    className="shrink-0 flex items-center sm:justify-end px-2 py-1 rounded-lg border border-slate-200/80"
+                    style={{
+                      backgroundColor:
+                        partnerLogoBgColor && partnerLogoBgColor !== 'transparent'
+                          ? partnerLogoBgColor
+                          : undefined,
+                    }}
+                  >
                     <img
                       src={partnerLogoUrl}
                       alt={partnerName || 'Partner'}

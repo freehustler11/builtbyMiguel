@@ -19,6 +19,9 @@ import {
   XCircle,
   Table,
   RefreshCw,
+  History,
+  ChevronDown,
+  AlertCircle,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import {
@@ -69,6 +72,7 @@ function BrandedReportViewPage() {
   const loaderData = Route.useLoaderData()
   const report = loaderData?.report
   const client = loaderData?.client
+  const availableVersions = loaderData?.availableVersions || []
   const params = Route.useParams()
   const reportId = report?.id || params?.id || ''
   const navigate = useNavigate()
@@ -76,6 +80,7 @@ function BrandedReportViewPage() {
   const [isPending, startTransition] = useTransition()
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
   const [isRegenerating, setIsRegenerating] = useState(false)
+  const [showVersionDropdown, setShowVersionDropdown] = useState(false)
 
   const handleRegenerate = async () => {
     if (!reportId) return
@@ -241,9 +246,41 @@ function BrandedReportViewPage() {
               <span>{client?.businessName || 'Client'}</span>
             </Link>
 
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-              v{report?.version || 1}
-            </span>
+            {/* Version Badge + Switcher */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => availableVersions.length > 1 && setShowVersionDropdown((v) => !v)}
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 ${availableVersions.length > 1 ? 'cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700' : 'cursor-default'}`}
+                title={availableVersions.length > 1 ? 'Switch between report versions' : undefined}
+              >
+                <History className="w-3 h-3 text-slate-400" />
+                <span>v{report?.version || 1}</span>
+                {availableVersions.length > 1 && <ChevronDown className="w-3 h-3 text-slate-400" />}
+              </button>
+              {showVersionDropdown && availableVersions.length > 1 && (
+                <div className="absolute left-0 top-full mt-1 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg min-w-[160px] py-1 text-xs font-mono">
+                  {availableVersions.map((v, i) => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => {
+                        setShowVersionDropdown(false)
+                        navigate({ to: '/admin/reports/$id', params: { id: v.id } })
+                      }}
+                      className={`w-full text-left px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-between gap-2 ${v.id === reportId ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}
+                    >
+                      <span>v{v.version}{i === 0 ? ' (latest)' : ''}</span>
+                      {v.createdAt && (
+                        <span className="text-slate-400 text-[10px]">
+                          {new Date(v.createdAt as string).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Actions: Edit Data & Print */}
@@ -284,8 +321,9 @@ function BrandedReportViewPage() {
               <span>{isRegenerating ? 'Regenerating...' : `Regenerate (v${(report?.version || 1) + 1})`}</span>
             </button>
 
-            {/* Public Share Link Management */}
-            {isShareActive ? (
+            {/* ===== Public Share Link: Three States ===== */}
+            {/* State 1: Active Link */}
+            {isShareActive && (
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
                 <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -311,7 +349,30 @@ function BrandedReportViewPage() {
                   <span>Revoke</span>
                 </button>
               </div>
-            ) : (
+            )}
+
+            {/* State 2: Revoked */}
+            {!isShareActive && shareRevokedAt && (
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800">
+                <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-rose-700 dark:text-rose-300">
+                  <AlertCircle className="w-3 h-3 text-rose-500" />
+                  <span>Link Revoked</span>
+                </span>
+                <button
+                  type="button"
+                  disabled={isShareLoading}
+                  onClick={handleGenerateShareLink}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-mono font-semibold bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-slate-800 text-rose-800 dark:text-rose-200 transition cursor-pointer disabled:opacity-50"
+                  title="Mint a new share token (old revoked link stays dead)"
+                >
+                  <Share2 className="w-3 h-3 text-rose-500" />
+                  <span>{isShareLoading ? 'Generating...' : 'Generate New Link'}</span>
+                </button>
+              </div>
+            )}
+
+            {/* State 3: Never Shared */}
+            {!isShareActive && !shareRevokedAt && (
               <button
                 type="button"
                 disabled={isShareLoading}
@@ -323,6 +384,7 @@ function BrandedReportViewPage() {
                 <span>{isShareLoading ? 'Generating...' : 'Create Share Link'}</span>
               </button>
             )}
+            {/* ===== End Share Link ===== */}
 
             <ThemeToggle variant="pill" />
 
@@ -442,6 +504,24 @@ function BrandedReportViewPage() {
       {/* ========================================================================= */}
       {/* 2. PRINT-READY DOCUMENT CONTAINER                                         */}
       {/* ========================================================================= */}
+
+      {/* Historical Version Banner: shown when viewing an older version */}
+      {availableVersions.length > 1 && availableVersions[0]?.id !== reportId && (
+        <div className="print:hidden max-w-5xl mx-auto mt-4 px-4 sm:px-6 py-2.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center justify-between gap-3 text-xs font-mono">
+          <span className="flex items-center gap-1.5 text-amber-700 dark:text-amber-300 font-semibold">
+            <History className="w-3.5 h-3.5" />
+            <span>Viewing historical version v{report?.version}. This is not the latest version.</span>
+          </span>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/admin/reports/$id', params: { id: availableVersions[0].id } })}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800 border border-amber-300 dark:border-amber-700 transition cursor-pointer font-semibold"
+          >
+            Switch to Latest (v{availableVersions[0]?.version})
+          </button>
+        </div>
+      )}
+
       <div className="my-0 sm:my-6 print:my-0 p-4 sm:p-6 print:p-0">
         <ReportDocument report={report} client={client} displayOptions={displayOptions} />
       </div>

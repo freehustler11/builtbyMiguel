@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect, Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { useState, useMemo, useEffect } from 'react'
 import {
   Building2,
@@ -20,6 +20,7 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  Trash2,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { AdminNav } from '../../../components/AdminNav'
@@ -29,6 +30,7 @@ import {
   getPartnersServerFn,
   createPartnerServerFn,
   togglePartnerActiveServerFn,
+  deletePartnerServerFn,
   type PartnerItem,
 } from '../../../server/partners'
 import {
@@ -86,6 +88,7 @@ export const Route = createFileRoute('/admin/agencies/')({
 })
 
 function AdminAgenciesPage() {
+  const router = useRouter()
   const search = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const {
@@ -100,6 +103,7 @@ function AdminAgenciesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'agencies' | 'all_clients'>('agencies')
   const [toasts, setToasts] = useState<ToastMessage[]>([])
+  const [partnerToDelete, setPartnerToDelete] = useState<PartnerItem | null>(null)
 
   useEffect(() => {
     setPartners(initialPartners)
@@ -227,6 +231,31 @@ function AdminAgenciesPage() {
       addToast('error', 'Update Failed', err.message || 'Failed to toggle agency status.')
     } finally {
       setTogglingId(null)
+    }
+  }
+
+  const handleDeletePartner = async () => {
+    if (!partnerToDelete) return
+    setIsSubmitting(true)
+    try {
+      const res = await deletePartnerServerFn({
+        data: { partnerId: partnerToDelete.id },
+      })
+      if (res.success) {
+        addToast(
+          'success',
+          'Agency Removed',
+          `Successfully removed ${partnerToDelete.name || partnerToDelete.email}. ${res.unassignedClientsCount} clients moved to Unassigned.`
+        )
+        setPartners((prev) => prev.filter((p) => p.id !== partnerToDelete.id))
+        setPartnerToDelete(null)
+        await router.invalidate()
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to remove agency.'
+      addToast('error', 'Removal Failed', msg)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -482,59 +511,6 @@ function AdminAgenciesPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
-                  {/* Highlighted Unassigned Clients Row */}
-                  <tr className="bg-amber-50/40 dark:bg-amber-950/20 hover:bg-amber-50/80 dark:hover:bg-amber-950/30 transition group">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-800/60 flex items-center justify-center shrink-0">
-                          <ShieldCheck className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span>Unassigned Clients</span>
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">
-                              Direct Superadmin
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                            Direct clients not assigned to any partner
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-slate-600 dark:text-slate-300 font-mono text-xs">
-                      builtbymiguel.net
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                        <CheckCircle2 className="w-3 h-3" />
-                        <span>Active</span>
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-center text-slate-400 font-mono">
-                      —
-                    </td>
-                    <td className="py-4 px-6 text-center">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200">
-                        {unassignedClientCount} clients
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-center">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400">
-                        {unassignedReportsThisMonthCount}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <Link
-                        to="/admin/agencies/unassigned"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200 dark:hover:bg-amber-900/60 transition"
-                      >
-                        <span>Manage Unassigned</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </td>
-                  </tr>
-
                   {/* Partner Agencies List */}
                   {filteredPartners.length === 0 ? (
                     <tr>
@@ -631,14 +607,24 @@ function AdminAgenciesPage() {
                             </span>
                           </td>
                           <td className="py-4 px-6 text-right">
-                            <Link
-                              to="/admin/agencies/$partnerId"
-                              params={{ partnerId: partner.id }}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
-                            >
-                              <span>View Agency</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
-                            </Link>
+                            <div className="flex items-center justify-end gap-2">
+                              <Link
+                                to="/admin/agencies/$partnerId"
+                                params={{ partnerId: partner.id }}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
+                              >
+                                <span>View</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </Link>
+                              <button
+                                type="button"
+                                onClick={() => setPartnerToDelete(partner)}
+                                title={`Remove ${agencyDisplayName}`}
+                                className="inline-flex items-center justify-center w-7 h-7 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200/60 dark:hover:border-rose-900/50 transition cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       )
@@ -677,24 +663,28 @@ function AdminAgenciesPage() {
           </div>
         )}
 
-        {/* Modal: Create Partner Agency */}
+        {/* Create Modal */}
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-            <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-6 shadow-2xl animate-in zoom-in-95">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl space-y-5">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+                  <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
                     <Building2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white">Add Partner Agency</h3>
-                    <p className="text-xs text-slate-500 font-mono">Create tenant partner login</p>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                      Create Partner Agency
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Add a new white-label partner account.
+                    </p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="p-1 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="p-1 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -702,7 +692,7 @@ function AdminAgenciesPage() {
 
               <form onSubmit={handleCreatePartner} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
                     Agency Name *
                   </label>
                   <div className="relative">
@@ -712,15 +702,15 @@ function AdminAgenciesPage() {
                       required
                       value={newPartnerName}
                       onChange={(e) => setNewPartnerName(e.target.value)}
-                      placeholder="e.g. Acme Marketing Group"
+                      placeholder="e.g. Apex Marketing Co."
                       className="w-full text-xs font-mono pl-9.5 pr-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Agency Owner Email *
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    Owner Email *
                   </label>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -729,14 +719,14 @@ function AdminAgenciesPage() {
                       required
                       value={newPartnerEmail}
                       onChange={(e) => setNewPartnerEmail(e.target.value)}
-                      placeholder="owner@agency.com"
+                      placeholder="owner@apexmarketing.com"
                       className="w-full text-xs font-mono pl-9.5 pr-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
                     Initial Password *
                   </label>
                   <div className="relative">
@@ -771,6 +761,75 @@ function AdminAgenciesPage() {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Delete / Remove Agency Confirmation Modal */}
+        {partnerToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    Remove Agency Account?
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Are you sure you want to remove this partner agency?
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 space-y-2 text-xs">
+                <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-800">
+                  <span className="text-slate-500">Agency Name:</span>
+                  <span className="font-bold text-slate-900 dark:text-white font-mono">
+                    {partnerToDelete.name || partnerToDelete.email}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-800">
+                  <span className="text-slate-500">Managed Clients:</span>
+                  <span className="font-bold text-blue-600 dark:text-blue-400 font-mono">
+                    {partnerToDelete.clientCount} clients
+                  </span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-slate-500">Staff Accounts:</span>
+                  <span className="font-bold text-rose-600 dark:text-rose-400 font-mono">
+                    {partnerToDelete.staffCount} staff
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-[11px] text-amber-800 dark:text-amber-300 space-y-1">
+                <p className="font-bold">Safe Client Transition:</p>
+                <p>
+                  Removing this agency will deactivate the agency login and its {partnerToDelete.staffCount} staff sub-accounts. All {partnerToDelete.clientCount} managed clients and their reports will be safely moved to Direct Superadmin (Unassigned Clients).
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setPartnerToDelete(null)}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeletePartner}
+                  disabled={isSubmitting}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-500/20 disabled:opacity-50 transition cursor-pointer"
+                >
+                  {isSubmitting && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                  <span>Remove Agency</span>
+                </button>
+              </div>
             </div>
           </div>
         )}

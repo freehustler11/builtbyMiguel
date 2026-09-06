@@ -7,6 +7,7 @@ import {
   Trash2,
   FileText,
   User,
+  Users,
   CheckCircle2,
   Building2,
   Search,
@@ -24,6 +25,7 @@ import {
   type TeamPickerMember,
 } from '../../server/crm'
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
+import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
 
 const STATUS_COLUMNS: Array<{
@@ -85,6 +87,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
   const [items, setItems] = useState<ClientArticleItem[]>([])
   const [team, setTeam] = useState<TeamPickerMember[]>([])
   const [clientsList, setClientsList] = useState<ClientWithReportCount[]>([])
+  const [currentUser, setCurrentUser] = useState<ActiveSessionResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -99,6 +102,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
     title: string
     draftUrl: string
     liveUrl: string
+    notes: string
     targetKeyword: string
     writerId: string
     status: 'idea' | 'drafting' | 'review' | 'approved' | 'live'
@@ -107,6 +111,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
     title: '',
     draftUrl: '',
     liveUrl: '',
+    notes: '',
     targetKeyword: '',
     writerId: '',
     status: 'idea',
@@ -118,16 +123,19 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const isRollup = !clientId
+  const isStaff = currentUser?.role === 'partner_employee'
 
   const loadData = async () => {
     try {
       setIsLoading(true)
-      const [articles, teamMembers] = await Promise.all([
+      const [articles, teamMembers, session] = await Promise.all([
         getClientArticlesServerFn({ data: { clientId, partnerId } }),
         getAgencyTeamPickerServerFn({ data: { partnerId } }),
+        checkAuthServerFn().catch(() => null),
       ])
       setItems(articles)
       setTeam(teamMembers)
+      if (session) setCurrentUser(session)
 
       if (isRollup) {
         const { clients } = await getClientsServerFn({ data: { partnerId } })
@@ -194,8 +202,9 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
       title: '',
       draftUrl: '',
       liveUrl: '',
+      notes: '',
       targetKeyword: '',
-      writerId: team[0]?.id || '',
+      writerId: isStaff ? (currentUser?.userId || '') : (team[0]?.id || ''),
       status: 'idea',
     })
     setIsEditModalOpen(true)
@@ -209,6 +218,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
       title: item.title,
       draftUrl: item.draftUrl || '',
       liveUrl: item.liveUrl || '',
+      notes: item.notes || '',
       targetKeyword: item.targetKeyword || '',
       writerId: item.writerId || '',
       status: item.status,
@@ -229,8 +239,9 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
             title: formData.title,
             draftUrl: formData.draftUrl || undefined,
             liveUrl: formData.liveUrl || undefined,
+            notes: formData.notes || undefined,
             targetKeyword: formData.targetKeyword || undefined,
-            writerId: formData.writerId || null,
+            writerId: isStaff ? editingItem.writerId : formData.writerId || null,
             status: formData.status,
           },
         })
@@ -254,8 +265,9 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
             title: formData.title,
             draftUrl: formData.draftUrl || undefined,
             liveUrl: formData.liveUrl || undefined,
+            notes: formData.notes || undefined,
             targetKeyword: formData.targetKeyword || undefined,
-            writerId: formData.writerId || undefined,
+            writerId: isStaff ? (currentUser?.userId || undefined) : formData.writerId || undefined,
             status: formData.status,
           },
         })
@@ -446,6 +458,13 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                         )}
                       </div>
 
+                      {/* Deliverable Notes */}
+                      {item.notes && (
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
+                          {item.notes}
+                        </p>
+                      )}
+
                       {/* Footer: Writer & Published Date */}
                       <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400">
                         <div className="flex items-center gap-1 truncate">
@@ -575,6 +594,20 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                 </div>
               </div>
 
+              {/* Deliverable Notes */}
+              <div className="space-y-1.5">
+                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  Deliverable Notes / Outline
+                </label>
+                <textarea
+                  rows={2}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Outline notes, brief specifications, revision comments..."
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 resize-none"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Status */}
                 <div className="space-y-1.5">
@@ -600,23 +633,35 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                 </div>
 
                 {/* Writer Picker (Scoped to agency team) */}
-                <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Assigned Writer
-                  </label>
-                  <select
-                    value={formData.writerId}
-                    onChange={(e) => setFormData({ ...formData, writerId: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
-                  >
-                    <option value="">Unassigned Writer</option>
-                    {team.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name || t.email} ({t.role})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isStaff ? (
+                  <div className="space-y-1.5">
+                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                      Assigned Writer
+                    </label>
+                    <div className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
+                      <Users className="w-3.5 h-3.5 text-rose-500" />
+                      <span>Assigned to You (automatically)</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                      Assigned Writer
+                    </label>
+                    <select
+                      value={formData.writerId}
+                      onChange={(e) => setFormData({ ...formData, writerId: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    >
+                      <option value="">Unassigned Writer</option>
+                      {team.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.name || t.email} ({t.role})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">

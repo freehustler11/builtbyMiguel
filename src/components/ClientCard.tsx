@@ -43,7 +43,10 @@ export function ClientCard({
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             {client.logoUrl ? (
-              <div className="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white p-1 flex items-center justify-center shrink-0">
+              <div
+                className="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden p-1 flex items-center justify-center shrink-0 shadow-2xs"
+                style={{ backgroundColor: (client as any).logoBgColor || '#ffffff' }}
+              >
                 <img
                   src={client.logoUrl}
                   alt={client.businessName}
