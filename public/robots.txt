@@ -1,9 +1,19 @@
 User-agent: *
 Allow: /
-Disallow: /thank-you
+
+# Private app routes — require authentication
 Disallow: /login
-Disallow: /admin
-Disallow: /messages
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /portal/
+Disallow: /messages/
+Disallow: /my-work
+
+# Transactional / non-indexable pages
+Disallow: /thank-you
+Disallow: /r/
+
+# API routes
 Disallow: /api/
 
 Sitemap: https://builtbymiguel.net/sitemap.xml

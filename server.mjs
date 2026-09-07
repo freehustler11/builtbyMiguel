@@ -4,6 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { runMigrations } from './scripts/migrate.mjs'
+import { buildSitemapXml, buildRobotsTxt } from './scripts/generate-sitemap.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = __dirname
@@ -37,6 +38,32 @@ function getMimeType(filePath) {
   return MIME_TYPES[ext] || 'application/octet-stream'
 }
 
+// ---------------------------------------------------------------------------
+// Dynamic sitemap cache — regenerated at most once every 10 minutes.
+// This means publishing a blog post is reflected in the sitemap within 10 min,
+// without requiring a rebuild or server restart.
+// ---------------------------------------------------------------------------
+const SITEMAP_TTL_MS = 10 * 60 * 1000 // 10 minutes
+let sitemapCache = null // { xml: string, builtAt: number }
+
+async function getDynamicSitemap() {
+  const now = Date.now()
+  if (sitemapCache && now - sitemapCache.builtAt < SITEMAP_TTL_MS) {
+    return sitemapCache.xml
+  }
+  try {
+    const { xml } = await buildSitemapXml()
+    sitemapCache = { xml, builtAt: now }
+    return xml
+  } catch (err) {
+    console.error('Failed to build dynamic sitemap:', err.message)
+    // Fall back to the static file built at deploy time
+    const staticPath = path.join(publicDir, 'sitemap.xml')
+    if (fs.existsSync(staticPath)) return fs.readFileSync(staticPath, 'utf-8')
+    throw err
+  }
+}
+
 // Dynamically import TanStack Start Server
 const { default: startServer } = await import(pathToFileURL(serverEntry).href)
 
@@ -54,7 +81,32 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
-  // 2. Check for public folder static files (e.g., /llms.txt, /favicon.ico)
+  // 2a. Dynamic sitemap — queries DB for published posts, cached 10 min
+  if (urlPath === '/sitemap.xml') {
+    try {
+      const xml = await getDynamicSitemap()
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8')
+      res.setHeader('Cache-Control', 'public, max-age=600') // 10 min browser cache
+      res.statusCode = 200
+      res.end(xml)
+    } catch (err) {
+      res.statusCode = 500
+      res.end('Failed to generate sitemap')
+    }
+    return
+  }
+
+  // 2b. Dynamic robots.txt — single source of truth from generate-sitemap.mjs
+  if (urlPath === '/robots.txt') {
+    const txt = buildRobotsTxt()
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+    res.setHeader('Cache-Control', 'public, max-age=86400') // 24 hr browser cache
+    res.statusCode = 200
+    res.end(txt)
+    return
+  }
+
+  // 2c. Check for public folder static files (e.g., /llms.txt, /favicon.ico)
   const publicFilePath = path.join(publicDir, urlPath)
   if (urlPath !== '/' && fs.existsSync(publicFilePath) && fs.statSync(publicFilePath).isFile()) {
     res.setHeader('Content-Type', getMimeType(publicFilePath))
