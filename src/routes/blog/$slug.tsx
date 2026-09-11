@@ -399,7 +399,7 @@ function MarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'image' && block.src) {
           return (
-            <figure key={idx} className="my-8 space-y-2">
+            <figure key={idx} className="my-8">
               <div className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 shadow-sm">
                 <img
                   src={block.src}
@@ -408,11 +408,6 @@ function MarkdownRenderer({ content }: { content: string }) {
                   loading="lazy"
                 />
               </div>
-              {block.alt && (
-                <figcaption className="text-center text-xs text-slate-400 dark:text-slate-500 font-mono">
-                  {block.alt}
-                </figcaption>
-              )}
             </figure>
           )
         }
@@ -713,16 +708,9 @@ function BlogPostPage() {
 
           <div className="flex flex-wrap items-center gap-2">
             {post.category && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 shadow-2xs backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 shadow-2xs backdrop-blur-sm">
                 <FolderOpen className="w-3 h-3 text-rose-500" />
                 <span>{post.category}</span>
-              </span>
-            )}
-
-            {post.keyword && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50">
-                <Key className="w-3 h-3" />
-                <span>{post.keyword}</span>
               </span>
             )}
           </div>

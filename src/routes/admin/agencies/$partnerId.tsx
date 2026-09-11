@@ -193,13 +193,21 @@ function AdminAgencyDetailPage() {
       accessor: (c) => (
         <div className="flex items-center gap-2.5">
           {c.logoUrl ? (
-            <img
-              src={c.logoUrl}
-              alt={c.businessName}
-              className="w-5 h-5 rounded-[4px] object-contain shrink-0 border border-[var(--line)]"
-            />
+            <div
+              className="w-5 h-5 rounded-[4px] border border-[var(--line)] overflow-hidden p-0.5 flex items-center justify-center shrink-0"
+              style={{ backgroundColor: (c as any).logoBgColor || '#ffffff' }}
+            >
+              <img
+                src={c.logoUrl}
+                alt={c.businessName}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
           ) : (
-            <div className="w-5 h-5 rounded-[4px] bg-[var(--line)] text-[var(--ink)] flex items-center justify-center font-bold text-[10px] shrink-0">
+            <div
+              className="w-5 h-5 rounded-[4px] text-white flex items-center justify-center font-bold text-[10px] shrink-0"
+              style={{ backgroundColor: c.primaryColor || '#2563eb' }}
+            >
               {c.businessName.slice(0, 2).toUpperCase()}
             </div>
           )}

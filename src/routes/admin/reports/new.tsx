@@ -27,8 +27,8 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
+import { AdminShell } from '../../../components/AdminShell'
 import { ThemedNumberInput } from '../../../components/ThemedNumberInput'
-import { ThemeToggle } from '../../../components/ThemeToggle'
 import { ToastContainer, type ToastMessage } from '../../../components/Toast'
 import { getClientsServerFn } from '../../../server/clients'
 import {
@@ -86,7 +86,8 @@ export const Route = createFileRoute('/admin/reports/new')({
     editId: search.editId,
   }),
   loader: async ({ deps }) => {
-    const [{ clients }, existingReportData] = await Promise.all([
+    const [auth, { clients }, existingReportData] = await Promise.all([
+      checkAuthServerFn(),
       getClientsServerFn(),
       deps.editId
         ? getReportByIdServerFn({ data: { id: deps.editId } }).catch(() => null)
@@ -103,6 +104,7 @@ export const Route = createFileRoute('/admin/reports/new')({
     }
 
     return {
+      auth,
       clients,
       existingReport: existingReportData?.report || null,
       editClient: existingReportData?.client || null,
@@ -172,7 +174,7 @@ function AdminReportFormPage() {
   const router = useRouter()
   const navigate = useNavigate()
   const { clientId: queryClientId, editId } = Route.useSearch()
-  const { clients, existingReport } = Route.useLoaderData()
+  const { auth, clients, existingReport } = Route.useLoaderData()
 
   const isEditing = Boolean(editId && existingReport)
 
@@ -801,41 +803,26 @@ function AdminReportFormPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0c111d] text-slate-900 dark:text-white p-4 sm:p-6 lg:p-8">
+    <AdminShell
+      activeTab="reports"
+      userRole={auth?.role}
+      userEmail={auth?.email}
+      userName={auth?.name}
+      title={isEditing ? 'Edit Performance Report' : 'Create Monthly Performance Report'}
+      description="Configure metrics, month-over-month comparisons, search keywords, and strategic deliverables."
+      actions={
+        <Link
+          to="/admin/reports"
+          className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] hover:bg-[var(--line)] border border-[var(--line)] transition"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to All Reports</span>
+        </Link>
+      }
+    >
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Sticky Quick Nav Bar */}
-        <div className="sticky top-0 z-30 bg-slate-50/95 dark:bg-[#0c111d]/95 backdrop-blur-md -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
-          <Link
-            to="/admin/reports"
-            className="inline-flex items-center gap-2 text-xs font-mono font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to All Reports</span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-mono text-slate-400 dark:text-slate-500 hidden sm:inline">Theme:</span>
-            <ThemeToggle variant="pill" />
-          </div>
-        </div>
-
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              {isEditing ? 'Edit Performance Report' : 'Create Monthly Performance Report'}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Configure metrics, month-over-month comparisons, search keywords, and strategic deliverables.
-            </p>
-          </div>
-          <div className="hidden sm:flex items-center gap-3 shrink-0">
-            <ThemeToggle variant="pill" />
-          </div>
-        </div>
-
         {formError && (
           <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-900 text-xs text-rose-600 dark:text-rose-400 font-semibold">
             {formError}
@@ -1923,6 +1910,6 @@ function AdminReportFormPage() {
           </form>
         )}
       </div>
-    </div>
+    </AdminShell>
   )
 }

@@ -60,6 +60,7 @@ export function ReportsDueTable({
   const now = new Date()
   const month = propMonth ?? initialMonth ?? (now.getUTCMonth() + 1)
   const year = propYear ?? initialYear ?? now.getUTCFullYear()
+  const isCurrentOrFutureMonth = year > now.getUTCFullYear() || (year === now.getUTCFullYear() && month >= now.getUTCMonth() + 1)
 
   const [data, setData] = useState<ReportsDueRow[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -314,6 +315,11 @@ export function ReportsDueTable({
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           <span>Metrics Complete</span>
                         </span>
+                      ) : isCurrentOrFutureMonth ? (
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>In Progress · Finalizes {MONTH_NAMES[month % 12]} 1</span>
+                        </span>
                       ) : (
                         <div className="space-y-1">
                           <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400">
@@ -338,6 +344,11 @@ export function ReportsDueTable({
                             <span>Generated (v{row.version || 1})</span>
                           </span>
                         </div>
+                      ) : isCurrentOrFutureMonth ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>Due Next Month</span>
+                        </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-rose-500/10 text-rose-600 dark:text-rose-400">
                           <Clock className="w-3.5 h-3.5" />

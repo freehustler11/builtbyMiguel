@@ -22,8 +22,7 @@ export function LogoutButton({
     try {
       setLoading(true)
       await logoutServerFn()
-      await router.invalidate()
-      navigate({ to: redirectTo })
+      window.location.href = redirectTo
     } catch (err) {
       console.error('Logout failed:', err)
     } finally {

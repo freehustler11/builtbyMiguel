@@ -157,24 +157,24 @@ function MyWorkPage() {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1 p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] w-fit">
+        <div className="flex items-center gap-1 p-1 rounded-[8px] bg-[var(--canvas)] border border-[var(--line)] w-fit overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveFilter('all')}
-            className={`px-3 py-1.5 rounded-[4px] text-[12px] font-medium transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-[6px] text-[13px] font-medium transition cursor-pointer whitespace-nowrap ${
               activeFilter === 'all'
-                ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-2xs'
+                ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs border border-[var(--line)]/60'
                 : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
-            All Items ({data.counts.totalAssigned})
+            All items ({data.counts.totalAssigned})
           </button>
           <button
             type="button"
             onClick={() => setActiveFilter('tasks')}
-            className={`px-3 py-1.5 rounded-[4px] text-[12px] font-medium transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-[6px] text-[13px] font-medium transition cursor-pointer whitespace-nowrap ${
               activeFilter === 'tasks'
-                ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-2xs'
+                ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs border border-[var(--line)]/60'
                 : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
@@ -183,21 +183,21 @@ function MyWorkPage() {
           <button
             type="button"
             onClick={() => setActiveFilter('pages')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-[6px] text-[13px] font-medium transition cursor-pointer whitespace-nowrap ${
               activeFilter === 'pages'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs border border-[var(--line)]/60'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
-            Landing Pages ({data.landingPages.length})
+            Landing pages ({data.landingPages.length})
           </button>
           <button
             type="button"
             onClick={() => setActiveFilter('articles')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-[6px] text-[13px] font-medium transition cursor-pointer whitespace-nowrap ${
               activeFilter === 'articles'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs border border-[var(--line)]/60'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
             Articles ({data.articles.length})
@@ -206,72 +206,72 @@ function MyWorkPage() {
 
         {/* Section 1: Assigned Deliverable Tasks */}
         {(activeFilter === 'all' || activeFilter === 'tasks') && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckSquare className="w-4 h-4 text-amber-500" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                  Assigned Deliverables ({data.tasks.length})
+                <h2 className="text-[14px] font-semibold text-[var(--ink)]">
+                  Assigned tasks ({data.tasks.length})
                 </h2>
               </div>
             </div>
 
             {data.tasks.length === 0 ? (
-              <div className="p-8 text-center rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-2">
-                <CheckCircle2 className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto" />
-                <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+              <div className="p-8 text-center rounded-[8px] border border-dashed border-[var(--line)] bg-[var(--canvas)] space-y-1.5">
+                <CheckCircle2 className="w-6 h-6 text-[var(--muted)] mx-auto opacity-50" />
+                <p className="text-[13px] font-medium text-[var(--ink)]">
                   No tasks assigned to you right now
                 </p>
-                <p className="text-xs text-slate-400 font-mono">You're all caught up!</p>
+                <p className="text-[12px] text-[var(--muted)]">You're all caught up!</p>
               </div>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {data.tasks.map((t) => (
                   <div
                     key={t.id}
-                    className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                    className={`flex items-center justify-between p-3 rounded-[6px] border transition-colors ${
                       t.status === 'done'
-                        ? 'bg-emerald-50/20 dark:bg-emerald-950/10 border-emerald-200/50 dark:border-emerald-900/40 opacity-75'
-                        : 'bg-white dark:bg-[#111827] border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs'
+                        ? 'bg-emerald-500/5 border-emerald-500/20 opacity-75'
+                        : 'bg-[var(--panel)] border-[var(--line)] hover:border-[var(--line)]/80 shadow-2xs'
                     }`}
                   >
-                    <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0">
                       <button
                         type="button"
                         disabled={updatingTaskId === t.id}
                         onClick={() => handleToggleTask(t)}
-                        className={`w-6 h-6 rounded-lg border flex items-center justify-center transition cursor-pointer shrink-0 ${
+                        className={`w-5 h-5 rounded-[4px] border flex items-center justify-center transition cursor-pointer shrink-0 ${
                           t.status === 'done'
                             ? 'bg-emerald-600 border-emerald-600 text-white'
-                            : 'border-slate-300 dark:border-slate-700 hover:border-emerald-500'
+                            : 'border-[var(--line)] hover:border-[var(--accent)] bg-[var(--canvas)]'
                         }`}
                       >
-                        {t.status === 'done' && <CheckCircle2 className="w-4 h-4" />}
+                        {t.status === 'done' && <CheckCircle2 className="w-3.5 h-3.5" />}
                       </button>
 
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span
-                            className={`text-sm font-semibold truncate ${
+                            className={`text-[13px] font-medium truncate ${
                               t.status === 'done'
-                                ? 'line-through text-slate-400 dark:text-slate-500'
-                                : 'text-slate-900 dark:text-white'
+                                ? 'line-through text-[var(--muted)]'
+                                : 'text-[var(--ink)]'
                             }`}
                           >
                             {t.title}
                           </span>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 uppercase">
+                          <span className="px-1.5 py-0.2 rounded-[4px] text-[10px] font-medium bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]">
                             {t.category.replace('_', ' ')}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-3 text-xs text-slate-400 font-mono mt-0.5">
+                        <div className="flex items-center gap-3 text-[11px] text-[var(--muted)] mt-0.5">
                           {t.clientId ? (
                             <Link
                               to="/admin/clients/$clientId"
                               params={{ clientId: t.clientId }}
                               search={{ tab: 'deliverables' }}
-                              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                              className="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
                             >
                               <Building2 className="w-3 h-3" />
                               <span>{t.clientBusinessName || t.clientName || 'Client'}</span>
@@ -299,32 +299,32 @@ function MyWorkPage() {
 
         {/* Section 2: Assigned Landing Pages */}
         {(activeFilter === 'all' || activeFilter === 'pages') && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-blue-500" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                  Assigned Landing Pages ({data.landingPages.length})
+                <h2 className="text-[14px] font-semibold text-[var(--ink)]">
+                  Assigned landing pages ({data.landingPages.length})
                 </h2>
               </div>
             </div>
 
             {data.landingPages.length === 0 ? (
-              <div className="p-8 text-center rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-2">
-                <Layers className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto" />
-                <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+              <div className="p-8 text-center rounded-[8px] border border-dashed border-[var(--line)] bg-[var(--canvas)] space-y-1.5">
+                <Layers className="w-6 h-6 text-[var(--muted)] mx-auto opacity-50" />
+                <p className="text-[13px] font-medium text-[var(--ink)]">
                   No landing pages assigned to you
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {data.landingPages.map((lp) => (
                   <div
                     key={lp.id}
-                    className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-3"
+                    className="p-3.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-2xs space-y-2.5 hover:border-[var(--line)]/80 transition"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900">
+                      <span className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                         {lp.status.replace('_', ' ')}
                       </span>
                       {lp.targetUrl && (
@@ -332,7 +332,7 @@ function MyWorkPage() {
                           href={lp.targetUrl.startsWith('http') ? lp.targetUrl : `https://${lp.targetUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1 text-slate-400 hover:text-blue-500 transition"
+                          className="p-1 text-[var(--muted)] hover:text-[var(--accent)] transition"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
@@ -340,16 +340,16 @@ function MyWorkPage() {
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                      <h3 className="text-[13px] font-medium text-[var(--ink)] truncate">
                         {lp.title}
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate">
+                      <p className="text-[11px] text-[var(--muted)] truncate">
                         {lp.clientBusinessName || 'Client'}
                       </p>
                     </div>
 
-                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                      <span className="text-[11px] text-slate-400 font-mono">
+                    <div className="pt-2 border-t border-[var(--line)] flex items-center justify-between text-xs">
+                      <span className="text-[11px] text-[var(--muted)]">
                         Target: {lp.focusKeyword || 'General'}
                       </span>
                       {lp.clientId && (
@@ -357,9 +357,9 @@ function MyWorkPage() {
                           to="/admin/clients/$clientId"
                           params={{ clientId: lp.clientId }}
                           search={{ tab: 'landing-pages' }}
-                          className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
+                          className="text-[12px] font-medium text-[var(--accent)] hover:underline"
                         >
-                          View Board
+                          View board
                         </Link>
                       )}
                     </div>
@@ -372,32 +372,32 @@ function MyWorkPage() {
 
         {/* Section 3: Assigned Articles (Writer) */}
         {(activeFilter === 'all' || activeFilter === 'articles') && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-emerald-500" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                  Assigned Articles ({data.articles.length})
+                <h2 className="text-[14px] font-semibold text-[var(--ink)]">
+                  Assigned articles ({data.articles.length})
                 </h2>
               </div>
             </div>
 
             {data.articles.length === 0 ? (
-              <div className="p-8 text-center rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-2">
-                <FileText className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto" />
-                <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+              <div className="p-8 text-center rounded-[8px] border border-dashed border-[var(--line)] bg-[var(--canvas)] space-y-1.5">
+                <FileText className="w-6 h-6 text-[var(--muted)] mx-auto opacity-50" />
+                <p className="text-[13px] font-medium text-[var(--ink)]">
                   No articles currently assigned for you to write
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {data.articles.map((art) => (
                   <div
                     key={art.id}
-                    className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-3"
+                    className="p-3.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-2xs space-y-2.5 hover:border-[var(--line)]/80 transition"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900">
+                      <span className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                         {art.status}
                       </span>
                       {art.liveUrl && (
@@ -405,7 +405,7 @@ function MyWorkPage() {
                           href={art.liveUrl.startsWith('http') ? art.liveUrl : `https://${art.liveUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1 text-slate-400 hover:text-emerald-500 transition"
+                          className="p-1 text-[var(--muted)] hover:text-[var(--accent)] transition"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
@@ -413,16 +413,16 @@ function MyWorkPage() {
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                      <h3 className="text-[13px] font-medium text-[var(--ink)] truncate">
                         {art.title}
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate">
+                      <p className="text-[11px] text-[var(--muted)] truncate">
                         {art.clientBusinessName || 'Client'}
                       </p>
                     </div>
 
-                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                      <span className="text-[11px] text-slate-400 font-mono">
+                    <div className="pt-2 border-t border-[var(--line)] flex items-center justify-between text-xs">
+                      <span className="text-[11px] text-[var(--muted)]">
                         Keyword: {art.targetKeyword || 'Unset'}
                       </span>
                       {art.clientId && (
@@ -430,9 +430,9 @@ function MyWorkPage() {
                           to="/admin/clients/$clientId"
                           params={{ clientId: art.clientId }}
                           search={{ tab: 'articles' }}
-                          className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                          className="text-[12px] font-medium text-[var(--accent)] hover:underline"
                         >
-                          View Board
+                          View board
                         </Link>
                       )}
                     </div>

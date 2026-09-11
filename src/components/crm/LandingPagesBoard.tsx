@@ -371,14 +371,16 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={handleOpenCreate}
-          className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New landing page</span>
-        </button>
+        {items.length > 0 && (
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New landing page</span>
+          </button>
+        )}
       </div>
 
       {/* Board Content */}

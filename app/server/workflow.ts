@@ -98,7 +98,9 @@ export const getMonthlyKpiGridServerFn = createServerFn({ method: 'GET' })
 
     // 1. Fetch scoped active clients
     const clientConditions = [isNull(clients.deletedAt)]
-    if (effectivePartnerId && effectivePartnerId !== 'all') {
+    if (!isSuperadmin) {
+      clientConditions.push(eq(clients.partnerId, effectivePartnerId || '__NO_PARTNER__'))
+    } else if (effectivePartnerId && effectivePartnerId !== 'all') {
       if (effectivePartnerId === 'unassigned') {
         clientConditions.push(isNull(clients.partnerId))
       } else {
@@ -358,7 +360,9 @@ export const getReportsDueServerFn = createServerFn({ method: 'GET' })
 
     // 1. Fetch active clients
     const clientConditions = [isNull(clients.deletedAt)]
-    if (effectivePartnerId && effectivePartnerId !== 'all') {
+    if (!isSuperadmin) {
+      clientConditions.push(eq(clients.partnerId, effectivePartnerId || '__NO_PARTNER__'))
+    } else if (effectivePartnerId && effectivePartnerId !== 'all') {
       if (effectivePartnerId === 'unassigned') {
         clientConditions.push(isNull(clients.partnerId))
       } else {
@@ -865,7 +869,9 @@ export const getNavBlockersServerFn = createServerFn({ method: 'GET' })
 
     // Active clients
     const clientFilter = [isNull(clients.deletedAt)]
-    if (effectivePartnerId && effectivePartnerId !== 'all') {
+    if (!isSuperadmin) {
+      clientFilter.push(eq(clients.partnerId, effectivePartnerId || '__NO_PARTNER__'))
+    } else if (effectivePartnerId && effectivePartnerId !== 'all') {
       if (effectivePartnerId === 'unassigned') {
         clientFilter.push(isNull(clients.partnerId))
       } else {
@@ -908,7 +914,15 @@ export const getNavBlockersServerFn = createServerFn({ method: 'GET' })
 
     const enteredClientIds = new Set(metricsRows.map((m) => m.clientId))
     const missingKpiClientsCount = totalClientsCount - enteredClientIds.size
-    const hasKpiBlocker = missingKpiClientsCount > 0
+
+    // Check if the requested month is the active/ongoing month or in the future
+    const nowUtc = new Date()
+    const currentMonth = nowUtc.getUTCMonth() + 1
+    const currentYear = nowUtc.getUTCFullYear()
+    const isCurrentOrFutureMonth = data.year > currentYear || (data.year === currentYear && data.month >= currentMonth)
+
+    // For current ongoing or future months, metrics finalize only after month-end, so they are not active blockers
+    const hasKpiBlocker = isCurrentOrFutureMonth ? false : missingKpiClientsCount > 0
 
     // B. Count generated reports for this month period
     const periodStart = new Date(Date.UTC(data.year, data.month - 1, 1, 0, 0, 0, 0))
@@ -928,7 +942,7 @@ export const getNavBlockersServerFn = createServerFn({ method: 'GET' })
     const reportedClientIds = new Set(reportRows.map((r) => r.clientId).filter(Boolean))
     const generatedReportsCount = reportedClientIds.size
     const ungeneratedReportsCount = Math.max(0, totalClientsCount - generatedReportsCount)
-    const hasReportBlocker = ungeneratedReportsCount > 0
+    const hasReportBlocker = isCurrentOrFutureMonth ? false : ungeneratedReportsCount > 0
     const reportsRatio = `${generatedReportsCount}/${totalClientsCount}`
 
     // C. Count items in publishing queue

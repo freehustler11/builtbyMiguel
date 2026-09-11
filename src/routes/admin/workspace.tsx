@@ -225,14 +225,14 @@ function AgencyWorkspacePage() {
                 </p>
               </div>
 
-              <div className="relative min-w-[240px]">
+              <div className="relative w-full sm:w-80 md:w-96">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
                 <input
                   type="text"
                   value={agencySearchQuery}
                   onChange={(e) => setAgencySearchQuery(e.target.value)}
                   placeholder="Search agency workspaces..."
-                  className="w-full h-8 pl-9 pr-3 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                  className="w-full h-9 pl-9 pr-3.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
             </div>

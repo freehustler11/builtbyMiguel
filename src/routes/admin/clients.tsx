@@ -581,11 +581,16 @@ function AdminClientsPage() {
       accessor: (c) => (
         <div className="flex items-center gap-2.5">
           {c.logoUrl ? (
-            <img
-              src={c.logoUrl}
-              alt={c.businessName}
-              className="w-5 h-5 rounded-[4px] object-contain shrink-0 border border-[var(--line)]"
-            />
+            <div
+              className="w-5 h-5 rounded-[4px] border border-[var(--line)] overflow-hidden p-0.5 flex items-center justify-center shrink-0"
+              style={{ backgroundColor: (c as any).logoBgColor || '#ffffff' }}
+            >
+              <img
+                src={c.logoUrl}
+                alt={c.businessName}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
           ) : (
             <div
               className="w-5 h-5 rounded-[4px] text-white flex items-center justify-center font-bold text-[10px] shrink-0"
@@ -809,14 +814,14 @@ function AdminClientsPage() {
         {/* Search and Filters Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 p-3 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto flex-1">
-            <div className="relative w-full sm:w-72">
+            <div className="relative w-full sm:w-80 md:w-96">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" />
               <input
                 type="text"
                 placeholder={isSuperadmin ? 'Search clients, websites, partners...' : 'Search your assigned clients...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-8 pl-9 pr-3 text-[13px] rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                className="w-full h-9 pl-9 pr-3.5 text-[13px] rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
               />
             </div>
 

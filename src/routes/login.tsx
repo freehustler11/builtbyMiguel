@@ -87,21 +87,16 @@ function LoginPage() {
 
       if (res.success) {
         await router.invalidate()
-        const userRole = res.role as string
+        const userRole = res.role
+        let dest = '/admin'
         if (userRole === 'client') {
-          navigate({
-            to: redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal',
-          })
+          dest = redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal'
         } else if (userRole === 'partner_employee') {
-          navigate({
-            to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/my-work',
-          })
+          dest = redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/my-work'
         } else {
-          // superadmin & partner
-          navigate({
-            to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin',
-          })
+          dest = redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin'
         }
+        window.location.href = dest
       } else {
         setError(res.error || 'Invalid email or password.')
         setIsSubmitting(false)

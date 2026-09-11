@@ -675,21 +675,28 @@ function AdminTeamPage() {
                   accessor: (user) => (
                     <button
                       type="button"
+                      role="switch"
+                      aria-checked={user.isActive}
                       disabled={updatingId === user.id || user.role === 'superadmin'}
                       onClick={() => handleToggleStatus(user)}
-                      title={user.isActive ? 'Click to suspend' : 'Click to activate'}
-                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[11px] font-medium border transition cursor-pointer disabled:cursor-not-allowed ${
-                        user.isActive
-                          ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200/60 dark:border-emerald-900/40'
-                          : 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200/60 dark:border-amber-900/40'
-                      }`}
+                      title={user.role === 'superadmin' ? 'Superadmin account cannot be deactivated' : user.isActive ? 'Click to deactivate account' : 'Click to activate account'}
+                      className={`inline-flex items-center gap-2 px-1 py-0.5 rounded-full text-[11px] font-medium transition cursor-pointer disabled:cursor-not-allowed disabled:opacity-50`}
                     >
                       <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          user.isActive ? 'bg-emerald-500' : 'bg-amber-500'
+                        className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                          user.isActive ? 'bg-emerald-500' : 'bg-[var(--line)]'
                         }`}
-                      />
-                      <span>{updatingId === user.id ? 'Updating...' : user.isActive ? 'Active' : 'Suspended'}</span>
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow-2xs transition duration-200 ease-in-out ${
+                            user.isActive ? 'translate-x-3' : 'translate-x-0'
+                          }`}
+                        />
+                      </span>
+                      <span className={`text-[11px] font-medium ${user.isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--muted)]'}`}>
+                        {updatingId === user.id ? 'Updating...' : user.isActive ? 'Active' : 'Inactive'}
+                      </span>
                     </button>
                   ),
                 },

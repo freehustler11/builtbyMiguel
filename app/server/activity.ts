@@ -94,8 +94,8 @@ export const getActivityLogsServerFn = createServerFn({ method: 'GET' })
   )
   .handler(async ({ data }): Promise<ActivityLogsResponse> => {
     const auth = await assertActiveSession()
-    if (auth.role !== 'superadmin' && auth.role !== 'partner') {
-      throw new Error('Unauthorized: Access restricted to administrators and partners')
+    if (auth.role !== 'superadmin') {
+      throw new Error('Unauthorized: Access restricted to superadmin only')
     }
 
     const { filter, page, pageSize, sort, order, partnerId } = data

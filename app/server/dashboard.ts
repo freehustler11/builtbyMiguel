@@ -234,8 +234,8 @@ export const getAdminDashboardDataServerFn = createServerFn({ method: 'GET' })
 
     // 2. ACTIVE CLIENTS SCOPING (Tenancy)
     const clientConditions = [isNull(clients.deletedAt)]
-    if (!isSuperadmin && effectivePartnerId) {
-      clientConditions.push(eq(clients.partnerId, effectivePartnerId))
+    if (!isSuperadmin) {
+      clientConditions.push(eq(clients.partnerId, effectivePartnerId || '__NO_PARTNER__'))
     }
 
     const activeClients = await db
@@ -360,47 +360,32 @@ export const getAdminDashboardDataServerFn = createServerFn({ method: 'GET' })
       }
     }
 
-    // 7. RECENT ACTIVITY (Tenancy Scoped)
-    let agencyUserIds: string[] | null = null
-    if (!isSuperadmin && effectivePartnerId) {
-      const agencyUsers = await db
-        .select({ id: users.id })
-        .from(users)
-        .where(or(eq(users.id, effectivePartnerId), eq(users.partnerId, effectivePartnerId)))
-      agencyUserIds = agencyUsers.map((u) => u.id)
-      if (!agencyUserIds.includes(effectivePartnerId)) {
-        agencyUserIds.push(effectivePartnerId)
-      }
+    // 7. RECENT ACTIVITY (Superadmin only)
+    let recentActivity: RecentActivityItem[] = []
+    if (isSuperadmin) {
+      const recentLogs = await db
+        .select({
+          id: activityLogs.id,
+          action: activityLogs.action,
+          userEmail: activityLogs.userEmail,
+          createdAt: activityLogs.createdAt,
+          userName: users.name,
+          role: activityLogs.role,
+        })
+        .from(activityLogs)
+        .leftJoin(users, eq(activityLogs.userId, users.id))
+        .orderBy(desc(activityLogs.createdAt))
+        .limit(8)
+
+      recentActivity = recentLogs.map((log) => ({
+        id: log.id,
+        action: log.action,
+        userName: log.userName || null,
+        userEmail: log.userEmail,
+        role: log.role,
+        createdAt: log.createdAt,
+      }))
     }
-
-    const activityConditions = []
-    if (agencyUserIds && agencyUserIds.length > 0) {
-      activityConditions.push(inArray(activityLogs.userId, agencyUserIds))
-    }
-
-    const recentLogs = await db
-      .select({
-        id: activityLogs.id,
-        action: activityLogs.action,
-        userEmail: activityLogs.userEmail,
-        createdAt: activityLogs.createdAt,
-        userName: users.name,
-        role: activityLogs.role,
-      })
-      .from(activityLogs)
-      .leftJoin(users, eq(activityLogs.userId, users.id))
-      .where(activityConditions.length > 0 ? and(...activityConditions) : undefined)
-      .orderBy(desc(activityLogs.createdAt))
-      .limit(8)
-
-    const recentActivity: RecentActivityItem[] = recentLogs.map((log) => ({
-      id: log.id,
-      action: log.action,
-      userName: log.userName || null,
-      userEmail: log.userEmail,
-      role: log.role,
-      createdAt: log.createdAt,
-    }))
 
     return {
       viewer: {

@@ -53,8 +53,8 @@ export interface ActivitySearch {
 export const Route = createFileRoute('/admin/activity')({
   beforeLoad: async ({ location }) => {
     const auth = await requireAdmin({ location })
-    if (auth.role !== 'superadmin' && auth.role !== 'partner') {
-      throw redirect({ to: '/my-work' })
+    if (auth.role !== 'superadmin' && auth.role !== 'admin') {
+      throw redirect({ to: auth.role === 'partner' ? '/admin' : auth.role === 'partner_employee' ? '/my-work' : '/portal' })
     }
     return { auth }
   },

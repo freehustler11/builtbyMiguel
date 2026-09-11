@@ -158,11 +158,8 @@ export const createLandingPageServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isLive = data.status === 'live'
 
-    // If staff/partner_employee, auto-assign to self
-    const assignedTo =
-      auth.role === 'partner_employee'
-        ? auth.userId
-        : data.assignedTo || null
+    // Auto-assign to creator (auth.userId) if not explicitly passed
+    const assignedTo = data.assignedTo || auth.userId
 
     const [created] = await db
       .insert(landingPages)
@@ -412,11 +409,8 @@ export const createClientArticleServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isLive = data.status === 'live'
 
-    // If staff/partner_employee, auto-assign writer to self
-    const writerId =
-      auth.role === 'partner_employee'
-        ? auth.userId
-        : data.writerId || null
+    // Auto-assign writer to creator (auth.userId) if not explicitly passed
+    const writerId = data.writerId || auth.userId
 
     const [created] = await db
       .insert(clientArticles)
@@ -946,11 +940,8 @@ export const createTaskServerFn = createServerFn({ method: 'POST' })
     const now = new Date()
     const isDone = data.status === 'done'
 
-    // If staff/partner_employee, auto-assign to self
-    const assignedTo =
-      auth.role === 'partner_employee'
-        ? auth.userId
-        : data.assignedTo || null
+    // Auto-assign to creator (auth.userId) if not explicitly passed
+    const assignedTo = data.assignedTo || auth.userId
 
     const [created] = await db
       .insert(tasks)

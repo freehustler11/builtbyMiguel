@@ -306,22 +306,28 @@ function AdminAgenciesPage() {
       accessor: (p) => (
         <button
           type="button"
+          role="switch"
+          aria-checked={p.isActive}
           disabled={togglingId === p.id}
           onClick={() => handleToggleActive(p.id, p.isActive)}
-          className="cursor-pointer group/status"
-          title="Click to toggle status"
+          className="inline-flex items-center gap-2 px-1 py-0.5 rounded-full text-[11px] font-medium transition cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+          title={p.isActive ? 'Click to deactivate agency' : 'Click to activate agency'}
         >
-          {p.isActive ? (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span>Active</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-              <span>Suspended</span>
-            </span>
-          )}
+          <span
+            className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+              p.isActive ? 'bg-emerald-500' : 'bg-[var(--line)]'
+            }`}
+          >
+            <span
+              aria-hidden="true"
+              className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow-2xs transition duration-200 ease-in-out ${
+                p.isActive ? 'translate-x-3' : 'translate-x-0'
+              }`}
+            />
+          </span>
+          <span className={`text-[11px] font-medium ${p.isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--muted)]'}`}>
+            {togglingId === p.id ? 'Updating...' : p.isActive ? 'Active' : 'Inactive'}
+          </span>
         </button>
       ),
     },
@@ -336,13 +342,21 @@ function AdminAgenciesPage() {
       accessor: (c) => (
         <div className="flex items-center gap-2.5">
           {c.logoUrl ? (
-            <img
-              src={c.logoUrl}
-              alt={c.businessName}
-              className="w-5 h-5 rounded-[4px] object-contain shrink-0 border border-[var(--line)]"
-            />
+            <div
+              className="w-5 h-5 rounded-[4px] border border-[var(--line)] overflow-hidden p-0.5 flex items-center justify-center shrink-0"
+              style={{ backgroundColor: (c as any).logoBgColor || '#ffffff' }}
+            >
+              <img
+                src={c.logoUrl}
+                alt={c.businessName}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
           ) : (
-            <div className="w-5 h-5 rounded-[4px] bg-[var(--line)] text-[var(--ink)] flex items-center justify-center font-bold text-[10px] shrink-0">
+            <div
+              className="w-5 h-5 rounded-[4px] text-white flex items-center justify-center font-bold text-[10px] shrink-0"
+              style={{ backgroundColor: c.primaryColor || '#2563eb' }}
+            >
               {c.businessName.slice(0, 2).toUpperCase()}
             </div>
           )}
@@ -520,20 +534,20 @@ function AdminAgenciesPage() {
             </button>
           </div>
 
-          <div className="relative w-full sm:w-72">
-            <Search className="w-3.5 h-3.5 text-[var(--muted)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <div className="relative w-full sm:w-80 md:w-96">
+            <Search className="w-4 h-4 text-[var(--muted)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={viewMode === 'agencies' ? 'Search agencies or emails...' : 'Search clients or agencies...'}
-              className="w-full h-8 pl-9 pr-8 rounded-[6px] text-[12px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+              className="w-full h-9 pl-9 pr-8 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--ink)]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

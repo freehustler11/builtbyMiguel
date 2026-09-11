@@ -133,7 +133,7 @@ const NAV_GROUPS: NavGroupDef[] = [
         label: 'All clients',
         to: '/admin/clients',
         icon: Users,
-        roles: ['superadmin', 'partner'],
+        roles: ['superadmin', 'partner', 'partner_employee'],
       },
       {
         id: 'agencies',
@@ -160,7 +160,7 @@ const NAV_GROUPS: NavGroupDef[] = [
         label: 'Reports',
         to: '/admin/reports',
         icon: BarChart3,
-        roles: ['superadmin', 'partner'],
+        roles: ['superadmin', 'partner', 'partner_employee'],
         badgeType: 'reports',
       },
     ],
@@ -216,7 +216,7 @@ const NAV_GROUPS: NavGroupDef[] = [
         label: 'Activity',
         to: '/admin/activity',
         icon: Activity,
-        roles: ['superadmin', 'partner', 'partner_employee'],
+        roles: ['superadmin'],
       },
     ],
   },
@@ -984,21 +984,23 @@ export function AdminShell({
               <span>PostgreSQL</span>
             </div>
 
-            {/* Live Site Link */}
-            <a
-              href={
-                typeof window !== 'undefined' && window.location.hostname.includes('localhost')
-                  ? '/'
-                  : 'https://builtbymiguel.net'
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-[6px] text-[12px] font-medium text-[var(--ink)] bg-[var(--canvas)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
-              title="View Public Marketing Site"
-            >
-              <span>Live site</span>
-              <ExternalLink className="w-3 h-3 text-[var(--muted)]" />
-            </a>
+            {/* Live Site Link (Superadmin only) */}
+            {userRole === 'superadmin' && (
+              <a
+                href={
+                  typeof window !== 'undefined' && window.location.hostname.includes('localhost')
+                    ? '/'
+                    : 'https://builtbymiguel.net'
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-[6px] text-[12px] font-medium text-[var(--ink)] bg-[var(--canvas)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
+                title="View Public Marketing Site"
+              >
+                <span>Live site</span>
+                <ExternalLink className="w-3 h-3 text-[var(--muted)]" />
+              </a>
+            )}
 
             {/* Theme Toggle */}
             <ThemeToggle variant="pill" />

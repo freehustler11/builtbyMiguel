@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, and, or, lte } from 'drizzle-orm'
+import { desc, eq, and, or, lte, sql } from 'drizzle-orm'
 import { db, posts, type Post } from '../db'
 import { assertSuperadminSession } from './auth'
 
@@ -20,6 +20,17 @@ export const getAdminPostsServerFn = createServerFn({ method: 'GET' })
 
 
     const { status = 'all', search } = data || {}
+    const now = new Date()
+
+    // Auto-promote any scheduled posts whose scheduledAt timestamp has arrived
+    await db
+      .update(posts)
+      .set({
+        status: 'published',
+        publishedAt: sql`coalesce(${posts.scheduledAt}, ${now.toISOString()}::timestamptz)`,
+        updatedAt: now,
+      })
+      .where(and(eq(posts.status, 'scheduled'), lte(posts.scheduledAt, now)))
 
     let results: Post[]
     if (status && status !== 'all') {

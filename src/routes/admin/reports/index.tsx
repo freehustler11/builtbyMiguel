@@ -473,14 +473,14 @@ function AdminReportsListPage() {
           <div className="space-y-4">
             {/* Search Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
-              <div className="relative flex-1 min-w-[240px] max-w-sm">
+              <div className="relative w-full sm:w-80 md:w-96">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
                 <input
                   type="text"
                   value={agencySearchQuery}
                   onChange={(e) => setAgencySearchQuery(e.target.value)}
                   placeholder="Search partner agencies..."
-                  className="w-full h-8 pl-9 pr-3 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                  className="w-full h-9 pl-9 pr-3.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
 
@@ -593,14 +593,14 @@ function AdminReportsListPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
                   <div className="flex flex-wrap items-center gap-3 flex-1">
                     {/* Search */}
-                    <div className="relative flex-1 min-w-[220px] max-w-sm">
+                    <div className="relative w-full sm:w-80 md:w-96">
                       <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search reports or clients..."
-                        className="w-full h-8 pl-9 pr-3 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                        className="w-full h-9 pl-9 pr-3.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                       />
                     </div>
 

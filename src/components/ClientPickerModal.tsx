@@ -17,6 +17,9 @@ export interface ClientItem {
   name: string
   businessName?: string | null
   websiteUrl?: string | null
+  logoUrl?: string | null
+  logoBgColor?: string | null
+  primaryColor?: string | null
   partnerId?: string | null
   partner?: {
     id: string
@@ -397,15 +400,29 @@ export function ClientPickerModal({
                     `}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div
-                        className={`w-7 h-7 rounded-[6px] flex items-center justify-center text-[11px] font-bold shrink-0 ${
-                          isSelected
-                            ? 'bg-[var(--accent)] text-white'
-                            : 'bg-[var(--line)] text-[var(--ink)]'
-                        }`}
-                      >
-                        {(client.businessName || client.name || 'C').slice(0, 2).toUpperCase()}
-                      </div>
+                      {client.logoUrl ? (
+                        <div
+                          className="w-7 h-7 rounded-[6px] border border-[var(--line)] overflow-hidden p-0.5 flex items-center justify-center shrink-0"
+                          style={{ backgroundColor: client.logoBgColor || '#ffffff' }}
+                        >
+                          <img
+                            src={client.logoUrl}
+                            alt={client.businessName || client.name}
+                            className="max-h-full max-w-full object-contain"
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          className={`w-7 h-7 rounded-[6px] flex items-center justify-center text-[11px] font-bold shrink-0 ${
+                            isSelected
+                              ? 'bg-[var(--accent)] text-white'
+                              : 'bg-[var(--line)] text-[var(--ink)]'
+                          }`}
+                          style={client.primaryColor && !isSelected ? { backgroundColor: client.primaryColor, color: '#ffffff' } : undefined}
+                        >
+                          {(client.businessName || client.name || 'C').slice(0, 2).toUpperCase()}
+                        </div>
+                      )}
                       <div className="flex flex-col min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-[13px] truncate">

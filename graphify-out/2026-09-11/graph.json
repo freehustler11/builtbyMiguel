@@ -924,7 +924,7 @@
       "file_type": "code",
       "norm_label": "navblockercounts",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L817"
+      "source_location": "L821"
     },
     {
       "id": "src_components_adminnav_adminnavprops",
@@ -2575,7 +2575,7 @@
       "file_type": "code",
       "norm_label": "publishingqueueitem",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L518"
+      "source_location": "L522"
     },
     {
       "id": "app_server_workflow_queueitemtype",
@@ -2588,7 +2588,7 @@
       "file_type": "code",
       "norm_label": "queueitemtype",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L516"
+      "source_location": "L520"
     },
     {
       "id": "app_server_workflow_reportsduerow",
@@ -2601,7 +2601,7 @@
       "file_type": "code",
       "norm_label": "reportsduerow",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L305"
+      "source_location": "L307"
     },
     {
       "id": "src_components_crm_monthlykpigrid_clientrowformstate",
@@ -10338,7 +10338,7 @@
       "file_type": "code",
       "norm_label": "blogpostpage()",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L613"
+      "source_location": "L608"
     },
     {
       "id": "src_routes_blog_slug_calculatereadingtime",
@@ -12434,7 +12434,7 @@
       "file_type": "code",
       "norm_label": "getnavblockersserverfn",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L831"
+      "source_location": "L835"
     },
     {
       "id": "app_server_workflow_getpublishingqueueserverfn",
@@ -12445,7 +12445,7 @@
       "file_type": "code",
       "norm_label": "getpublishingqueueserverfn",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L538"
+      "source_location": "L542"
     },
     {
       "id": "app_server_workflow_getreportsdueserverfn",
@@ -12456,7 +12456,7 @@
       "file_type": "code",
       "norm_label": "getreportsdueserverfn",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L330"
+      "source_location": "L332"
     },
     {
       "id": "src_components_crm_articlesboard",
@@ -89723,7 +89723,7 @@
       "file_type": "code",
       "norm_label": "createpostserverfn",
       "source_file": "app/server/posts.ts",
-      "source_location": "L86"
+      "source_location": "L97"
     },
     {
       "id": "app_server_posts_deletepostserverfn",
@@ -89734,7 +89734,7 @@
       "file_type": "code",
       "norm_label": "deletepostserverfn",
       "source_file": "app/server/posts.ts",
-      "source_location": "L300"
+      "source_location": "L311"
     },
     {
       "id": "app_server_posts_getadminpostsserverfn",
@@ -89756,7 +89756,7 @@
       "file_type": "code",
       "norm_label": "getpostbyidserverfn",
       "source_file": "app/server/posts.ts",
-      "source_location": "L68"
+      "source_location": "L79"
     },
     {
       "id": "app_server_posts_getpublicpostbyslugserverfn",
@@ -89767,7 +89767,7 @@
       "file_type": "code",
       "norm_label": "getpublicpostbyslugserverfn",
       "source_file": "app/server/posts.ts",
-      "source_location": "L337"
+      "source_location": "L348"
     },
     {
       "id": "app_server_posts_getpublicpostsserverfn",
@@ -89778,7 +89778,7 @@
       "file_type": "code",
       "norm_label": "getpublicpostsserverfn",
       "source_file": "app/server/posts.ts",
-      "source_location": "L316"
+      "source_location": "L327"
     },
     {
       "id": "app_server_posts_updatepostserverfn",
@@ -89789,7 +89789,7 @@
       "file_type": "code",
       "norm_label": "updatepostserverfn",
       "source_file": "app/server/posts.ts",
-      "source_location": "L184"
+      "source_location": "L195"
     },
     {
       "id": "src_db_schema",
@@ -93847,7 +93847,7 @@
       "file_type": "code",
       "norm_label": "advancepublishingqueueitemserverfn",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L752"
+      "source_location": "L756"
     },
     {
       "id": "app_server_workflow_getmonthlykpigridserverfn",
@@ -93869,7 +93869,7 @@
       "file_type": "code",
       "norm_label": "savemonthlykpirowserverfn",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L267"
+      "source_location": "L269"
     },
     {
       "id": "src_components_crm_monthlykpigrid",
@@ -107722,7 +107722,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/posts.ts",
-      "source_location": "L120",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -107734,7 +107734,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/posts.ts",
-      "source_location": "L306",
+      "source_location": "L317",
       "weight": 1.0
     },
     {
@@ -107758,7 +107758,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/posts.ts",
-      "source_location": "L74",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -107770,7 +107770,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/posts.ts",
-      "source_location": "L220",
+      "source_location": "L231",
       "weight": 1.0
     },
     {
@@ -108382,7 +108382,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L767",
+      "source_location": "L771",
       "weight": 1.0
     },
     {
@@ -108418,7 +108418,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L849",
+      "source_location": "L853",
       "weight": 1.0
     },
     {
@@ -108430,7 +108430,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L864",
+      "source_location": "L868",
       "weight": 1.0
     },
     {
@@ -108442,7 +108442,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L541",
+      "source_location": "L545",
       "weight": 1.0
     },
     {
@@ -108454,7 +108454,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L547",
+      "source_location": "L551",
       "weight": 1.0
     },
     {
@@ -108466,7 +108466,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L351",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -108478,7 +108478,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L357",
+      "source_location": "L359",
       "weight": 1.0
     },
     {
@@ -108490,7 +108490,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L289",
+      "source_location": "L291",
       "weight": 1.0
     },
     {
@@ -108502,7 +108502,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L294",
+      "source_location": "L296",
       "weight": 1.0
     },
     {
@@ -110194,7 +110194,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/index.tsx",
-      "source_location": "L454",
+      "source_location": "L410",
       "weight": 1.0
     },
     {
@@ -110242,7 +110242,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L254",
+      "source_location": "L270",
       "weight": 1.0
     },
     {
@@ -110254,7 +110254,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L304",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
@@ -110266,7 +110266,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L438",
+      "source_location": "L454",
       "weight": 1.0
     },
     {
@@ -110278,7 +110278,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L726",
+      "source_location": "L742",
       "weight": 1.0
     },
     {
@@ -110290,7 +110290,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L759",
+      "source_location": "L775",
       "weight": 1.0
     },
     {
@@ -110374,7 +110374,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L1744",
+      "source_location": "L1761",
       "weight": 1.0
     },
     {
@@ -110386,7 +110386,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L1860",
+      "source_location": "L1877",
       "weight": 1.0
     },
     {
@@ -110398,7 +110398,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L1870",
+      "source_location": "L1887",
       "weight": 1.0
     },
     {
@@ -110410,7 +110410,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L2003",
+      "source_location": "L2020",
       "weight": 1.0
     },
     {
@@ -110422,7 +110422,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L2107",
+      "source_location": "L2124",
       "weight": 1.0
     },
     {
@@ -110434,7 +110434,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L2115",
+      "source_location": "L2132",
       "weight": 1.0
     },
     {
@@ -110446,7 +110446,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L2181",
+      "source_location": "L2198",
       "weight": 1.0
     },
     {
@@ -110458,7 +110458,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L2523",
+      "source_location": "L2542",
       "weight": 1.0
     },
     {
@@ -111058,7 +111058,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/team.tsx",
-      "source_location": "L712",
+      "source_location": "L709",
       "weight": 1.0
     },
     {
@@ -111214,7 +111214,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L646",
+      "source_location": "L641",
       "weight": 1.0
     },
     {
@@ -111226,7 +111226,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L659",
+      "source_location": "L654",
       "weight": 1.0
     },
     {
@@ -111238,7 +111238,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L758",
+      "source_location": "L746",
       "weight": 1.0
     },
     {
@@ -111262,7 +111262,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L426",
+      "source_location": "L421",
       "weight": 1.0
     },
     {
@@ -111346,7 +111346,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/messages.tsx",
-      "source_location": "L179",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -111358,7 +111358,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/messages.tsx",
-      "source_location": "L203",
+      "source_location": "L219",
       "weight": 1.0
     },
     {
@@ -111394,7 +111394,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/my-work.tsx",
-      "source_location": "L312",
+      "source_location": "L287",
       "weight": 1.0
     },
     {
@@ -198286,7 +198286,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/posts.ts",
-      "source_location": "L184",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -198297,7 +198297,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/posts.ts",
-      "source_location": "L300",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -198308,7 +198308,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/posts.ts",
-      "source_location": "L316",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
@@ -198319,7 +198319,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/posts.ts",
-      "source_location": "L337",
+      "source_location": "L348",
       "weight": 1.0
     },
     {
@@ -198330,18 +198330,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/posts.ts",
-      "source_location": "L68",
-      "weight": 1.0
-    },
-    {
-      "source": "app_server_posts",
-      "target": "app_server_posts_createpostserverfn",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "app/server/posts.ts",
-      "source_location": "L86",
+      "source_location": "L79",
       "weight": 1.0
     },
     {
@@ -198353,6 +198342,17 @@
       "confidence_score": 1.0,
       "source_file": "app/server/posts.ts",
       "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app_server_posts",
+      "target": "app_server_posts_createpostserverfn",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/server/posts.ts",
+      "source_location": "L97",
       "weight": 1.0
     },
     {
@@ -198770,7 +198770,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L267",
+      "source_location": "L269",
       "weight": 1.0
     },
     {
@@ -198781,7 +198781,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L305",
+      "source_location": "L307",
       "weight": 1.0
     },
     {
@@ -198792,7 +198792,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L330",
+      "source_location": "L332",
       "weight": 1.0
     },
     {
@@ -198814,7 +198814,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L516",
+      "source_location": "L520",
       "weight": 1.0
     },
     {
@@ -198825,7 +198825,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L518",
+      "source_location": "L522",
       "weight": 1.0
     },
     {
@@ -198836,7 +198836,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L538",
+      "source_location": "L542",
       "weight": 1.0
     },
     {
@@ -198858,7 +198858,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L752",
+      "source_location": "L756",
       "weight": 1.0
     },
     {
@@ -198869,7 +198869,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L817",
+      "source_location": "L821",
       "weight": 1.0
     },
     {
@@ -198880,7 +198880,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L831",
+      "source_location": "L835",
       "weight": 1.0
     },
     {
@@ -213827,5 +213827,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b70f5b5dea5644d7e81ab90cb4738d28b35c1162"
+  "built_at_commit": "c028678f9fe0f3212c2d1ddbb8df4ab40de35dde"
 }
