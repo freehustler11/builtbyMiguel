@@ -106,6 +106,7 @@ export const getLandingPagesServerFn = createServerFn({ method: 'GET' })
         ctaGoal: landingPages.ctaGoal,
         status: landingPages.status,
         wentLiveAt: landingPages.wentLiveAt,
+        dueDate: landingPages.dueDate,
         assignedTo: landingPages.assignedTo,
         createdAt: landingPages.createdAt,
         updatedAt: landingPages.updatedAt,
@@ -142,6 +143,7 @@ export const createLandingPageServerFn = createServerFn({ method: 'POST' })
       notes?: string
       focusKeyword?: string
       ctaGoal?: string
+      dueDate?: string | null
       assignedTo?: string
       status?: 'planning' | 'copywriting' | 'design' | 'client_review' | 'live'
     }) => data
@@ -171,6 +173,7 @@ export const createLandingPageServerFn = createServerFn({ method: 'POST' })
         notes: data.notes?.trim() || null,
         focusKeyword: data.focusKeyword?.trim() || null,
         ctaGoal: data.ctaGoal?.trim() || null,
+        dueDate: data.dueDate ? new Date(data.dueDate) : null,
         assignedTo,
         status: data.status || 'planning',
         wentLiveAt: isLive ? now : null,
@@ -240,6 +243,7 @@ export const updateLandingPageServerFn = createServerFn({ method: 'POST' })
       notes?: string
       focusKeyword?: string
       ctaGoal?: string
+      dueDate?: string | null
       assignedTo?: string | null
       status: 'planning' | 'copywriting' | 'design' | 'client_review' | 'live'
     }) => data
@@ -257,6 +261,7 @@ export const updateLandingPageServerFn = createServerFn({ method: 'POST' })
         status: landingPages.status,
         wentLiveAt: landingPages.wentLiveAt,
         assignedTo: landingPages.assignedTo,
+        dueDate: landingPages.dueDate,
       })
       .from(landingPages)
       .where(eq(landingPages.id, data.id))
@@ -287,6 +292,7 @@ export const updateLandingPageServerFn = createServerFn({ method: 'POST' })
         notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
         focusKeyword: data.focusKeyword?.trim() || null,
         ctaGoal: data.ctaGoal?.trim() || null,
+        dueDate: data.dueDate !== undefined ? (data.dueDate ? new Date(data.dueDate) : null) : existing.dueDate,
         assignedTo,
         status: data.status,
         wentLiveAt: isTransitioningToLive ? now : existing.wentLiveAt,
@@ -358,6 +364,7 @@ export const getClientArticlesServerFn = createServerFn({ method: 'GET' })
         notes: clientArticles.notes,
         status: clientArticles.status,
         publishedAt: clientArticles.publishedAt,
+        dueDate: clientArticles.dueDate,
         writerId: clientArticles.writerId,
         createdAt: clientArticles.createdAt,
         updatedAt: clientArticles.updatedAt,
@@ -393,6 +400,7 @@ export const createClientArticleServerFn = createServerFn({ method: 'POST' })
       liveUrl?: string
       targetKeyword?: string
       notes?: string
+      dueDate?: string | null
       writerId?: string
       status?: 'idea' | 'drafting' | 'review' | 'approved' | 'live'
     }) => data
@@ -421,6 +429,7 @@ export const createClientArticleServerFn = createServerFn({ method: 'POST' })
         liveUrl: data.liveUrl?.trim() || null,
         targetKeyword: data.targetKeyword?.trim() || null,
         notes: data.notes?.trim() || null,
+        dueDate: data.dueDate ? new Date(data.dueDate) : null,
         writerId,
         status: data.status || 'idea',
         publishedAt: isLive ? now : null,
@@ -489,6 +498,7 @@ export const updateClientArticleServerFn = createServerFn({ method: 'POST' })
       liveUrl?: string
       targetKeyword?: string
       notes?: string
+      dueDate?: string | null
       writerId?: string | null
       status: 'idea' | 'drafting' | 'review' | 'approved' | 'live'
     }) => data
@@ -506,6 +516,7 @@ export const updateClientArticleServerFn = createServerFn({ method: 'POST' })
         status: clientArticles.status,
         publishedAt: clientArticles.publishedAt,
         writerId: clientArticles.writerId,
+        dueDate: clientArticles.dueDate,
       })
       .from(clientArticles)
       .where(eq(clientArticles.id, data.id))
@@ -535,6 +546,7 @@ export const updateClientArticleServerFn = createServerFn({ method: 'POST' })
         liveUrl: data.liveUrl?.trim() || null,
         targetKeyword: data.targetKeyword?.trim() || null,
         notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
+        dueDate: data.dueDate !== undefined ? (data.dueDate ? new Date(data.dueDate) : null) : existing.dueDate,
         writerId,
         status: data.status,
         publishedAt: isTransitioningToLive ? now : existing.publishedAt,
@@ -871,6 +883,7 @@ export const getTasksServerFn = createServerFn({ method: 'GET' })
         notes: tasks.notes,
         status: tasks.status,
         completedAt: tasks.completedAt,
+        dueDate: tasks.dueDate,
         assignedTo: tasks.assignedTo,
         createdAt: tasks.createdAt,
         updatedAt: tasks.updatedAt,
@@ -908,6 +921,7 @@ export const createTaskServerFn = createServerFn({ method: 'POST' })
       category: 'citations' | 'technical_seo' | 'on_page' | 'backlinks' | 'schema' | 'gbp'
       draftUrl?: string | null
       notes?: string | null
+      dueDate?: string | null
       assignedTo?: string | null
       status?: 'todo' | 'done'
     }) => data
@@ -952,6 +966,7 @@ export const createTaskServerFn = createServerFn({ method: 'POST' })
         category: data.category,
         draftUrl: data.draftUrl?.trim() || null,
         notes: data.notes?.trim() || null,
+        dueDate: data.dueDate ? new Date(data.dueDate) : null,
         assignedTo,
         status: data.status || 'todo',
         completedAt: isDone ? now : null,
@@ -1015,6 +1030,7 @@ export const updateTaskServerFn = createServerFn({ method: 'POST' })
       category: 'citations' | 'technical_seo' | 'on_page' | 'backlinks' | 'schema' | 'gbp'
       draftUrl?: string | null
       notes?: string | null
+      dueDate?: string | null
       assignedTo?: string | null
       status: 'todo' | 'done'
       clientId?: string | null
@@ -1063,6 +1079,7 @@ export const updateTaskServerFn = createServerFn({ method: 'POST' })
         clientId: data.clientId === undefined ? existing.clientId : data.clientId || null,
         draftUrl: data.draftUrl !== undefined ? data.draftUrl?.trim() || null : undefined,
         notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
+        dueDate: data.dueDate !== undefined ? (data.dueDate ? new Date(data.dueDate) : null) : existing.dueDate,
         assignedTo,
         status: data.status,
         completedAt: isNowDone ? now : data.status === 'todo' ? null : existing.completedAt,

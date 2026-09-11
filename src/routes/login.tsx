@@ -134,14 +134,14 @@ function LoginPage() {
         <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-[#111827]/95 p-8 shadow-2xl backdrop-blur-xl transition-all">
           {/* Header */}
           <div className="text-center space-y-2 pb-6 border-b border-slate-100 dark:border-slate-800">
-            <div className="mx-auto inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner">
+            <div className="mx-auto inline-flex items-center justify-center w-12 h-12 rounded-[6px] bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner">
               <Lock className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-2xl font-bold tracking-tight text-[var(--ink)]">
                 Sign In
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-[var(--muted)] mt-1">
                 Enter your email and password to access your dashboard
               </p>
             </div>
@@ -149,7 +149,7 @@ function LoginPage() {
 
           {/* Disabled Account Alert Callout */}
           {searchError === 'account_disabled' && (
-            <div className="mt-6 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-start gap-3 text-xs text-amber-800 dark:text-amber-200 animate-in fade-in duration-200">
+            <div className="mt-6 p-4 rounded-[6px] bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-start gap-3 text-xs text-amber-800 dark:text-amber-200 animate-in fade-in duration-200">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
               <div>
                 <strong className="block font-bold">Access Suspended</strong>
@@ -160,7 +160,7 @@ function LoginPage() {
 
           {/* Form Error Callout */}
           {error && (
-            <div className="mt-6 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 flex items-start gap-3 text-xs text-rose-600 dark:text-rose-300 animate-in fade-in duration-200">
+            <div className="mt-6 p-3.5 rounded-[6px] bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 flex items-start gap-3 text-xs text-rose-600 dark:text-rose-300 animate-in fade-in duration-200">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <div className="leading-snug">{error}</div>
             </div>
@@ -171,7 +171,7 @@ function LoginPage() {
             <div className="space-y-2">
               <label
                 htmlFor="user-email"
-                className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
+                className="block text-xs font-mono font-bold tracking-wider text-[var(--ink)] uppercase"
               >
                 Email Address
               </label>
@@ -191,7 +191,7 @@ function LoginPage() {
                   required
                   autoComplete="email"
                   disabled={isSubmitting}
-                  className="w-full pl-10 pr-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
+                  className="w-full pl-10 pr-4 py-3 text-sm rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
                 />
               </div>
             </div>
@@ -199,7 +199,7 @@ function LoginPage() {
             <div className="space-y-2">
               <label
                 htmlFor="user-password"
-                className="block text-xs font-mono font-bold tracking-wider text-slate-700 dark:text-slate-300 uppercase"
+                className="block text-xs font-mono font-bold tracking-wider text-[var(--ink)] uppercase"
               >
                 Password
               </label>
@@ -218,7 +218,7 @@ function LoginPage() {
                   required
                   autoComplete="current-password"
                   disabled={isSubmitting}
-                  className="w-full pl-10 pr-11 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
+                  className="w-full pl-10 pr-11 py-3 text-sm rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-mono"
                 />
 
                 <button
@@ -239,7 +239,7 @@ function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-[6px] text-sm font-semibold text-white bg-[var(--accent)] hover:opacity-90 shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
@@ -255,12 +255,7 @@ function LoginPage() {
             </button>
           </form>
 
-          {/* Micro Footer */}
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
-            <span className="text-[11px] font-mono text-slate-400">
-              🔒 Encrypted session · Protected with Web Crypto PBKDF2 & HMAC-SHA256
-            </span>
-          </div>
+          
         </div>
       </div>
     </div>

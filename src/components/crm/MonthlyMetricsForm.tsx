@@ -14,6 +14,10 @@ import {
   RefreshCw,
   Search,
   Sparkles,
+  Edit3,
+  Lock,
+  Unlock,
+  X,
 } from 'lucide-react'
 import {
   getMonthlyMetricsServerFn,
@@ -98,6 +102,9 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
   const [month, setMonth] = useState<number>(defaultMonth)
   const [year, setYear] = useState<number>(defaultYear)
 
+  // Edit/View mode protection
+  const [isEditing, setIsEditing] = useState(false)
+
   // Current values & previous month reference
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [prevRecord, setPrevRecord] = useState<MonthlyMetric | null>(null)
@@ -147,6 +154,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
   const loadMetrics = async (cId: string, m: number, y: number) => {
     if (!cId) return
     setIsLoading(true)
+    setIsEditing(false)
     try {
       const [res, sourcesRes] = await Promise.all([
         getMonthlyMetricsServerFn({
@@ -228,8 +236,38 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
     }))
   }
 
-  // Calculate discrepancies > 50%
+  const handleCancelEdit = () => {
+    if (currentRecord) {
+      const initialForm: Record<string, string> = {}
+      for (const field of METRIC_FIELDS) {
+        const val = (currentRecord as any)[field.key]
+        initialForm[field.key] = val !== null && val !== undefined ? String(val) : ''
+      }
+      setFormData(initialForm)
+    } else {
+      setFormData({})
+    }
+    setIsEditing(false)
+  }
+
+  // Quick navigation buttons
+  const handleQuickMonth = (target: 'prev' | 'current') => {
+    const curMonth = now.getMonth() + 1
+    const curYear = now.getFullYear()
+    if (target === 'current') {
+      setMonth(curMonth)
+      setYear(curYear)
+    } else {
+      const pm = curMonth === 1 ? 12 : curMonth - 1
+      const py = curMonth === 1 ? curYear - 1 : curYear
+      setMonth(pm)
+      setYear(py)
+    }
+  }
+
+  // Detect >50% discrepancies against previous month
   const flaggedDiscrepancies = useMemo(() => {
+    if (!prevRecord) return []
     const flagged: Array<{
       field: MetricFieldConfig
       enteredVal: number
@@ -238,13 +276,10 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
       message: string
     }> = []
 
-    if (!prevRecord) return flagged
-
     for (const field of METRIC_FIELDS) {
-      const enteredStr = formData[field.key]
-      if (!enteredStr || enteredStr.trim() === '') continue
-
-      const enteredVal = Number(enteredStr)
+      const valStr = formData[field.key]
+      if (valStr === undefined || valStr.trim() === '') continue
+      const enteredVal = Number(valStr)
       if (isNaN(enteredVal)) continue
 
       const prevVal = (prevRecord as any)[field.key]
@@ -341,6 +376,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
         `KPI data for ${MONTH_NAMES[month - 1]} ${year} successfully stored.`
       )
       setConfirmModalOpen(false)
+      setIsEditing(false)
       loadMetrics(selectedClientId, month, year)
     } catch (err: any) {
       addToast('error', 'Save Failed', err.message || 'Failed to update monthly metrics')
@@ -349,35 +385,22 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
     }
   }
 
-  // Quick navigation helpers
-  const handleQuickMonth = (target: 'prev' | 'current') => {
-    const date = new Date()
-    if (target === 'current') {
-      setMonth(date.getMonth() + 1)
-      setYear(date.getFullYear())
-    } else {
-      const pMonth = date.getMonth() === 0 ? 12 : date.getMonth()
-      const pYear = date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear()
-      setMonth(pMonth)
-      setYear(pYear)
-    }
-  }
-
   return (
-    <div className="space-y-6">
-      <ToastContainer toasts={toasts} onDismiss={(id) => setToasts((t) => t.filter((x) => x.id !== id))} />
+    <div className="space-y-4">
+      {/* Toast Notification Container */}
+      <ToastContainer toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
 
-      {/* Confirmation Modal for >50% Discrepancies */}
+      {/* Discrepancy Confirmation Modal */}
       <ConfirmModal
         isOpen={confirmModalOpen}
-        title="Confirm Large Metric Discrepancies"
+        title="Verify Significant Month-over-Month Discrepancies"
+        variant="warning"
         description={
           <div className="space-y-3">
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              The following values differ by more than <strong>50%</strong> from the previous month.
-              Manual entry is a frequent source of report discrepancies. Please verify each metric before saving:
+            <p className="text-xs leading-relaxed">
+              The following values deviate by more than <strong>50%</strong> from the prior month's performance record.
             </p>
-            <div className="max-h-48 overflow-y-auto space-y-2 p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800/60 text-xs">
+            <div className="max-h-48 overflow-y-auto space-y-2 p-3 bg-amber-50 dark:bg-amber-950/40 rounded-[6px] border border-amber-200 dark:border-amber-800/60 text-[11px]">
               {flaggedDiscrepancies.map((f, i) => (
                 <div key={i} className="flex items-center justify-between text-amber-900 dark:text-amber-200">
                   <span className="font-semibold">{f.field.label}:</span>
@@ -387,7 +410,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                 </div>
               ))}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-[11px] text-[var(--muted)]">
               Are you certain these figures are verified and ready for client reporting?
             </p>
           </div>
@@ -399,30 +422,73 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
       />
 
       {/* Control Header: Client selection & Month/Year Picker */}
-      <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-blue-600" />
-              <span>Monthly KPI Entry & Performance Metrics</span>
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Record living search, traffic, and local SEO metrics. Discrepancies exceeding 50% from prior month trigger inline verification.
+            <div className="flex items-center gap-2">
+              <h2 className="text-[14px] font-semibold text-[var(--ink)] flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-[var(--accent)]" />
+                <span>Monthly KPI Entry & Performance Metrics</span>
+              </h2>
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[10px] font-semibold border ${
+                isEditing
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                  : 'bg-[var(--canvas)] text-[var(--muted)] border-[var(--line)]'
+              }`}>
+                {isEditing ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                <span>{isEditing ? 'Editing Mode Active' : 'View / Locked'}</span>
+              </span>
+            </div>
+            <p className="text-[11px] text-[var(--muted)] mt-0.5">
+              Record living search, traffic, and local SEO metrics. Inputs are protected against accidental edits.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
+            {!isEditing ? (
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                disabled={!selectedClientId || isLoading}
+                className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>Edit Metrics</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  disabled={isSaving}
+                  className="h-8 inline-flex items-center gap-1 px-2.5 rounded-[6px] text-[12px] font-medium bg-[var(--canvas)] border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  <span>Cancel</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveClick}
+                  disabled={isSaving || !selectedClientId}
+                  className="h-8 inline-flex items-center gap-1.5 px-3.5 rounded-[6px] text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>{isSaving ? 'Saving...' : 'Save Metrics'}</span>
+                </button>
+              </div>
+            )}
+
             <button
               type="button"
               onClick={() => handleQuickMonth('prev')}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              className="h-8 px-2.5 rounded-[6px] text-[11px] font-medium bg-[var(--canvas)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
             >
               Prior Month
             </button>
             <button
               type="button"
               onClick={() => handleQuickMonth('current')}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              className="h-8 px-2.5 rounded-[6px] text-[11px] font-medium bg-[var(--canvas)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
             >
               Current Month
             </button>
@@ -430,30 +496,30 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
               type="button"
               onClick={() => loadMetrics(selectedClientId, month, year)}
               disabled={isLoading || !selectedClientId}
-              className="p-1.5 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 transition"
+              className="h-8 w-8 flex items-center justify-center rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] bg-[var(--canvas)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
               title="Refresh values"
             >
-              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-blue-500' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-[var(--accent)]' : ''}`} />
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
-          {/* Client Selector if agency roll-up view */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2.5 border-t border-[var(--line)]">
+          {/* Client Selector */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-[11px] font-semibold text-[var(--muted)] mb-1">
               Client Account
             </label>
             {initialClientId ? (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white">
-                <Building2 className="w-4 h-4 text-blue-500" />
+              <div className="flex items-center gap-2 h-8 px-2.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px] font-medium text-[var(--ink)]">
+                <Building2 className="w-3.5 h-3.5 text-[var(--accent)]" />
                 <span className="truncate">{clientInfo?.businessName || 'Selected Client'}</span>
               </div>
             ) : (
               <select
                 value={selectedClientId}
                 onChange={(e) => setSelectedClientId(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                className="w-full h-8 px-2.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px] font-medium text-[var(--ink)] focus:outline-hidden focus:border-[var(--accent)]"
               >
                 {clientsList.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -466,13 +532,13 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
 
           {/* Month Selector */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-[11px] font-semibold text-[var(--muted)] mb-1">
               Reporting Month
             </label>
             <select
               value={month}
               onChange={(e) => setMonth(Number(e.target.value))}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full h-8 px-2.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px] font-medium text-[var(--ink)] focus:outline-hidden focus:border-[var(--accent)]"
             >
               {MONTH_NAMES.map((m, idx) => (
                 <option key={idx + 1} value={idx + 1}>
@@ -484,13 +550,13 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
 
           {/* Year Selector */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-[11px] font-semibold text-[var(--muted)] mb-1">
               Year
             </label>
             <select
               value={year}
               onChange={(e) => setYear(Number(e.target.value))}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full h-8 px-2.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px] font-medium text-[var(--ink)] focus:outline-hidden focus:border-[var(--accent)]"
             >
               {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1].map((y) => (
                 <option key={y} value={y}>
@@ -502,21 +568,21 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
         </div>
 
         {/* Existing Record Indicator */}
-        <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between text-[11px] font-mono text-[var(--muted)] bg-[var(--canvas)] p-2 rounded-[6px] border border-[var(--line)]">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
             <span>
-              Target Month: <strong>{MONTH_NAMES[month - 1]} {year}</strong>
+              Target Month: <strong className="text-[var(--ink)]">{MONTH_NAMES[month - 1]} {year}</strong>
             </span>
-            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <span className="text-[var(--line)]">•</span>
             <span>
               {currentRecord ? (
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                  Existing Record (Last updated {new Date(currentRecord.updatedAt).toLocaleDateString()})
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                  Saved Record (Updated {new Date(currentRecord.updatedAt).toLocaleDateString()})
                 </span>
               ) : (
-                <span className="text-amber-600 dark:text-amber-400 font-bold">
-                  New Record (No entries yet)
+                <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                  No Entries Yet
                 </span>
               )}
             </span>
@@ -524,7 +590,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
 
           <div>
             <span>Reference Baseline: </span>
-            <strong>
+            <strong className="text-[var(--ink)]">
               {MONTH_NAMES[month === 1 ? 11 : month - 2]} {month === 1 ? year - 1 : year}
             </strong>{' '}
             ({prevRecord ? 'Data present' : 'No prior data'})
@@ -534,40 +600,40 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
 
       {/* Discrepancy Global Alert Banner if any >50% warnings */}
       {flaggedDiscrepancies.length > 0 && (
-        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 shadow-xs flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h4 className="text-xs font-bold text-amber-900 dark:text-amber-200">
+        <div className="p-3.5 rounded-[8px] bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 shadow-xs flex items-start gap-2.5">
+          <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <h4 className="text-[12px] font-semibold text-amber-900 dark:text-amber-200">
               Attention: {flaggedDiscrepancies.length} metric{flaggedDiscrepancies.length > 1 ? 's' : ''} deviate by &gt;50% from the prior month
             </h4>
-            <p className="text-xs text-amber-800 dark:text-amber-300">
-              Significant month-over-month swings have been flagged below with warning badges. Please double-check for extra digits or transposed numbers before saving.
+            <p className="text-[11px] text-amber-800 dark:text-amber-300">
+              Significant month-over-month swings have been flagged below with warning badges. Please verify before saving.
             </p>
           </div>
         </div>
       )}
 
       {/* Metrics Entry Form */}
-      <form onSubmit={handleSaveClick} className="space-y-6">
+      <form onSubmit={handleSaveClick} className="space-y-4">
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* 1. Google Search Console */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="p-4 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between pb-2.5 border-b border-[var(--line)]">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
+                <div className="p-1.5 rounded-[6px] bg-blue-500/10 text-blue-600 dark:text-blue-400">
                   <Search className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Search Console (GSC)</h3>
-                  <p className="text-[11px] text-slate-400">Search impressions, clicks, CTR, and SERP positions</p>
+                  <h3 className="text-[13px] font-semibold text-[var(--ink)]">Google Search Console (GSC)</h3>
+                  <p className="text-[11px] text-[var(--muted)]">Search impressions, clicks, CTR, and SERP positions</p>
                 </div>
               </div>
               {clientDataSources.gsc !== 'connected' && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-semibold ${
                   clientDataSources.gsc === 'no_access'
                     ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
-                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                    : 'bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]'
                 }`}>
                   {clientDataSources.gsc === 'no_access' ? 'No Access' : 'Not Applicable'}
                 </span>
@@ -575,21 +641,22 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
             </div>
 
             {clientDataSources.gsc !== 'connected' ? (
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400 space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
-                  <Info className="w-3.5 h-3.5 text-slate-400" />
+              <div className="p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[11px] text-[var(--muted)] space-y-1">
+                <div className="flex items-center gap-1.5 font-semibold text-[var(--ink)]">
+                  <Info className="w-3.5 h-3.5 text-[var(--muted)]" />
                   <span>Access Not Configured ({clientDataSources.gsc === 'no_access' ? 'No Access' : 'Not Applicable'})</span>
                 </div>
-                <p className="text-[11px] leading-relaxed">
-                  Search Console metrics are excluded for this client and saved as unmeasured (NULL). Change access on the client page if this channel is active.
+                <p className="leading-relaxed">
+                  Search Console metrics are excluded for this client and saved as unmeasured (NULL).
                 </p>
               </div>
             ) : (
-              <div className="space-y-3.5">
+              <div className="space-y-3">
                 {METRIC_FIELDS.filter((f) => f.category === 'gsc').map((field) => (
                   <MetricInputRow
                     key={field.key}
                     field={field}
+                    isEditing={isEditing}
                     value={formData[field.key] || ''}
                     prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
                     onChange={(val) => handleInputChange(field.key, val)}
@@ -600,22 +667,22 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
           </div>
 
           {/* 2. Google Analytics 4 */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="p-4 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between pb-2.5 border-b border-[var(--line)]">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
+                <div className="p-1.5 rounded-[6px] bg-amber-500/10 text-amber-600 dark:text-amber-400">
                   <BarChart3 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Analytics 4 (GA4)</h3>
-                  <p className="text-[11px] text-slate-400">Sessions, unique users, pageviews, and engagement rate</p>
+                  <h3 className="text-[13px] font-semibold text-[var(--ink)]">Google Analytics 4 (GA4)</h3>
+                  <p className="text-[11px] text-[var(--muted)]">Sessions, unique users, pageviews, and engagement rate</p>
                 </div>
               </div>
               {clientDataSources.ga4 !== 'connected' && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-semibold ${
                   clientDataSources.ga4 === 'no_access'
                     ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
-                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                    : 'bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]'
                 }`}>
                   {clientDataSources.ga4 === 'no_access' ? 'No Access' : 'Not Applicable'}
                 </span>
@@ -623,21 +690,22 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
             </div>
 
             {clientDataSources.ga4 !== 'connected' ? (
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400 space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
-                  <Info className="w-3.5 h-3.5 text-slate-400" />
+              <div className="p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[11px] text-[var(--muted)] space-y-1">
+                <div className="flex items-center gap-1.5 font-semibold text-[var(--ink)]">
+                  <Info className="w-3.5 h-3.5 text-[var(--muted)]" />
                   <span>Access Not Configured ({clientDataSources.ga4 === 'no_access' ? 'No Access' : 'Not Applicable'})</span>
                 </div>
-                <p className="text-[11px] leading-relaxed">
-                  Google Analytics metrics are excluded for this client and saved as unmeasured (NULL). Change access on the client page if this channel is active.
+                <p className="leading-relaxed">
+                  Google Analytics metrics are excluded for this client and saved as unmeasured (NULL).
                 </p>
               </div>
             ) : (
-              <div className="space-y-3.5">
+              <div className="space-y-3">
                 {METRIC_FIELDS.filter((f) => f.category === 'ga4').map((field) => (
                   <MetricInputRow
                     key={field.key}
                     field={field}
+                    isEditing={isEditing}
                     value={formData[field.key] || ''}
                     prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
                     onChange={(val) => handleInputChange(field.key, val)}
@@ -648,22 +716,22 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
           </div>
 
           {/* 3. Google Business Profile */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="p-4 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between pb-2.5 border-b border-[var(--line)]">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
+                <div className="p-1.5 rounded-[6px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                   <Building2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Business Profile (GBP)</h3>
-                  <p className="text-[11px] text-slate-400">Local map calls, directions, website clicks, and reviews</p>
+                  <h3 className="text-[13px] font-semibold text-[var(--ink)]">Google Business Profile (GBP)</h3>
+                  <p className="text-[11px] text-[var(--muted)]">Local map calls, directions, website clicks, and reviews</p>
                 </div>
               </div>
               {clientDataSources.gbp !== 'connected' && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-semibold ${
                   clientDataSources.gbp === 'no_access'
                     ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
-                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                    : 'bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]'
                 }`}>
                   {clientDataSources.gbp === 'no_access' ? 'No Access' : 'Not Applicable'}
                 </span>
@@ -671,20 +739,20 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
             </div>
 
             {clientDataSources.gbp !== 'connected' ? (
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400 space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
-                  <Info className="w-3.5 h-3.5 text-slate-400" />
+              <div className="p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[11px] text-[var(--muted)] space-y-1">
+                <div className="flex items-center gap-1.5 font-semibold text-[var(--ink)]">
+                  <Info className="w-3.5 h-3.5 text-[var(--muted)]" />
                   <span>Access Not Configured ({clientDataSources.gbp === 'no_access' ? 'No Access' : 'Not Applicable'})</span>
                 </div>
-                <p className="text-[11px] leading-relaxed">
-                  Google Business Profile metrics are excluded for this client and saved as unmeasured (NULL). Change access on the client page if this channel is active.
+                <p className="leading-relaxed">
+                  Google Business Profile metrics are excluded for this client and saved as unmeasured (NULL).
                 </p>
               </div>
             ) : locations.length > 1 ? (
               /* Multi-Location Rendering: One sub-card per active location */
-              <div className="space-y-4">
-                <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 text-xs text-emerald-800 dark:text-emerald-300 flex items-center justify-between">
-                  <span>Tracking <strong>{locations.length}</strong> Google Business Profile locations for this client. Figures roll up automatically into the client report.</span>
+              <div className="space-y-3.5">
+                <div className="p-2.5 rounded-[6px] bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-700 dark:text-emerald-300">
+                  Tracking <strong>{locations.length}</strong> GBP locations. Figures roll up automatically into the client report.
                 </div>
 
                 {locations.map((loc) => {
@@ -695,24 +763,24 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                   return (
                     <div
                       key={loc.id}
-                      className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-3.5"
+                      className="p-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)]/50 space-y-3"
                     >
-                      <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                      <div className="flex items-center justify-between pb-1.5 border-b border-[var(--line)]">
                         <div className="min-w-0">
-                          <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate" title={loc.name}>
+                          <h4 className="text-[12px] font-semibold text-[var(--ink)] truncate" title={loc.name}>
                             {loc.name}
                           </h4>
                           {loc.address && (
-                            <p className="text-[11px] text-slate-400 truncate">{loc.address}</p>
+                            <p className="text-[10px] text-[var(--muted)] truncate">{loc.address}</p>
                           )}
                         </div>
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold shrink-0 ${
+                          className={`px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono font-semibold shrink-0 ${
                             loc.accessStatus === 'connected'
-                              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                               : loc.accessStatus === 'no_access'
-                              ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-                              : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                              : 'bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]'
                           }`}
                         >
                           {loc.accessStatus === 'connected' ? 'Connected' : loc.accessStatus === 'no_access' ? 'No Access' : 'N/A'}
@@ -720,15 +788,16 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                       </div>
 
                       {!locConnected ? (
-                        <div className="p-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 text-xs text-slate-500 italic">
-                          Profile access is marked as {loc.accessStatus === 'no_access' ? 'No Access' : 'Not Applicable'}. Metrics for this location are excluded from roll-up.
+                        <div className="p-2 rounded-[4px] bg-[var(--canvas)] text-[11px] text-[var(--muted)] italic">
+                          Profile access marked as {loc.accessStatus === 'no_access' ? 'No Access' : 'Not Applicable'}.
                         </div>
                       ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-2.5">
                           {METRIC_FIELDS.filter((f) => f.category === 'gbp').map((field) => (
                             <MetricInputRow
                               key={field.key}
                               field={field}
+                              isEditing={isEditing}
                               value={locFields[field.key] || ''}
                               prevVal={prevLoc ? prevLoc[field.key] : null}
                               onChange={(val) => handleLocationInputChange(loc.id, field.key, val)}
@@ -741,12 +810,12 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                 })}
               </div>
             ) : (
-              /* Single Location (or default) Rendering: identical to before */
-              <div className="space-y-3.5">
+              <div className="space-y-3">
                 {METRIC_FIELDS.filter((f) => f.category === 'gbp').map((field) => (
                   <MetricInputRow
                     key={field.key}
                     field={field}
+                    isEditing={isEditing}
                     value={formData[field.key] || ''}
                     prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
                     onChange={(val) => handleInputChange(field.key, val)}
@@ -757,22 +826,23 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
           </div>
 
           {/* 4. SEMrush Domain Authority & Keywords */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400">
+          <div className="p-4 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3.5">
+            <div className="flex items-center gap-2 pb-2.5 border-b border-[var(--line)]">
+              <div className="p-1.5 rounded-[6px] bg-purple-500/10 text-purple-600 dark:text-purple-400">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">SEMrush Authority & Scope</h3>
-                <p className="text-[11px] text-slate-400">Domain authority score and total ranked keywords</p>
+                <h3 className="text-[13px] font-semibold text-[var(--ink)]">SEMrush Authority & Scope</h3>
+                <p className="text-[11px] text-[var(--muted)]">Domain authority score and total ranked keywords</p>
               </div>
             </div>
 
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               {METRIC_FIELDS.filter((f) => f.category === 'semrush').map((field) => (
                 <MetricInputRow
                   key={field.key}
                   field={field}
+                  isEditing={isEditing}
                   value={formData[field.key] || ''}
                   prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
                   onChange={(val) => handleInputChange(field.key, val)}
@@ -782,41 +852,64 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
           </div>
         </div>
 
-        {/* Form Actions */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
-          <div className="text-xs font-mono text-slate-500">
+        {/* Bottom Form Actions */}
+        <div className="p-3.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs flex items-center justify-between flex-wrap gap-2">
+          <div className="text-[11px] font-mono text-[var(--muted)]">
             {flaggedDiscrepancies.length > 0 ? (
-              <span className="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1.5">
-                <AlertTriangle className="w-4 h-4" />
+              <span className="text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5" />
                 {flaggedDiscrepancies.length} input warning{flaggedDiscrepancies.length > 1 ? 's' : ''} require confirmation
               </span>
             ) : (
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" />
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
                 All inputs within normal MoM baseline bounds
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              type="submit"
-              disabled={isSaving || !selectedClientId}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white transition shadow-sm cursor-pointer ${
-                flaggedDiscrepancies.length > 0
-                  ? 'bg-amber-600 hover:bg-amber-500'
-                  : 'bg-blue-600 hover:bg-blue-500'
-              }`}
-            >
-              <Save className="w-4 h-4" />
-              <span>
-                {isSaving
-                  ? 'Saving Metrics...'
-                  : flaggedDiscrepancies.length > 0
-                  ? `Review & Save (${flaggedDiscrepancies.length} Warnings)`
-                  : 'Save Monthly Metrics'}
-              </span>
-            </button>
+          <div className="flex items-center gap-2">
+            {!isEditing ? (
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                disabled={!selectedClientId || isLoading}
+                className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>Edit Metrics</span>
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  disabled={isSaving}
+                  className="h-8 inline-flex items-center gap-1 px-3 rounded-[6px] text-[12px] font-medium bg-[var(--canvas)] border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  <span>Cancel</span>
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving || !selectedClientId}
+                  className={`h-8 inline-flex items-center gap-1.5 px-4 rounded-[6px] text-[12px] font-semibold text-white transition cursor-pointer shadow-xs ${
+                    flaggedDiscrepancies.length > 0
+                      ? 'bg-amber-600 hover:bg-amber-500'
+                      : 'bg-[var(--accent)] hover:opacity-90'
+                  }`}
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>
+                    {isSaving
+                      ? 'Saving Metrics...'
+                      : flaggedDiscrepancies.length > 0
+                      ? `Review & Save (${flaggedDiscrepancies.length} Warnings)`
+                      : 'Save Monthly Metrics'}
+                  </span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </form>
@@ -831,11 +924,13 @@ function MetricInputRow({
   field,
   value,
   prevVal,
+  isEditing,
   onChange,
 }: {
   field: MetricFieldConfig
   value: string
   prevVal: number | null | undefined
+  isEditing: boolean
   onChange: (val: string) => void
 }) {
   const enteredNum = value.trim() !== '' ? Number(value) : null
@@ -852,29 +947,29 @@ function MetricInputRow({
   }
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-xs">
-        <label className="font-semibold text-slate-800 dark:text-slate-200">
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-[11px]">
+        <label className="font-semibold text-[var(--ink)]">
           {field.label}
         </label>
         {/* Previous Month Reference Display */}
-        <div className="flex items-center gap-2 text-[11px] font-mono">
-          <span className="text-slate-400 dark:text-slate-500">
+        <div className="flex items-center gap-1.5 text-[10px] font-mono">
+          <span className="text-[var(--muted)]">
             Prior: {hasPrior ? prevVal : '—'}
             {hasPrior && field.unit ? field.unit : ''}
           </span>
           {diffPercent !== null && (
             <span
-              className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
+              className={`px-1.5 py-0.2 rounded-[3px] text-[9px] font-bold ${
                 diffPercent > 0
                   ? field.invertDeltaColor
-                    ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400'
-                    : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400'
+                    ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                    : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                   : diffPercent < 0
                   ? field.invertDeltaColor
-                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400'
-                    : 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400'
-                  : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                    : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                  : 'bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]'
               }`}
             >
               {diffPercent > 0 ? '+' : ''}
@@ -892,16 +987,20 @@ function MetricInputRow({
           min={field.min}
           max={field.max}
           value={value}
+          disabled={!isEditing}
+          readOnly={!isEditing}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={hasPrior ? `Prior: ${prevVal}` : 'Enter value...'}
-          className={`w-full px-3.5 py-2 rounded-xl text-xs font-mono font-bold bg-slate-50 dark:bg-slate-800/80 border transition focus:outline-hidden focus:ring-2 ${
-            isLargeDiscrepancy
-              ? 'border-amber-400 dark:border-amber-500/80 text-amber-900 dark:text-amber-200 focus:ring-amber-400'
-              : 'border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-blue-500'
+          placeholder={hasPrior ? `Prior: ${prevVal}` : '—'}
+          className={`w-full h-8 px-2.5 rounded-[6px] text-[12px] font-mono font-medium transition ${
+            !isEditing
+              ? 'bg-[var(--canvas)] text-[var(--muted)] cursor-not-allowed border border-[var(--line)] opacity-85'
+              : isLargeDiscrepancy
+              ? 'border-amber-500 bg-[var(--panel)] text-amber-700 dark:text-amber-300 focus:outline-hidden focus:border-amber-500'
+              : 'border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-hidden focus:border-[var(--accent)]'
           }`}
         />
         {field.unit && (
-          <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 font-mono">
+          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-[var(--muted)] font-mono">
             {field.unit}
           </span>
         )}
@@ -909,10 +1008,10 @@ function MetricInputRow({
 
       {/* Inline Warning for >50% deviation */}
       {isLargeDiscrepancy && diffPercent !== null && (
-        <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-600 dark:text-amber-400 pt-0.5">
-          <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+        <div className="flex items-center gap-1 text-[10px] font-mono text-amber-600 dark:text-amber-400 pt-0.5">
+          <AlertTriangle className="w-3 h-3 shrink-0" />
           <span>
-            ⚠️ {Math.abs(Math.round(diffPercent))}% change from prior month (Prior: {prevVal} vs Entered: {enteredNum}). Confirm this value.
+            ⚠️ {Math.abs(Math.round(diffPercent))}% MoM swing (Prior: {prevVal} vs {enteredNum}). Verify.
           </span>
         </div>
       )}

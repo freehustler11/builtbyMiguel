@@ -26,6 +26,7 @@ import {
   type QueueItemType,
 } from '../../server/workflow'
 import { ToastContainer, type ToastMessage } from '../Toast'
+import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 
 export interface PublishingQueueProps {
   partnerId?: string
@@ -34,6 +35,7 @@ export interface PublishingQueueProps {
 export function PublishingQueue({ partnerId }: PublishingQueueProps) {
   const router = useRouter()
   const [items, setItems] = useState<PublishingQueueItem[]>([])
+  const [currentUser, setCurrentUser] = useState<ActiveSessionResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [activeType, setActiveType] = useState<'all' | 'landing_pages' | 'articles' | 'tasks' | 'citations'>('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -50,6 +52,8 @@ export function PublishingQueue({ partnerId }: PublishingQueueProps) {
   const loadData = async () => {
     setIsLoading(true)
     try {
+      const session = await checkAuthServerFn().catch(() => null)
+      if (session) setCurrentUser(session)
       const res = await getPublishingQueueServerFn({
         data: {
           partnerId,
@@ -182,6 +186,11 @@ export function PublishingQueue({ partnerId }: PublishingQueueProps) {
         </div>
 
         <div className="flex items-center gap-2">
+          {currentUser?.role === 'partner_employee' && (
+            <span className="px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">
+              Showing your assigned deliverables & clients
+            </span>
+          )}
           <span className="text-[12px] text-[var(--muted)]">
             {filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} in queue
           </span>

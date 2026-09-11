@@ -78,6 +78,22 @@ export function ClientCard({
                 <User className="w-3 h-3 text-[var(--muted)]" />
                 <span className="truncate">{client.name}</span>
               </div>
+              {client.assignedStaff ? (
+                <div className="flex items-center gap-1.5 text-[11px] text-[var(--ink)] font-medium mt-0.5">
+                  {client.assignedStaff.avatarUrl ? (
+                    <img
+                      src={client.assignedStaff.avatarUrl}
+                      alt=""
+                      className="w-3.5 h-3.5 rounded-full object-cover border border-[var(--line)] shrink-0"
+                    />
+                  ) : (
+                    <div className="w-3.5 h-3.5 rounded-full bg-[var(--line)] text-[var(--ink)] flex items-center justify-center font-bold text-[7px] shrink-0">
+                      {(client.assignedStaff.name || client.assignedStaff.email).slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="truncate">{client.assignedStaff.name || client.assignedStaff.email}</span>
+                </div>
+              ) : null}
             </div>
           </div>
 

@@ -137,7 +137,7 @@ function renderAdminInlineFormatting(text: string): React.ReactNode {
     const token = match[0]
     if (token.startsWith('**') && token.endsWith('**')) {
       parts.push(
-        <strong key={match.index} className="font-bold text-slate-900 dark:text-white">
+        <strong key={match.index} className="font-bold text-[var(--ink)]">
           {token.slice(2, -2)}
         </strong>
       )
@@ -360,13 +360,13 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
     <div className="space-y-6 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
       {blocks.map((block, idx) => {
         if (block.type === 'hr') {
-          return <hr key={idx} className="my-6 border-t border-slate-200 dark:border-slate-800" />
+          return <hr key={idx} className="my-6 border-t border-[var(--line)]" />
         }
 
         if (block.type === 'image' && block.src) {
           return (
             <figure key={idx} className="my-6 space-y-1.5">
-              <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800">
+              <div className="overflow-hidden rounded-[6px] border border-[var(--line)] bg-slate-100 dark:bg-slate-800">
                 <img src={block.src} alt={block.alt || 'Visual'} className="w-full max-h-[450px] object-cover" />
               </div>
               {block.alt && <figcaption className="text-center text-xs text-slate-400 font-mono">{block.alt}</figcaption>}
@@ -376,7 +376,7 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'h1' && block.content) {
           return (
-            <h1 key={idx} className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white pt-6 pb-2">
+            <h1 key={idx} className="text-2xl sm:text-3xl font-bold text-[var(--ink)] pt-6 pb-2">
               {renderAdminInlineFormatting(block.content)}
             </h1>
           )
@@ -384,7 +384,7 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'h2' && block.content) {
           return (
-            <h2 key={idx} className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-slate-800">
+            <h2 key={idx} className="text-xl sm:text-2xl font-bold text-[var(--ink)] pt-6 pb-2 border-b border-[var(--line)]">
               {renderAdminInlineFormatting(block.content)}
             </h2>
           )
@@ -392,7 +392,7 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'h3' && block.content) {
           return (
-            <h3 key={idx} className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white pt-4">
+            <h3 key={idx} className="text-lg sm:text-xl font-bold text-[var(--ink)] pt-4">
               {renderAdminInlineFormatting(block.content)}
             </h3>
           )
@@ -400,7 +400,7 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'h4' && block.content) {
           return (
-            <h4 key={idx} className="text-base sm:text-lg font-bold text-slate-900 dark:text-white pt-3">
+            <h4 key={idx} className="text-base sm:text-lg font-bold text-[var(--ink)] pt-3">
               {renderAdminInlineFormatting(block.content)}
             </h4>
           )
@@ -408,7 +408,7 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'h5' && block.content) {
           return (
-            <h5 key={idx} className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
+            <h5 key={idx} className="text-sm sm:text-base font-bold text-[var(--ink)] pt-2">
               {renderAdminInlineFormatting(block.content)}
             </h5>
           )
@@ -424,12 +424,12 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'table' && block.headers && block.rows) {
           return (
-            <div key={idx} className="my-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+            <div key={idx} className="my-4 overflow-x-auto rounded-xl border border-[var(--line)]">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
                     {block.headers.map((cell, cIdx) => (
-                      <th key={cIdx} className="px-3 py-2 font-bold text-slate-900 dark:text-white font-mono">
+                      <th key={cIdx} className="px-3 py-2 font-bold text-[var(--ink)] font-mono">
                         {renderAdminInlineFormatting(cell)}
                       </th>
                     ))}
@@ -479,7 +479,7 @@ function AdminMarkdownRenderer({ content }: { content: string }) {
             <ol key={idx} className="space-y-2 my-3 pl-2">
               {block.items.map((item, iIdx) => (
                 <li key={iIdx} className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-sm sm:text-base">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-mono text-[11px] font-bold shrink-0 mt-0.5 border border-slate-200 dark:border-slate-700">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 text-[var(--ink)] font-mono text-[11px] font-bold shrink-0 mt-0.5 border border-slate-200 dark:border-slate-700">
                     {iIdx + 1}
                   </span>
                   <span>{renderAdminInlineFormatting(item)}</span>
@@ -2280,50 +2280,50 @@ function AdminPostsPage() {
 
         {showBeginnerTips && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-[var(--line)] text-[12px] text-[var(--muted)]">
-            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
-              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+            <div className="p-4 rounded-[6px] bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-[var(--ink)]">
                 <span className="w-5 h-5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center font-mono text-[10px]">
                   1
                 </span>
                 <span>Title & Category</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] leading-relaxed text-[var(--muted)]">
                 Enter your headline, pick a category, and set a focus keyword for Google rank tracking.
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
-              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+            <div className="p-4 rounded-[6px] bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-[var(--ink)]">
                 <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-mono text-[10px]">
                   2
                 </span>
                 <span>Rich Toolbar</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] leading-relaxed text-[var(--muted)]">
                 Use 1-click toolbar buttons to quickly insert images, tables, code, and headings.
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
-              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+            <div className="p-4 rounded-[6px] bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-[var(--ink)]">
                 <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono text-[10px]">
                   3
                 </span>
                 <span>Live SEO Gauge</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] leading-relaxed text-[var(--muted)]">
                 Aim for a green score (80+) on the SEO tab to ensure full Google search visibility.
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
-              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+            <div className="p-4 rounded-[6px] bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 font-bold text-[var(--ink)]">
                 <span className="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center font-mono text-[10px]">
                   4
                 </span>
                 <span>Publish or Schedule</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] leading-relaxed text-[var(--muted)]">
                 Hit <strong>"Publish Live"</strong> to go live immediately, or schedule an auto-release date.
               </p>
             </div>
@@ -2334,23 +2334,23 @@ function AdminPostsPage() {
       {/* Top Bento Metrics Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Articles */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-2">
-          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+        <div className="p-5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]/80 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-[var(--muted)]">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">
               Total Articles
             </span>
             <FileText className="w-4 h-4 text-slate-400" />
           </div>
-          <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
+          <div className="text-3xl font-extrabold text-[var(--ink)] font-mono">
             {totalPosts}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="text-[11px] text-[var(--muted)]">
             All CMS entries
           </div>
         </div>
 
         {/* Live Published */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-emerald-500/30 dark:border-emerald-500/20 shadow-xs space-y-2 relative overflow-hidden">
+        <div className="p-5 rounded-[8px] bg-[var(--panel)] border border-emerald-500/30 dark:border-emerald-500/20 shadow-xs space-y-2 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">
@@ -2367,7 +2367,7 @@ function AdminPostsPage() {
         </div>
 
         {/* Scheduled Posts */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-indigo-500/30 dark:border-indigo-500/20 shadow-xs space-y-2">
+        <div className="p-5 rounded-[8px] bg-[var(--panel)] border border-indigo-500/30 dark:border-indigo-500/20 shadow-xs space-y-2">
           <div className="flex items-center justify-between text-indigo-600 dark:text-indigo-400">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">
               Scheduled
@@ -2383,17 +2383,17 @@ function AdminPostsPage() {
         </div>
 
         {/* Total Content Volume */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-2">
-          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+        <div className="p-5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]/80 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-[var(--muted)]">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">
               Content Volume
             </span>
             <BookOpen className="w-4 h-4 text-rose-500" />
           </div>
-          <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
+          <div className="text-3xl font-extrabold text-[var(--ink)] font-mono">
             {totalWords.toLocaleString()}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="text-[11px] text-[var(--muted)]">
             Total words written
           </div>
         </div>
@@ -2402,14 +2402,14 @@ function AdminPostsPage() {
       {/* Control Bar: Filters & Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Status Segmented Tabs */}
-        <div className="flex items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-inner overflow-x-auto">
+        <div className="flex items-center gap-1 p-1 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] shadow-inner overflow-x-auto">
           <button
             type="button"
             onClick={() => handleStatusTab('all')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               status === 'all'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-sm ring-1 ring-slate-900/5'
+                : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <span>All</span>
@@ -2424,7 +2424,7 @@ function AdminPostsPage() {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               status === 'published'
                 ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm ring-1 ring-slate-900/5'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -2440,7 +2440,7 @@ function AdminPostsPage() {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               status === 'scheduled'
                 ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm ring-1 ring-slate-900/5'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <CalendarClock className="w-3.5 h-3.5" />
@@ -2456,7 +2456,7 @@ function AdminPostsPage() {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               status === 'draft'
                 ? 'bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-sm ring-1 ring-slate-900/5'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <FileEdit className="w-3.5 h-3.5" />
@@ -2480,7 +2480,7 @@ function AdminPostsPage() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search articles by title, keyword, category, tags..."
-            className="w-full pl-10 pr-24 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition"
+            className="w-full pl-10 pr-24 py-2.5 rounded-[6px] text-xs border border-[var(--line)] bg-white dark:bg-slate-900 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition"
           />
           {searchInput && (
             <button
@@ -2508,15 +2508,15 @@ function AdminPostsPage() {
 
       {/* Posts List */}
       {posts.length === 0 ? (
-        <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-12 text-center space-y-4 shadow-xs">
-          <div className="mx-auto flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400">
+        <div className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-12 text-center space-y-4 shadow-xs">
+          <div className="mx-auto flex items-center justify-center w-14 h-14 rounded-[6px] bg-slate-100 dark:bg-slate-800 text-slate-400">
             <FileText className="w-7 h-7" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+            <h3 className="text-base font-bold text-[var(--ink)]">
               No articles found
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+            <p className="text-xs text-[var(--muted)] mt-1 max-w-sm mx-auto">
               {q
                 ? `No posts matched your query "${q}". Try clearing the search.`
                 : `There are currently no posts under the "${status}" filter.`}
@@ -2525,7 +2525,7 @@ function AdminPostsPage() {
           <button
             type="button"
             onClick={openNewPostModal}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 transition cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[6px] text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 transition cursor-pointer shadow-xs"
           >
             <Plus className="w-4 h-4" />
             <span>Create First Article</span>
@@ -2549,9 +2549,9 @@ function AdminPostsPage() {
             return (
               <div
                 key={post.id}
-                className={`rounded-2xl border transition-all duration-200 bg-white dark:bg-[#111827] p-5 sm:p-6 space-y-3.5 shadow-2xs hover:shadow-xs ${
+                className={`rounded-[6px] border transition-all duration-200 bg-[var(--panel)] p-5 sm:p-6 space-y-3.5 shadow-2xs hover:shadow-xs ${
                   isPublished
-                    ? 'border-slate-200/80 dark:border-slate-800'
+                    ? 'border-[var(--line)]'
                     : isScheduled
                       ? 'border-indigo-500/40 dark:border-indigo-500/30'
                       : 'border-amber-500/40 dark:border-amber-500/30'
@@ -2681,7 +2681,7 @@ function AdminPostsPage() {
 
                 {/* Main Article Info */}
                 <div className="space-y-2">
-                  <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white hover:text-rose-600 dark:hover:text-rose-400 transition">
+                  <h2 className="text-lg sm:text-xl font-bold text-[var(--ink)] hover:text-rose-600 dark:hover:text-rose-400 transition">
                     <button
                       type="button"
                       onClick={() => openEditPostModal(post)}
@@ -2691,7 +2691,7 @@ function AdminPostsPage() {
                     </button>
                   </h2>
 
-                  <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[var(--muted)]">
                     <span>URL Slug:</span>
                     <span className="text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md">
                       /blog/{post.slug}
@@ -2699,11 +2699,11 @@ function AdminPostsPage() {
 
                     {/* Tags Badges */}
                     {tagList.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1 pl-2 border-l border-slate-200 dark:border-slate-800">
+                      <div className="flex flex-wrap items-center gap-1 pl-2 border-l border-[var(--line)]">
                         {tagList.map((t, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                            className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800 text-[var(--muted)]"
                           >
                             <Tag className="w-2.5 h-2.5 text-slate-400" />
                             <span>{t}</span>
@@ -2735,7 +2735,7 @@ function AdminPostsPage() {
           postToDelete ? (
             <span>
               Are you sure you want to permanently delete{' '}
-              <strong className="text-slate-900 dark:text-white">
+              <strong className="text-[var(--ink)]">
                 "{postToDelete.title}"
               </strong>
               ? This action cannot be undone and will remove the live permalink.
@@ -2750,9 +2750,9 @@ function AdminPostsPage() {
       {/* Modern Full-Featured Post Editor & SEO Studio Modal */}
       {isEditorOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 lg:p-6 bg-black/80 backdrop-blur-md overflow-hidden animate-in fade-in duration-200">
-          <div className="w-full max-w-[1440px] h-[95vh] max-h-[95vh] bg-white dark:bg-[#0c111d] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95">
+          <div className="w-full max-w-[1440px] h-[95vh] max-h-[95vh] bg-white dark:bg-[#0c111d] rounded-[8px] border border-[var(--line)] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95">
             {/* Modal Top Bar */}
-            <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-50/90 dark:bg-[#111827]/90 backdrop-blur-md shrink-0">
+            <div className="px-5 py-3.5 border-b border-[var(--line)] flex flex-wrap items-center justify-between gap-3 bg-slate-50/90 dark:bg-[#111827]/90 backdrop-blur-md shrink-0">
               {/* Left: Article info & Status */}
               <div className="flex items-center gap-3 min-w-0">
                 <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50 shrink-0">
@@ -2760,7 +2760,7 @@ function AdminPostsPage() {
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[180px] sm:max-w-[280px] md:max-w-[380px]">
+                    <span className="text-sm font-bold text-[var(--ink)] truncate max-w-[180px] sm:max-w-[280px] md:max-w-[380px]">
                       {editorTitle || 'Untitled Article'}
                     </span>
                     <span
@@ -2784,14 +2784,14 @@ function AdminPostsPage() {
               </div>
 
               {/* Center: Segmented Mode Switcher */}
-              <div className="flex items-center gap-1 p-1 rounded-2xl bg-slate-200/70 dark:bg-slate-800/90 border border-slate-300/40 dark:border-slate-700/60">
+              <div className="flex items-center gap-1 p-1 rounded-[6px] bg-slate-200/70 dark:bg-slate-800/90 border border-slate-300/40 dark:border-slate-700/60">
                 <button
                   type="button"
                   onClick={() => setPreviewTab('write')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     previewTab === 'write'
-                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-slate-700 text-[var(--ink)] shadow-xs'
+                      : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   <FileEdit className="w-3.5 h-3.5" />
@@ -2802,8 +2802,8 @@ function AdminPostsPage() {
                   onClick={() => setPreviewTab('preview')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     previewTab === 'preview'
-                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-slate-700 text-[var(--ink)] shadow-xs'
+                      : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -2814,8 +2814,8 @@ function AdminPostsPage() {
                   onClick={() => setPreviewTab('seo')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     previewTab === 'seo'
-                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-slate-700 text-[var(--ink)] shadow-xs'
+                      : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   <span
@@ -2834,8 +2834,8 @@ function AdminPostsPage() {
                   onClick={() => setPreviewTab('schema')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     previewTab === 'schema'
-                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-slate-700 text-[var(--ink)] shadow-xs'
+                      : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   <CodeXml className="w-3.5 h-3.5" />
@@ -2861,8 +2861,8 @@ function AdminPostsPage() {
                     onClick={() => setIsSidebarSettingsOpen(!isSidebarSettingsOpen)}
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
                       isSidebarSettingsOpen
-                        ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border-slate-300 dark:border-slate-700 shadow-2xs'
-                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800'
+                        ? 'bg-slate-100 dark:bg-slate-800 text-[var(--ink)] border-slate-300 dark:border-slate-700 shadow-2xs'
+                        : 'bg-white dark:bg-slate-900 text-[var(--muted)] border-[var(--line)]'
                     }`}
                     title={isSidebarSettingsOpen ? 'Collapse Metadata Inspector' : 'Open Metadata Inspector'}
                   >
@@ -2911,7 +2911,7 @@ function AdminPostsPage() {
 
             {/* Error Banner */}
             {editorError && (
-              <div className="mx-6 mt-4 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-900 text-xs text-rose-600 dark:text-rose-400 font-semibold flex items-center justify-between shrink-0">
+              <div className="mx-6 mt-4 p-3 rounded-[6px] bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-900 text-xs text-rose-600 dark:text-rose-400 font-semibold flex items-center justify-between shrink-0">
                 <span>{editorError}</span>
                 <button type="button" onClick={() => setEditorError(null)} className="p-1 hover:opacity-75">
                   <X className="w-3.5 h-3.5" />
@@ -2928,7 +2928,7 @@ function AdminPostsPage() {
                 <div
                   className={`${
                     isSidebarSettingsOpen ? 'lg:col-span-8' : 'lg:col-span-12'
-                  } flex flex-col min-h-0 border-r border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0c111d] overflow-hidden`}
+                  } flex flex-col min-h-0 border-r border-[var(--line)]/80 bg-white dark:bg-[#0c111d] overflow-hidden`}
                 >
                   {/* Article Title & Permalink Pinned Header */}
                   <div className="p-6 pb-3 space-y-3 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
@@ -2939,12 +2939,12 @@ function AdminPostsPage() {
                       onChange={(e) => handleTitleChange(e.target.value)}
                       onPaste={handleTitlePaste}
                       placeholder="Article Title (H1 Heading)..."
-                      className="w-full text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white bg-transparent border-0 focus:outline-none focus:ring-0 placeholder:text-slate-300 dark:placeholder:text-slate-600 px-0 leading-tight"
+                      className="w-full text-2xl sm:text-3xl font-extrabold text-[var(--ink)] bg-transparent border-0 focus:outline-none focus:ring-0 placeholder:text-slate-300 dark:placeholder:text-slate-600 px-0 leading-tight"
                     />
 
                     {/* Permalink & Quick Category Row */}
                     <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 text-slate-500 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/80">
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 text-[var(--muted)] border border-slate-200/80 dark:border-slate-700/80">
                         <span>/blog/</span>
                         <input
                           type="text"
@@ -2952,7 +2952,7 @@ function AdminPostsPage() {
                           value={editorSlug}
                           onChange={(e) => handleSlugChange(e.target.value)}
                           placeholder="article-slug"
-                          className="font-mono text-slate-900 dark:text-white font-bold bg-transparent border-0 focus:outline-none focus:ring-0 p-0 text-xs w-48 sm:w-64 truncate"
+                          className="font-mono text-[var(--ink)] font-bold bg-transparent border-0 focus:outline-none focus:ring-0 p-0 text-xs w-48 sm:w-64 truncate"
                         />
                       </div>
 
@@ -2963,7 +2963,7 @@ function AdminPostsPage() {
                   </div>
 
                   {/* Markdown Toolbar */}
-                  <div className="flex flex-wrap items-center justify-between gap-1.5 px-4 py-2 bg-slate-50/90 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-slate-800/80 shrink-0 text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 px-4 py-2 bg-slate-50/90 dark:bg-slate-900/90 border-b border-[var(--line)]/80 shrink-0 text-xs">
                     {/* Headings */}
                     <div className="flex items-center gap-0.5 border-r border-slate-200 dark:border-slate-700 pr-2">
                       <button
@@ -3112,7 +3112,7 @@ function AdminPostsPage() {
                         <Link2 className="w-3.5 h-3.5 text-emerald-500" />
                       </button>
 
-                      <div className="hidden sm:flex items-center gap-1 pl-1.5 border-l border-slate-200 dark:border-slate-700 text-[10px] font-mono font-medium text-slate-500 dark:text-slate-400">
+                      <div className="hidden sm:flex items-center gap-1 pl-1.5 border-l border-slate-200 dark:border-slate-700 text-[10px] font-mono font-medium text-[var(--muted)]">
                         <Sparkles className="w-3 h-3 text-emerald-500" />
                         <span>Sheets / Doc Paste Active</span>
                       </div>
@@ -3135,17 +3135,17 @@ function AdminPostsPage() {
 
                 {/* Right Column: Metadata & Inspector Sidebar */}
                 {isSidebarSettingsOpen && (
-                  <div className="lg:col-span-4 overflow-y-auto p-5 space-y-5 bg-slate-50/70 dark:bg-[#090d16] border-t lg:border-t-0 border-slate-200 dark:border-slate-800">
+                  <div className="lg:col-span-4 overflow-y-auto p-5 space-y-5 bg-slate-50/70 dark:bg-[#090d16] border-t lg:border-t-0 border-[var(--line)]">
                     {/* Card 1: Publishing & Categorization */}
-                    <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                    <div className="p-5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
                         <FolderOpen className="w-3.5 h-3.5 text-rose-500" />
                         <span>Publishing & Taxonomy</span>
                       </div>
 
                       {/* Status */}
                       <div className="space-y-1.5">
-                        <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                        <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                           Status
                         </label>
                         <select
@@ -3153,7 +3153,7 @@ function AdminPostsPage() {
                           onChange={(e) =>
                             setEditorStatus(e.target.value as 'draft' | 'published' | 'scheduled')
                           }
-                          className="w-full px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-rose-500"
                         >
                           <option value="draft">📁 Draft (Private)</option>
                           <option value="published">🚀 Published (Live to Public)</option>
@@ -3163,7 +3163,7 @@ function AdminPostsPage() {
 
                       {/* Scheduled DateTime */}
                       {editorStatus === 'scheduled' && (
-                        <div className="p-3.5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 space-y-1.5 animate-in fade-in">
+                        <div className="p-3.5 rounded-[6px] bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 space-y-1.5 animate-in fade-in">
                           <label className="text-xs font-mono font-bold uppercase text-indigo-700 dark:text-indigo-300 flex items-center gap-1">
                             <CalendarClock className="w-3.5 h-3.5" />
                             <span>Auto-Release Timestamp</span>
@@ -3172,20 +3172,20 @@ function AdminPostsPage() {
                             type="datetime-local"
                             value={editorScheduledAt}
                             onChange={(e) => setEditorScheduledAt(e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-xl text-xs font-mono border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full px-3 py-1.5 rounded-xl text-xs font-mono border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-indigo-500"
                           />
                         </div>
                       )}
 
                       {/* Category */}
                       <div className="space-y-1.5">
-                        <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                        <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                           Category
                         </label>
                         <select
                           value={editorCategory}
                           onChange={(e) => setEditorCategory(e.target.value)}
-                          className="w-full px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-rose-500"
                         >
                           <option value="Local SEO & GBP">📍 Local SEO & GBP</option>
                           <option value="Websites & Care">⚡ Websites & Care Plans</option>
@@ -3198,7 +3198,7 @@ function AdminPostsPage() {
 
                       {/* Tags */}
                       <div className="space-y-1.5">
-                        <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center justify-between">
+                        <label className="text-xs font-mono font-bold uppercase text-[var(--muted)] flex items-center justify-between">
                           <span>Tags (Comma-separated)</span>
                           <Tag className="w-3 h-3 text-slate-400" />
                         </label>
@@ -3207,14 +3207,14 @@ function AdminPostsPage() {
                           value={editorTags}
                           onChange={(e) => setEditorTags(e.target.value)}
                           placeholder="Google Maps, Ranking, Speed"
-                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
                         />
                       </div>
 
                       {/* Featured Hero Cover Image */}
                       <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                         <div className="flex items-center justify-between">
-                          <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                          <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                             Featured Hero Cover Image
                           </label>
                           <button
@@ -3246,14 +3246,14 @@ function AdminPostsPage() {
                           value={editorCoverImage}
                           onChange={(e) => setEditorCoverImage(e.target.value)}
                           placeholder="Image URL or choose from library..."
-                          className="w-full px-3.5 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
                         />
                       </div>
                     </div>
 
                     {/* Card 2: Excerpts & On-Page Summary (SEPARATED) */}
-                    <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                    <div className="p-5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
                         <FileText className="w-3.5 h-3.5 text-indigo-500" />
                         <span>Excerpts & Key Summary</span>
                       </div>
@@ -3261,7 +3261,7 @@ function AdminPostsPage() {
                       {/* Thumbnail / Card Excerpt */}
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                          <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                             Thumbnail Card Excerpt
                           </label>
                           <span className="text-[10px] font-mono text-slate-400">
@@ -3273,7 +3273,7 @@ function AdminPostsPage() {
                           value={editorExcerpt}
                           onChange={(e) => setEditorExcerpt(e.target.value)}
                           placeholder="Short 1-2 sentence preview text used on blog index cards and thumbnails..."
-                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
                         />
                         <p className="text-[10px] text-slate-400">
                           Appears on blog cards (/blog) and related playbook grids.
@@ -3283,7 +3283,7 @@ function AdminPostsPage() {
                       {/* On-Page Key Summary Callout */}
                       <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
                         <div className="flex items-center justify-between">
-                          <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center gap-1 text-rose-600 dark:text-rose-400">
+                          <label className="text-xs font-mono font-bold uppercase text-[var(--muted)] flex items-center gap-1 text-rose-600 dark:text-rose-400">
                             <Zap className="w-3 h-3 text-rose-500" />
                             <span>On-Page Key Summary (Callout)</span>
                           </label>
@@ -3296,7 +3296,7 @@ function AdminPostsPage() {
                           value={editorSummary}
                           onChange={(e) => setEditorSummary(e.target.value)}
                           placeholder="Key takeaways or executive summary displayed in a prominent callout box at the top of the article page..."
-                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
                         />
                         <p className="text-[10px] text-slate-400">
                           Renders inside the ⚡ KEY SUMMARY box at the top of the article. Leave blank to hide the box.
@@ -3305,15 +3305,15 @@ function AdminPostsPage() {
                     </div>
 
                     {/* Card 3: Google SEO & Search Snippet */}
-                    <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                    <div className="p-5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
                         <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
                         <span>Google Search & Snippet</span>
                       </div>
 
                       {/* Target Keyword */}
                       <div className="space-y-1.5">
-                        <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                        <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                           Focus Target Keyword
                         </label>
                         <input
@@ -3321,14 +3321,14 @@ function AdminPostsPage() {
                           value={editorKeyword}
                           onChange={(e) => setEditorKeyword(e.target.value)}
                           placeholder="e.g. Local SEO mistakes"
-                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
                         />
                       </div>
 
                       {/* SEO Meta Title */}
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                          <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                             SEO Meta Title
                           </label>
                           <span
@@ -3348,14 +3348,14 @@ function AdminPostsPage() {
                           value={editorMetaTitle}
                           onChange={(e) => setEditorMetaTitle(e.target.value)}
                           placeholder={`Defaults to "${editorTitle || 'Article Title'}"`}
-                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
                         />
                       </div>
 
                       {/* Meta Description */}
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                          <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                             Meta Description (Google Snippet)
                           </label>
                           <span
@@ -3375,12 +3375,12 @@ function AdminPostsPage() {
                           value={editorMetaDesc}
                           onChange={(e) => setEditorMetaDesc(e.target.value)}
                           placeholder="Summarize the article in 1-2 compelling sentences with focus keyword for Google search results..."
-                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                          className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
                         />
                       </div>
 
                       {/* Mini Live SERP Snippet Preview */}
-                      <div className="p-3.5 rounded-2xl bg-slate-100/90 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1 text-xs">
+                      <div className="p-3.5 rounded-[6px] bg-slate-100/90 dark:bg-slate-900 border border-[var(--line)] space-y-1 text-xs">
                         <div className="text-[10px] text-slate-500 font-mono truncate">
                           https://builtbymiguel.net/blog/{editorSlug || 'slug'}
                         </div>
@@ -3396,11 +3396,11 @@ function AdminPostsPage() {
                     </div>
 
                     {/* Card 4: Custom CTAs (Collapsible) */}
-                    <div className="rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+                    <div className="rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs overflow-hidden">
                       <button
                         type="button"
                         onClick={() => setShowCtaSettings(!showCtaSettings)}
-                        className="w-full p-4 flex items-center justify-between text-xs font-mono font-bold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer"
+                        className="w-full p-4 flex items-center justify-between text-xs font-mono font-bold text-[var(--ink)] hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer"
                       >
                         <div className="flex items-center gap-2">
                           <Megaphone className="w-3.5 h-3.5 text-rose-500" />
@@ -3413,20 +3413,20 @@ function AdminPostsPage() {
                         <div className="p-4 pt-0 space-y-4 border-t border-slate-100 dark:border-slate-800 text-xs">
                           {/* Sidebar CTA */}
                           <div className="space-y-2 pt-2">
-                            <span className="font-bold text-slate-900 dark:text-white">Sidebar CTA</span>
+                            <span className="font-bold text-[var(--ink)]">Sidebar CTA</span>
                             <input
                               type="text"
                               value={sidebarCtaTitle}
                               onChange={(e) => setSidebarCtaTitle(e.target.value)}
                               placeholder="Sidebar Heading"
-                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs"
+                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs"
                             />
                             <input
                               type="text"
                               value={sidebarCtaText}
                               onChange={(e) => setSidebarCtaText(e.target.value)}
                               placeholder="Sidebar Subtitle"
-                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs"
+                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs"
                             />
                             <div className="grid grid-cols-2 gap-2">
                               <input
@@ -3434,34 +3434,34 @@ function AdminPostsPage() {
                                 value={sidebarCtaButtonText}
                                 onChange={(e) => setSidebarCtaButtonText(e.target.value)}
                                 placeholder="Button Text"
-                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs"
+                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs"
                               />
                               <input
                                 type="text"
                                 value={sidebarCtaButtonUrl}
                                 onChange={(e) => setSidebarCtaButtonUrl(e.target.value)}
                                 placeholder="Button Link URL"
-                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono"
+                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs font-mono"
                               />
                             </div>
                           </div>
 
                           {/* Bottom CTA */}
                           <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                            <span className="font-bold text-slate-900 dark:text-white">Bottom Banner CTA</span>
+                            <span className="font-bold text-[var(--ink)]">Bottom Banner CTA</span>
                             <input
                               type="text"
                               value={bottomCtaTitle}
                               onChange={(e) => setBottomCtaTitle(e.target.value)}
                               placeholder="Banner Heading"
-                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs"
+                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs"
                             />
                             <input
                               type="text"
                               value={bottomCtaText}
                               onChange={(e) => setBottomCtaText(e.target.value)}
                               placeholder="Banner Subtitle"
-                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs"
+                              className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs"
                             />
                             <div className="grid grid-cols-2 gap-2">
                               <input
@@ -3469,14 +3469,14 @@ function AdminPostsPage() {
                                 value={bottomCtaButtonText}
                                 onChange={(e) => setBottomCtaButtonText(e.target.value)}
                                 placeholder="Button Text"
-                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs"
+                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs"
                               />
                               <input
                                 type="text"
                                 value={bottomCtaButtonUrl}
                                 onChange={(e) => setBottomCtaButtonUrl(e.target.value)}
                                 placeholder="Button Link URL"
-                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono"
+                                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--ink)] text-xs font-mono"
                               />
                             </div>
                           </div>
@@ -3493,7 +3493,7 @@ function AdminPostsPage() {
             {/* ========================================================= */}
             {previewTab === 'preview' && (
               <div className="flex-1 min-h-0 overflow-y-auto p-6 sm:p-10 bg-slate-50 dark:bg-[#0c111d]">
-                <div className="max-w-4xl mx-auto space-y-8 bg-white dark:bg-[#111827] p-6 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="max-w-4xl mx-auto space-y-8 bg-[var(--panel)] p-6 sm:p-10 rounded-[8px] border border-[var(--line)] shadow-sm">
                   {/* Category & Meta */}
                   <div className="space-y-3 pb-6 border-b border-slate-100 dark:border-slate-800">
                     <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
@@ -3509,21 +3509,21 @@ function AdminPostsPage() {
                       <span className="text-slate-400">{calculateReadingTime(editorContent)} min read</span>
                     </div>
 
-                    <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--ink)] tracking-tight leading-tight">
                       {editorTitle || 'Untitled Article'}
                     </h1>
                   </div>
 
                   {/* Featured Image */}
                   {editorCoverImage && (
-                    <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 aspect-16/9 bg-slate-100 dark:bg-slate-800">
+                    <div className="overflow-hidden rounded-[6px] border border-[var(--line)] aspect-16/9 bg-slate-100 dark:bg-slate-800">
                       <img src={editorCoverImage} alt={editorTitle} className="w-full h-full object-cover" />
                     </div>
                   )}
 
                   {/* Key Summary Callout */}
                   {editorSummary && (
-                    <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-rose-50/50 via-white to-amber-50/30 dark:from-rose-950/20 dark:via-slate-900/60 dark:to-slate-900/30 border border-rose-100 dark:border-rose-900/30 space-y-2">
+                    <div className="p-5 sm:p-6 rounded-[6px] bg-gradient-to-br from-rose-50/50 via-white to-amber-50/30 dark:from-rose-950/20 dark:via-slate-900/60 dark:to-slate-900/30 border border-rose-100 dark:border-rose-900/30 space-y-2">
                       <div className="flex items-center gap-2 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
                         <Zap className="w-3.5 h-3.5 text-rose-500" />
                         <span>Key Summary</span>
@@ -3551,23 +3551,23 @@ function AdminPostsPage() {
             {/* ========================================================= */}
             {previewTab === 'seo' && (
               <div className="flex-1 min-h-0 overflow-y-auto p-6 sm:p-8 bg-slate-50 dark:bg-[#0c111d]">
-                <div className="max-w-4xl mx-auto space-y-6 bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="max-w-4xl mx-auto space-y-6 bg-[var(--panel)] p-6 sm:p-8 rounded-[8px] border border-[var(--line)] shadow-sm">
                   {/* Meter Banner */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-[6px] bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-rose-500" />
-                        <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-base font-bold text-[var(--ink)]">
                           On-Page SEO Intelligence Score
                         </h3>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-[var(--muted)]">
                         Evaluates focus keyword optimization, SERP title & snippet lengths, keyword density, and search intent.
                       </p>
                     </div>
 
                     <div
-                      className={`text-3xl font-extrabold font-mono px-5 py-2.5 rounded-2xl border shrink-0 ${
+                      className={`text-3xl font-extrabold font-mono px-5 py-2.5 rounded-[6px] border shrink-0 ${
                         seoReport.overallScore >= 80
                           ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 border-emerald-300 dark:border-emerald-800'
                           : seoReport.overallScore >= 50
@@ -3580,7 +3580,7 @@ function AdminPostsPage() {
                   </div>
 
                   {/* Google Search SERP Snippet Preview */}
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1.5">
+                  <div className="p-4 rounded-[6px] bg-slate-50 dark:bg-slate-950 border border-[var(--line)] space-y-1.5">
                     <span className="text-[10px] font-mono uppercase text-slate-400 font-bold">
                       Google Search SERP Preview
                     </span>
@@ -3608,7 +3608,7 @@ function AdminPostsPage() {
                       {seoReport.checks.map((c) => (
                         <div
                           key={c.id}
-                          className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 flex items-start gap-3 shadow-2xs"
+                          className="p-3.5 rounded-[6px] border border-[var(--line)] bg-slate-50 dark:bg-slate-850 flex items-start gap-3 shadow-2xs"
                         >
                           {c.status === 'pass' && (
                             <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
@@ -3620,10 +3620,10 @@ function AdminPostsPage() {
                             <XCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                           )}
                           <div className="space-y-0.5">
-                            <div className="text-xs font-bold text-slate-900 dark:text-white">
+                            <div className="text-xs font-bold text-[var(--ink)]">
                               {c.label}
                             </div>
-                            <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                            <div className="text-[11px] text-[var(--muted)]">
                               {c.detail}
                             </div>
                           </div>
@@ -3640,13 +3640,13 @@ function AdminPostsPage() {
             {/* ========================================================= */}
             {previewTab === 'schema' && (
               <div className="flex-1 min-h-0 overflow-y-auto p-6 sm:p-8 bg-slate-50 dark:bg-[#0c111d]">
-                <div className="max-w-3xl mx-auto space-y-6 bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="max-w-3xl mx-auto space-y-6 bg-[var(--panel)] p-6 sm:p-8 rounded-[8px] border border-[var(--line)] shadow-sm">
                   <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[var(--ink)] flex items-center gap-2">
                       <CodeXml className="w-4 h-4 text-rose-500" />
                       <span>Schema.org Structured Data & Rich Results</span>
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-[var(--muted)]">
                       Configure Google rich results structured data. Auto-generates standard JSON-LD or inject custom FAQ/TechArticle schema.
                     </p>
                   </div>
@@ -3659,7 +3659,7 @@ function AdminPostsPage() {
                       <select
                         value={editorSchemaType}
                         onChange={(e) => setEditorSchemaType(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-2xl text-xs font-bold border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                        className="w-full px-4 py-2.5 rounded-[6px] text-xs font-bold border border-[var(--line)] bg-white dark:bg-slate-800 text-[var(--ink)]"
                       >
                         <option value="BlogPosting">BlogPosting (Standard Blog Article)</option>
                         <option value="TechArticle">TechArticle (Technical Guide / Code)</option>
@@ -3677,7 +3677,7 @@ function AdminPostsPage() {
                         type="text"
                         disabled
                         value="built by Miguel (Miguel Umbac)"
-                        className="w-full px-4 py-2.5 rounded-2xl text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
+                        className="w-full px-4 py-2.5 rounded-[6px] text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
                       />
                     </div>
                   </div>
@@ -3691,7 +3691,7 @@ function AdminPostsPage() {
                       value={editorCustomSchema}
                       onChange={(e) => setEditorCustomSchema(e.target.value)}
                       placeholder='{ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [...] }'
-                      className="w-full px-4 py-3 rounded-2xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                      className="w-full px-4 py-3 rounded-[6px] text-xs font-mono border border-[var(--line)] bg-white dark:bg-slate-900 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
                     />
                   </div>
                 </div>
@@ -3704,8 +3704,8 @@ function AdminPostsPage() {
       {/* Quick Inserter Modal: Image */}
       {isImageModalOpen && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="w-full max-w-md bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-base font-bold text-[var(--ink)] flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-rose-500" />
               <span>Insert Image into Article</span>
             </h3>
@@ -3720,7 +3720,7 @@ function AdminPostsPage() {
                   value={insertImageUrl}
                   onChange={(e) => setInsertImageUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-[var(--line)] bg-white dark:bg-slate-800 text-[var(--ink)]"
                 />
               </div>
               <div>
@@ -3732,7 +3732,7 @@ function AdminPostsPage() {
                   value={insertImageAlt}
                   onChange={(e) => setInsertImageAlt(e.target.value)}
                   placeholder="e.g. Local SEO ranking chart screenshot"
-                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-[var(--line)] bg-white dark:bg-slate-800 text-[var(--ink)]"
                 />
               </div>
             </div>
@@ -3740,7 +3740,7 @@ function AdminPostsPage() {
               <button
                 type="button"
                 onClick={() => setIsImageModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[var(--muted)] hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
               >
                 Cancel
               </button>
@@ -3759,8 +3759,8 @@ function AdminPostsPage() {
       {/* Quick Inserter Modal: Table */}
       {isTableModalOpen && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="w-full max-w-md bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-base font-bold text-[var(--ink)] flex items-center gap-2">
               <TableIcon className="w-4 h-4 text-cyan-500" />
               <span>Insert Markdown Table</span>
             </h3>
@@ -3775,7 +3775,7 @@ function AdminPostsPage() {
                   max={6}
                   value={tableCols}
                   onChange={(e) => setTableCols(parseInt(e.target.value) || 2)}
-                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-[var(--line)] bg-white dark:bg-slate-800 text-[var(--ink)]"
                 />
               </div>
               <div>
@@ -3788,7 +3788,7 @@ function AdminPostsPage() {
                   max={10}
                   value={tableRows}
                   onChange={(e) => setTableRows(parseInt(e.target.value) || 1)}
-                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-[var(--line)] bg-white dark:bg-slate-800 text-[var(--ink)]"
                 />
               </div>
             </div>
@@ -3796,7 +3796,7 @@ function AdminPostsPage() {
               <button
                 type="button"
                 onClick={() => setIsTableModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[var(--muted)] cursor-pointer"
               >
                 Cancel
               </button>
@@ -3815,8 +3815,8 @@ function AdminPostsPage() {
       {/* Quick Inserter Modal: Code Snippet */}
       {isCodeModalOpen && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-lg bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="w-full max-w-lg bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-base font-bold text-[var(--ink)] flex items-center gap-2">
               <Code className="w-4 h-4 text-indigo-500" />
               <span>Insert Code Block</span>
             </h3>
@@ -3828,7 +3828,7 @@ function AdminPostsPage() {
                 <select
                   value={codeLang}
                   onChange={(e) => setCodeLang(e.target.value)}
-                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs border border-[var(--line)] bg-white dark:bg-slate-800 text-[var(--ink)]"
                 >
                   <option value="typescript">TypeScript</option>
                   <option value="javascript">JavaScript</option>
@@ -3849,7 +3849,7 @@ function AdminPostsPage() {
                   value={codeSnippet}
                   onChange={(e) => setCodeSnippet(e.target.value)}
                   placeholder="// Paste your code snippet here"
-                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                  className="w-full mt-1 px-3 py-2 rounded-xl text-xs font-mono border border-[var(--line)] bg-white dark:bg-slate-800 text-[var(--ink)]"
                 />
               </div>
             </div>
@@ -3857,7 +3857,7 @@ function AdminPostsPage() {
               <button
                 type="button"
                 onClick={() => setIsCodeModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[var(--muted)] cursor-pointer"
               >
                 Cancel
               </button>
@@ -3905,17 +3905,17 @@ function AdminPostsPage() {
       {/* Smart Import from Google Docs / Draft Modal */}
       {isSmartImportModalOpen && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in">
-          <div className="w-full max-w-3xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 shadow-2xl animate-in zoom-in-95 flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-3xl bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 sm:p-7 space-y-5 shadow-2xl animate-in zoom-in-95 flex flex-col max-h-[90vh]">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-base font-bold text-[var(--ink)]">
                     Smart Import from Google Docs or Draft
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-[var(--muted)]">
                     Paste your raw Google Doc or outline. Headings, Key Summary, and Title are separated automatically.
                   </p>
                 </div>
@@ -3933,7 +3933,7 @@ function AdminPostsPage() {
             </div>
 
             <div className="space-y-2 flex-1 min-h-0 flex flex-col">
-              <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+              <label className="text-xs font-mono font-bold uppercase text-[var(--muted)]">
                 Paste Raw Article / Google Doc Content
               </label>
               <textarea
@@ -3941,12 +3941,12 @@ function AdminPostsPage() {
                 value={smartImportInput}
                 onChange={(e) => setSmartImportInput(e.target.value)}
                 placeholder="Paste your copied text from Google Docs here...&#10;&#10;Includes:&#10;• AI Cover Image Prompts (automatically parsed)&#10;• Article Title (auto-detected)&#10;• Key Takeaways / Summary (auto-extracted to callout)&#10;• Section Headings (auto-converted to H2 and H3)&#10;• Bullet points, numbered steps, and FAQs"
-                className="w-full flex-1 min-h-[220px] p-4 font-mono text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                className="w-full flex-1 min-h-[220px] p-4 font-mono text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[var(--ink)] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
               />
             </div>
 
             {smartImportInput.trim() && (
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 space-y-1 text-xs shrink-0">
+              <div className="p-3.5 rounded-[6px] bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 space-y-1 text-xs shrink-0">
                 <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
                   Live Preview Detection
                 </span>
@@ -3971,7 +3971,7 @@ function AdminPostsPage() {
                   setIsSmartImportModalOpen(false)
                   setSmartImportInput('')
                 }}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[var(--muted)] hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
               >
                 Cancel
               </button>

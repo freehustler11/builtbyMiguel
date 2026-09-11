@@ -613,6 +613,18 @@ export async function runMigrations() {
       backfilledMedia.forEach((row) => console.log(`   - ${row.filename} -> client "${row.client_name}"`))
     }
 
+    // 24. Profile Pictures & Deliverable Due Dates
+    console.log('🔄 Migration 24: Adding avatar_url to users and due_date to deliverables tables...')
+    await sql`ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "avatar_url" text;`
+    await sql`ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "due_date" timestamp with time zone;`
+    await sql`ALTER TABLE "landing_pages" ADD COLUMN IF NOT EXISTS "due_date" timestamp with time zone;`
+    await sql`ALTER TABLE "client_articles" ADD COLUMN IF NOT EXISTS "due_date" timestamp with time zone;`
+
+    // 25. Agency Staff Client Assignments
+    console.log('🔄 Migration 25: Adding assigned_staff_id to clients table...')
+    await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "assigned_staff_id" uuid REFERENCES "users"("id") ON DELETE SET NULL;`
+    await sql`CREATE INDEX IF NOT EXISTS "clients_assigned_staff_id_idx" ON "clients" ("assigned_staff_id");`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

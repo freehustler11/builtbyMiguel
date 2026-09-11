@@ -266,7 +266,7 @@ export function ReportsDueTable({
               <th className="px-4 py-2.5">Monthly KPIs Status</th>
               <th className="px-4 py-2.5">Report Status</th>
               <th className="px-4 py-2.5">Public Share Link</th>
-              <th className="px-4 py-2.5 text-right w-36">Action</th>
+              <th className="px-4 py-2.5 text-right w-40 whitespace-nowrap">Action</th>
             </tr>
           </thead>
 
@@ -384,7 +384,7 @@ export function ReportsDueTable({
                         <Link
                           to="/admin/reports/$id"
                           params={{ id: row.reportId! }}
-                          className="h-7 inline-flex items-center gap-1 px-2.5 rounded-[4px] text-[12px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer"
+                          className="h-7 inline-flex items-center justify-center gap-1 px-3 rounded-[4px] text-[12px] font-medium whitespace-nowrap bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer shrink-0"
                         >
                           <span>View Report</span>
                           <ArrowUpRight className="w-3 h-3 text-[var(--muted)]" />
@@ -394,7 +394,7 @@ export function ReportsDueTable({
                           type="button"
                           disabled={isGenerating}
                           onClick={() => handleGenerateReport(row)}
-                          className="h-7 inline-flex items-center gap-1 px-2.5 rounded-[4px] text-[12px] font-medium bg-[var(--accent)] text-white hover:opacity-90 shadow-2xs transition cursor-pointer disabled:opacity-50"
+                          className="h-7 inline-flex items-center justify-center gap-1 px-3 rounded-[4px] text-[12px] font-medium whitespace-nowrap bg-[var(--accent)] text-white hover:opacity-90 shadow-2xs transition cursor-pointer disabled:opacity-50 shrink-0"
                         >
                           {isGenerating ? (
                             <div className="w-3 h-3 rounded-full border border-white border-t-transparent animate-spin" />

@@ -99,12 +99,16 @@ export interface AdminDashboardData {
 export const getAdminDashboardDataServerFn = createServerFn({ method: 'GET' })
   .validator((data?: { month?: number; year?: number }) => {
     const now = new Date()
+    // By default, default reporting period is the previous completed calendar month
+    const defaultMonth = now.getUTCMonth() === 0 ? 12 : now.getUTCMonth()
+    const defaultYear = now.getUTCMonth() === 0 ? now.getUTCFullYear() - 1 : now.getUTCFullYear()
+
     const targetMonth = data?.month && data.month >= 1 && data.month <= 12
       ? Number(data.month)
-      : now.getUTCMonth() + 1
+      : defaultMonth
     const targetYear = data?.year && data.year >= 2000
       ? Number(data.year)
-      : now.getUTCFullYear()
+      : defaultYear
 
     return {
       month: targetMonth,
@@ -289,29 +293,36 @@ export const getAdminDashboardDataServerFn = createServerFn({ method: 'GET' })
       }
     }
 
-    // 5. EVALUATE CLIENTS MISSING KPIS
-    const missingKpisList: MissingKpiClient[] = []
-    for (const client of activeClients) {
-      const record = metricsMap.get(client.id)
-      // Check if metrics record is missing or completely empty of KPI numbers
-      const isMissingOrEmpty =
-        !record ||
-        (record.gscClicks == null &&
-          record.gaSessions == null &&
-          record.gbpCalls == null &&
-          record.gbpViews == null &&
-          record.semrushAuthorityScore == null)
+       // 5. EVALUATE CLIENTS MISSING KPIS
+    const nowUtc = new Date()
+    const isCurrentOrFutureMonth =
+      year > nowUtc.getUTCFullYear() ||
+      (year === nowUtc.getUTCFullYear() && month >= nowUtc.getUTCMonth() + 1)
 
-      if (isMissingOrEmpty) {
-        missingKpisList.push({
-          clientId: client.id,
-          clientName: client.name,
-          businessName: client.businessName,
-          partnerName: client.partnerName || client.partnerEmail || null,
-          partnerId: client.partnerId,
-          connectedSources: sourcesMap.get(client.id) || ['gsc', 'ga4', 'gbp'],
-          hasMetricsRecord: Boolean(record),
-        })
+    const missingKpisList: MissingKpiClient[] = []
+    // Only flag past closed months as missing blockers; current in-progress month finalizes after month ends
+    if (!isCurrentOrFutureMonth) {
+      for (const client of activeClients) {
+        const record = metricsMap.get(client.id)
+        const isMissingOrEmpty =
+          !record ||
+          (record.gscClicks == null &&
+            record.gaSessions == null &&
+            record.gbpCalls == null &&
+            record.gbpViews == null &&
+            record.semrushAuthorityScore == null)
+
+        if (isMissingOrEmpty) {
+          missingKpisList.push({
+            clientId: client.id,
+            clientName: client.name,
+            businessName: client.businessName,
+            partnerName: client.partnerName || client.partnerEmail || null,
+            partnerId: client.partnerId,
+            connectedSources: sourcesMap.get(client.id) || ['gsc', 'ga4', 'gbp'],
+            hasMetricsRecord: Boolean(record),
+          })
+        }
       }
     }
 

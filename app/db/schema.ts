@@ -88,6 +88,7 @@ export const users = pgTable(
     partnerId: uuid('partner_id').references((): AnyPgColumn => users.id, { onDelete: 'cascade' }),
     isActive: boolean('is_active').default(true).notNull(),
     name: text('name'),
+    avatarUrl: text('avatar_url'),
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -121,12 +122,15 @@ export const clients = pgTable(
     partnerLogoBgColor: text('partner_logo_bg_color').default('#ffffff'),
     // Partner assignment (null = direct Superadmin client)
     partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'set null' }),
+    // Staff assignment (null = unassigned or direct agency owner)
+    assignedStaffId: uuid('assigned_staff_id').references(() => users.id, { onDelete: 'set null' }),
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => [
     index('clients_lower_business_name_idx').on(sql`lower(${table.businessName})`),
     index('clients_partner_id_idx').on(table.partnerId),
+    index('clients_assigned_staff_id_idx').on(table.assignedStaffId),
     index('clients_deleted_at_idx').on(table.deletedAt),
   ]
 )
@@ -352,6 +356,7 @@ export const landingPages = pgTable(
     wentLiveAt: timestamp('went_live_at', { withTimezone: true }),
     draftUrl: text('draft_url'),
     notes: text('notes'),
+    dueDate: timestamp('due_date', { withTimezone: true }),
     assignedTo: uuid('assigned_to').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -381,6 +386,7 @@ export const clientArticles = pgTable(
       .default('idea')
       .notNull(),
     publishedAt: timestamp('published_at', { withTimezone: true }),
+    dueDate: timestamp('due_date', { withTimezone: true }),
     writerId: uuid('writer_id').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -460,6 +466,7 @@ export const tasks = pgTable(
     completedAt: timestamp('completed_at', { withTimezone: true }),
     draftUrl: text('draft_url'),
     notes: text('notes'),
+    dueDate: timestamp('due_date', { withTimezone: true }),
     assignedTo: uuid('assigned_to').references((): AnyPgColumn => users.id, { onDelete: 'set null' }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),

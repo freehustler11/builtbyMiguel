@@ -10,6 +10,7 @@ export interface EmployeeItem {
   name: string | null
   email: string
   role: 'partner_employee'
+  avatarUrl?: string | null
   isActive: boolean
   createdAt: Date | string
   partnerId: string | null
@@ -20,6 +21,7 @@ export interface AgencyOwnerInfo {
   id: string
   name: string | null
   email: string
+  avatarUrl?: string | null
   role: 'partner' | 'superadmin'
 }
 
@@ -87,6 +89,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
           id: users.id,
           name: users.name,
           email: users.email,
+          avatarUrl: users.avatarUrl,
           role: users.role,
         })
         .from(users)
@@ -97,6 +100,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
           id: users.id,
           name: users.name,
           email: users.email,
+          avatarUrl: users.avatarUrl,
           role: users.role,
           isActive: users.isActive,
           createdAt: users.createdAt,
@@ -156,6 +160,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
         id: users.id,
         name: users.name,
         email: users.email,
+        avatarUrl: users.avatarUrl,
         role: users.role,
         isActive: users.isActive,
         createdAt: users.createdAt,
@@ -187,6 +192,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
       id: superadminUserId || auth.userId || 'superadmin',
       name: 'Superadmin Workspace',
       email: auth.email || 'admin@builtbymiguel.net',
+      avatarUrl: null,
       role: 'superadmin',
     }
 
@@ -196,6 +202,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
           id: users.id,
           name: users.name,
           email: users.email,
+          avatarUrl: users.avatarUrl,
         })
         .from(users)
         .where(and(eq(users.id, data.partnerId), isNull(users.deletedAt)))
@@ -204,6 +211,7 @@ export const getTeamMembersServerFn = createServerFn({ method: 'GET' })
           id: partnerOwner.id,
           name: partnerOwner.name || partnerOwner.email,
           email: partnerOwner.email,
+          avatarUrl: partnerOwner.avatarUrl,
           role: 'partner',
         }
       }
@@ -435,6 +443,135 @@ export const toggleTeamMemberActiveServerFn = createServerFn({ method: 'POST' })
       employee: {
         id: updated.id,
         isActive: updated.isActive,
+      },
+    }
+  })
+
+/**
+ * Server Function: Get current authenticated user profile
+ */
+export const getMyProfileServerFn = createServerFn({ method: 'GET' })
+  .handler(async () => {
+    const auth = await assertActiveSession()
+    const userFilter = auth.userId
+      ? eq(users.id, auth.userId)
+      : auth.email
+      ? eq(users.email, auth.email)
+      : null
+
+    if (!userFilter) {
+      return {
+        id: auth.userId || '',
+        name: auth.name || '',
+        email: auth.email || '',
+        role: auth.role,
+        avatarUrl: auth.avatarUrl || null,
+      }
+    }
+
+    const [dbUser] = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        avatarUrl: users.avatarUrl,
+      })
+      .from(users)
+      .where(and(userFilter, isNull(users.deletedAt)))
+
+    return {
+      id: dbUser?.id || auth.userId || '',
+      name: dbUser?.name || auth.name || '',
+      email: dbUser?.email || auth.email || '',
+      role: (dbUser?.role || auth.role) as 'superadmin' | 'partner' | 'partner_employee' | 'client',
+      avatarUrl: dbUser?.avatarUrl || null,
+    }
+  })
+
+/**
+ * Server Function: Update current authenticated user profile (name and avatarUrl)
+ */
+export const updateMyProfileServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { name?: string | null; avatarUrl?: string | null }) => {
+    return {
+      name: typeof data.name === 'string' ? data.name.trim() : undefined,
+      avatarUrl: typeof data.avatarUrl === 'string' ? data.avatarUrl.trim() : (data.avatarUrl === null ? null : undefined),
+    }
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    const userFilter = auth.userId
+      ? eq(users.id, auth.userId)
+      : auth.email
+      ? eq(users.email, auth.email)
+      : null
+
+    if (!userFilter) {
+      throw new Error('User record could not be resolved')
+    }
+
+    const [dbUser] = await db
+      .select()
+      .from(users)
+      .where(and(userFilter, isNull(users.deletedAt)))
+
+    if (!dbUser) {
+      // If superadmin fallback without DB row, create one
+      if (auth.role === 'superadmin' || auth.role === 'admin') {
+        const [created] = await db
+          .insert(users)
+          .values({
+            email: auth.email || 'admin@builtbymiguel.net',
+            passwordHash: 'FALLBACK_ACCOUNT',
+            role: 'superadmin',
+            name: data.name !== undefined ? data.name : (auth.name || 'Superadmin'),
+            avatarUrl: data.avatarUrl !== undefined ? data.avatarUrl : null,
+            isActive: true,
+          })
+          .returning()
+
+        return {
+          success: true,
+          user: {
+            id: created.id,
+            name: created.name,
+            email: created.email,
+            avatarUrl: created.avatarUrl,
+            role: created.role,
+          },
+        }
+      }
+      throw new Error('User not found')
+    }
+
+    const updatePayload: Record<string, any> = {
+      updatedAt: new Date(),
+    }
+    if (data.name !== undefined) updatePayload.name = data.name
+    if (data.avatarUrl !== undefined) updatePayload.avatarUrl = data.avatarUrl
+
+    const [updated] = await db
+      .update(users)
+      .set(updatePayload)
+      .where(eq(users.id, dbUser.id))
+      .returning()
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'update_profile',
+    })
+
+    return {
+      success: true,
+      user: {
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        avatarUrl: updated.avatarUrl,
+        role: updated.role,
       },
     }
   })

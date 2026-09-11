@@ -36,6 +36,10 @@ import { MediaPickerModal } from '../../components/MediaPickerModal'
 import { ClientCard } from '../../components/ClientCard'
 import { DataTable, type ColumnDef, type BulkAction } from '../../components/ui/DataTable'
 import {
+  getAgencyTeamPickerServerFn,
+  type TeamPickerMember,
+} from '../../server/crm'
+import {
   getClientsServerFn,
   createClientServerFn,
   updateClientServerFn,
@@ -56,6 +60,7 @@ export interface ClientsSearch {
   sort?: 'name' | 'website' | 'reports' | 'last_report' | 'access' | 'agency'
   order?: 'asc' | 'desc'
   filter?: 'all' | 'missing' | 'connected'
+  staff?: string
   search?: string
   view?: 'table' | 'grid'
 }
@@ -70,6 +75,7 @@ export const Route = createFileRoute('/admin/clients')({
       sort: ['name', 'website', 'reports', 'last_report', 'access', 'agency'].includes(sort || '') ? sort : undefined,
       order: order === 'desc' ? 'desc' : order === 'asc' ? 'asc' : undefined,
       filter: ['all', 'missing', 'connected'].includes(filter || '') ? filter : undefined,
+      staff: typeof search.staff === 'string' ? search.staff : undefined,
       search: typeof search.search === 'string' ? search.search : undefined,
       view: view === 'grid' ? 'grid' : 'table',
     }
@@ -83,15 +89,19 @@ export const Route = createFileRoute('/admin/clients')({
     order: search.order,
   }),
   loader: async ({ deps, context }) => {
-    const { clients, partners } = await getClientsServerFn({
-      data: {
-        sort: deps.sort,
-        order: deps.order,
-      },
-    })
+    const [{ clients, partners }, teamMembers] = await Promise.all([
+      getClientsServerFn({
+        data: {
+          sort: deps.sort,
+          order: deps.order,
+        },
+      }),
+      getAgencyTeamPickerServerFn({}).catch(() => []),
+    ])
     return {
       clients,
       partners: partners || [],
+      teamMembers: teamMembers || [],
       currentAdmin: (context as any)?.auth || (await checkAuthServerFn()),
     }
   },
@@ -133,7 +143,7 @@ function AdminClientsPage() {
   const router = useRouter()
   const navigate = useNavigate({ from: Route.fullPath })
   const searchParams = Route.useSearch()
-  const { clients: initialClients, partners: initialPartners, currentAdmin } = Route.useLoaderData()
+  const { clients: initialClients, partners: initialPartners, teamMembers, currentAdmin } = Route.useLoaderData()
   const isSuperadmin = currentAdmin?.role === 'superadmin' || currentAdmin?.role === 'admin'
 
   const [clients, setClients] = useState(initialClients)
@@ -156,6 +166,7 @@ function AdminClientsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
   const [accessFilter, setAccessFilter] = useState<'all' | 'missing' | 'connected'>(searchParams.filter || 'all')
+  const [staffFilter, setStaffFilter] = useState<string>(searchParams.staff || 'all')
   const viewMode = searchParams.view || 'table'
 
   // Form State for Clients
@@ -171,6 +182,7 @@ function AdminClientsPage() {
   const [partnerLogoUrl, setPartnerLogoUrl] = useState('')
   const [partnerLogoBgColor, setPartnerLogoBgColor] = useState('#ffffff')
   const [formPartnerId, setFormPartnerId] = useState<string>('')
+  const [formAssignedStaffId, setFormAssignedStaffId] = useState<string>('')
   const [isPartnerLogoModalOpen, setIsPartnerLogoModalOpen] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -246,6 +258,7 @@ function AdminClientsPage() {
     setPartnerLogoUrl('')
     setPartnerLogoBgColor('#ffffff')
     setFormPartnerId('')
+    setFormAssignedStaffId('')
     setFormError(null)
     setIsModalOpen(true)
   }
@@ -264,6 +277,7 @@ function AdminClientsPage() {
     setPartnerLogoUrl(client.partnerLogoUrl || '')
     setPartnerLogoBgColor((client as any).partnerLogoBgColor || '#ffffff')
     setFormPartnerId(client.partnerId || '')
+    setFormAssignedStaffId(client.assignedStaffId || '')
     setFormError(null)
     setIsModalOpen(true)
   }
@@ -563,14 +577,25 @@ function AdminClientsPage() {
       if (!matchesSearch) return false
 
       if (accessFilter === 'missing') {
-        return Boolean(c.missingSources && c.missingSources.length > 0)
+        if (!c.missingSources || c.missingSources.length === 0) return false
       }
       if (accessFilter === 'connected') {
-        return !c.missingSources || c.missingSources.length === 0
+        if (c.missingSources && c.missingSources.length > 0) return false
       }
+
+      if (staffFilter === 'assigned_to_me') {
+        return c.assignedStaffId === currentAdmin?.userId
+      }
+      if (staffFilter === 'unassigned') {
+        return !c.assignedStaffId
+      }
+      if (staffFilter !== 'all') {
+        return c.assignedStaffId === staffFilter
+      }
+
       return true
     })
-  }, [clients, searchQuery, accessFilter])
+  }, [clients, searchQuery, accessFilter, staffFilter, currentAdmin?.userId])
 
   // Table Columns Definition
   const clientColumns: ColumnDef<ClientWithReportCount>[] = [
@@ -826,7 +851,77 @@ function AdminClientsPage() {
             </div>
 
             {/* Access Filter Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+            {/* Staff Assignment Filters */}
             <div className="flex items-center gap-1 p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px]">
+              <button
+                type="button"
+                onClick={() => {
+                  setStaffFilter('all')
+                  navigate({ search: (prev: any) => ({ ...prev, staff: undefined }) })
+                }}
+                className={`h-7 px-2.5 rounded-[4px] font-medium transition cursor-pointer ${
+                  staffFilter === 'all'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                All Clients ({clients.length})
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setStaffFilter('assigned_to_me')
+                  navigate({ search: (prev: any) => ({ ...prev, staff: 'assigned_to_me' }) })
+                }}
+                className={`h-7 px-2.5 rounded-[4px] font-medium transition cursor-pointer ${
+                  staffFilter === 'assigned_to_me'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                Assigned to me ({clients.filter((c) => c.assignedStaffId === currentAdmin?.userId).length})
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setStaffFilter('unassigned')
+                  navigate({ search: (prev: any) => ({ ...prev, staff: 'unassigned' }) })
+                }}
+                className={`h-7 px-2.5 rounded-[4px] font-medium transition cursor-pointer ${
+                  staffFilter === 'unassigned'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                Unassigned ({clients.filter((c) => !c.assignedStaffId).length})
+              </button>
+            </div>
+
+            {/* Filter by specific staff member dropdown if more than 1 team member */}
+            {teamMembers.length > 0 && (
+              <select
+                value={['all', 'assigned_to_me', 'unassigned'].includes(staffFilter) ? '' : staffFilter}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setStaffFilter(val || 'all')
+                  navigate({ search: (prev: any) => ({ ...prev, staff: val || undefined }) })
+                }}
+                className="h-8 px-2.5 rounded-[6px] text-[12px] font-medium bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+              >
+                <option value="">Filter by staff member...</option>
+                {teamMembers.map((tm) => (
+                  <option key={tm.id} value={tm.id}>
+                    {tm.name || tm.email} ({clients.filter((c) => c.assignedStaffId === tm.id).length})
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1 p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px]">
               <button
                 type="button"
                 onClick={() => handleAccessFilterChange('all')}

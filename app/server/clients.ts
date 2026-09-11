@@ -16,6 +16,13 @@ import { logActivity } from './activity-logger'
 
 export type DataSourceStatus = 'connected' | 'no_access' | 'not_applicable'
 
+export interface AssignedStaffSummary {
+  id: string
+  name: string | null
+  email: string
+  avatarUrl: string | null
+}
+
 export interface ClientWithReportCount extends Client {
   reportCount: number
   partner?: {
@@ -23,6 +30,7 @@ export interface ClientWithReportCount extends Client {
     name: string | null
     email: string
   } | null
+  assignedStaff?: AssignedStaffSummary | null
   dataSources?: Record<'gsc' | 'ga4' | 'gbp', DataSourceStatus>
   missingSources?: Array<'gsc' | 'ga4' | 'gbp'>
   locationCount?: number
@@ -164,11 +172,27 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
 
         const { dataSourcesMap, missingSourcesMap } = await buildDataSourcesMaps(clientIds)
 
+        // Fetch assigned staff members for these clients
+        const staffIds = partnerClients.map((c) => c.assignedStaffId).filter(Boolean) as string[]
+        const staffUsers = staffIds.length > 0
+          ? await db
+              .select({
+                id: users.id,
+                name: users.name,
+                email: users.email,
+                avatarUrl: users.avatarUrl,
+              })
+              .from(users)
+              .where(inArray(users.id, staffIds))
+          : []
+        const staffMap = new Map(staffUsers.map((u) => [u.id, u]))
+
         const clientList: ClientWithReportCount[] = partnerClients.map((c) => ({
           ...c,
           reportCount: countMap[c.id] || 0,
           locationCount: locCountMap[c.id] || 0,
           partner: null,
+          assignedStaff: c.assignedStaffId ? staffMap.get(c.assignedStaffId) || null : null,
           dataSources: dataSourcesMap[c.id] || { gsc: 'connected', ga4: 'connected', gbp: 'connected' },
           missingSources: missingSourcesMap[c.id] || [],
           latestReport: latestReportMap[c.id] || null,
@@ -273,6 +297,21 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
 
       const { dataSourcesMap, missingSourcesMap } = await buildDataSourcesMaps(clientIds)
 
+      // Fetch assigned staff members for superadmin view
+      const allStaffIds = allClients.map((c) => c.assignedStaffId).filter(Boolean) as string[]
+      const allStaffUsers = allStaffIds.length > 0
+        ? await db
+            .select({
+              id: users.id,
+              name: users.name,
+              email: users.email,
+              avatarUrl: users.avatarUrl,
+            })
+            .from(users)
+            .where(inArray(users.id, allStaffIds))
+        : []
+      const allStaffMap = new Map(allStaffUsers.map((u) => [u.id, u]))
+
       const clientList: ClientWithReportCount[] = allClients.map((c) => {
         const partner = c.partnerId ? partnerMap.get(c.partnerId) || null : null
         return {
@@ -286,6 +325,7 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
                 email: partner.email,
               }
             : null,
+          assignedStaff: c.assignedStaffId ? allStaffMap.get(c.assignedStaffId) || null : null,
           dataSources: dataSourcesMap[c.id] || { gsc: 'connected', ga4: 'connected', gbp: 'connected' },
           missingSources: missingSourcesMap[c.id] || [],
           latestReport: latestReportMap[c.id] || null,
@@ -544,6 +584,7 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
       partnerLogoUrl?: string
       partnerLogoBgColor?: string
       partnerId?: string | null
+      assignedStaffId?: string | null
     }) => {
       if (!data.name?.trim()) throw new Error('Contact name is required')
       if (!data.businessName?.trim()) throw new Error('Business name is required')
@@ -577,6 +618,7 @@ export const createClientServerFn = createServerFn({ method: 'POST' })
         partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
         partnerLogoBgColor: data.partnerLogoBgColor?.trim() || '#ffffff',
         partnerId: assignedPartnerId,
+        assignedStaffId: data.assignedStaffId && data.assignedStaffId.trim() ? data.assignedStaffId.trim() : null,
       })
       .returning()
 
@@ -609,6 +651,7 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
       partnerLogoUrl?: string
       partnerLogoBgColor?: string
       partnerId?: string | null
+      assignedStaffId?: string | null
     }) => {
       if (!data.id) throw new Error('Client ID is required')
       if (!data.name?.trim()) throw new Error('Contact name is required')
@@ -901,3 +944,48 @@ export const deleteClientLocationServerFn = createServerFn({ method: 'POST' })
     return { success: true }
   })
 
+
+
+/**
+ * Server Function: Assign or reassign a staff member to a client
+ */
+export const assignClientStaffServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { clientId: string; staffId: string | null }) => {
+    if (!data.clientId) throw new Error('Client ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client' || auth.role === 'partner_employee') {
+      throw new Error('Unauthorized: Only agency owners and superadmins can assign staff to clients')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const [existing] = await db
+      .select()
+      .from(clients)
+      .where(and(eq(clients.id, data.clientId), isNull(clients.deletedAt)))
+
+    if (!existing) throw new Error('Client not found')
+
+    if (effectivePartnerId && existing.partnerId !== effectivePartnerId) {
+      throw new Error('Unauthorized: Client does not belong to your agency')
+    }
+
+    const [updated] = await db
+      .update(clients)
+      .set({
+        assignedStaffId: data.staffId && data.staffId.trim() ? data.staffId.trim() : null,
+      })
+      .where(eq(clients.id, data.clientId))
+      .returning()
+
+    await logActivity({
+      userId: auth.userId,
+      userEmail: auth.email,
+      role: auth.role,
+      action: 'assign_client_staff',
+    })
+
+    return { success: true, client: updated }
+  })

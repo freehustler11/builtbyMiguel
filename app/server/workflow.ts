@@ -548,6 +548,7 @@ export const getPublishingQueueServerFn = createServerFn({ method: 'GET' })
     }
 
     const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+    const isStaff = auth.role === 'partner_employee'
     const effectivePartnerId = isSuperadmin && data?.partnerId ? data.partnerId : getEffectivePartnerId(auth)
 
     // Base client scoping condition
@@ -585,7 +586,10 @@ export const getPublishingQueueServerFn = createServerFn({ method: 'GET' })
         .where(
           and(
             ...clientFilter,
-            or(eq(landingPages.status, 'client_review'), eq(landingPages.status, 'design'))
+            or(eq(landingPages.status, 'client_review'), eq(landingPages.status, 'design')),
+            isStaff && auth.userId
+              ? or(eq(landingPages.assignedTo, auth.userId), eq(clients.assignedStaffId, auth.userId))
+              : sql`1=1`
           )
         )
 
@@ -632,7 +636,10 @@ export const getPublishingQueueServerFn = createServerFn({ method: 'GET' })
         .where(
           and(
             ...clientFilter,
-            or(eq(clientArticles.status, 'review'), eq(clientArticles.status, 'approved'))
+            or(eq(clientArticles.status, 'review'), eq(clientArticles.status, 'approved')),
+            isStaff && auth.userId
+              ? or(eq(clientArticles.writerId, auth.userId), eq(clients.assignedStaffId, auth.userId))
+              : sql`1=1`
           )
         )
 

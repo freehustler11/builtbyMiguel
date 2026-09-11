@@ -608,9 +608,17 @@ function AdminTeamPage() {
                       : 'TM'
                     return (
                       <div className="flex items-center gap-2.5">
-                        <div className="w-5 h-5 rounded-[4px] bg-[var(--line)] text-[var(--ink)] flex items-center justify-center font-bold text-[10px] shrink-0">
-                          {initials}
-                        </div>
+                        {(user as any).avatarUrl ? (
+                          <img
+                            src={(user as any).avatarUrl}
+                            alt=""
+                            className="w-6 h-6 rounded-full object-cover border border-[var(--line)] shrink-0"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-[var(--line)] text-[var(--ink)] flex items-center justify-center font-bold text-[10px] shrink-0">
+                            {initials}
+                          </div>
+                        )}
                         <div className="flex flex-col min-w-0">
                           <span className="font-semibold text-[13px] text-[var(--ink)] truncate">
                             {user.name || 'Account User'}

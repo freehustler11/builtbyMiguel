@@ -27,10 +27,12 @@ import {
   Layers,
   Table2,
   Send,
+  User,
 } from 'lucide-react'
 import { LogoutButton } from './LogoutButton'
 import { ThemeToggle } from './ThemeToggle'
 import { ChangePasswordModal } from './ChangePasswordModal'
+import { EditProfileModal } from './EditProfileModal'
 import {
   ClientPickerModal,
   recordRecentClient,
@@ -204,7 +206,7 @@ const NAV_GROUPS: NavGroupDef[] = [
         label: 'Media',
         to: '/admin/media',
         icon: ImageIcon,
-        roles: ['superadmin'],
+        roles: ['superadmin', 'partner', 'partner_employee'],
       },
     ],
   },
@@ -275,6 +277,10 @@ export function AdminShell({
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   // Password change modal
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+  // Profile edit modal
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [activeAvatarUrl, setActiveAvatarUrl] = useState<string | null>(null)
+  const [activeDisplayName, setActiveDisplayName] = useState<string | null>(null)
   // User profile dropdown
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
@@ -1013,11 +1019,19 @@ export function AdminShell({
                 className="h-8 inline-flex items-center gap-2 pl-1 pr-2 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
                 aria-label="User account menu"
               >
-                <div className="w-6 h-6 rounded-full bg-[var(--accent)] text-white text-[11px] font-semibold flex items-center justify-center">
-                  {userInitials}
-                </div>
+                {activeAvatarUrl ? (
+                  <img
+                    src={activeAvatarUrl}
+                    alt={activeDisplayName || userName || 'Avatar'}
+                    className="w-6 h-6 rounded-full object-cover bg-[var(--panel)] border border-[var(--line)]"
+                  />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-[var(--accent)] text-white text-[11px] font-semibold flex items-center justify-center">
+                    {userInitials}
+                  </div>
+                )}
                 <span className="hidden sm:inline text-[12px] font-medium text-[var(--ink)] max-w-[100px] truncate">
-                  {userName || (userEmail ? userEmail.split('@')[0] : 'Account')}
+                  {activeDisplayName || userName || (userEmail ? userEmail.split('@')[0] : 'Account')}
                 </span>
                 <ChevronDown className="w-3 h-3 text-[var(--muted)]" />
               </button>
@@ -1026,7 +1040,7 @@ export function AdminShell({
                 <div className="absolute right-0 top-full mt-1.5 w-56 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-lg py-1.5 z-50 animate-in fade-in zoom-in-95">
                   <div className="px-3 py-2 border-b border-[var(--line)]">
                     <div className="text-[13px] font-semibold text-[var(--ink)] truncate">
-                      {userName || (userEmail ? userEmail.split('@')[0] : 'User')}
+                      {activeDisplayName || userName || (userEmail ? userEmail.split('@')[0] : 'User')}
                     </div>
                     {userEmail && (
                       <div className="text-[11px] text-[var(--muted)] truncate mt-0.5 font-mono">
@@ -1041,6 +1055,18 @@ export function AdminShell({
                   </div>
 
                   <div className="p-1 space-y-0.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsUserMenuOpen(false)
+                        setIsProfileModalOpen(true)
+                      }}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-[6px] text-[12px] text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer"
+                    >
+                      <User className="w-3.5 h-3.5 text-[var(--muted)]" />
+                      <span>Edit profile</span>
+                    </button>
+
                     <button
                       type="button"
                       onClick={() => {
@@ -1072,6 +1098,16 @@ export function AdminShell({
             </div>
           </div>
         </header>
+
+        {/* Edit Profile Modal */}
+        <EditProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          onSuccess={(updated) => {
+            if (updated.avatarUrl !== undefined) setActiveAvatarUrl(updated.avatarUrl)
+            if (updated.name) setActiveDisplayName(updated.name)
+          }}
+        />
 
         {/* Change Password Modal */}
         <ChangePasswordModal

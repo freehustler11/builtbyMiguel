@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {
   Plus,
+  Calendar,
   CheckCircle2,
   Circle,
   Clock,
@@ -30,6 +31,7 @@ import {
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
 import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
+import { ToastContainer, type ToastMessage } from '../Toast'
 import { useBoardKeyboardNav } from './useBoardKeyboardNav'
 
 const TASK_COLUMNS = [
@@ -77,6 +79,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
     draftUrl: string
     notes: string
     assignedTo: string
+    dueDate: string
     status: 'todo' | 'done'
   }>({
     clientId: clientId || '',
@@ -85,6 +88,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
     draftUrl: '',
     notes: '',
     assignedTo: '',
+    dueDate: '',
     status: 'todo',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -92,6 +96,15 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
   // Delete modal state
   const [deleteTarget, setDeleteTarget] = useState<TaskItem | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [toasts, setToasts] = useState<ToastMessage[]>([])
+
+  const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
+    const id = Math.random().toString(36).substring(2, 9)
+    setToasts((prev) => [...prev, { id, title, message, type }])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 4000)
+  }
 
   const isRollup = !clientId
   const isStaff = currentUser?.role === 'partner_employee'
@@ -151,6 +164,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
       draftUrl: '',
       notes: '',
       assignedTo: isStaff ? (currentUser?.userId || '') : (team[0]?.id || ''),
+      dueDate: '',
       status: 'todo',
     })
     setIsEditModalOpen(true)
@@ -165,6 +179,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
       draftUrl: item.draftUrl || '',
       notes: item.notes || '',
       assignedTo: item.assignedTo || '',
+      dueDate: item.dueDate ? new Date(item.dueDate).toISOString().split('T')[0] : '',
       status: item.status,
     })
     setIsEditModalOpen(true)
@@ -186,6 +201,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
             notes: formData.notes || undefined,
             assignedTo: isStaff ? editingItem.assignedTo : formData.assignedTo || null,
             status: formData.status,
+            dueDate: formData.dueDate || null,
             clientId: formData.clientId ? formData.clientId : null,
           },
         })
@@ -215,6 +231,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
             notes: formData.notes || undefined,
             assignedTo: isStaff ? (currentUser?.userId || undefined) : formData.assignedTo || null,
             status: formData.status,
+            dueDate: formData.dueDate || null,
           },
         })
         const assignee = team.find((t) => t.id === created.assignedTo)
@@ -382,6 +399,21 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
                       <User className="w-3 h-3" />
                       <span>{item.assigneeName || item.assigneeEmail || 'Unassigned'}</span>
                     </div>
+
+                    {item.dueDate && (
+                      (() => {
+                        const isOverdue = new Date(item.dueDate).getTime() < new Date().setHours(0, 0, 0, 0) && item.status !== 'done'
+                        return (
+                          <div className={`flex items-center gap-1 font-medium ${isOverdue ? 'text-[var(--danger)]' : 'text-[var(--muted)]'}`}>
+                            <Calendar className="w-3 h-3" />
+                            <span>
+                              {isOverdue ? 'Overdue · ' : 'Due '}
+                              {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(new Date(item.dueDate))}
+                            </span>
+                          </div>
+                        )
+                      })()
+                    )}
 
                     {item.completedAt && (
                       <div className="flex items-center gap-1 text-[var(--success)]">
@@ -711,6 +743,8 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
           </div>
         </div>
       )}
+
+      <ToastContainer toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal

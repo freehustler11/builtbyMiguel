@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import {
   Plus,
+  Calendar,
   ExternalLink,
   Edit2,
   Trash2,
@@ -31,6 +32,7 @@ import {
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
 import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
+import { ToastContainer, type ToastMessage } from '../Toast'
 import { useBoardKeyboardNav } from './useBoardKeyboardNav'
 
 const STATUS_COLUMNS: Array<{
@@ -96,6 +98,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
     focusKeyword: string
     ctaGoal: string
     assignedTo: string
+    dueDate: string
     status: 'planning' | 'copywriting' | 'design' | 'client_review' | 'live'
   }>({
     clientId: clientId || '',
@@ -106,6 +109,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
     focusKeyword: '',
     ctaGoal: '',
     assignedTo: '',
+    dueDate: '',
     status: 'planning',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -113,6 +117,15 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
   // Delete modal state
   const [deleteTarget, setDeleteTarget] = useState<LandingPageItem | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [toasts, setToasts] = useState<ToastMessage[]>([])
+
+  const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
+    const id = Math.random().toString(36).substring(2, 9)
+    setToasts((prev) => [...prev, { id, title, message, type }])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 4000)
+  }
 
   const isRollup = !clientId
   const isStaff = currentUser?.role === 'partner_employee'
@@ -230,6 +243,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
       focusKeyword: '',
       ctaGoal: '',
       assignedTo: isStaff ? (currentUser?.userId || '') : (team[0]?.id || ''),
+      dueDate: '',
       status: 'planning',
     })
     setIsEditModalOpen(true)
@@ -247,6 +261,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
       focusKeyword: item.focusKeyword || '',
       ctaGoal: item.ctaGoal || '',
       assignedTo: item.assignedTo || '',
+      dueDate: item.dueDate ? new Date(item.dueDate).toISOString().split('T')[0] : '',
       status: item.status,
     })
     setIsEditModalOpen(true)
@@ -270,6 +285,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
             ctaGoal: formData.ctaGoal || undefined,
             assignedTo: isStaff ? editingItem.assignedTo : formData.assignedTo || null,
             status: formData.status,
+            dueDate: formData.dueDate || null,
           },
         })
         const assignee = team.find((t) => t.id === updated.assignedTo)
@@ -866,6 +882,8 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
           </div>
         </div>
       )}
+
+      <ToastContainer toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal

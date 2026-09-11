@@ -356,6 +356,7 @@ export const getReportByIdServerFn = createServerFn({ method: 'GET' })
       partnerLogoUrl: snap?.partnerLogoUrl || null,
       partnerLogoBgColor: snap?.partnerLogoBgColor || '#ffffff',
       partnerId: null,
+      assignedStaffId: null,
       createdAt: row.report.createdAt,
       deletedAt: null,
     }

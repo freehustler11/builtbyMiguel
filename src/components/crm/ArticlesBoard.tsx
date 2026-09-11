@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import {
   Plus,
+  Calendar,
   ExternalLink,
   Edit2,
   Trash2,
@@ -27,6 +28,7 @@ import {
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
 import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
+import { ToastContainer, type ToastMessage } from '../Toast'
 import { useBoardKeyboardNav } from './useBoardKeyboardNav'
 
 const STATUS_COLUMNS: Array<{
@@ -88,6 +90,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
     notes: string
     targetKeyword: string
     writerId: string
+    dueDate: string
     status: 'idea' | 'drafting' | 'review' | 'approved' | 'live'
   }>({
     clientId: clientId || '',
@@ -97,6 +100,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
     notes: '',
     targetKeyword: '',
     writerId: '',
+    dueDate: '',
     status: 'idea',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -104,6 +108,15 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
   // Delete modal state
   const [deleteTarget, setDeleteTarget] = useState<ClientArticleItem | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [toasts, setToasts] = useState<ToastMessage[]>([])
+
+  const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
+    const id = Math.random().toString(36).substring(2, 9)
+    setToasts((prev) => [...prev, { id, title, message, type }])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 4000)
+  }
 
   const isRollup = !clientId
   const isStaff = currentUser?.role === 'partner_employee'
@@ -188,6 +201,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
       notes: '',
       targetKeyword: '',
       writerId: isStaff ? (currentUser?.userId || '') : (team[0]?.id || ''),
+      dueDate: '',
       status: 'idea',
     })
     setIsEditModalOpen(true)
@@ -204,6 +218,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
       notes: item.notes || '',
       targetKeyword: item.targetKeyword || '',
       writerId: item.writerId || '',
+      dueDate: item.dueDate ? new Date(item.dueDate).toISOString().split('T')[0] : '',
       status: item.status,
     })
     setIsEditModalOpen(true)
@@ -226,6 +241,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
             targetKeyword: formData.targetKeyword || undefined,
             writerId: isStaff ? editingItem.writerId : formData.writerId || null,
             status: formData.status,
+            dueDate: formData.dueDate || null,
           },
         })
         const writer = team.find((t) => t.id === updated.writerId)
@@ -729,6 +745,8 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
           </div>
         </div>
       )}
+
+      <ToastContainer toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal

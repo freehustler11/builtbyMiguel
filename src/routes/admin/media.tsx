@@ -409,27 +409,27 @@ function AdminMediaPage() {
 
         {showGuide && (
           <div className="px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 space-y-1.5">
+            <div className="p-4 rounded-[6px] bg-[var(--canvas)]/60 border border-slate-200/60 dark:border-slate-800 space-y-1.5">
               <div className="font-mono font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
                 <span>01.</span> Drag & Drop
               </div>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-[var(--muted)] leading-relaxed">
                 Drop PNG, JPG, WebP photos or PDF documents directly into the upload zone below. Supports batch uploads up to 25MB.
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 space-y-1.5">
+            <div className="p-4 rounded-[6px] bg-[var(--canvas)]/60 border border-slate-200/60 dark:border-slate-800 space-y-1.5">
               <div className="font-mono font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
                 <span>02.</span> 1-Click Copy Link
               </div>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-[var(--muted)] leading-relaxed">
                 Hover any item and click the Copy icon to get its permanent web address copied to your clipboard instantly.
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 space-y-1.5">
+            <div className="p-4 rounded-[6px] bg-[var(--canvas)]/60 border border-slate-200/60 dark:border-slate-800 space-y-1.5">
               <div className="font-mono font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                 <span>03.</span> Direct Post Editor Picker
               </div>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-[var(--muted)] leading-relaxed">
                 Inside the Blog CMS editor, click "Choose from Media" to insert images directly into your Markdown text without copying links.
               </p>
             </div>
@@ -440,14 +440,14 @@ function AdminMediaPage() {
       {/* Overview Bento Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Total Assets */}
-        <div className="p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md shadow-xs space-y-2">
+        <div className="p-5 sm:p-6 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] backdrop-blur-md shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
               Total Assets
             </span>
             <FolderOpen className="w-4 h-4 text-rose-500" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)]">
             {totalFiles}
           </div>
           <div className="text-[11px] font-mono text-slate-400">
@@ -456,35 +456,35 @@ function AdminMediaPage() {
         </div>
 
         {/* Images */}
-        <div className="p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md shadow-xs space-y-2">
+        <div className="p-5 sm:p-6 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] backdrop-blur-md shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
               Photos & Graphics
             </span>
             <ImageIcon className="w-4 h-4 text-cyan-500" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)]">
             {imageCount}
           </div>
           <div className="text-[11px] font-mono text-slate-400">WebP, PNG, JPG, SVG</div>
         </div>
 
         {/* Documents */}
-        <div className="p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md shadow-xs space-y-2">
+        <div className="p-5 sm:p-6 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] backdrop-blur-md shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
               Documents & Sheets
             </span>
             <FileText className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)]">
             {docCount}
           </div>
           <div className="text-[11px] font-mono text-slate-400">PDFs, Sheets, Docs</div>
         </div>
 
         {/* Storage Provider Status */}
-        <div className="p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md shadow-xs space-y-2">
+        <div className="p-5 sm:p-6 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] backdrop-blur-md shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
               Storage Engine
@@ -495,7 +495,7 @@ function AdminMediaPage() {
               <Cloud className="w-4 h-4 text-indigo-500" />
             )}
           </div>
-          <div className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white truncate">
+          <div className="text-lg sm:text-xl font-bold text-[var(--ink)] truncate">
             {storageInfo.name}
           </div>
           <div className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
@@ -518,10 +518,10 @@ function AdminMediaPage() {
           handleFilesUpload(e.dataTransfer.files)
         }}
         onClick={() => fileInputRef.current?.click()}
-        className={`p-8 sm:p-12 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200 ${
+        className={`p-8 sm:p-12 rounded-[8px] border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200 ${
           isDragging
             ? 'border-rose-500 bg-rose-50/60 dark:bg-rose-950/30 scale-[1.01]'
-            : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white/80 dark:bg-[#111827]/80 backdrop-blur-md shadow-xs'
+            : 'border-[var(--line)] hover:border-slate-300 dark:hover:border-slate-700 bg-white/80 dark:bg-[#111827]/80 backdrop-blur-md shadow-xs'
         }`}
       >
         <input
@@ -532,7 +532,7 @@ function AdminMediaPage() {
           className="hidden"
         />
 
-        <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-rose-500 shadow-inner mb-3">
+        <div className="w-14 h-14 rounded-[6px] bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-rose-500 shadow-inner mb-3">
           {isUploading ? (
             <Loader2 className="w-7 h-7 animate-spin" />
           ) : (
@@ -541,10 +541,10 @@ function AdminMediaPage() {
         </div>
 
         <div className="space-y-1">
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+          <h3 className="text-base font-bold text-[var(--ink)]">
             {isUploading ? uploadProgress : 'Drop files here, or browse from computer'}
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+          <p className="text-xs text-[var(--muted)] font-mono">
             PNG, JPG, WebP, SVG, PDF, DOCX, XLSX up to 25MB per file
           </p>
         </div>
@@ -555,14 +555,14 @@ function AdminMediaPage() {
         {/* Left: Filter Switcher & Partner Filter */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Segmented Filter Switcher */}
-          <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+          <div className="flex items-center p-1 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
             <button
               type="button"
               onClick={() => handleTypeTab('all')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
                 type === 'all'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               All ({totalFiles})
@@ -572,8 +572,8 @@ function AdminMediaPage() {
               onClick={() => handleTypeTab('images')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
                 type === 'images'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Images ({imageCount})
@@ -583,8 +583,8 @@ function AdminMediaPage() {
               onClick={() => handleTypeTab('documents')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
                 type === 'documents'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Docs ({docCount})
@@ -593,7 +593,7 @@ function AdminMediaPage() {
 
           {/* Superadmin Partner Agency Filter Dropdown */}
           {isSuperadmin && partners.length > 0 && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-white dark:bg-slate-900 border border-[var(--line)] shadow-xs">
               <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
               <span className="text-[11px] font-mono font-bold text-slate-500 uppercase">Scope:</span>
               <select
@@ -613,14 +613,14 @@ function AdminMediaPage() {
           )}
 
           {/* Purpose Filter Pills */}
-          <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+          <div className="flex items-center p-1 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
             <button
               type="button"
               onClick={() => handlePurposeTab('all')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 purpose === 'all'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               All Usages
@@ -630,8 +630,8 @@ function AdminMediaPage() {
               onClick={() => handlePurposeTab('site')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 purpose === 'site'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Marketing / Site
@@ -641,8 +641,8 @@ function AdminMediaPage() {
               onClick={() => handlePurposeTab('client')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 purpose === 'client'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Client Logos & Assets
@@ -652,8 +652,8 @@ function AdminMediaPage() {
               onClick={() => handlePurposeTab('report')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 purpose === 'report'
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-slate-800 text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Reports
@@ -662,7 +662,7 @@ function AdminMediaPage() {
 
           {/* Client Filter Dropdown when viewing Client Assets or All */}
           {clients.length > 0 && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-white dark:bg-slate-900 border border-[var(--line)] shadow-xs">
               <span className="text-[11px] font-mono font-bold text-slate-500 uppercase">Client:</span>
               <select
                 value={clientId || 'all'}
@@ -681,7 +681,7 @@ function AdminMediaPage() {
 
           {/* Partner Agency Indicator */}
           {isPartner && (
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-xs font-mono font-semibold text-blue-700 dark:text-blue-300">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-xs font-mono font-semibold text-blue-700 dark:text-blue-300">
               <Building2 className="w-3.5 h-3.5 text-blue-500" />
               <span>Agency Media Workspace</span>
             </div>
@@ -696,22 +696,22 @@ function AdminMediaPage() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search filenames..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/40 font-mono shadow-xs"
+            className="w-full pl-10 pr-4 py-2.5 text-xs rounded-[6px] bg-white dark:bg-slate-900 border border-[var(--line)] text-[var(--ink)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/40 font-mono shadow-xs"
           />
         </form>
       </div>
 
       {/* Media Items Gallery Grid */}
       {mediaItems.length === 0 ? (
-        <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md p-12 text-center space-y-4 shadow-xs">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-500 border border-rose-200/80 dark:border-rose-900/50 flex items-center justify-center mx-auto">
+        <div className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] backdrop-blur-md p-12 text-center space-y-4 shadow-xs">
+          <div className="w-12 h-12 rounded-[6px] bg-rose-50 dark:bg-rose-950/50 text-rose-500 border border-rose-200/80 dark:border-rose-900/50 flex items-center justify-center mx-auto">
             <FolderOpen className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+            <h3 className="text-base font-bold text-[var(--ink)]">
               {q ? `No media items matching "${q}"` : 'No Media Assets Uploaded Yet'}
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+            <p className="text-xs text-[var(--muted)] max-w-sm mx-auto">
               Use the drag-and-drop zone above to upload your first image or document.
             </p>
           </div>
@@ -725,10 +725,10 @@ function AdminMediaPage() {
             return (
               <div
                 key={item.id}
-                className="group relative flex flex-col justify-between rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md overflow-hidden hover:border-rose-500/50 dark:hover:border-rose-500/50 hover:shadow-xl transition-all duration-300 shadow-xs"
+                className="group relative flex flex-col justify-between rounded-[8px] border border-[var(--line)] bg-[var(--panel)] backdrop-blur-md overflow-hidden hover:border-rose-500/50 dark:hover:border-rose-500/50 hover:shadow-xl transition-all duration-300 shadow-xs"
               >
                 {/* Visual Thumbnail */}
-                <div className="h-44 w-full bg-slate-100 dark:bg-slate-900/80 flex items-center justify-center overflow-hidden relative border-b border-slate-100 dark:border-slate-800/80">
+                <div className="h-44 w-full bg-[var(--canvas)]/80 flex items-center justify-center overflow-hidden relative border-b border-slate-100 dark:border-slate-800/80">
                   {isImage ? (
                     <img
                       src={item.fileUrl}
@@ -738,7 +738,7 @@ function AdminMediaPage() {
                     />
                   ) : (
                     <div className="flex flex-col items-center gap-2 p-4 text-center">
-                      <div className="p-3 rounded-2xl bg-white dark:bg-slate-800 shadow-xs border border-slate-200/80 dark:border-slate-700">
+                      <div className="p-3 rounded-[6px] bg-white dark:bg-slate-800 shadow-xs border border-slate-200/80 dark:border-slate-700">
                         {getFileIcon(item.mimeType)}
                       </div>
                       <span className="text-[11px] font-mono uppercase text-slate-400 font-bold">
@@ -765,7 +765,7 @@ function AdminMediaPage() {
                 <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
                   <div className="space-y-1">
                     <p
-                      className="text-xs font-bold text-slate-900 dark:text-white truncate"
+                      className="text-xs font-bold text-[var(--ink)] truncate"
                       title={item.filename}
                     >
                       {item.filename}

@@ -99,7 +99,7 @@ function AgencyWorkspacePage() {
     search.tab || 'landing-pages'
 
   const selectedPartnerId = isSuperadmin ? search.partnerId : undefined
-  const showAgenciesOverview = isSuperadmin && !selectedPartnerId
+  const showAgenciesOverview = isSuperadmin && !selectedPartnerId && !search.tab
   const [agencySearchQuery, setAgencySearchQuery] = useState('')
 
   const activeAgencyObj = selectedPartnerId
