@@ -1131,7 +1131,7 @@ function AdminClientsPage() {
       {/* PARTNER AGENCIES MANAGEMENT MODAL (Superadmin only)                       */}
       {/* ========================================================================= */}
       {isPartnersModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-in fade-in">
           <div className="w-full max-w-2xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-6 shadow-2xl animate-in zoom-in-95 max-h-[90vh] flex flex-col">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
@@ -1328,7 +1328,7 @@ function AdminClientsPage() {
                   value={partnerFormName}
                   onChange={(e) => setPartnerFormName(e.target.value)}
                   placeholder="Apex Growth Agency"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  className="w-full px-3.5 py-2 rounded-[10px] text-[13px] border border-[var(--line)] bg-[var(--canvas)]/70 text-[var(--ink)] focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 focus:border-[var(--accent)] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 />
               </div>
 
@@ -1342,7 +1342,7 @@ function AdminClientsPage() {
                   value={partnerFormEmail}
                   onChange={(e) => setPartnerFormEmail(e.target.value)}
                   placeholder="partner@agency.com"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  className="w-full px-3.5 py-2 rounded-[10px] text-[13px] border border-[var(--line)] bg-[var(--canvas)]/70 text-[var(--ink)] focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 focus:border-[var(--accent)] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 />
               </div>
 
@@ -1361,7 +1361,7 @@ function AdminClientsPage() {
                   value={partnerFormPassword}
                   onChange={(e) => setPartnerFormPassword(e.target.value)}
                   placeholder={editingPartner ? '•••••••• (leave blank to keep)' : 'At least 6 characters'}
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  className="w-full px-3.5 py-2 rounded-[10px] text-[13px] border border-[var(--line)] bg-[var(--canvas)]/70 text-[var(--ink)] focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 focus:border-[var(--accent)] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 />
               </div>
 
@@ -1430,8 +1430,8 @@ function AdminClientsPage() {
       {/* CLIENT CREATE / EDIT MODAL                                                */}
       {/* ========================================================================= */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-2xl bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 space-y-5 shadow-2xl text-[var(--ink)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-2xl bg-[var(--panel)] rounded-[20px] border border-[var(--line)] p-6 sm:p-7 space-y-5 shadow-2xl text-[var(--ink)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">

@@ -65,18 +65,18 @@ export function ConfirmModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-in fade-in duration-150"
       onClick={handleClose}
     >
       <div
-        className="w-full max-w-md bg-[var(--panel)] rounded-[12px] border border-[var(--line)] shadow-2xl p-5 sm:p-6 space-y-4 animate-in zoom-in-95 duration-150 text-[var(--ink)]"
+        className="w-full max-w-md bg-[var(--panel)] rounded-[20px] border border-[var(--line)] bg-[var(--panel)] shadow-2xl p-6 sm:p-7 space-y-4 animate-in zoom-in-95 duration-150 text-[var(--ink)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div
-              className={`w-9 h-9 rounded-[6px] flex items-center justify-center shrink-0 ${styles.iconBg}`}
+              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${styles.iconBg}`}
             >
               {styles.icon}
             </div>
@@ -110,7 +110,7 @@ export function ConfirmModal({
             type="button"
             onClick={handleClose}
             disabled={isLoading}
-            className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] hover:bg-[var(--canvas)] border border-[var(--line)] bg-[var(--panel)] transition cursor-pointer disabled:opacity-50"
+            className="btn btn-secondary rounded-full h-8 px-4 text-[13px] transition cursor-pointer disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -118,7 +118,7 @@ export function ConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className={`h-8 px-3.5 rounded-[6px] text-[13px] font-medium transition cursor-pointer disabled:opacity-50 ${styles.btn}`}
+            className={`btn rounded-full h-8 px-5 text-[13px] font-semibold transition cursor-pointer disabled:opacity-50 ${styles.btn}`}
           >
             {isLoading ? 'Processing...' : confirmText}
           </button>

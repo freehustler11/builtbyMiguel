@@ -94,15 +94,15 @@ export function ChangePasswordModal({ isOpen, onClose, onSuccess }: ChangePasswo
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-in fade-in duration-150">
       <div
-        className="w-full max-w-md bg-[var(--panel)] rounded-[12px] border border-[var(--line)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 text-[var(--ink)]"
+        className="w-full max-w-md bg-[var(--panel)] rounded-[20px] border border-[var(--line)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 text-[var(--ink)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--line)] bg-[var(--canvas)]/40">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center shrink-0">
               <KeyRound className="w-4 h-4" />
             </div>
             <div>
@@ -229,14 +229,14 @@ export function ChangePasswordModal({ isOpen, onClose, onSuccess }: ChangePasswo
               type="button"
               onClick={handleClose}
               disabled={isSubmitting}
-              className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] hover:bg-[var(--canvas)] border border-[var(--line)] bg-[var(--panel)] transition cursor-pointer disabled:opacity-50"
+              className="btn btn-secondary rounded-full h-8 px-4 text-[13px] border border-[var(--line)] bg-[var(--panel)] transition cursor-pointer disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !currentPassword || !newPassword || !confirmPassword}
-              className="h-8 inline-flex items-center gap-1.5 px-3.5 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary rounded-full h-8 px-5 text-[13px] hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>

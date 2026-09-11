@@ -769,8 +769,8 @@ function ClientWorkspacePage() {
 
       {/* Edit Client Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-2xl bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 space-y-5 shadow-2xl text-[var(--ink)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-2xl bg-[var(--panel)] rounded-[20px] border border-[var(--line)] p-6 sm:p-7 space-y-5 shadow-2xl text-[var(--ink)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">

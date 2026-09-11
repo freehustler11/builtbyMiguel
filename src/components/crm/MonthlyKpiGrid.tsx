@@ -464,7 +464,7 @@ export function MonthlyKpiGrid({
       </div>
 
       {/* Spreadsheet Data Grid */}
-      <div className="w-full overflow-x-auto rounded-[8px] border border-[var(--line)] bg-[var(--panel)] shadow-2xs">
+      <div className="w-full overflow-x-auto card-modern shadow-2xs">
         <table className="w-full text-left border-collapse min-w-[1200px]">
           {/* Header */}
           <thead className="bg-[var(--canvas)]/90 sticky top-0 z-10 border-b border-[var(--line)] backdrop-blur-xs select-none">

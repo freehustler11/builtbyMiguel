@@ -84,14 +84,14 @@ function AdminDashboardPage() {
         <div className="flex items-center gap-2">
           <Link
             to="/admin/clients"
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[13px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer"
+            className="btn btn-secondary rounded-full h-8 px-3.5 text-[13px]"
           >
             <Users className="w-3.5 h-3.5 text-[var(--muted)]" />
             <span>Manage clients</span>
           </Link>
           <Link
             to="/admin/reports/new"
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shadow-xs"
+            className="btn btn-primary rounded-full h-8 px-4 text-[13px]"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>New report</span>
@@ -161,7 +161,7 @@ function AdminDashboardPage() {
             </div>
 
             {data.assignedWork.items.length === 0 ? (
-              <div className="p-6 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] text-center space-y-2">
+              <div className="p-6 card-modern text-center space-y-2">
                 <CheckCircle2 className="w-8 h-8 text-[var(--success)] mx-auto opacity-80" />
                 <p className="text-[13px] font-medium text-[var(--ink)]">All clear!</p>
                 <p className="text-[12px] text-[var(--muted)]">
@@ -169,7 +169,7 @@ function AdminDashboardPage() {
                 </p>
               </div>
             ) : (
-              <div className="rounded-[8px] bg-[var(--panel)] border border-[var(--line)] divide-y divide-[var(--line)] overflow-hidden">
+              <div className="card-modern divide-y divide-[var(--line)] overflow-hidden">
                 {data.assignedWork.items.slice(0, 5).map((item) => (
                   <div
                     key={`${item.type}-${item.id}`}
@@ -241,7 +241,7 @@ function AdminDashboardPage() {
             </div>
 
             {data.missingKpis.clients.length === 0 ? (
-              <div className="p-6 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] text-center space-y-2">
+              <div className="p-6 card-modern text-center space-y-2">
                 <CheckCircle2 className="w-8 h-8 text-[var(--success)] mx-auto opacity-80" />
                 <p className="text-[13px] font-medium text-[var(--ink)]">
                   All KPIs up to date for {data.period.monthName}
@@ -251,7 +251,7 @@ function AdminDashboardPage() {
                 </p>
               </div>
             ) : (
-              <div className="rounded-[8px] bg-[var(--panel)] border border-[var(--line)] divide-y divide-[var(--line)] overflow-hidden">
+              <div className="card-modern divide-y divide-[var(--line)] overflow-hidden">
                 {data.missingKpis.clients.slice(0, 5).map((client) => (
                   <div
                     key={client.clientId}
@@ -318,7 +318,7 @@ function AdminDashboardPage() {
             </div>
 
             {data.reportsDue.clients.length === 0 ? (
-              <div className="p-6 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] text-center space-y-2">
+              <div className="p-6 card-modern text-center space-y-2">
                 <CheckCircle2 className="w-8 h-8 text-[var(--success)] mx-auto opacity-80" />
                 <p className="text-[13px] font-medium text-[var(--ink)]">
                   All reports generated for {data.period.monthName}
@@ -328,7 +328,7 @@ function AdminDashboardPage() {
                 </p>
               </div>
             ) : (
-              <div className="rounded-[8px] bg-[var(--panel)] border border-[var(--line)] divide-y divide-[var(--line)] overflow-hidden">
+              <div className="card-modern divide-y divide-[var(--line)] overflow-hidden">
                 {data.reportsDue.clients.slice(0, 5).map((client) => (
                   <div
                     key={client.clientId}
@@ -384,7 +384,7 @@ function AdminDashboardPage() {
             </div>
 
             {data.recentActivity.length === 0 ? (
-              <div className="p-6 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] text-center space-y-2">
+              <div className="p-6 card-modern text-center space-y-2">
                 <Clock className="w-8 h-8 text-[var(--muted)] mx-auto opacity-60" />
                 <p className="text-[13px] font-medium text-[var(--ink)]">No recent activity</p>
                 <p className="text-[12px] text-[var(--muted)]">
@@ -392,7 +392,7 @@ function AdminDashboardPage() {
                 </p>
               </div>
             ) : (
-              <div className="rounded-[8px] bg-[var(--panel)] border border-[var(--line)] divide-y divide-[var(--line)] overflow-hidden">
+              <div className="card-modern divide-y divide-[var(--line)] overflow-hidden">
                 {data.recentActivity.slice(0, 6).map((item) => (
                   <div
                     key={item.id}

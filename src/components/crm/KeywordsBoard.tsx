@@ -347,7 +347,7 @@ export function KeywordsBoard({ clientId, partnerId }: KeywordsBoardProps) {
             return (
               <div
                 key={group.id}
-                className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-3 space-y-2.5"
+                className="card-modern p-3 space-y-2.5"
               >
                 {/* Group Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[var(--line)]">

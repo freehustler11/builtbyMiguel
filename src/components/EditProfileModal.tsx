@@ -144,15 +144,15 @@ export function EditProfileModal({ isOpen, onClose, onSuccess }: EditProfileModa
     .slice(0, 2)
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-in fade-in duration-150">
       <div
-        className="w-full max-w-md bg-[var(--panel)] rounded-[12px] border border-[var(--line)] shadow-xl overflow-hidden animate-in zoom-in-95 duration-150"
+        className="w-full max-w-md bg-[var(--panel)] rounded-[20px] border border-[var(--line)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--line)] bg-[var(--canvas)]/40">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
               <User className="w-4 h-4" />
             </div>
             <div>
@@ -191,7 +191,7 @@ export function EditProfileModal({ isOpen, onClose, onSuccess }: EditProfileModa
             )}
 
             {/* Avatar Section */}
-            <div className="flex items-center gap-4 p-3.5 rounded-[8px] bg-[var(--canvas)] border border-[var(--line)]">
+            <div className="flex items-center gap-4 p-3.5 rounded-[14px] bg-[var(--canvas)]/70 border border-[var(--line)]">
               <div className="relative group shrink-0">
                 {previewUrl ? (
                   <img
@@ -260,7 +260,7 @@ export function EditProfileModal({ isOpen, onClose, onSuccess }: EditProfileModa
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Alex Morgan"
-                className="w-full h-8 px-2.5 rounded-[6px] text-[12px] bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] focus:outline-hidden focus:border-[var(--accent)] transition"
+                className="w-full h-9 px-3 rounded-[10px] text-[13px] bg-[var(--canvas)]/70 border border-[var(--line)] text-[var(--ink)] focus:outline-none focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 focus:border-[var(--accent)] transition"
               />
             </div>
 
@@ -273,7 +273,7 @@ export function EditProfileModal({ isOpen, onClose, onSuccess }: EditProfileModa
                 type="email"
                 value={email}
                 disabled
-                className="w-full h-8 px-2.5 rounded-[6px] text-[12px] bg-[var(--canvas)]/60 border border-[var(--line)] text-[var(--muted)] cursor-not-allowed font-mono"
+                className="w-full h-9 px-3 rounded-[10px] text-[13px] bg-[var(--canvas)]/40 border border-[var(--line)] text-[var(--muted)] cursor-not-allowed font-mono"
               />
             </div>
 
@@ -283,14 +283,14 @@ export function EditProfileModal({ isOpen, onClose, onSuccess }: EditProfileModa
                 type="button"
                 onClick={onClose}
                 disabled={isSaving}
-                className="h-8 px-3 rounded-[6px] text-[12px] font-medium text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer disabled:opacity-50"
+                className="btn btn-ghost rounded-full h-8 px-4 text-[12px]"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSaving || isUploading}
-                className="h-8 inline-flex items-center gap-1.5 px-4 rounded-[6px] text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
+                className="btn btn-primary rounded-full h-8 px-5 text-[12px]"
               >
                 {isSaving ? (
                   <>

@@ -152,16 +152,16 @@ export function MediaPickerModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/50 backdrop-blur-md animate-in fade-in duration-150">
       {/* Modal Dialog Box */}
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-[12px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
+        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-[20px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--line)] bg-[var(--canvas)]/40">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
               <FolderOpen className="w-4 h-4" />
             </div>
             <div>
@@ -191,18 +191,18 @@ export function MediaPickerModal({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search filename..."
-              className="w-full h-8 pl-9 pr-3 text-[13px] rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] font-mono"
+              className="w-full h-9 pl-9 pr-3 text-[13px] rounded-full bg-[var(--canvas)]/80 border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 focus:border-[var(--accent)]"
             />
           </div>
 
           {/* Right Side: Type Filters & Upload */}
           <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap justify-between sm:justify-end">
             {/* Type Filter Switcher */}
-            <div className="flex items-center rounded-[6px] border border-[var(--line)] p-0.5 bg-[var(--canvas)] text-[12px] font-medium">
+            <div className="flex items-center rounded-full border border-[var(--line)] p-0.5 bg-[var(--canvas)]/80 text-[12px] font-medium">
               <button
                 type="button"
                 onClick={() => setFilterType('all')}
-                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3 rounded-full transition cursor-pointer ${
                   filterType === 'all'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -213,7 +213,7 @@ export function MediaPickerModal({
               <button
                 type="button"
                 onClick={() => setFilterType('images')}
-                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3 rounded-full transition cursor-pointer ${
                   filterType === 'images'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -224,7 +224,7 @@ export function MediaPickerModal({
               <button
                 type="button"
                 onClick={() => setFilterType('documents')}
-                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3 rounded-full transition cursor-pointer ${
                   filterType === 'documents'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -246,7 +246,7 @@ export function MediaPickerModal({
                 type="button"
                 disabled={isUploading}
                 onClick={() => fileInputRef.current?.click()}
-                className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50 shrink-0"
+                className="btn btn-primary rounded-full h-8 px-4 text-[13px] shrink-0"
               >
                 {isUploading ? (
                   <>
@@ -325,7 +325,7 @@ export function MediaPickerModal({
                       })
                       onClose()
                     }}
-                    className="group relative flex flex-col rounded-[8px] border border-[var(--line)] bg-[var(--panel)] overflow-hidden hover:border-[var(--accent)] hover:shadow-md transition text-left cursor-pointer"
+                    className="group relative flex flex-col rounded-[14px] border border-[var(--line)] bg-[var(--panel)] overflow-hidden hover:border-[var(--accent)] hover:shadow-lg hover:shadow-indigo-500/5 transition text-left cursor-pointer"
                   >
                     {/* Thumbnail Preview */}
                     <div className="h-32 w-full bg-[var(--canvas)] flex items-center justify-center overflow-hidden relative border-b border-[var(--line)]/60">

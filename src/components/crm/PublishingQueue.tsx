@@ -161,7 +161,7 @@ export function PublishingQueue({ partnerId }: PublishingQueueProps) {
             />
           </div>
 
-          <div className="flex items-center rounded-[6px] border border-[var(--line)] p-0.5 bg-[var(--canvas)] overflow-x-auto no-scrollbar">
+          <div className="flex items-center rounded-full border border-[var(--line)] p-0.5 bg-[var(--canvas)]/80 overflow-x-auto no-scrollbar">
             {[
               { id: 'all', label: 'All Review' },
               { id: 'landing_pages', label: 'Landing Pages' },
@@ -173,7 +173,7 @@ export function PublishingQueue({ partnerId }: PublishingQueueProps) {
                 key={f.id}
                 type="button"
                 onClick={() => setActiveType(f.id as any)}
-                className={`h-7 px-2.5 rounded-[4px] text-[12px] font-medium transition cursor-pointer whitespace-nowrap ${
+                className={`h-7 px-3 rounded-full text-[12px] font-medium transition cursor-pointer whitespace-nowrap ${
                   activeType === f.id
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -199,7 +199,7 @@ export function PublishingQueue({ partnerId }: PublishingQueueProps) {
             type="button"
             onClick={loadData}
             disabled={isLoading}
-            className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer disabled:opacity-50"
+            className="btn btn-secondary rounded-full h-8 px-3.5 text-[13px] disabled:opacity-50"
             title="Refresh queue"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-[var(--muted)] ${isLoading ? 'animate-spin' : ''}`} />
@@ -209,7 +209,7 @@ export function PublishingQueue({ partnerId }: PublishingQueueProps) {
       </div>
 
       {/* Queue Table */}
-      <div className="w-full overflow-x-auto rounded-[8px] border border-[var(--line)] bg-[var(--panel)] shadow-2xs">
+      <div className="w-full overflow-x-auto card-modern overflow-hidden">
         <table className="w-full text-left border-collapse min-w-[900px]">
           {/* Header */}
           <thead className="bg-[var(--canvas)]/90 sticky top-0 z-10 border-b border-[var(--line)] backdrop-blur-xs select-none">

@@ -123,15 +123,15 @@ export function ResetUserPasswordModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-in fade-in duration-150">
       <div
-        className="w-full max-w-md bg-[var(--panel)] rounded-[12px] border border-[var(--line)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 text-[var(--ink)]"
+        className="w-full max-w-md bg-[var(--panel)] rounded-[20px] border border-[var(--line)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 text-[var(--ink)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--line)] bg-[var(--canvas)]/40">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+            <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
               <KeyRound className="w-4 h-4" />
             </div>
             <div>
@@ -254,7 +254,7 @@ export function ResetUserPasswordModal({
                   required
                   minLength={6}
                   placeholder="Enter or generate password"
-                  className="w-full h-8 pl-3 pr-9 rounded-[6px] text-[13px] bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] font-mono"
+                  className="w-full h-9 pl-3.5 pr-9 rounded-[10px] text-[13px] bg-[var(--canvas)]/70 border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 focus:border-[var(--accent)] font-mono"
                 />
                 <button
                   type="button"
@@ -275,14 +275,14 @@ export function ResetUserPasswordModal({
                 type="button"
                 onClick={handleClose}
                 disabled={isSubmitting}
-                className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] hover:bg-[var(--canvas)] border border-[var(--line)] bg-[var(--panel)] transition cursor-pointer disabled:opacity-50"
+                className="btn btn-secondary rounded-full h-8 px-4 text-[13px] transition cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !password}
-                className="h-8 inline-flex items-center gap-1.5 px-3.5 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-primary rounded-full h-8 px-5 text-[13px] hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
