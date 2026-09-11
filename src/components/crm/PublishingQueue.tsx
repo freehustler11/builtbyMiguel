@@ -157,7 +157,7 @@ export function PublishingQueue({ partnerId }: PublishingQueueProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search deliverables in review..."
-              className="h-8 pl-8 pr-3 text-[13px] rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] w-56 sm:w-72"
+              className="h-8 pl-8 pr-3 text-[13px] rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] w-full sm:w-80 md:w-96"
             />
           </div>
 

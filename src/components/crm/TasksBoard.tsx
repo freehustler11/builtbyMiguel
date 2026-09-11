@@ -487,7 +487,7 @@ export function TasksBoard({ clientId, partnerId }: TasksBoardProps) {
               placeholder="Search deliverables..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-3.5 py-1.5 text-[13px] rounded-[6px] bg-[var(--panel)] border border-[var(--line)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] w-64 text-[var(--ink)] placeholder-[var(--muted)]"
+              className="pl-9 pr-3.5 py-1.5 text-[13px] rounded-[6px] bg-[var(--panel)] border border-[var(--line)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] w-full sm:w-80 md:w-96 text-[var(--ink)] placeholder-[var(--muted)]"
             />
           </div>
 

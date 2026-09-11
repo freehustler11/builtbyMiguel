@@ -847,8 +847,10 @@ export const getNavBlockersServerFn = createServerFn({ method: 'GET' })
       partnerId?: string
     }) => {
       const now = new Date()
-      const month = Number(data?.month) || now.getMonth() + 1
-      const year = Number(data?.year) || now.getFullYear()
+      const defaultMonth = now.getUTCMonth() === 0 ? 12 : now.getUTCMonth()
+      const defaultYear = now.getUTCMonth() === 0 ? now.getUTCFullYear() - 1 : now.getUTCFullYear()
+      const month = Number(data?.month) || defaultMonth
+      const year = Number(data?.year) || defaultYear
       return {
         month: Math.min(Math.max(month, 1), 12),
         year: Math.min(Math.max(year, 2000), 2100),
@@ -978,7 +980,7 @@ export const getNavBlockersServerFn = createServerFn({ method: 'GET' })
     const publishingQueueCount = (lpCountRes?.count || 0) + (artCountRes?.count || 0)
 
     return {
-      missingKpiClientsCount,
+      missingKpiClientsCount: isCurrentOrFutureMonth ? 0 : missingKpiClientsCount,
       totalClientsCount,
       ungeneratedReportsCount,
       generatedReportsCount,

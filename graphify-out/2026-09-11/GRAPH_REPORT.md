@@ -1,11 +1,11 @@
 # Graph Report - built by Miguel  (2026-09-11)
 
 ## Corpus Check
-- 548 files · ~878,054 words
+- 548 files · ~878,867 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8302 nodes · 10267 edges · 727 communities (667 shown, 46 thin omitted)
+- 8304 nodes · 10280 edges · 720 communities (666 shown, 40 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 73 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
@@ -42,7 +42,7 @@
 - scripts/core.py
 - Design
 - Canvas Design System
-- Voice & Audio Generation
+- Generative AI Tools for Ad Creative
 - Step 1.4 — Conduct structured intake
 - Form & Input Components
 - Tailwind CSS Responsive Design
@@ -58,7 +58,7 @@
 - The 17 sections (scored 0–5 each)
 - Measurement Framework — KPIs, North Stars, Cadence
 - search_stack
-- app/db/schema.ts
+- app/server/crm.ts
 - The Templates
 - Google Ads Setup
 - Logo Usage Rules
@@ -99,7 +99,7 @@
 - Growth Patterns — The Real Shape of SaaS Growth
 - Social Content
 - TailwindConfigGenerator
-- test_design_system_mode.py
+- _select_palette_for_mode
 - Sections to Capture
 - Journalist Pitching — Proactive PR Workflow
 - SMS Sequence Templates
@@ -138,8 +138,8 @@
 - Offer Anatomy
 - Sales Enablement
 - Navigation Patterns
-- routes/index.tsx
-- media.tsx
+- app/server/leads.ts
+- app/server/media.ts
 - Motion-Style Video Ads (Faceless, Fully Generated)
 - Dunning Playbook
 - Positioning Variations Library
@@ -618,7 +618,7 @@
 - Demo Scripts & Talk Tracks
 - websites-care.tsx
 - main.tsx
-- Output Formats
+- app/lib/auth.ts
 - Static Ad Template Library
 - Analytics & Optimization
 - Engagement Strategy
@@ -659,10 +659,10 @@
 - extraction-spec.md
 - create.md
 - .test_add_components_no_config
-- Platform Specs
+- Voice & Audio Generation
 - .test_init_default_project_root
 - .test_init_dry_run
-- Transactional / Account Notifications
+- systems-auto.tsx
 - .test_get_installed_components_empty
 - .test_add_components_no_components
 - .test_add_fonts
@@ -693,25 +693,22 @@
 - 8. Revenue
 - Section 4 — Acquisition
 - Attentive
-- SMS Platform Reference
+- AudienceTap
 - Brevo (formerly Sendinblue)
 - Twilio
-- SimpleTexting
+- SMS Platform Reference
 - Plivo
 - Customer.io
 - Postscript
 - 7. REPORT PIPELINE
-- Post-Purchase Flow
-- Generating Ad Copy
+- Video Generation
+- SMS Sequence Types
 - Core Principles
 - Internal Linking Strategy
-- How This Skill Works
-- United States — A2P 10DLC
-- Win-Back (Lapsed Customers)
-- Welcome / Opt-In Confirmation
-- $.tsx
-- about.tsx
-- Abandoned Cart (highest-ROI flow for ecom)
+- .generate
+- Core Principles
+- Before Starting
+- SMS Copy Guidelines
 - Product/App Events
 - Custom Dimensions and Metrics
 - Case Study Briefs (Sales Format)
@@ -719,21 +716,17 @@
 - Footer Navigation
 - Content / Blog Site
 - SaaS Marketing Site
-- cookie-policy.tsx
-- privacy-policy.tsx
 - 8. METRICS ENTRY
 - Essential Events
 - Output Format
-- thank-you.tsx
-- work.tsx
 - .test_check_shadcn_config_exists
 - .test_get_installed_components_with_files
 
 ## God Nodes (most connected - your core abstractions)
-1. `assertActiveSession()` - 85 edges
-2. `getEffectivePartnerId()` - 65 edges
+1. `assertActiveSession()` - 86 edges
+2. `getEffectivePartnerId()` - 66 edges
 3. `TailwindConfigGenerator` - 58 edges
-4. `checkAuthServerFn` - 52 edges
+4. `checkAuthServerFn` - 54 edges
 5. `search()` - 43 edges
 6. `FileRoutesByPath` - 42 edges
 7. `TestTailwindConfigGenerator` - 35 edges
@@ -742,10 +735,10 @@
 10. `ShadcnInstaller` - 34 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `PortalLayout()` --calls--> `logoutServerFn`  [EXTRACTED]
-  src/routes/portal.tsx → app/lib/auth.ts
 - `simulateAssertClientAccess()` --calls--> `getEffectivePartnerId()`  [EXTRACTED]
   scripts/simulate.ts → app/server/auth.ts
+- `MetricFieldConfig` --references--> `MonthlyMetricsInput`  [EXTRACTED]
+  src/components/crm/MonthlyMetricsForm.tsx → app/server/metrics.ts
 - `runSimulations()` --indirect_call--> `ReportDocument()`  [INFERRED]
   scripts/simulate.ts → src/components/ReportDocument.tsx
 - `runAudit()` --calls--> `hashPassword()`  [EXTRACTED]
@@ -756,19 +749,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (727 total, 46 thin omitted)
+## Communities (720 total, 40 thin omitted)
 
 ### Community 0 - "routeTree.gen.ts"
-Cohesion: 0.04
-Nodes (55): Route, AboutRoute, AdminActivityRoute, AdminAgenciesIndexRoute, AdminAgenciesPartnerIdRoute, AdminAgenciesUnassignedRoute, AdminClientsClientIdRoute, AdminClientsRoute (+47 more)
+Cohesion: 0.03
+Nodes (61): Route, Route, Route, Route, Route, Route, Route, AboutRoute (+53 more)
 
 ### Community 1 - "assertActiveSession"
-Cohesion: 0.06
-Nodes (86): Citation, ClientArticle, Keyword, LandingPage, Task, logActivity(), assertActiveSession(), getEffectivePartnerId() (+78 more)
+Cohesion: 0.05
+Nodes (94): logActivity(), assertActiveSession(), getEffectivePartnerId(), getServerUtils(), assignClientStaffServerFn, AssignedStaffSummary, ClientDataSourceItem, createClientLocationServerFn (+86 more)
 
 ### Community 2 - "clients.tsx"
-Cohesion: 0.06
-Nodes (60): ActiveSessionResult, hashPassword(), ClientWithReportCount, PartnerSummary, TeamPickerMember, MonthlyMetricsInput, AgencyDetailData, assignClientPartnerServerFn (+52 more)
+Cohesion: 0.07
+Nodes (52): hashPassword(), assertSuperadminSession(), ClientWithReportCount, PartnerSummary, deleteMessageServerFn, getMessagesServerFn, updateMessageStatusServerFn, AgencyDetailData (+44 more)
 
 ### Community 3 - "team.tsx"
 Cohesion: 0.16
@@ -788,19 +781,19 @@ Nodes (42): BM25, detect_domain(), get_cip_brief(), _load_csv(), Load CSV and re
 
 ### Community 7 - "posts.tsx"
 Cohesion: 0.12
-Nodes (32): assertSuperadminSession(), deleteMessageServerFn, updateMessageStatusServerFn, createPostServerFn, deletePostServerFn, getAdminPostsServerFn, getPostByIdServerFn, updatePostServerFn (+24 more)
+Nodes (30): Post, createPostServerFn, deletePostServerFn, getAdminPostsServerFn, getPostByIdServerFn, updatePostServerFn, AdminMarkdownBlockItem, AdminMarkdownRenderer() (+22 more)
 
 ### Community 8 - "MonthlyKpiGrid.tsx"
 Cohesion: 0.09
-Nodes (19): advancePublishingQueueItemServerFn, DataSourceStatus, getMonthlyKpiGridServerFn, getReportsDueServerFn, KpiGridClientRow, KpiGridLocationRow, PublishingQueueItem, QueueItemType (+11 more)
+Nodes (21): ActiveSessionResult, advancePublishingQueueItemServerFn, DataSourceStatus, getMonthlyKpiGridServerFn, getPublishingQueueServerFn, getReportsDueServerFn, KpiGridClientRow, KpiGridLocationRow (+13 more)
 
 ### Community 9 - "Social Listening & Engagement Triage"
 Cohesion: 0.04
 Nodes (46): Bluesky, Bluesky (free, public API), Comment Quality Tiers, Common Workflows, Contents, "Find people complaining about [competitor]", "Find target-account posts I missed", "Give me my top 10 posts to comment on today" (+38 more)
 
 ### Community 10 - "Ad Creative"
-Cohesion: 0.08
-Nodes (25): 1. Break into sub-tasks, 1. Platform & Format, 2. Generate in waves, 2. Product & Offer, 3. Audience & Intent, 3. Quality filter, 4. Performance Data (if iterating), 5. Constraints (+17 more)
+Cohesion: 0.04
+Nodes (47): 1. Break into sub-tasks, 1. Platform & Format, 2. Generate in waves, 2. Product & Offer, 3. Audience & Intent, 3. Quality filter, 4. Performance Data (if iterating), 5. Constraints (+39 more)
 
 ### Community 11 - "Signup Flow CRO"
 Cohesion: 0.04
@@ -831,8 +824,8 @@ Cohesion: 0.05
 Nodes (41): Article / BlogPosting, BreadcrumbList, Contents, Event, FAQPage, HowTo, Implementation Example (Next.js), LocalBusiness (+33 more)
 
 ### Community 18 - "SMS Marketing"
-Cohesion: 0.05
-Nodes (43): 1. Business Type, 1. Every send has a real cost, 2. Current State, 2. Opt-in is your most valuable asset, 3. Compliance Posture, 3. Each message must justify itself, 4. Brevity + clarity, 4. Goal (+35 more)
+Cohesion: 0.11
+Nodes (18): Canada — CASL, Common Mistakes, Compliance — Read First, EU/UK — GDPR-derived consent, Key Metrics, Measurement, Output Format, Phone Number Types (US) (+10 more)
 
 ### Community 19 - "app/lib/hostname.ts"
 Cohesion: 0.26
@@ -866,9 +859,9 @@ Nodes (35): Banner Design (Built-in), Banner: Design Rules, Banner: Quick Size R
 Cohesion: 0.06
 Nodes (35): 1. Visual Communication First, 2. Minimal Text Integration, 3. Expert Craftsmanship, 4. Systematic Patterns, Analog Meditation, Approach, Canvas Boundaries, Canvas Design System (+27 more)
 
-### Community 27 - "Voice & Audio Generation"
-Cohesion: 0.06
-Nodes (35): Ad Creative Use Cases, Cartesia Sonic, Choosing a Voice Tool, Choosing the Right Tool, Code-Based Video: Remotion, Cost Comparison for 100 Ad Variations, Decision Tree, ElevenLabs (+27 more)
+### Community 27 - "Generative AI Tools for Ad Creative"
+Cohesion: 0.12
+Nodes (17): Ad Creative Use Cases, Choosing the Right Tool, Code-Based Video: Remotion, Cost Comparison for 100 Ad Variations, Decision Tree, Flux (Black Forest Labs), Generative AI Tools for Ad Creative, Getting Started (+9 more)
 
 ### Community 28 - "Step 1.4 — Conduct structured intake"
 Cohesion: 0.06
@@ -891,8 +884,8 @@ Cohesion: 0.06
 Nodes (31): Before starting, Content Marketing — the trust engine, During engagement, Early stage (pre-product-market-fit), Growth Marketing — the demand engine, Growth stage (post-PMF, scaling what works), High-leverage combinations, How this informs the plan (+23 more)
 
 ### Community 33 - "DesignSystemGenerator"
-Cohesion: 0.05
-Nodes (26): DesignSystemGenerator, Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Execute searches across multiple domains., Find matching reasoning rule for a category., Apply reasoning rules to search results., Select best matching result based on priority keywords., Extract results list from search result dict. (+18 more)
+Cohesion: 0.06
+Nodes (21): DesignSystemGenerator, Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Find matching reasoning rule for a category., Apply reasoning rules to search results., Select best matching result based on priority keywords., apply_decision_rules(), _object_without_duplicates() (+13 more)
 
 ### Community 34 - "Typography Specifications"
 Cohesion: 0.06
@@ -930,9 +923,9 @@ Nodes (29): Acquisition leading indicators, Activation leading indicators, Ancho
 Cohesion: 0.10
 Nodes (10): _exact_stack_identifier(), _project_row(), Resolve a standalone API identifier even when its BM25 IDF is low., Search stack-specific guidelines, search_stack(), _valid_max_results(), _rows(), TestNativeDesktopStackFreshness (+2 more)
 
-### Community 43 - "app/db/schema.ts"
-Cohesion: 0.04
-Nodes (92): LogoutButton(), LogoutButtonProps, db, ActivityLog, activityLogs, citations, clientArticles, ClientDataSource (+84 more)
+### Community 43 - "app/server/crm.ts"
+Cohesion: 0.06
+Nodes (76): db, ActivityLog, Citation, citations, ClientArticle, clientArticles, ClientDataSource, clientDataSources (+68 more)
 
 ### Community 44 - "The Templates"
 Cohesion: 0.09
@@ -967,8 +960,8 @@ Cohesion: 0.07
 Nodes (26): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+18 more)
 
 ### Community 52 - "search"
-Cohesion: 0.10
-Nodes (8): Resolve a deprecated in-domain alias, or expose a cross-domain redirect., Main search function with auto-domain detection, search(), _style_search_destination(), TestDiagnosticsContracts, TestSearchDomains, read_rows(), TestStyleTaxonomy
+Cohesion: 0.11
+Nodes (7): Resolve a deprecated in-domain alias, or expose a cross-domain redirect., Main search function with auto-domain detection, search(), _style_search_destination(), TestSearchDomains, read_rows(), TestStyleTaxonomy
 
 ### Community 53 - "GA4 Implementation Reference"
 Cohesion: 0.09
@@ -983,8 +976,8 @@ Cohesion: 0.08
 Nodes (25): Common Pitfalls, Core Prompt Structure, Detailed Brief, Eco/Sustainable, Effective Keywords by Style, Fashion Brand, Healthcare, Industry-Specific Prompts (+17 more)
 
 ### Community 56 - "design_system.py"
-Cohesion: 0.08
-Nodes (30): ansi_ljust(), _detect_page_type(), format_ascii_box(), format_markdown(), format_master_md(), format_page_override_md(), generate_design_system(), _generate_intelligent_overrides() (+22 more)
+Cohesion: 0.07
+Nodes (33): ansi_ljust(), _detect_page_type(), _filter_anti_patterns_for_mode(), format_ascii_box(), format_master_md(), format_page_override_md(), _generate_intelligent_overrides(), hex_to_ansi() (+25 more)
 
 ### Community 57 - "Color Palette Management"
 Cohesion: 0.08
@@ -1007,8 +1000,8 @@ Cohesion: 0.08
 Nodes (24): Accessibility Patterns, Alternative: Tailwind-Only Setup, Best Practices, Common Patterns, Component Layer: shadcn/ui, Component Library Guide, Component + Styling Setup, Core Stack (+16 more)
 
 ### Community 62 - "BM25"
-Cohesion: 0.12
-Nodes (8): BM25, BM25 ranking algorithm for text search, Lowercase, normalize synonyms, split, remove punctuation, filter stopwords, Build BM25 index from documents, Score all documents against query, All indexed terms, for suggestion/typo-recovery purposes., TestBm25CoreBehavior, TestTokenizer
+Cohesion: 0.07
+Nodes (16): BM25, BM25 ranking algorithm for text search, Lowercase, normalize synonyms, split, remove punctuation, filter stopwords, Build BM25 index from documents, Score all documents against query, All indexed terms, for suggestion/typo-recovery purposes., format_markdown(), generate_design_system() (+8 more)
 
 ### Community 63 - "1. SCHEMA"
 Cohesion: 0.12
@@ -1094,9 +1087,9 @@ Nodes (22): 1. Goals, 2. Audience, 3. Brand Voice, 4. Resources, Batching Strate
 Cohesion: 0.10
 Nodes (12): main(), Add custom font families. Args: fonts: Dict of font_type: [font_names] e.g.,…, Add custom spacing values. Args: spacing: Dict of name: value e.g., {'18':…, Add custom breakpoints. Args: breakpoints: Dict of name: width e.g., {'3xl':…, Add plugin requirements. Args: plugins: List of plugin names e.g.,…, Get plugin recommendations based on configuration. Returns: List of recommended…, Generate Tailwind CSS configuration files., Validate configuration. Returns: Tuple of (valid, message) (+4 more)
 
-### Community 84 - "test_design_system_mode.py"
-Cohesion: 0.07
-Nodes (24): _contrast_ratio(), _derive_dark_palette(), _filter_anti_patterns_for_mode(), _palette_is_dark(), _query_wants_dark(), WCAG relative luminance of a #RRGGBB string, or None if unparseable., True when a colors.csv row's Background is a dark surface., WCAG contrast ratio for two hex colors, or None if either is invalid. (+16 more)
+### Community 84 - "_select_palette_for_mode"
+Cohesion: 0.11
+Nodes (14): _contrast_ratio(), _derive_dark_palette(), _palette_is_dark(), WCAG relative luminance of a #RRGGBB string, or None if unparseable., True when a colors.csv row's Background is a dark surface., WCAG contrast ratio for two hex colors, or None if either is invalid., Keep product brand tokens while deriving accessible dark surfaces., Pick the highest-ranked palette matching the resolved mode. Only the dark case… (+6 more)
 
 ### Community 85 - "Sections to Capture"
 Cohesion: 0.10
@@ -1107,8 +1100,8 @@ Cohesion: 0.10
 Nodes (21): 1. Data story, 2. Exclusive launch / milestone, 3. Op-ed / contributed piece, 4. Customer story, 5. Trend piece / connector, 6. Newsjack response, Banned vocabulary, Building the Media List (+13 more)
 
 ### Community 87 - "SMS Sequence Templates"
-Cohesion: 0.12
-Nodes (17): Browse Abandonment, Early access, Flash sale (single send), Holiday / BFCM (2-send sequence), Limited drop / launch, Loyalty milestone, Promotional / Campaign Sends, Re-Engagement / Reactivation (Subscribers Who've Gone Cold) (+9 more)
+Cohesion: 0.05
+Nodes (41): Abandoned Cart (highest-ROI flow for ecom), Account alert, Auth code (2FA), Browse Abandonment, Delivery confirmation, Early access, Flash sale (single send), Holiday / BFCM (2-send sequence) (+33 more)
 
 ### Community 88 - "dependencies"
 Cohesion: 0.10
@@ -1250,13 +1243,13 @@ Nodes (21): 10-12 Slide Framework, Before Starting, Buyer Persona Cards, Card St
 Cohesion: 0.11
 Nodes (18): Anti-Patterns, Blog Category Sidebar, Bottom Tab Bar, Breadcrumbs, Common Fixes, Documentation Sidebar, Hamburger Menu, Header Navigation (+10 more)
 
-### Community 124 - "routes/index.tsx"
-Cohesion: 0.11
-Nodes (17): submitAuditLead, submitContactLead, validateEmail(), CodeTab, CodeTerminalInspector(), CodeTerminalInspectorProps, DEFAULT_CODE_TABS, InteractiveComparisonCard() (+9 more)
+### Community 124 - "app/server/leads.ts"
+Cohesion: 0.16
+Nodes (13): AuditLeadPayload, ContactLeadPayload, LeadSubmissionResponse, submitAuditLead, submitContactLead, validateEmail(), InteractiveComparisonCard(), AuditPage() (+5 more)
 
-### Community 125 - "media.tsx"
-Cohesion: 0.13
-Nodes (22): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, MediaPurpose, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo() (+14 more)
+### Community 125 - "app/server/media.ts"
+Cohesion: 0.16
+Nodes (18): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, MediaPurpose, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo() (+10 more)
 
 ### Community 126 - "Motion-Style Video Ads (Faceless, Fully Generated)"
 Cohesion: 0.12
@@ -1440,7 +1433,7 @@ Nodes (14): AIDA (Attention-Interest-Desire-Action), Before-After-Bridge, Contra
 
 ### Community 172 - "SMS Compliance Reference"
 Cohesion: 0.12
-Nodes (12): Audit-ready compliance checklist, Australia — Spam Act 2003, Canada — CASL, Consent, Consent requirements, EU / UK — GDPR + ePrivacy Directive, Every message must include, Mandatory provisions (+4 more)
+Nodes (17): Audit-ready compliance checklist, Australia — Spam Act 2003, Canada — CASL, Common rejections, Consent, Consent requirements, EU / UK — GDPR + ePrivacy Directive, Every message must include (+9 more)
 
 ### Community 173 - "TestShadcnInstaller"
 Cohesion: 0.12
@@ -1451,8 +1444,8 @@ Cohesion: 0.23
 Nodes (3): detect_domain(), Auto-detect the most relevant domain from query. Matches are weighted by…, TestDomainDetection
 
 ### Community 175 - "admin/activity.tsx"
-Cohesion: 0.23
-Nodes (12): ActivityAction, ActivityLogItem, ActivityLogsResponse, getActivityLogsServerFn, getActivityOrderBy(), parseDevice(), ActivitySearch, AdminActivityPage() (+4 more)
+Cohesion: 0.19
+Nodes (15): activityLogs, ActivityAction, ActivityLogItem, ActivityLogsResponse, getActivityLogsServerFn, getActivityOrderBy(), getClientRequestMeta(), getServerUtils() (+7 more)
 
 ### Community 176 - "STANDING RULES"
 Cohesion: 0.13
@@ -2027,12 +2020,12 @@ Cohesion: 0.22
 Nodes (6): Canonical Overrides Hreflang, Canonicalization & i18n, International SEO: Evidence & Sources, Near-Duplicate Regional Variants, Pagination Across Locales, Self-Referencing Canonicals
 
 ### Community 321 - "AdminShell.tsx"
-Cohesion: 0.13
-Nodes (18): changeMyPasswordServerFn, NavBlockerCounts, AdminNavProps, AdminShellProps, BreadcrumbContext, DEFAULT_CLIENT_SECTIONS, MONTH_NAMES, NAV_GROUPS (+10 more)
+Cohesion: 0.14
+Nodes (17): NavBlockerCounts, AdminNavProps, AdminShellProps, BreadcrumbContext, DEFAULT_CLIENT_SECTIONS, MONTH_NAMES, NAV_GROUPS, NavGroupDef (+9 more)
 
 ### Community 322 - "checkAuthServerFn"
-Cohesion: 0.06
-Nodes (53): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmin(), requireSuperadminAuth(), getClientsServerFn, getMyWorkServerFn, getAdminDashboardDataServerFn (+45 more)
+Cohesion: 0.11
+Nodes (33): checkAuthServerFn, requireAdmin(), requireSuperadmin(), requireSuperadminAuth(), getClientsServerFn, getMyWorkServerFn, AdminDashboardData, getPartnersServerFn (+25 more)
 
 ### Community 323 - "Product Marketing Context: built by Miguel"
 Cohesion: 0.25
@@ -2159,8 +2152,8 @@ Cohesion: 0.17
 Nodes (11): 2. MIGRATIONS, 3. SERVER FUNCTIONS, 4. ROUTES, 5. COMPONENTS — ORPHAN AUDIT, 9. WHAT IS ACTUALLY WIRED, Canonical Migration Path, Drift Between Schema and Migration Script, FLAGGED SERVER FUNCTIONS (No UI calls) (+3 more)
 
 ### Community 354 - "$slug.tsx"
-Cohesion: 0.24
-Nodes (12): Post, getPublicPostBySlugServerFn, BlogPostPage(), calculateReadingTime(), formatDate(), MarkdownBlockItem, MarkdownRenderer(), parseMarkdownBlocks() (+4 more)
+Cohesion: 0.27
+Nodes (11): getPublicPostBySlugServerFn, BlogPostPage(), calculateReadingTime(), formatDate(), MarkdownBlockItem, MarkdownRenderer(), parseMarkdownBlocks(), renderInlineFormatting() (+3 more)
 
 ### Community 355 - "Ponytail Help"
 Cohesion: 0.25
@@ -3166,9 +3159,9 @@ Nodes (3): Route, WEBSITES_FAQ, WEBSITES_JSON_LD
 Cohesion: 0.18
 Nodes (10): queryClient, Register, router, @tanstack/react-router, createRouter(), getRouter(), Register, @tanstack/react-router (+2 more)
 
-### Community 610 - "Output Formats"
-Cohesion: 0.33
-Nodes (6): Bulk CSV Output, Creative Review Page (client / stakeholder approval), Iteration Report, Output Formats, Standard Output, Static Batch Output (Mode 3)
+### Community 610 - "app/lib/auth.ts"
+Cohesion: 0.06
+Nodes (38): LogoutButton(), LogoutButtonProps, CachedSession, createSessionToken(), getSecrets(), getServerUtils(), getSessionCookieOptions(), getSessionData() (+30 more)
 
 ### Community 611 - "Static Ad Template Library"
 Cohesion: 0.33
@@ -3278,13 +3271,13 @@ Nodes (3): MaxDiff Analysis, Pricing Research, Van Westendorp Method
 Cohesion: 0.67
 Nodes (3): 1.5 What Would Break If Either Directory Were Deleted?, If `/app` were deleted:, If `/src` were deleted:
 
-### Community 652 - "Platform Specs"
-Cohesion: 0.33
-Nodes (6): Google Ads (Responsive Search Ads), LinkedIn Ads, Meta Ads (Facebook/Instagram), Platform Specs, TikTok Ads, Twitter/X Ads
+### Community 652 - "Voice & Audio Generation"
+Cohesion: 0.20
+Nodes (10): Cartesia Sonic, Choosing a Voice Tool, ElevenLabs, OpenAI TTS, Other Voice Tools, Voice & Audio Generation, Voice Tool Comparison, Voicebox (Open Source) (+2 more)
 
-### Community 655 - "Transactional / Account Notifications"
-Cohesion: 0.33
-Nodes (6): Account alert, Auth code (2FA), Delivery confirmation, Order confirmation, Shipping update, Transactional / Account Notifications
+### Community 655 - "systems-auto.tsx"
+Cohesion: 0.22
+Nodes (7): CodeTab, CodeTerminalInspector(), CodeTerminalInspectorProps, DEFAULT_CODE_TABS, Route, SYSTEMS_FAQ, SYSTEMS_JSON_LD
 
 ### Community 683 - "Google Ads"
 Cohesion: 0.33
@@ -3318,9 +3311,9 @@ Nodes (6): 12-month acquisition outlook, 90-day acquisition moves, Current state
 Cohesion: 0.33
 Nodes (6): Attentive, Compliance, Integration paths, Key features, Pricing, Watch out for
 
-### Community 691 - "SMS Platform Reference"
-Cohesion: 0.22
-Nodes (9): A2P 10DLC: what your platform should handle, AudienceTap, Compliance, Integration paths, Key features, Pricing, Quick selection table, SMS Platform Reference (+1 more)
+### Community 691 - "AudienceTap"
+Cohesion: 0.33
+Nodes (6): AudienceTap, Compliance, Integration paths, Key features, Pricing, Watch out for
 
 ### Community 692 - "Brevo (formerly Sendinblue)"
 Cohesion: 0.33
@@ -3330,9 +3323,9 @@ Nodes (6): Brevo (formerly Sendinblue), Compliance, Integration paths, Key featu
 Cohesion: 0.33
 Nodes (6): Compliance, Integration paths, Key features, Pricing, Twilio, Watch out for
 
-### Community 694 - "SimpleTexting"
-Cohesion: 0.33
-Nodes (6): Compliance, Integration paths, Key features, Pricing, SimpleTexting, Watch out for
+### Community 694 - "SMS Platform Reference"
+Cohesion: 0.15
+Nodes (9): A2P 10DLC: what your platform should handle, Compliance, Integration paths, Key features, Pricing, Quick selection table, SimpleTexting, SMS Platform Reference (+1 more)
 
 ### Community 695 - "Plivo"
 Cohesion: 0.33
@@ -3350,13 +3343,13 @@ Nodes (6): Compliance, Integration paths, Key features, Postscript, Pricing, Wat
 Cohesion: 0.33
 Nodes (6): 7. REPORT PIPELINE, Creation Flow & Pre-flight Validation, Data Read & Frozen Snapshot, Page 1: Executive KPI Scoreboard (Lines 262 to 746), Page 2: Visibility Tables, Deliverables & Roadmap (Lines 760 to 1271), `ReportDocument.tsx` Rendering Inventory
 
-### Community 699 - "Post-Purchase Flow"
-Cohesion: 0.33
-Nodes (6): Post-Purchase Flow, Send 1 — Immediately after purchase (transactional, separate consent), Send 2 — Day of shipment, Send 3 — Day of delivery, Send 4 — 2 days after delivery (marketing consent required), Send 5 — 14 days after delivery (cross-sell, marketing consent)
+### Community 699 - "Video Generation"
+Cohesion: 0.25
+Nodes (8): Google Veo, Higgsfield, Kling (Kuaishou), Runway, Seedance 2.0 (ByteDance), Sora 2 (OpenAI), Video Generation, Video Tool Comparison
 
-### Community 700 - "Generating Ad Copy"
-Cohesion: 0.40
-Nodes (5): Generating Ad Copy, Step 1: Define Your Angles, Step 2: Generate Variations per Angle, Step 3: Validate Against Specs, Step 4: Organize for Upload
+### Community 700 - "SMS Sequence Types"
+Cohesion: 0.25
+Nodes (8): Abandoned Cart (highest-ROI flow for ecom), Browse Abandonment, Post-Purchase, Promotional / Campaign Sends, SMS Sequence Types, Transactional (separate compliance bucket), Welcome / Opt-In Confirmation (immediate), Win-Back (lapsed)
 
 ### Community 701 - "Core Principles"
 Cohesion: 0.40
@@ -3366,25 +3359,21 @@ Nodes (5): Core Principles, Sales Uses What Sales Trusts, Scannable Over Compreh
 Cohesion: 0.40
 Nodes (5): Hub-and-Spoke Model, Internal Linking Rules, Internal Linking Strategy, Link Audit Checklist, Link Types
 
-### Community 703 - "How This Skill Works"
+### Community 703 - ".generate"
+Cohesion: 0.25
+Nodes (5): Execute searches across multiple domains., Extract results list from search result dict., Generate complete design system recommendation. variance/motion/density are…, Bucket a 1-10 dial value into its tier config. Returns None if value is None., _resolve_dial()
+
+### Community 704 - "Core Principles"
+Cohesion: 0.29
+Nodes (7): 1. Every send has a real cost, 2. Opt-in is your most valuable asset, 3. Each message must justify itself, 4. Brevity + clarity, 5. One CTA, one link, 6. Sender identity, every send, Core Principles
+
+### Community 705 - "Before Starting"
 Cohesion: 0.40
-Nodes (5): How This Skill Works, Mode 1: Generate from Scratch, Mode 2: Iterate from Performance Data, Mode 3: Scaled Static Batches (Grounded), Mode 4: Creative Strategy Loop
+Nodes (5): 1. Business Type, 2. Current State, 3. Compliance Posture, 4. Goal, Before Starting
 
-### Community 704 - "United States — A2P 10DLC"
+### Community 706 - "SMS Copy Guidelines"
 Cohesion: 0.40
-Nodes (5): Common rejections, Registration components, Throughput tiers (varies by carrier and trust score), United States — A2P 10DLC, What it is
-
-### Community 705 - "Win-Back (Lapsed Customers)"
-Cohesion: 0.50
-Nodes (4): Send 1 — 60-90 days after last purchase, Send 2 — 14 days later (if no purchase), Send 3 — 14 days after Send 2 (final, if no purchase), Win-Back (Lapsed Customers)
-
-### Community 706 - "Welcome / Opt-In Confirmation"
-Cohesion: 0.50
-Nodes (4): Send 1 — Immediate (after opt-in), Send 2 — 24 hours later (optional), Send 3 — 7 days later (optional, conditional on no purchase), Welcome / Opt-In Confirmation
-
-### Community 709 - "Abandoned Cart (highest-ROI flow for ecom)"
-Cohesion: 0.50
-Nodes (4): Abandoned Cart (highest-ROI flow for ecom), Send 1 — 30 minutes after abandon, Send 2 — 4 hours after abandon (if no purchase), Send 3 — 24 hours after abandon (if no purchase, discount allowed)
+Nodes (5): Length, Personalization, SMS Copy Guidelines, Structure, Voice
 
 ### Community 711 - "Product/App Events"
 Cohesion: 0.50
@@ -3427,24 +3416,24 @@ Cohesion: 0.67
 Nodes (3): Onboarding Audit, Onboarding Flow Design, Output Format
 
 ## Knowledge Gaps
-- **5174 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+5169 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 5623 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **46 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **5175 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+5170 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 5624 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **40 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Competitor Profiling` connect `Competitor Profiling` to `MCP Tool Reference for Competitor Profiling`, `Phase 1: Site Scraping (Firecrawl)`, `Core Principles`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
+- **Why does `Profile Templates` connect `Profile Templates` to `MCP Tool Reference for Competitor Profiling`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `fs`, `path`, `fs` to the rest of the system?**
-  _5174 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _5175 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `routeTree.gen.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.03508771929824561 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.028771929824561403 - nodes in this community are weakly interconnected._
 - **Should `assertActiveSession` be split into smaller, more focused modules?**
-  _Cohesion score 0.06426182513139035 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.050494159928122194 - nodes in this community are weakly interconnected._
 - **Should `clients.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.05987703822507351 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0747871158830063 - nodes in this community are weakly interconnected._
 - **Should `validate_data.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0780399274047187 - nodes in this community are weakly interconnected._

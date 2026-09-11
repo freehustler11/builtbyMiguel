@@ -689,7 +689,7 @@ function AdminMediaPage() {
         </div>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="relative w-full lg:w-72">
+        <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-80 md:w-96">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"

@@ -355,7 +355,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
 
         {/* Search & Add Citation */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
+          <div className="relative flex-1 sm:w-80 md:w-96">
             <Search className="w-4 h-4 text-[var(--muted)] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"

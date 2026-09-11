@@ -28,11 +28,16 @@ import {
   Edit2,
   X,
   Image as ImageIcon,
+  Briefcase,
+  User,
+  RefreshCw,
 } from 'lucide-react'
 import { AdminShell } from '../../components/AdminShell'
 import { checkAuthServerFn, requireAdmin } from '../../lib/auth'
 import { getClientByIdServerFn, updateClientServerFn } from '../../server/clients'
+import { getAgencyTeamPickerServerFn, type TeamPickerMember } from '../../server/crm'
 import { ToastContainer, type ToastMessage } from '../../components/Toast'
+import { MediaPickerModal } from '../../components/MediaPickerModal'
 import { recordRecentClient } from '../../components/ClientPickerModal'
 import { LandingPagesBoard } from '../../components/crm/LandingPagesBoard'
 import { ArticlesBoard } from '../../components/crm/ArticlesBoard'
@@ -83,12 +88,16 @@ export const Route = createFileRoute('/admin/clients_/$clientId')({
     return { auth }
   },
   loader: async ({ params, context }) => {
-    const data = await getClientByIdServerFn({ data: { id: params.clientId } })
+    const [data, teamMembers] = await Promise.all([
+      getClientByIdServerFn({ data: { id: params.clientId } }),
+      getAgencyTeamPickerServerFn({}).catch(() => []),
+    ])
     return {
       client: data.client,
       reports: data.reports,
       dataSources: data.dataSources,
       locations: (data as any).locations || [],
+      teamMembers: (teamMembers || []) as TeamPickerMember[],
       auth: (context as any)?.auth || (await checkAuthServerFn()),
     }
   },
@@ -107,7 +116,7 @@ export const Route = createFileRoute('/admin/clients_/$clientId')({
 })
 
 function ClientWorkspacePage() {
-  const { client, reports, dataSources, locations, auth } = Route.useLoaderData()
+  const { client, reports, dataSources, locations, teamMembers, auth } = Route.useLoaderData()
   const search = Route.useSearch()
   const router = useRouter()
   const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
@@ -126,6 +135,8 @@ function ClientWorkspacePage() {
   const [copiedShareToken, setCopiedShareToken] = useState<string | null>(null)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false)
+  const [isPartnerLogoModalOpen, setIsPartnerLogoModalOpen] = useState(false)
   const [editName, setEditName] = useState('')
   const [editBusinessName, setEditBusinessName] = useState('')
   const [editWebsiteUrl, setEditWebsiteUrl] = useState('')
@@ -137,8 +148,14 @@ function ClientWorkspacePage() {
   const [editPartnerName, setEditPartnerName] = useState('')
   const [editPartnerLogoUrl, setEditPartnerLogoUrl] = useState('')
   const [editPartnerLogoBgColor, setEditPartnerLogoBgColor] = useState('#ffffff')
+  const [editAssignedStaffId, setEditAssignedStaffId] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const COLOR_PRESETS = [
+    '#2563eb', '#7c3aed', '#db2777', '#dc2626', '#d97706',
+    '#059669', '#0891b2', '#4f46e5', '#0f172a', '#475569',
+  ]
 
   const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
     const id = Math.random().toString(36).substring(2, 9)
@@ -164,6 +181,7 @@ function ClientWorkspacePage() {
     setEditPartnerName(client.partnerName || '')
     setEditPartnerLogoUrl(client.partnerLogoUrl || '')
     setEditPartnerLogoBgColor((client as any).partnerLogoBgColor || '#ffffff')
+    setEditAssignedStaffId((client as any).assignedStaffId || '')
     setFormError(null)
     setIsEditModalOpen(true)
   }
@@ -196,6 +214,7 @@ function ClientWorkspacePage() {
           partnerName: editPartnerName.trim() || undefined,
           partnerLogoUrl: editPartnerLogoUrl.trim() || undefined,
           partnerLogoBgColor: editPartnerLogoBgColor.trim() || '#ffffff',
+          assignedStaffId: editAssignedStaffId.trim() || null,
         },
       })
       addToast('Client Updated', `${editBusinessName} profile updated successfully.`, 'success')
@@ -750,34 +769,64 @@ function ClientWorkspacePage() {
 
       {/* Edit Client Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="w-full max-w-lg rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between p-4 border-b border-[var(--line)]">
-              <div className="flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-[var(--accent)]" />
-                <h3 className="text-[14px] font-semibold text-[var(--ink)]">
-                  Edit Client Profile
-                </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-2xl bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 space-y-5 shadow-2xl text-[var(--ink)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">
+                  <Building2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-semibold text-[var(--ink)]">
+                    Edit Client Profile
+                  </h3>
+                  <p className="text-[12px] text-[var(--muted)]">
+                    Configure branding, contact details, assigned staff, and white-label settings.
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--canvas)] transition cursor-pointer"
+                className="p-1.5 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50 cursor-pointer transition"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveClient} className="p-4 space-y-4 overflow-y-auto">
-              {formError && (
-                <div className="p-2.5 rounded-[6px] bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-[12px] font-medium">
-                  {formError}
-                </div>
-              )}
+            {formError && (
+              <div className="p-3 rounded-[6px] bg-[var(--danger)]/10 border border-[var(--danger)]/30 text-[12px] text-[var(--danger)] font-medium">
+                {formError}
+              </div>
+            )}
 
+            <form onSubmit={handleSaveClient} className="space-y-4">
+              {/* Assigned Staff Member */}
+              <div className="space-y-1">
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Assigned Staff Member
+                </label>
+                <select
+                  value={editAssignedStaffId}
+                  onChange={(e) => setEditAssignedStaffId(e.target.value)}
+                  className="w-full text-[13px] rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] px-3 py-2 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] cursor-pointer"
+                >
+                  <option value="">Unassigned (Agency Pool)</option>
+                  {teamMembers.map((member) => (
+                    <option key={member.id} value={member.id}>
+                      {member.name || member.email} ({member.role === 'partner' ? 'Agency Owner' : 'Staff'})
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-[var(--muted)]">
+                  The assigned staff member will see this client highlighted under their assigned work and filtered views.
+                </p>
+              </div>
+
+              {/* Basic Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-[var(--muted)]">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Business Name *
                   </label>
                   <input
@@ -785,14 +834,14 @@ function ClientWorkspacePage() {
                     required
                     value={editBusinessName}
                     onChange={(e) => setEditBusinessName(e.target.value)}
-                    placeholder="e.g. Acme Roofing"
-                    className="w-full px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                    placeholder="e.g. Acme Roofing & Solar"
+                    className="w-full px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-[var(--muted)]">
-                    Contact Name *
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
+                    Contact Person Name *
                   </label>
                   <input
                     type="text"
@@ -800,81 +849,106 @@ function ClientWorkspacePage() {
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     placeholder="e.g. John Doe"
-                    className="w-full px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                    className="w-full px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
+              {/* Website URL */}
               <div className="space-y-1">
-                <label className="text-[11px] font-medium text-[var(--muted)]">
+                <label className="text-[12px] font-medium text-[var(--muted)]">
                   Website URL
                 </label>
                 <input
                   type="text"
                   value={editWebsiteUrl}
                   onChange={(e) => setEditWebsiteUrl(e.target.value)}
-                  placeholder="https://example.com"
-                  className="w-full px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                  placeholder="https://acmeroofing.com"
+                  className="w-full px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
 
-              {/* Logo URL & Background Color */}
+              {/* Client Logo Picker */}
               <div className="space-y-2">
-                <label className="text-[11px] font-medium text-[var(--muted)]">
-                  Client Logo URL & Background
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Client Logo & Background
                 </label>
                 <div className="flex items-center gap-3">
                   {editLogoUrl ? (
                     <div
-                      className="w-10 h-10 rounded-[6px] border border-[var(--line)] p-1 flex items-center justify-center shrink-0 overflow-hidden"
-                      style={{ backgroundColor: editLogoBgColor || '#ffffff' }}
+                      className="w-11 h-11 rounded-[6px] border border-[var(--line)] p-1 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
+                      style={{ backgroundColor: editLogoBgColor !== 'transparent' ? editLogoBgColor : undefined }}
                     >
-                      <img src={editLogoUrl} alt="Logo preview" className="max-h-full max-w-full object-contain" />
+                      <img src={editLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
                     </div>
                   ) : (
-                    <div className="w-10 h-10 rounded-[6px] border border-dashed border-[var(--line)] flex items-center justify-center text-[var(--muted)] shrink-0">
+                    <div className="w-11 h-11 rounded-[6px] border border-dashed border-[var(--line)] flex items-center justify-center text-[var(--muted)] shrink-0 bg-[var(--canvas)]">
                       <ImageIcon className="w-4 h-4" />
                     </div>
                   )}
-                  <input
-                    type="text"
-                    value={editLogoUrl}
-                    onChange={(e) => setEditLogoUrl(e.target.value)}
-                    placeholder="https://.../logo.png"
-                    className="flex-1 px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-                  />
+
+                  <div className="flex-1 flex gap-2">
+                    <input
+                      type="text"
+                      value={editLogoUrl}
+                      onChange={(e) => setEditLogoUrl(e.target.value)}
+                      placeholder="https://.../logo.png"
+                      className="flex-1 px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] truncate"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setIsMediaModalOpen(true)}
+                      className="px-3 py-2 rounded-[6px] text-[12px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition shrink-0 cursor-pointer"
+                    >
+                      Media Library
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 pt-1">
-                  <span className="text-[11px] text-[var(--muted)]">Logo BG:</span>
-                  <div className="flex items-center gap-1.5">
-                    {['#ffffff', '#0f172a', '#18181b', '#000000', '#f8fafc'].map((bg) => (
-                      <button
-                        key={bg}
-                        type="button"
-                        onClick={() => setEditLogoBgColor(bg)}
-                        className={`w-5 h-5 rounded-[4px] border transition cursor-pointer ${
-                          editLogoBgColor === bg
-                            ? 'ring-2 ring-[var(--accent)] border-transparent'
-                            : 'border-[var(--line)]'
-                        }`}
-                        style={{ backgroundColor: bg }}
-                      />
-                    ))}
+
+                {/* Logo Background Color Customization */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
+                  <div className="space-y-0.5">
+                    <span className="text-[11px] font-medium text-[var(--ink)] block">
+                      Logo Container Background
+                    </span>
+                    <span className="text-[11px] text-[var(--muted)]">
+                      Set a dark or white backing for transparent client logos.
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
                     <input
                       type="color"
+                      value={editLogoBgColor.startsWith('#') ? editLogoBgColor : '#ffffff'}
+                      onChange={(e) => setEditLogoBgColor(e.target.value)}
+                      className="w-7 h-7 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent shrink-0"
+                    />
+                    <input
+                      type="text"
                       value={editLogoBgColor}
                       onChange={(e) => setEditLogoBgColor(e.target.value)}
-                      className="w-6 h-6 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent"
-                      title="Custom color"
+                      placeholder="#ffffff"
+                      className="w-20 px-2 py-1 rounded-[4px] text-[12px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
                     />
+                    <div className="flex items-center gap-1 pl-1">
+                      {['#ffffff', '#0f172a', '#000000', editPrimaryColor].map((bg) => (
+                        <button
+                          key={bg}
+                          type="button"
+                          onClick={() => setEditLogoBgColor(bg)}
+                          className={`w-4.5 h-4.5 rounded-full border border-[var(--line)] cursor-pointer transition ${editLogoBgColor === bg ? 'ring-2 ring-[var(--accent)] scale-110' : ''}`}
+                          style={{ backgroundColor: bg }}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Brand Colors */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-[var(--muted)]">
+              {/* Color Customization */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Primary Brand Color
                   </label>
                   <div className="flex items-center gap-2">
@@ -882,91 +956,221 @@ function ClientWorkspacePage() {
                       type="color"
                       value={editPrimaryColor}
                       onChange={(e) => setEditPrimaryColor(e.target.value)}
-                      className="w-8 h-8 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent"
+                      className="w-7 h-7 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent shrink-0"
                     />
                     <input
                       type="text"
                       value={editPrimaryColor}
                       onChange={(e) => setEditPrimaryColor(e.target.value)}
-                      className="flex-1 px-3 py-1.5 rounded-[6px] text-[12px] font-mono border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)]"
+                      className="flex-1 px-2.5 py-1 rounded-[4px] text-[12px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
                     />
+                  </div>
+                  <div className="flex flex-wrap gap-1 pt-0.5">
+                    {COLOR_PRESETS.slice(0, 5).map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setEditPrimaryColor(color)}
+                        className="w-4 h-4 rounded-full border border-[var(--line)] cursor-pointer transition hover:scale-110"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-[var(--muted)]">
-                    Secondary Brand Color
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
+                    Secondary Accent Color
                   </label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={editSecondaryColor}
                       onChange={(e) => setEditSecondaryColor(e.target.value)}
-                      className="w-8 h-8 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent"
+                      className="w-7 h-7 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent shrink-0"
                     />
                     <input
                       type="text"
                       value={editSecondaryColor}
                       onChange={(e) => setEditSecondaryColor(e.target.value)}
-                      className="flex-1 px-3 py-1.5 rounded-[6px] text-[12px] font-mono border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)]"
+                      className="flex-1 px-2.5 py-1 rounded-[4px] text-[12px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
                     />
+                  </div>
+                  <div className="flex flex-wrap gap-1 pt-0.5">
+                    {COLOR_PRESETS.slice(5).map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setEditSecondaryColor(color)}
+                        className="w-4 h-4 rounded-full border border-[var(--line)] cursor-pointer transition hover:scale-110"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* White-Label Toggle */}
-              <div className="p-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] space-y-2">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={editIsWhiteLabel}
-                    onChange={(e) => setEditIsWhiteLabel(e.target.checked)}
-                    className="w-4 h-4 rounded text-[var(--accent)] border-[var(--line)] focus:ring-[var(--accent)]"
-                  />
-                  <span className="text-[12px] font-medium text-[var(--ink)]">
-                    Enable White-Labeling (Hide agency branding)
-                  </span>
-                </label>
+              {/* White-Label Settings */}
+              <div className="p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <span className="text-[12px] font-semibold text-[var(--ink)] block">
+                      White-Label Report Branding
+                    </span>
+                    <span className="text-[11px] text-[var(--muted)] block">
+                      Replace "built by Miguel" branding on client PDFs with custom partner agency details.
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={editIsWhiteLabel}
+                    onClick={() => setEditIsWhiteLabel(!editIsWhiteLabel)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
+                      editIsWhiteLabel ? 'bg-[var(--accent)]' : 'bg-[var(--line)]'
+                    }`}
+                  >
+                    <span className="sr-only">Toggle white-label</span>
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                        editIsWhiteLabel ? 'translate-x-4' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
                 {editIsWhiteLabel && (
-                  <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      value={editPartnerName}
-                      onChange={(e) => setEditPartnerName(e.target.value)}
-                      placeholder="Custom Partner Name"
-                      className="px-3 py-1 rounded-[6px] text-[12px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
-                    />
-                    <input
-                      type="text"
-                      value={editPartnerLogoUrl}
-                      onChange={(e) => setEditPartnerLogoUrl(e.target.value)}
-                      placeholder="Custom Partner Logo URL"
-                      className="px-3 py-1 rounded-[6px] text-[12px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
-                    />
+                  <div className="space-y-2.5 pt-2 border-t border-[var(--line)] animate-in fade-in">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-medium text-[var(--muted)]">
+                        Partner Agency Name
+                      </label>
+                      <input
+                        type="text"
+                        value={editPartnerName}
+                        onChange={(e) => setEditPartnerName(e.target.value)}
+                        placeholder="e.g. Apex Marketing Co."
+                        className="w-full px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[var(--muted)]">
+                        Partner Agency Logo
+                      </label>
+                      <div className="flex items-center gap-2.5">
+                        {editPartnerLogoUrl ? (
+                          <div
+                            className="w-9 h-9 rounded-[4px] border border-[var(--line)] p-1 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
+                            style={{ backgroundColor: editPartnerLogoBgColor !== 'transparent' ? editPartnerLogoBgColor : undefined }}
+                          >
+                            <img src={editPartnerLogoUrl} alt="Partner Logo" className="max-h-full max-w-full object-contain" />
+                          </div>
+                        ) : (
+                          <div className="w-9 h-9 rounded-[4px] border border-dashed border-[var(--line)] flex items-center justify-center text-[var(--muted)] shrink-0 bg-[var(--panel)]">
+                            <ImageIcon className="w-3.5 h-3.5" />
+                          </div>
+                        )}
+
+                        <div className="flex-1 flex gap-2">
+                          <input
+                            type="text"
+                            value={editPartnerLogoUrl}
+                            onChange={(e) => setEditPartnerLogoUrl(e.target.value)}
+                            placeholder="https://.../partner-logo.png"
+                            className="flex-1 px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] truncate"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setIsPartnerLogoModalOpen(true)}
+                            className="px-2.5 py-1.5 rounded-[6px] text-[12px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition shrink-0 cursor-pointer"
+                          >
+                            Browse
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Partner Logo Background Selector */}
+                      <div className="flex items-center justify-between gap-2 pt-0.5">
+                        <span className="text-[11px] text-[var(--muted)]">Logo Background:</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={editPartnerLogoBgColor.startsWith('#') ? editPartnerLogoBgColor : '#ffffff'}
+                            onChange={(e) => setEditPartnerLogoBgColor(e.target.value)}
+                            className="w-5 h-5 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent"
+                          />
+                          <input
+                            type="text"
+                            value={editPartnerLogoBgColor}
+                            onChange={(e) => setEditPartnerLogoBgColor(e.target.value)}
+                            placeholder="#ffffff"
+                            className="w-20 px-2 py-0.5 rounded-[4px] text-[11px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--line)]">
+              {/* Form Action Buttons */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--line)]">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-3 py-1.5 rounded-[6px] text-[12px] font-medium text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--canvas)] transition cursor-pointer"
+                  className="h-8 inline-flex items-center px-3 rounded-[6px] text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50 transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-3.5 py-1.5 rounded-[6px] text-[12px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50"
+                  className="h-8 inline-flex items-center gap-1.5 px-4 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition disabled:opacity-50 cursor-pointer"
                 >
-                  {isSubmitting ? 'Saving...' : 'Save Changes'}
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Save Changes</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Media Picker Modal for Client Logo */}
+      <MediaPickerModal
+        isOpen={isMediaModalOpen}
+        onClose={() => setIsMediaModalOpen(false)}
+        title="Select Client Logo from Media Library"
+        acceptTypes="images"
+        purpose="client"
+        clientId={client.id}
+        onSelect={(media) => {
+          setEditLogoUrl(media.fileUrl)
+        }}
+      />
+
+      {/* Media Picker Modal for Partner Agency Logo */}
+      <MediaPickerModal
+        isOpen={isPartnerLogoModalOpen}
+        onClose={() => setIsPartnerLogoModalOpen(false)}
+        title="Select Partner Agency Logo from Media Library"
+        acceptTypes="images"
+        purpose="all"
+        onSelect={(media) => {
+          setEditPartnerLogoUrl(media.fileUrl)
+        }}
+      />
     </AdminShell>
   )
 }

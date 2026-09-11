@@ -1270,6 +1270,7 @@ export interface TeamPickerMember {
   name: string | null
   email: string
   role: string
+  avatarUrl?: string | null
 }
 
 export const getAgencyTeamPickerServerFn = createServerFn({ method: 'GET' })
@@ -1300,6 +1301,7 @@ export const getAgencyTeamPickerServerFn = createServerFn({ method: 'GET' })
         name: users.name,
         email: users.email,
         role: users.role,
+        avatarUrl: users.avatarUrl,
       })
       .from(users)
       .where(

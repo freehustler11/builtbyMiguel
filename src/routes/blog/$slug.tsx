@@ -127,8 +127,21 @@ function formatDate(dateInput: string | Date | null) {
   }).format(d)
 }
 
-function slugifyHeading(text: string): string {
+function cleanHeadingTitle(text: string): string {
   return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/_(.*?)_/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/[*_`#]/g, '')
+    .trim()
+}
+
+function slugifyHeading(text: string): string {
+  const cleaned = cleanHeadingTitle(text)
+  return cleaned
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
@@ -650,8 +663,9 @@ function BlogPostPage() {
     const lines = post.content.split('\n')
     for (const line of lines) {
       if (line.startsWith('## ')) {
-        const title = line.replace(/^##\s+/, '').trim()
-        headings.push({ id: slugifyHeading(title), title, level: 2 })
+        const rawTitle = line.replace(/^##\s+/, '').trim()
+        const cleanTitle = cleanHeadingTitle(rawTitle)
+        headings.push({ id: slugifyHeading(cleanTitle), title: cleanTitle, level: 2 })
       }
     }
     return headings

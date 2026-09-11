@@ -283,7 +283,7 @@ export function KeywordsBoard({ clientId, partnerId }: KeywordsBoardProps) {
               placeholder="Filter keywords by term or city/location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-3.5 py-1.5 text-[13px] rounded-[6px] bg-[var(--panel)] border border-[var(--line)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] w-72 text-[var(--ink)] placeholder-[var(--muted)]"
+              className="pl-9 pr-3.5 py-1.5 text-[13px] rounded-[6px] bg-[var(--panel)] border border-[var(--line)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] w-full sm:w-80 md:w-96 text-[var(--ink)] placeholder-[var(--muted)]"
             />
           </div>
           <span className="text-[12px] text-[var(--muted)] tabular-nums">

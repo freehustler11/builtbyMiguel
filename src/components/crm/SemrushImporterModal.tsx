@@ -286,12 +286,12 @@ export function SemrushImporterModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-[12px] bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--line)] bg-[var(--canvas)]/40">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400">
+            <div className="w-8 h-8 rounded-[6px] bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
               <FileSpreadsheet className="w-5 h-5" />
             </div>
             <div>
@@ -310,7 +310,7 @@ export function SemrushImporterModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>

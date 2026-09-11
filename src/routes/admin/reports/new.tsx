@@ -143,15 +143,17 @@ function parseMonthYear(str: string) {
     }
   }
   const now = new Date()
+  const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
   return {
-    month: MONTH_NAMES[now.getMonth()],
-    year: String(now.getFullYear()),
+    month: MONTH_NAMES[prevMonthDate.getMonth()],
+    year: String(prevMonthDate.getFullYear()),
   }
 }
 
 function getDefaultMonthString(): string {
   const now = new Date()
-  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(now)
+  const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(prevMonthDate)
 }
 
 const DEFAULT_QUERY_ITEMS: QueryItem[] = [

@@ -10,7 +10,6 @@ import {
   Check,
   Loader2,
   FolderOpen,
-  Sparkles,
 } from 'lucide-react'
 import { getMediaServerFn, uploadMediaServerFn } from '../server/media'
 import type { Media } from '../db/schema'
@@ -33,15 +32,15 @@ function formatFileSize(bytes: number): string {
 
 function getFileIcon(mimeType: string) {
   if (mimeType.startsWith('image/')) {
-    return <ImageIcon className="w-5 h-5 text-rose-500" />
+    return <ImageIcon className="w-5 h-5 text-[var(--accent)]" />
   }
   if (mimeType.includes('pdf')) {
-    return <FileText className="w-5 h-5 text-rose-600" />
+    return <FileText className="w-5 h-5 text-rose-500" />
   }
   if (mimeType.includes('sheet') || mimeType.includes('csv') || mimeType.includes('excel')) {
-    return <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
+    return <FileSpreadsheet className="w-5 h-5 text-emerald-500" />
   }
-  return <File className="w-5 h-5 text-slate-500" />
+  return <File className="w-5 h-5 text-[var(--muted)]" />
 }
 
 export function MediaPickerModal({
@@ -75,8 +74,6 @@ export function MediaPickerModal({
         },
       })
 
-      // If clientId is provided and purpose is 'all' or 'client', we can also fetch agency assets
-      // and sort client-matched assets to the top if getMediaServerFn returns broader results
       let sortedItems = res.media
       if (clientId) {
         sortedItems = [...res.media].sort((a, b) => {
@@ -132,7 +129,6 @@ export function MediaPickerModal({
           })
 
           if (res.success && res.item) {
-            // Immediately select the freshly uploaded file
             onSelect({
               fileUrl: res.item.fileUrl,
               filename: res.item.filename,
@@ -156,27 +152,21 @@ export function MediaPickerModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-      {/* Darkened Backdrop Scrim */}
-      <div
-        className="fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity"
-        onClick={onClose}
-      />
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
       {/* Modal Dialog Box */}
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-[#111827]/95 text-slate-900 dark:text-white shadow-2xl backdrop-blur-xl z-10 overflow-hidden"
+        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-[12px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--line)] bg-[var(--canvas)]/40">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50 flex items-center justify-center shadow-xs">
-              <FolderOpen className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+              <FolderOpen className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-lg font-bold tracking-tight">{title}</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <h2 className="text-[14px] font-semibold text-[var(--ink)] leading-tight">{title}</h2>
+              <p className="text-[11px] text-[var(--muted)]">
                 Click any file to insert it immediately or upload a new asset.
               </p>
             </div>
@@ -185,95 +175,98 @@ export function MediaPickerModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+            className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Toolbar: Search, Filters & Upload Button */}
-        <div className="p-4 sm:px-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="p-3.5 sm:px-6 border-b border-[var(--line)] bg-[var(--panel)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Input */}
-          <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <div className="relative w-full sm:w-80 md:w-96">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search filename..."
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/40 font-mono"
+              className="w-full h-8 pl-9 pr-3 text-[13px] rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] font-mono"
             />
           </div>
 
-          {/* Type Filter Switcher */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/70 dark:bg-slate-800 text-xs font-bold w-full sm:w-auto justify-center">
-            <button
-              type="button"
-              onClick={() => setFilterType('all')}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                filterType === 'all'
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              All
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterType('images')}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                filterType === 'images'
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              Images
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterType('documents')}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                filterType === 'documents'
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              Documents
-            </button>
-          </div>
+          {/* Right Side: Type Filters & Upload */}
+          <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap justify-between sm:justify-end">
+            {/* Type Filter Switcher */}
+            <div className="flex items-center rounded-[6px] border border-[var(--line)] p-0.5 bg-[var(--canvas)] text-[12px] font-medium">
+              <button
+                type="button"
+                onClick={() => setFilterType('all')}
+                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                  filterType === 'all'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                All
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterType('images')}
+                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                  filterType === 'images'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                Images
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterType('documents')}
+                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                  filterType === 'documents'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                Documents
+              </button>
+            </div>
 
-          {/* Quick Upload Button */}
-          <div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={(e) => handleFileUpload(e.target.files)}
-              className="hidden"
-            />
-            <button
-              type="button"
-              disabled={isUploading}
-              onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 transition shadow-xs cursor-pointer disabled:opacity-50"
-            >
-              {isUploading ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Uploading...</span>
-                </>
-              ) : (
-                <>
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Upload New</span>
-                </>
-              )}
-            </button>
+            {/* Quick Upload Button */}
+            <div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={(e) => handleFileUpload(e.target.files)}
+                className="hidden"
+              />
+              <button
+                type="button"
+                disabled={isUploading}
+                onClick={() => fileInputRef.current?.click()}
+                className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50 shrink-0"
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Uploading...</span>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload new</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Upload Error Banner */}
         {uploadError && (
-          <div className="mx-6 mt-4 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-xs text-rose-600 dark:text-rose-300">
+          <div className="mx-6 mt-3 p-3 rounded-[6px] bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-[12px] text-rose-600 dark:text-rose-300">
             {uploadError}
           </div>
         )}
@@ -281,9 +274,9 @@ export function MediaPickerModal({
         {/* Media Grid Content */}
         <div className="flex-1 overflow-y-auto p-6 min-h-[350px]">
           {isLoading ? (
-            <div className="h-64 flex flex-col items-center justify-center gap-3 text-slate-400">
-              <Loader2 className="w-6 h-6 animate-spin text-rose-500" />
-              <span className="text-xs font-mono">Loading media library...</span>
+            <div className="h-64 flex flex-col items-center justify-center gap-2.5 text-[var(--muted)]">
+              <Loader2 className="w-6 h-6 animate-spin text-[var(--accent)]" />
+              <span className="text-[12px] font-mono">Loading media library...</span>
             </div>
           ) : items.length === 0 ? (
             <div
@@ -298,26 +291,26 @@ export function MediaPickerModal({
                 handleFileUpload(e.dataTransfer.files)
               }}
               onClick={() => fileInputRef.current?.click()}
-              className={`h-64 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center gap-3 text-center cursor-pointer transition ${
+              className={`h-64 rounded-[8px] border-2 border-dashed flex flex-col items-center justify-center gap-2.5 text-center cursor-pointer transition ${
                 isDragging
-                  ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20'
-                  : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30'
+                  ? 'border-[var(--accent)] bg-[var(--accent)]/5'
+                  : 'border-[var(--line)] hover:border-[var(--muted)] bg-[var(--canvas)]/40'
               }`}
             >
-              <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 shadow-xs">
-                <Upload className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-[6px] bg-[var(--panel)] border border-[var(--line)] flex items-center justify-center text-[var(--muted)] shadow-2xs">
+                <Upload className="w-5 h-5" />
               </div>
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+              <div className="space-y-0.5">
+                <p className="text-[13px] font-medium text-[var(--ink)]">
                   No files found. Click or drag files here to upload.
                 </p>
-                <p className="text-xs text-slate-400 font-mono">
+                <p className="text-[11px] text-[var(--muted)] font-mono">
                   Supports Images (PNG, JPG, WebP, SVG) and Documents (PDF, DOCX) up to 25MB
                 </p>
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
               {items.map((item) => {
                 const isImage = item.mimeType.startsWith('image/')
                 return (
@@ -332,10 +325,10 @@ export function MediaPickerModal({
                       })
                       onClose()
                     }}
-                    className="group relative flex flex-col rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden hover:border-rose-500/60 dark:hover:border-rose-500/60 hover:shadow-md transition text-left cursor-pointer"
+                    className="group relative flex flex-col rounded-[8px] border border-[var(--line)] bg-[var(--panel)] overflow-hidden hover:border-[var(--accent)] hover:shadow-md transition text-left cursor-pointer"
                   >
                     {/* Thumbnail Preview */}
-                    <div className="h-32 w-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center overflow-hidden relative">
+                    <div className="h-32 w-full bg-[var(--canvas)] flex items-center justify-center overflow-hidden relative border-b border-[var(--line)]/60">
                       {isImage ? (
                         <img
                           src={item.fileUrl}
@@ -346,14 +339,14 @@ export function MediaPickerModal({
                       ) : (
                         <div className="flex flex-col items-center gap-1.5 p-3 text-center">
                           {getFileIcon(item.mimeType)}
-                          <span className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                          <span className="text-[10px] font-mono uppercase text-[var(--muted)] font-semibold">
                             {item.filename.split('.').pop()}
                           </span>
                         </div>
                       )}
 
                       {/* Select Hover Overlay */}
-                      <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 text-white text-xs font-bold">
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 text-white text-[12px] font-medium">
                         <Check className="w-4 h-4" />
                         <span>Select</span>
                       </div>
@@ -361,12 +354,12 @@ export function MediaPickerModal({
                       {/* Purpose / Match Tag */}
                       <div className="absolute top-2 left-2 flex gap-1">
                         {clientId && item.clientId === clientId && (
-                          <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-rose-600 text-white uppercase tracking-wider shadow-xs">
+                          <span className="px-1.5 py-0.5 rounded-[4px] text-[9px] font-medium bg-[var(--accent)] text-white uppercase tracking-wider">
                             Client Asset
                           </span>
                         )}
                         {item.purpose && item.purpose !== 'site' && (
-                          <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-black/60 backdrop-blur-xs text-white uppercase tracking-wider">
+                          <span className="px-1.5 py-0.5 rounded-[4px] text-[9px] font-medium bg-black/70 backdrop-blur-xs text-white uppercase tracking-wider">
                             {item.purpose}
                           </span>
                         )}
@@ -374,14 +367,14 @@ export function MediaPickerModal({
                     </div>
 
                     {/* File Meta */}
-                    <div className="p-3 space-y-1">
+                    <div className="p-2.5 space-y-0.5">
                       <p
-                        className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-rose-500 transition-colors"
+                        className="text-[12px] font-medium text-[var(--ink)] truncate group-hover:text-[var(--accent)] transition-colors"
                         title={item.filename}
                       >
                         {item.filename}
                       </p>
-                      <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                      <div className="flex items-center justify-between text-[10px] font-mono text-[var(--muted)]">
                         <span>{formatFileSize(item.fileSize)}</span>
                         <span>{item.mimeType.split('/')[1] || 'file'}</span>
                       </div>
@@ -394,14 +387,14 @@ export function MediaPickerModal({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
-          <span className="text-xs font-mono text-slate-400">
+        <div className="px-6 py-3 border-t border-[var(--line)] bg-[var(--canvas)]/40 flex items-center justify-between">
+          <span className="text-[11px] font-mono text-[var(--muted)]">
             {items.length} file{items.length === 1 ? '' : 's'} available
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+            className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] hover:bg-[var(--canvas)] border border-[var(--line)] bg-[var(--panel)] transition cursor-pointer"
           >
             Cancel
           </button>

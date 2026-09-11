@@ -416,13 +416,27 @@ export const getClientByIdServerFn = createServerFn({ method: 'GET' })
       }
     }
 
-    const locations = await db
-      .select()
-      .from(clientLocations)
-      .where(eq(clientLocations.clientId, data.id))
-      .orderBy(clientLocations.name)
+    let assignedStaff = null
+    if (client.assignedStaffId) {
+      const [staffUser] = await db
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          avatarUrl: users.avatarUrl,
+        })
+        .from(users)
+        .where(eq(users.id, client.assignedStaffId))
+      assignedStaff = staffUser || null
+    }
 
-    return { client, reports: clientReports, dataSources, rawDataSources, locations }
+    return {
+      client: { ...client, assignedStaff },
+      reports: clientReports,
+      dataSources,
+      rawDataSources,
+      locations: [],
+    }
   })
 
 /**
@@ -680,6 +694,10 @@ export const updateClientServerFn = createServerFn({ method: 'POST' })
       partnerName: data.partnerName?.trim() || null,
       partnerLogoUrl: data.partnerLogoUrl?.trim() || null,
       partnerLogoBgColor: data.partnerLogoBgColor?.trim() || '#ffffff',
+    }
+
+    if (data.assignedStaffId !== undefined) {
+      updateFields.assignedStaffId = data.assignedStaffId && data.assignedStaffId.trim() ? data.assignedStaffId.trim() : null
     }
 
     const effectivePartnerId = getEffectivePartnerId(auth)

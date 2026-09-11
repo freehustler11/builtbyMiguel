@@ -452,17 +452,24 @@ function AdminClientsPage() {
             partnerLogoUrl: partnerLogoUrl.trim() || undefined,
             partnerLogoBgColor: partnerLogoBgColor.trim() || '#ffffff',
             partnerId: isSuperadmin ? formPartnerId.trim() || null : undefined,
+            assignedStaffId: formAssignedStaffId.trim() || null,
           },
         })
 
         if (res.success && res.client) {
           const updated = res.client
+          const matchedStaff = formAssignedStaffId.trim()
+            ? teamMembers.find((m) => m.id === formAssignedStaffId.trim()) || null
+            : null
           setClients((prev) =>
             prev.map((c) =>
               c.id === updated.id
                 ? {
                     ...c,
                     ...updated,
+                    assignedStaff: matchedStaff
+                      ? { id: matchedStaff.id, name: matchedStaff.name, email: matchedStaff.email, avatarUrl: matchedStaff.avatarUrl || null }
+                      : null,
                     partner: updated.partnerId
                       ? partnersList.find((p) => p.id === updated.partnerId) || c.partner
                       : null,
@@ -489,6 +496,7 @@ function AdminClientsPage() {
             partnerLogoUrl: partnerLogoUrl.trim() || undefined,
             partnerLogoBgColor: partnerLogoBgColor.trim() || '#ffffff',
             partnerId: isSuperadmin ? formPartnerId.trim() || null : undefined,
+            assignedStaffId: formAssignedStaffId.trim() || null,
           },
         })
 
@@ -497,9 +505,15 @@ function AdminClientsPage() {
           const matchedPartner = created.partnerId
             ? partnersList.find((p) => p.id === created.partnerId) || null
             : null
+          const matchedStaff = formAssignedStaffId.trim()
+            ? teamMembers.find((m) => m.id === formAssignedStaffId.trim()) || null
+            : null
           const newClientItem: ClientWithReportCount = {
             ...created,
             reportCount: 0,
+            assignedStaff: matchedStaff
+              ? { id: matchedStaff.id, name: matchedStaff.name, email: matchedStaff.email, avatarUrl: matchedStaff.avatarUrl || null }
+              : null,
             partner: matchedPartner
               ? { id: matchedPartner.id, name: matchedPartner.name, email: matchedPartner.email }
               : null,
@@ -1388,50 +1402,50 @@ function AdminClientsPage() {
       {/* ========================================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-2xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-6 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50">
-                  <Building2 className="w-5 h-5" />
+          <div className="w-full max-w-2xl bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 space-y-5 shadow-2xl text-[var(--ink)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">
+                  <Building2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-[15px] font-semibold text-[var(--ink)]">
                     {editingClient ? 'Edit Client Profile' : 'New Client Profile'}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Configure branding, contact details, and assigned agency.
+                  <p className="text-[12px] text-[var(--muted)]">
+                    Configure branding, contact details, assigned staff, and partner agency.
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+                className="p-1.5 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50 cursor-pointer transition"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {formError && (
-              <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-900 text-xs text-rose-600 dark:text-rose-400 font-semibold">
+              <div className="p-3 rounded-[6px] bg-[var(--danger)]/10 border border-[var(--danger)]/30 text-[12px] text-[var(--danger)] font-medium">
                 {formError}
               </div>
             )}
 
-            <form onSubmit={handleSaveClient} className="space-y-5">
+            <form onSubmit={handleSaveClient} className="space-y-4">
               {/* Partner Assignment (Superadmin only) */}
               {isSuperadmin && (
-                <div className="space-y-1.5 p-3.5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-900/50">
+                <div className="space-y-1 p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
                   <div className="flex items-center gap-1.5">
-                    <Briefcase className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    <label className="text-xs font-mono font-bold uppercase text-blue-900 dark:text-blue-300">
+                    <Briefcase className="w-3.5 h-3.5 text-[var(--accent)]" />
+                    <label className="text-[12px] font-medium text-[var(--ink)]">
                       Assigned Partner Agency
                     </label>
                   </div>
                   <select
                     value={formPartnerId}
                     onChange={(e) => setFormPartnerId(e.target.value)}
-                    className="w-full text-xs font-mono rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                    className="w-full text-[13px] rounded-[6px] border border-[var(--line)] bg-[var(--panel)] px-3 py-1.5 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] cursor-pointer"
                   >
                     <option value="">Direct Agency Client (Superadmin)</option>
                     {partnersList.map((p) => (
@@ -1440,16 +1454,38 @@ function AdminClientsPage() {
                       </option>
                     ))}
                   </select>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    If assigned to a partner, only that partner agency and superadmins can view or generate reports for this client.
+                  <p className="text-[11px] text-[var(--muted)]">
+                    If assigned to a partner, only that partner agency and superadmins can view or manage this client.
                   </p>
                 </div>
               )}
 
+              {/* Assigned Staff Member */}
+              <div className="space-y-1">
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Assigned Staff Member
+                </label>
+                <select
+                  value={formAssignedStaffId}
+                  onChange={(e) => setFormAssignedStaffId(e.target.value)}
+                  className="w-full text-[13px] rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] px-3 py-2 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] cursor-pointer"
+                >
+                  <option value="">Unassigned (Agency Pool)</option>
+                  {teamMembers.map((member) => (
+                    <option key={member.id} value={member.id}>
+                      {member.name || member.email} ({member.role === 'partner' ? 'Agency Owner' : 'Staff'})
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-[var(--muted)]">
+                  The assigned staff member will see this client highlighted under their assigned work and filtered views.
+                </p>
+              </div>
+
               {/* Basic Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Business Name *
                   </label>
                   <input
@@ -1458,12 +1494,12 @@ function AdminClientsPage() {
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     placeholder="e.g. Acme Roofing & Solar"
-                    className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                    className="w-full px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Contact Person Name *
                   </label>
                   <input
@@ -1472,14 +1508,14 @@ function AdminClientsPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. John Doe"
-                    className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                    className="w-full px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               {/* Website URL */}
               <div className="space-y-1">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                <label className="text-[12px] font-medium text-[var(--muted)]">
                   Website URL
                 </label>
                 <input
@@ -1487,26 +1523,26 @@ function AdminClientsPage() {
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
                   placeholder="https://acmeroofing.com"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                  className="w-full px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Client Logo Picker */}
               <div className="space-y-2">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
-                  Client Logo
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Client Logo & Background
                 </label>
                 <div className="flex items-center gap-3">
                   {logoUrl ? (
                     <div
-                      className="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-2xs"
+                      className="w-11 h-11 rounded-[6px] border border-[var(--line)] p-1 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
                       style={{ backgroundColor: logoBgColor !== 'transparent' ? logoBgColor : undefined }}
                     >
                       <img src={logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
                     </div>
                   ) : (
-                    <div className="w-12 h-12 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center text-slate-400 shrink-0">
-                      <ImageIcon className="w-5 h-5" />
+                    <div className="w-11 h-11 rounded-[6px] border border-dashed border-[var(--line)] flex items-center justify-center text-[var(--muted)] shrink-0 bg-[var(--canvas)]">
+                      <ImageIcon className="w-4 h-4" />
                     </div>
                   )}
 
@@ -1516,12 +1552,12 @@ function AdminClientsPage() {
                       value={logoUrl}
                       onChange={(e) => setLogoUrl(e.target.value)}
                       placeholder="https://.../logo.png"
-                      className="flex-1 px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono truncate"
+                      className="flex-1 px-3 py-2 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] truncate"
                     />
                     <button
                       type="button"
                       onClick={() => setIsMediaModalOpen(true)}
-                      className="px-3.5 py-2.5 rounded-2xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition shrink-0 cursor-pointer"
+                      className="px-3 py-2 rounded-[6px] text-[12px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition shrink-0 cursor-pointer"
                     >
                       Media Library
                     </button>
@@ -1529,13 +1565,13 @@ function AdminClientsPage() {
                 </div>
 
                 {/* Logo Background Color Customization */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
                   <div className="space-y-0.5">
-                    <span className="text-[11px] font-mono font-bold uppercase text-slate-600 dark:text-slate-400 block">
-                      Logo Background Color
+                    <span className="text-[11px] font-medium text-[var(--ink)] block">
+                      Logo Container Background
                     </span>
-                    <span className="text-[10px] text-slate-500">
-                      Set a dark, white, or custom background for white or transparent logos.
+                    <span className="text-[11px] text-[var(--muted)]">
+                      Set a dark or white backing for transparent client logos.
                     </span>
                   </div>
 
@@ -1544,53 +1580,34 @@ function AdminClientsPage() {
                       type="color"
                       value={logoBgColor.startsWith('#') ? logoBgColor : '#ffffff'}
                       onChange={(e) => setLogoBgColor(e.target.value)}
-                      className="w-8 h-8 rounded-xl border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800 shrink-0"
+                      className="w-7 h-7 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent shrink-0"
                     />
                     <input
                       type="text"
                       value={logoBgColor}
                       onChange={(e) => setLogoBgColor(e.target.value)}
                       placeholder="#ffffff"
-                      className="w-20 px-2.5 py-1 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-20 px-2 py-1 rounded-[4px] text-[12px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
                     />
-                    <div className="flex items-center gap-1.5 pl-1">
-                      <button
-                        type="button"
-                        onClick={() => setLogoBgColor('#ffffff')}
-                        title="White"
-                        className={`w-5 h-5 rounded-full border border-slate-300 shadow-xs cursor-pointer transition ${logoBgColor === '#ffffff' ? 'ring-2 ring-blue-500 scale-110' : ''}`}
-                        style={{ backgroundColor: '#ffffff' }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setLogoBgColor('#0f172a')}
-                        title="Dark Slate"
-                        className={`w-5 h-5 rounded-full border border-slate-700 shadow-xs cursor-pointer transition ${logoBgColor === '#0f172a' ? 'ring-2 ring-blue-500 scale-110' : ''}`}
-                        style={{ backgroundColor: '#0f172a' }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setLogoBgColor('#000000')}
-                        title="Black"
-                        className={`w-5 h-5 rounded-full border border-slate-800 shadow-xs cursor-pointer transition ${logoBgColor === '#000000' ? 'ring-2 ring-blue-500 scale-110' : ''}`}
-                        style={{ backgroundColor: '#000000' }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setLogoBgColor(primaryColor)}
-                        title="Brand Primary"
-                        className={`w-5 h-5 rounded-full border border-white shadow-xs cursor-pointer transition ${logoBgColor === primaryColor ? 'ring-2 ring-blue-500 scale-110' : ''}`}
-                        style={{ backgroundColor: primaryColor }}
-                      />
+                    <div className="flex items-center gap-1 pl-1">
+                      {['#ffffff', '#0f172a', '#000000', primaryColor].map((bg) => (
+                        <button
+                          key={bg}
+                          type="button"
+                          onClick={() => setLogoBgColor(bg)}
+                          className={`w-4.5 h-4.5 rounded-full border border-[var(--line)] cursor-pointer transition ${logoBgColor === bg ? 'ring-2 ring-[var(--accent)] scale-110' : ''}`}
+                          style={{ backgroundColor: bg }}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Color Customization */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                <div className="space-y-2">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Primary Brand Color
                   </label>
                   <div className="flex items-center gap-2">
@@ -1598,30 +1615,30 @@ function AdminClientsPage() {
                       type="color"
                       value={primaryColor}
                       onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-9 h-9 rounded-xl border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800"
+                      className="w-7 h-7 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent shrink-0"
                     />
                     <input
                       type="text"
                       value={primaryColor}
                       onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-24 px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="flex-1 px-2.5 py-1 rounded-[4px] text-[12px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
                     />
                   </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 pt-0.5">
                     {COLOR_PRESETS.slice(0, 5).map((color) => (
                       <button
                         key={color}
                         type="button"
                         onClick={() => setPrimaryColor(color)}
-                        className="w-5 h-5 rounded-full border border-white dark:border-slate-800 shadow-xs cursor-pointer transition hover:scale-110"
+                        className="w-4 h-4 rounded-full border border-[var(--line)] cursor-pointer transition hover:scale-110"
                         style={{ backgroundColor: color }}
                       />
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Secondary Accent Color
                   </label>
                   <div className="flex items-center gap-2">
@@ -1629,22 +1646,22 @@ function AdminClientsPage() {
                       type="color"
                       value={secondaryColor}
                       onChange={(e) => setSecondaryColor(e.target.value)}
-                      className="w-9 h-9 rounded-xl border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800"
+                      className="w-7 h-7 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent shrink-0"
                     />
                     <input
                       type="text"
                       value={secondaryColor}
                       onChange={(e) => setSecondaryColor(e.target.value)}
-                      className="w-24 px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="flex-1 px-2.5 py-1 rounded-[4px] text-[12px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
                     />
                   </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 pt-0.5">
                     {COLOR_PRESETS.slice(5).map((color) => (
                       <button
                         key={color}
                         type="button"
                         onClick={() => setSecondaryColor(color)}
-                        className="w-5 h-5 rounded-full border border-white dark:border-slate-800 shadow-xs cursor-pointer transition hover:scale-110"
+                        className="w-4 h-4 rounded-full border border-[var(--line)] cursor-pointer transition hover:scale-110"
                         style={{ backgroundColor: color }}
                       />
                     ))}
@@ -1653,13 +1670,13 @@ function AdminClientsPage() {
               </div>
 
               {/* White-Label Settings */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+              <div className="p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                    <span className="text-[12px] font-semibold text-[var(--ink)] block">
                       White-Label Report Branding
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
+                    <span className="text-[11px] text-[var(--muted)] block">
                       Replace "built by Miguel" branding on client PDFs with custom partner agency details.
                     </span>
                   </div>
@@ -1668,8 +1685,8 @@ function AdminClientsPage() {
                     role="switch"
                     aria-checked={isWhiteLabel}
                     onClick={() => setIsWhiteLabel(!isWhiteLabel)}
-                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                      isWhiteLabel ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-700'
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
+                      isWhiteLabel ? 'bg-[var(--accent)]' : 'bg-[var(--line)]'
                     }`}
                   >
                     <span className="sr-only">Toggle white-label</span>
@@ -1683,9 +1700,9 @@ function AdminClientsPage() {
                 </div>
 
                 {isWhiteLabel && (
-                  <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-800 animate-in fade-in">
+                  <div className="space-y-2.5 pt-2 border-t border-[var(--line)] animate-in fade-in">
                     <div className="space-y-1">
-                      <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                      <label className="text-[11px] font-medium text-[var(--muted)]">
                         Partner Agency Name
                       </label>
                       <input
@@ -1693,25 +1710,25 @@ function AdminClientsPage() {
                         value={partnerName}
                         onChange={(e) => setPartnerName(e.target.value)}
                         placeholder="e.g. Apex Marketing Co."
-                        className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
+                        className="w-full px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[var(--muted)]">
                         Partner Agency Logo
                       </label>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         {partnerLogoUrl ? (
                           <div
-                            className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-2xs"
+                            className="w-9 h-9 rounded-[4px] border border-[var(--line)] p-1 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden"
                             style={{ backgroundColor: partnerLogoBgColor !== 'transparent' ? partnerLogoBgColor : undefined }}
                           >
                             <img src={partnerLogoUrl} alt="Partner Logo" className="max-h-full max-w-full object-contain" />
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center text-slate-400 shrink-0">
-                            <ImageIcon className="w-4 h-4" />
+                          <div className="w-9 h-9 rounded-[4px] border border-dashed border-[var(--line)] flex items-center justify-center text-[var(--muted)] shrink-0 bg-[var(--panel)]">
+                            <ImageIcon className="w-3.5 h-3.5" />
                           </div>
                         )}
 
@@ -1721,12 +1738,12 @@ function AdminClientsPage() {
                             value={partnerLogoUrl}
                             onChange={(e) => setPartnerLogoUrl(e.target.value)}
                             placeholder="https://.../partner-logo.png"
-                            className="flex-1 px-3.5 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono truncate"
+                            className="flex-1 px-3 py-1.5 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] truncate"
                           />
                           <button
                             type="button"
                             onClick={() => setIsPartnerLogoModalOpen(true)}
-                            className="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition shrink-0 cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-[6px] text-[12px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition shrink-0 cursor-pointer"
                           >
                             Browse
                           </button>
@@ -1734,21 +1751,21 @@ function AdminClientsPage() {
                       </div>
 
                       {/* Partner Logo Background Selector */}
-                      <div className="flex items-center justify-between gap-2 pt-1">
-                        <span className="text-[10px] text-slate-500 font-mono">Logo Background:</span>
+                      <div className="flex items-center justify-between gap-2 pt-0.5">
+                        <span className="text-[11px] text-[var(--muted)]">Logo Background:</span>
                         <div className="flex items-center gap-2">
                           <input
                             type="color"
                             value={partnerLogoBgColor.startsWith('#') ? partnerLogoBgColor : '#ffffff'}
                             onChange={(e) => setPartnerLogoBgColor(e.target.value)}
-                            className="w-6 h-6 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-800"
+                            className="w-5 h-5 rounded-[4px] border border-[var(--line)] cursor-pointer p-0 bg-transparent"
                           />
                           <input
                             type="text"
                             value={partnerLogoBgColor}
                             onChange={(e) => setPartnerLogoBgColor(e.target.value)}
                             placeholder="#ffffff"
-                            className="w-20 px-2 py-0.5 rounded-lg text-[11px] font-mono border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                            className="w-20 px-2 py-0.5 rounded-[4px] text-[11px] font-mono border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
                           />
                         </div>
                       </div>
@@ -1779,7 +1796,7 @@ function AdminClientsPage() {
                   ) : (
                     <>
                       <Check className="w-3.5 h-3.5" />
-                      <span>{editingClient ? 'Save changes' : 'Create client'}</span>
+                      <span>{editingClient ? 'Save Changes' : 'Create Client'}</span>
                     </>
                   )}
                 </button>
