@@ -41,6 +41,22 @@ import {
   type PageItem,
 } from '../../../server/reports'
 
+function parseNullableInt(val: unknown): number | null {
+  if (val === null || val === undefined || val === '') return null
+  const cleaned = String(val).replace(/[^0-9-]/g, '')
+  if (cleaned === '' || cleaned === '-') return null
+  const num = parseInt(cleaned, 10)
+  return isNaN(num) ? null : num
+}
+
+function parseNullableDecimal(val: unknown): number | null {
+  if (val === null || val === undefined || val === '') return null
+  const cleaned = String(val).replace(/[^0-9.-]/g, '')
+  if (cleaned === '' || cleaned === '-' || cleaned === '.') return null
+  const num = parseFloat(cleaned)
+  return isNaN(num) ? null : num
+}
+
 function parseDecimalValue(val: unknown): number {
   if (val === null || val === undefined || val === '') return 0
   if (typeof val === 'number') return isNaN(val) ? 0 : val
@@ -190,26 +206,48 @@ function AdminReportFormPage() {
   )
 
   // GBP Metrics - Current
-  const [gbpCalls, setGbpCalls] = useState<number | string>(existingReport?.gbpCalls ?? 0)
-  const [gbpDirections, setGbpDirections] = useState<number | string>(existingReport?.gbpDirections ?? 0)
-  const [gbpViews, setGbpViews] = useState<number | string>(existingReport?.gbpViews ?? 0)
+  const [gbpCalls, setGbpCalls] = useState<number | string>(existingReport?.gbpCalls !== undefined && existingReport?.gbpCalls !== null ? existingReport.gbpCalls : '')
+  const [gbpDirections, setGbpDirections] = useState<number | string>(existingReport?.gbpDirections !== undefined && existingReport?.gbpDirections !== null ? existingReport.gbpDirections : '')
+  const [gbpViews, setGbpViews] = useState<number | string>(existingReport?.gbpViews !== undefined && existingReport?.gbpViews !== null ? existingReport.gbpViews : '')
   const [gbpWebsiteClicks, setGbpWebsiteClicks] = useState<number | string>(
-    (existingReport as any)?.gbpWebsiteClicks ?? existingReport?.gbpViews ?? 0
+    (existingReport as any)?.gbpWebsiteClicks !== undefined && (existingReport as any)?.gbpWebsiteClicks !== null
+      ? (existingReport as any).gbpWebsiteClicks
+      : existingReport?.gbpViews !== undefined && existingReport?.gbpViews !== null
+      ? existingReport.gbpViews
+      : ''
   )
 
   // GBP Metrics - Previous Month
-  const [prevGbpCalls, setPrevGbpCalls] = useState<number | string>(existingReport?.prevGbpCalls ?? 0)
-  const [prevGbpDirections, setPrevGbpDirections] = useState<number | string>(existingReport?.prevGbpDirections ?? 0)
-  const [prevGbpViews, setPrevGbpViews] = useState<number | string>(existingReport?.prevGbpViews ?? 0)
+  const [prevGbpCalls, setPrevGbpCalls] = useState<number | string>(existingReport?.prevGbpCalls !== undefined && existingReport?.prevGbpCalls !== null ? existingReport.prevGbpCalls : '')
+  const [prevGbpDirections, setPrevGbpDirections] = useState<number | string>(existingReport?.prevGbpDirections !== undefined && existingReport?.prevGbpDirections !== null ? existingReport.prevGbpDirections : '')
+  const [prevGbpViews, setPrevGbpViews] = useState<number | string>(existingReport?.prevGbpViews !== undefined && existingReport?.prevGbpViews !== null ? existingReport.prevGbpViews : '')
   const [prevGbpWebsiteClicks, setPrevGbpWebsiteClicks] = useState<number | string>(
-    (existingReport as any)?.prevGbpWebsiteClicks ?? existingReport?.prevGbpViews ?? 0
+    (existingReport as any)?.prevGbpWebsiteClicks !== undefined && (existingReport as any)?.prevGbpWebsiteClicks !== null
+      ? (existingReport as any).prevGbpWebsiteClicks
+      : existingReport?.prevGbpViews !== undefined && existingReport?.prevGbpViews !== null
+      ? existingReport.prevGbpViews
+      : ''
   )
 
   // GBP Reputation
   const [gbpRating, setGbpRating] = useState<number | string>(existingReport?.gbpRating ?? 5.0)
-  const [gbpReviewCount, setGbpReviewCount] = useState<number | string>(existingReport?.gbpReviewsCount ?? existingReport?.gbpReviewCount ?? 0)
-  const [gbpReviewsCount, setGbpReviewsCount] = useState<number | string>(existingReport?.gbpReviewsCount ?? existingReport?.gbpReviewCount ?? 0)
-  const [prevGbpReviewsCount, setPrevGbpReviewsCount] = useState<number | string>(existingReport?.prevGbpReviewsCount ?? 0)
+  const [gbpReviewCount, setGbpReviewCount] = useState<number | string>(
+    existingReport?.gbpReviewsCount !== undefined && existingReport?.gbpReviewsCount !== null
+      ? existingReport.gbpReviewsCount
+      : existingReport?.gbpReviewCount !== undefined && existingReport?.gbpReviewCount !== null
+      ? existingReport.gbpReviewCount
+      : ''
+  )
+  const [gbpReviewsCount, setGbpReviewsCount] = useState<number | string>(
+    existingReport?.gbpReviewsCount !== undefined && existingReport?.gbpReviewsCount !== null
+      ? existingReport.gbpReviewsCount
+      : existingReport?.gbpReviewCount !== undefined && existingReport?.gbpReviewCount !== null
+      ? existingReport.gbpReviewCount
+      : ''
+  )
+  const [prevGbpReviewsCount, setPrevGbpReviewsCount] = useState<number | string>(
+    existingReport?.prevGbpReviewsCount !== undefined && existingReport?.prevGbpReviewsCount !== null ? existingReport.prevGbpReviewsCount : ''
+  )
 
   // GSC Metrics - CTR
   const [gscCtr, setGscCtr] = useState<number | string>(existingReport?.gscCtr !== undefined && existingReport?.gscCtr !== null ? existingReport.gscCtr : '')
@@ -220,24 +258,24 @@ function AdminReportFormPage() {
   const [prevGaNewUsers, setPrevGaNewUsers] = useState<number | string>(existingReport?.prevGaNewUsers !== undefined && existingReport?.prevGaNewUsers !== null ? existingReport.prevGaNewUsers : '')
 
   // GSC Metrics - Current
-  const [gscClicks, setGscClicks] = useState<number | string>(existingReport?.gscClicks ?? 0)
-  const [gscImpressions, setGscImpressions] = useState<number | string>(existingReport?.gscImpressions ?? 0)
-  const [gscPosition, setGscPosition] = useState<number | string>(existingReport?.gscPosition ?? 0)
+  const [gscClicks, setGscClicks] = useState<number | string>(existingReport?.gscClicks !== undefined && existingReport?.gscClicks !== null ? existingReport.gscClicks : '')
+  const [gscImpressions, setGscImpressions] = useState<number | string>(existingReport?.gscImpressions !== undefined && existingReport?.gscImpressions !== null ? existingReport.gscImpressions : '')
+  const [gscPosition, setGscPosition] = useState<number | string>(existingReport?.gscPosition !== undefined && existingReport?.gscPosition !== null ? existingReport.gscPosition : '')
 
   // GSC Metrics - Previous Month
-  const [prevGscClicks, setPrevGscClicks] = useState<number | string>(existingReport?.prevGscClicks ?? 0)
-  const [prevGscImpressions, setPrevGscImpressions] = useState<number | string>(existingReport?.prevGscImpressions ?? 0)
-  const [prevGscPosition, setPrevGscPosition] = useState<number | string>(existingReport?.prevGscPosition ?? 0)
+  const [prevGscClicks, setPrevGscClicks] = useState<number | string>(existingReport?.prevGscClicks !== undefined && existingReport?.prevGscClicks !== null ? existingReport.prevGscClicks : '')
+  const [prevGscImpressions, setPrevGscImpressions] = useState<number | string>(existingReport?.prevGscImpressions !== undefined && existingReport?.prevGscImpressions !== null ? existingReport.prevGscImpressions : '')
+  const [prevGscPosition, setPrevGscPosition] = useState<number | string>(existingReport?.prevGscPosition !== undefined && existingReport?.prevGscPosition !== null ? existingReport.prevGscPosition : '')
 
   // GA4 Metrics - Current
-  const [gaUsers, setGaUsers] = useState<number | string>(existingReport?.gaUsers ?? 0)
-  const [gaSessions, setGaSessions] = useState<number | string>(existingReport?.gaSessions ?? 0)
-  const [gaViews, setGaViews] = useState<number | string>(existingReport?.gaViews ?? 0)
+  const [gaUsers, setGaUsers] = useState<number | string>(existingReport?.gaUsers !== undefined && existingReport?.gaUsers !== null ? existingReport.gaUsers : '')
+  const [gaSessions, setGaSessions] = useState<number | string>(existingReport?.gaSessions !== undefined && existingReport?.gaSessions !== null ? existingReport.gaSessions : '')
+  const [gaViews, setGaViews] = useState<number | string>(existingReport?.gaViews !== undefined && existingReport?.gaViews !== null ? existingReport.gaViews : '')
 
   // GA4 Metrics - Previous Month
-  const [prevGaUsers, setPrevGaUsers] = useState<number | string>(existingReport?.prevGaUsers ?? 0)
-  const [prevGaSessions, setPrevGaSessions] = useState<number | string>(existingReport?.prevGaSessions ?? 0)
-  const [prevGaViews, setPrevGaViews] = useState<number | string>(existingReport?.prevGaViews ?? 0)
+  const [prevGaUsers, setPrevGaUsers] = useState<number | string>(existingReport?.prevGaUsers !== undefined && existingReport?.prevGaUsers !== null ? existingReport.prevGaUsers : '')
+  const [prevGaSessions, setPrevGaSessions] = useState<number | string>(existingReport?.prevGaSessions !== undefined && existingReport?.prevGaSessions !== null ? existingReport.prevGaSessions : '')
+  const [prevGaViews, setPrevGaViews] = useState<number | string>(existingReport?.prevGaViews !== undefined && existingReport?.prevGaViews !== null ? existingReport.prevGaViews : '')
 
   // Deep Metric Tables
   const [topQueries, setTopQueries] = useState<QueryItem[]>(() => {
@@ -669,48 +707,54 @@ function AdminReportFormPage() {
     try {
       setIsSubmitting(true)
 
+      // Extract active data source configuration from preflight or default to connected
+      const ds = preflightData?.dataSources || { gsc: 'connected', ga4: 'connected', gbp: 'connected' }
+      const isGbp = (ds.gbp ?? 'connected') === 'connected'
+      const isGsc = (ds.gsc ?? 'connected') === 'connected'
+      const isGa4 = (ds.ga4 ?? 'connected') === 'connected'
+
       const payload = {
         clientId: selectedClientId,
         title: title.trim(),
         reportMonth: reportMonth.trim(),
         previousReportId: previousReportId || undefined,
         // GBP Current
-        gbpCalls: Number(gbpCalls) || 0,
-        gbpDirections: Number(gbpDirections) || 0,
-        gbpViews: Number(gbpWebsiteClicks || gbpViews) || 0,
-        gbpWebsiteClicks: Number(gbpWebsiteClicks) || 0,
+        gbpCalls: isGbp ? parseNullableInt(gbpCalls) : null,
+        gbpDirections: isGbp ? parseNullableInt(gbpDirections) : null,
+        gbpViews: isGbp ? parseNullableInt(gbpWebsiteClicks || gbpViews) : null,
+        gbpWebsiteClicks: isGbp ? parseNullableInt(gbpWebsiteClicks) : null,
         // GBP Previous
-        prevGbpCalls: Number(prevGbpCalls) || 0,
-        prevGbpDirections: Number(prevGbpDirections) || 0,
-        prevGbpViews: Number(prevGbpWebsiteClicks || prevGbpViews) || 0,
-        prevGbpWebsiteClicks: Number(prevGbpWebsiteClicks) || 0,
+        prevGbpCalls: isGbp ? parseNullableInt(prevGbpCalls) : null,
+        prevGbpDirections: isGbp ? parseNullableInt(prevGbpDirections) : null,
+        prevGbpViews: isGbp ? parseNullableInt(prevGbpWebsiteClicks || prevGbpViews) : null,
+        prevGbpWebsiteClicks: isGbp ? parseNullableInt(prevGbpWebsiteClicks) : null,
         // GBP Reputation
-        gbpRating: Number(gbpRating) || 5.0,
-        gbpReviewCount: Number(gbpReviewsCount || gbpReviewCount) || 0,
-        gbpReviewsCount: Number(gbpReviewsCount || gbpReviewCount) || 0,
-        prevGbpReviewsCount: Number(prevGbpReviewsCount) || 0,
+        gbpRating: isGbp ? parseDecimalValue(gbpRating) : 5.0,
+        gbpReviewCount: isGbp ? parseNullableInt(gbpReviewsCount || gbpReviewCount) : null,
+        gbpReviewsCount: isGbp ? parseNullableInt(gbpReviewsCount || gbpReviewCount) : null,
+        prevGbpReviewsCount: isGbp ? parseNullableInt(prevGbpReviewsCount) : null,
         // GSC Current
-        gscClicks: Number(gscClicks) || 0,
-        gscImpressions: Number(gscImpressions) || 0,
-        gscCtr: parseDecimalValue(gscCtr),
-        gscPosition: parseDecimalValue(gscPosition),
+        gscClicks: isGsc ? parseNullableInt(gscClicks) : null,
+        gscImpressions: isGsc ? parseNullableInt(gscImpressions) : null,
+        gscCtr: isGsc ? parseNullableDecimal(gscCtr) : null,
+        gscPosition: isGsc ? parseNullableDecimal(gscPosition) : null,
         // GSC Previous
-        prevGscClicks: Number(prevGscClicks) || 0,
-        prevGscImpressions: Number(prevGscImpressions) || 0,
-        prevGscCtr: parseDecimalValue(prevGscCtr),
-        prevGscPosition: parseDecimalValue(prevGscPosition),
+        prevGscClicks: isGsc ? parseNullableInt(prevGscClicks) : null,
+        prevGscImpressions: isGsc ? parseNullableInt(prevGscImpressions) : null,
+        prevGscCtr: isGsc ? parseNullableDecimal(prevGscCtr) : null,
+        prevGscPosition: isGsc ? parseNullableDecimal(prevGscPosition) : null,
         // GA4 Current
-        gaUsers: Number(gaUsers) || 0,
-        gaNewUsers: Number(gaNewUsers) || 0,
+        gaUsers: isGa4 ? parseNullableInt(gaUsers) : null,
+        gaNewUsers: isGa4 ? parseNullableInt(gaNewUsers) : null,
         gaEngagementRate: 0,
-        gaSessions: Number(gaSessions) || 0,
-        gaViews: Number(gaViews) || 0,
+        gaSessions: isGa4 ? parseNullableInt(gaSessions) : null,
+        gaViews: isGa4 ? parseNullableInt(gaViews) : null,
         // GA4 Previous
-        prevGaUsers: Number(prevGaUsers) || 0,
-        prevGaNewUsers: Number(prevGaNewUsers) || 0,
+        prevGaUsers: isGa4 ? parseNullableInt(prevGaUsers) : null,
+        prevGaNewUsers: isGa4 ? parseNullableInt(prevGaNewUsers) : null,
         prevGaEngagementRate: 0,
-        prevGaSessions: Number(prevGaSessions) || 0,
-        prevGaViews: Number(prevGaViews) || 0,
+        prevGaSessions: isGa4 ? parseNullableInt(prevGaSessions) : null,
+        prevGaViews: isGa4 ? parseNullableInt(prevGaViews) : null,
         // Deep Metric Tables
         topQueries: cleanedQueries,
         topPages: cleanedPages,
@@ -798,7 +842,7 @@ function AdminReportFormPage() {
           </div>
         )}
 
-        {/* PRE-FLIGHT CHECK WARNING BANNER */}
+        {/* PRE-FLIGHT CHECK WARNING BANNER: NO MONTHLY METRICS */}
         {preflightData && !preflightData.ready && preflightData.missing === 'monthly_metrics' && !isEditing && (
           <div className="p-5 rounded-3xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800/80 shadow-xs space-y-3 animate-in fade-in duration-200">
             <div className="flex items-start gap-3">
@@ -825,6 +869,44 @@ function AdminReportFormPage() {
                   <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400">
                     Takes ~60 seconds or import Semrush CSV
                   </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PRE-FLIGHT CHECK WARNING BANNER: INCOMPLETE FIELDS ON CONNECTED SOURCES */}
+        {preflightData && !preflightData.ready && preflightData.missing === 'metrics_fields' && !isEditing && (
+          <div className="p-5 rounded-3xl bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800/80 shadow-xs space-y-3 animate-in fade-in duration-200">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 shrink-0 mt-0.5">
+                <AlertCircle className="w-5 h-5" />
+              </div>
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <h3 className="text-sm font-bold text-rose-900 dark:text-rose-200">
+                  Incomplete Metrics for Connected Channels
+                </h3>
+                <p className="text-xs text-rose-800 dark:text-rose-300/90 leading-relaxed">
+                  Monthly metrics exist for <strong>{reportMonth}</strong>, but connected channels are missing required metric data:
+                  {' '}<span className="font-mono font-bold">{preflightData.missingFields?.join(', ')}</span>.
+                  Empty fields on connected channels would produce misleading zeros on client reports.
+                </p>
+                <div className="pt-2 flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/admin/workspace"
+                    search={{ tab: 'metrics', client: selectedClientId }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-xs transition"
+                  >
+                    <span>Update Monthly Metrics</span>
+                    <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+                  </Link>
+                  <Link
+                    to="/admin/clients/$clientId"
+                    params={{ clientId: selectedClientId }}
+                    className="text-[11px] font-mono font-semibold text-rose-700 dark:text-rose-400 hover:underline"
+                  >
+                    Manage Data Access Sources
+                  </Link>
                 </div>
               </div>
             </div>
@@ -1020,11 +1102,29 @@ function AdminReportFormPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {/* Card 1: Google Business Profile (GBP) */}
                 <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                    <PhoneCall className="w-3.5 h-3.5" />
-                    <span>Google Business Profile</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                      <PhoneCall className="w-3.5 h-3.5" />
+                      <span>Google Business Profile</span>
+                    </div>
+                    {preflightData?.dataSources && preflightData.dataSources.gbp !== 'connected' && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+                        {preflightData.dataSources.gbp === 'no_access' ? 'No Access' : 'N/A'}
+                      </span>
+                    )}
                   </div>
 
+                  {preflightData?.dataSources && preflightData.dataSources.gbp !== 'connected' ? (
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-center space-y-1 my-2">
+                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                        GBP Excluded from Report
+                      </p>
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                        Access is marked as {preflightData.dataSources.gbp}. Metrics will be stored as null.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
                   {/* Calls */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
@@ -1163,14 +1263,35 @@ function AdminReportFormPage() {
                       />
                     </div>
                   </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Card 2: Google Search Console (GSC) */}
                 <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    <MousePointerClick className="w-3.5 h-3.5" />
-                    <span>Search Console (GSC)</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                      <MousePointerClick className="w-3.5 h-3.5" />
+                      <span>Search Console (GSC)</span>
+                    </div>
+                    {preflightData?.dataSources && preflightData.dataSources.gsc !== 'connected' && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+                        {preflightData.dataSources.gsc === 'no_access' ? 'No Access' : 'N/A'}
+                      </span>
+                    )}
                   </div>
+
+                  {preflightData?.dataSources && preflightData.dataSources.gsc !== 'connected' ? (
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-center space-y-1 my-2">
+                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                        GSC Excluded from Report
+                      </p>
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                        Access is marked as {preflightData.dataSources.gsc}. Metrics will be stored as null.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
 
                   {/* Clicks */}
                   <div className="grid grid-cols-2 gap-2">
@@ -1313,14 +1434,35 @@ function AdminReportFormPage() {
                       />
                     </div>
                   </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Card 3: Google Analytics 4 (GA4) */}
                 <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                    <Users className="w-3.5 h-3.5" />
-                    <span>Analytics (GA4)</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                      <Users className="w-3.5 h-3.5" />
+                      <span>Analytics (GA4)</span>
+                    </div>
+                    {preflightData?.dataSources && preflightData.dataSources.ga4 !== 'connected' && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+                        {preflightData.dataSources.ga4 === 'no_access' ? 'No Access' : 'N/A'}
+                      </span>
+                    )}
                   </div>
+
+                  {preflightData?.dataSources && preflightData.dataSources.ga4 !== 'connected' ? (
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-center space-y-1 my-2">
+                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                        GA4 Excluded from Report
+                      </p>
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                        Access is marked as {preflightData.dataSources.ga4}. Metrics will be stored as null.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
 
                   {/* Total Users */}
                   <div className="grid grid-cols-2 gap-2">
@@ -1457,6 +1599,8 @@ function AdminReportFormPage() {
                       />
                     </div>
                   </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -1746,12 +1890,22 @@ function AdminReportFormPage() {
                 type="submit"
                 disabled={isSubmitting || Boolean(preflightData && !preflightData.ready && !isEditing)}
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-sm transition disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-                title={preflightData && !preflightData.ready && !isEditing ? 'Monthly KPI metrics must be recorded first' : undefined}
+                title={
+                  preflightData && !preflightData.ready && !isEditing
+                    ? preflightData.missing === 'metrics_fields'
+                      ? 'Connected data channels are missing required metric fields'
+                      : 'Monthly KPI metrics must be recorded first'
+                    : undefined
+                }
               >
                 {preflightData && !preflightData.ready && !isEditing ? (
                   <>
                     <AlertCircle className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Monthly Metrics Required</span>
+                    <span>
+                      {preflightData.missing === 'metrics_fields'
+                        ? 'Incomplete Channel Metrics'
+                        : 'Monthly Metrics Required'}
+                    </span>
                   </>
                 ) : isSubmitting ? (
                   <>

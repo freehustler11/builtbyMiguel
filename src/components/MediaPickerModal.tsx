@@ -21,6 +21,8 @@ interface MediaPickerModalProps {
   onSelect: (media: { fileUrl: string; filename: string; mimeType: string }) => void
   title?: string
   acceptTypes?: 'all' | 'images' | 'documents'
+  purpose?: 'all' | 'site' | 'client' | 'report'
+  clientId?: string
 }
 
 function formatFileSize(bytes: number): string {
@@ -48,6 +50,8 @@ export function MediaPickerModal({
   onSelect,
   title = 'Select from Media Library',
   acceptTypes = 'all',
+  purpose = 'all',
+  clientId,
 }: MediaPickerModalProps) {
   const [items, setItems] = useState<Media[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -65,10 +69,23 @@ export function MediaPickerModal({
       const res = await getMediaServerFn({
         data: {
           type: filterType,
+          purpose: purpose !== 'all' ? purpose : undefined,
+          clientId: clientId || undefined,
           q: searchQuery.trim() || undefined,
         },
       })
-      setItems(res.media)
+
+      // If clientId is provided and purpose is 'all' or 'client', we can also fetch agency assets
+      // and sort client-matched assets to the top if getMediaServerFn returns broader results
+      let sortedItems = res.media
+      if (clientId) {
+        sortedItems = [...res.media].sort((a, b) => {
+          const aMatch = a.clientId === clientId ? 1 : 0
+          const bMatch = b.clientId === clientId ? 1 : 0
+          return bMatch - aMatch
+        })
+      }
+      setItems(sortedItems)
     } catch (err) {
       console.error('Failed to load media items:', err)
     } finally {
@@ -80,7 +97,7 @@ export function MediaPickerModal({
     if (isOpen) {
       loadMedia()
     }
-  }, [isOpen, filterType, searchQuery])
+  }, [isOpen, filterType, searchQuery, purpose, clientId])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -109,6 +126,8 @@ export function MediaPickerModal({
               filename: file.name,
               mimeType: file.type || 'application/octet-stream',
               base64,
+              clientId: clientId || null,
+              purpose: purpose && purpose !== 'all' ? purpose : 'site',
             },
           })
 
@@ -337,6 +356,20 @@ export function MediaPickerModal({
                       <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 text-white text-xs font-bold">
                         <Check className="w-4 h-4" />
                         <span>Select</span>
+                      </div>
+
+                      {/* Purpose / Match Tag */}
+                      <div className="absolute top-2 left-2 flex gap-1">
+                        {clientId && item.clientId === clientId && (
+                          <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-rose-600 text-white uppercase tracking-wider shadow-xs">
+                            Client Asset
+                          </span>
+                        )}
+                        {item.purpose && item.purpose !== 'site' && (
+                          <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-black/60 backdrop-blur-xs text-white uppercase tracking-wider">
+                            {item.purpose}
+                          </span>
+                        )}
                       </div>
                     </div>
 

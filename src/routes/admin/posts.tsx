@@ -59,7 +59,7 @@ import {
   updatePostServerFn,
   deletePostServerFn,
 } from '../../server/posts'
-import { AdminNav } from '../../components/AdminNav'
+import { AdminShell } from '../../components/AdminShell'
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../components/Toast'
 import { MediaPickerModal } from '../../components/MediaPickerModal'
@@ -1661,12 +1661,29 @@ function AdminPostsPage() {
   const navigate = useNavigate()
   const router = useRouter()
 
-  const [searchInput, setSearchInput] = useState(q)
+  // State
+  const [searchInput, setSearchInput] = useState(q || '')
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [mutatingId, setMutatingId] = useState<string | null>(null)
   const [postToDelete, setPostToDelete] = useState<Post | null>(null)
-  const [showBeginnerTips, setShowBeginnerTips] = useState(true)
+  const [showBeginnerTips, setShowBeginnerTips] = useState(() => {
+    try {
+      return localStorage.getItem('ui_guide_posts') === 'true'
+    } catch {
+      return false
+    }
+  })
   const [toasts, setToasts] = useState<ToastMessage[]>([])
+
+  const handleToggleTips = () => {
+    const next = !showBeginnerTips
+    setShowBeginnerTips(next)
+    try {
+      localStorage.setItem('ui_guide_posts', String(next))
+    } catch {
+      // ignore
+    }
+  }
 
   const addToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
     const id = Math.random().toString(36).substring(2, 9)
@@ -2201,69 +2218,68 @@ function AdminPostsPage() {
   }
 
   return (
-    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
-      {/* Soft Ambient Light Glow Matching Homepage */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-teal-100/40 dark:from-rose-500/15 dark:via-orange-500/10 dark:to-teal-500/15 blur-[130px] rounded-full pointer-events-none -z-10" />
+    <AdminShell
+      activeTab="posts"
+      title="Blog CMS & SEO studio"
+      description="Publish, schedule, categorize, and optimize articles with real-time SEO intelligence scoring and rich Markdown."
+      userRole="superadmin"
+      actions={
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] hover:bg-[var(--canvas)] border border-[var(--line)] transition cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw
+              className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[var(--accent)]' : ''}`}
+            />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
 
-      {/* Toast Notification Container */}
-      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+          <button
+            type="button"
+            onClick={openNewPostModal}
+            className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New article</span>
+          </button>
+        </div>
+      }
+    >
+      <div className="space-y-8">
+        {/* Soft Ambient Light Glow Matching Homepage */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-teal-100/40 dark:from-rose-500/15 dark:via-orange-500/10 dark:to-teal-500/15 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* Navigation Header */}
-      <AdminNav
-        activeTab="posts"
-        title="Blog CMS & SEO Studio"
-        description="Publish, schedule, categorize, and optimize articles with real-time SEO intelligence scoring and rich Markdown."
-        actions={
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition cursor-pointer disabled:opacity-50 shadow-xs"
-            >
-              <RefreshCw
-                className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-rose-500' : ''}`}
-              />
-              <span className="hidden sm:inline">Refresh</span>
-            </button>
+        {/* Toast Notification Container */}
+        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
-            <button
-              type="button"
-              onClick={openNewPostModal}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 transition shadow-sm cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Create New Article</span>
-            </button>
-          </div>
-        }
-      />
-
-      {/* Beginner Friendly Quick Workflow Guide Banner (Dismissible / Collapsible) */}
-      <div className="rounded-3xl border border-rose-200/80 dark:border-rose-950/60 bg-gradient-to-br from-rose-50/60 via-white to-slate-50 dark:from-rose-950/20 dark:via-[#111827] dark:to-slate-900 p-6 shadow-xs space-y-4">
+      {/* Beginner Friendly Quick Workflow Guide Banner (Dismissible / Collapsible, Collapsed by Default) */}
+      <div className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] p-3 shadow-2xs space-y-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5 text-rose-600 dark:text-rose-400">
-            <Lightbulb className="w-5 h-5" />
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+          <div className="flex items-center gap-2 text-[var(--accent)]">
+            <Lightbulb className="w-4 h-4" />
+            <h2 className="text-[13px] font-medium text-[var(--ink)]">
               Beginner's 4-Step Publishing Workflow
             </h2>
           </div>
           <button
             type="button"
-            onClick={() => setShowBeginnerTips(!showBeginnerTips)}
-            className="flex items-center gap-1 text-xs font-mono text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+            onClick={handleToggleTips}
+            className="flex items-center gap-1 text-[12px] font-medium text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
           >
             <span>{showBeginnerTips ? 'Hide Guide' : 'Show Guide'}</span>
             {showBeginnerTips ? (
-              <ChevronUp className="w-4 h-4" />
+              <ChevronUp className="w-3.5 h-3.5" />
             ) : (
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-3.5 h-3.5" />
             )}
           </button>
         </div>
 
         {showBeginnerTips && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2 border-t border-rose-100 dark:border-rose-900/30 text-xs text-slate-600 dark:text-slate-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-[var(--line)] text-[12px] text-[var(--muted)]">
             <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800 space-y-1.5 shadow-2xs">
               <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
                 <span className="w-5 h-5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center font-mono text-[10px]">
@@ -3860,6 +3876,7 @@ function AdminPostsPage() {
         isOpen={!!mediaPickerTarget}
         onClose={() => setMediaPickerTarget(null)}
         acceptTypes={mediaPickerTarget === 'cover' ? 'images' : 'all'}
+        purpose="site"
         title={
           mediaPickerTarget === 'cover'
             ? 'Select Hero Cover Image'
@@ -3967,6 +3984,7 @@ function AdminPostsPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </AdminShell>
   )
 }

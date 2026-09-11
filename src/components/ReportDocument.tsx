@@ -26,6 +26,7 @@ import {
   FileText,
   ExternalLink,
   Bookmark,
+  Building2,
 } from 'lucide-react'
 import type { Report, Client, DeliverablesSnapshot } from '../db/schema'
 import type { DisplayOptions, QueryItem, PageItem } from '../server/reports'
@@ -165,43 +166,62 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
 
   // Deliverables Snapshot (from CRM wiring)
   const deliverables = (report.deliverablesSnapshot || null) as DeliverablesSnapshot | null
+  const locationBreakdown = deliverables?.locations || []
+  const hasMultipleLocations = locationBreakdown.length > 1
   const hasDeliverables = Boolean(
     deliverables &&
       ((deliverables.landingPages && deliverables.landingPages.length > 0) ||
         (deliverables.articles && deliverables.articles.length > 0) ||
         (deliverables.tasks && deliverables.tasks.length > 0) ||
-        (deliverables.nextKeywords && deliverables.nextKeywords.length > 0))
+        (deliverables.nextKeywords && deliverables.nextKeywords.length > 0) ||
+        hasMultipleLocations)
   )
 
+  // Data Sources configuration from client snapshot (legacy reports without snapshot default to connected)
+  const dataSources = snapshot?.dataSources || { gsc: 'connected', ga4: 'connected', gbp: 'connected' }
+  const gbpConnected = (dataSources.gbp ?? 'connected') === 'connected'
+  const gscConnected = (dataSources.gsc ?? 'connected') === 'connected'
+  const ga4Connected = (dataSources.ga4 ?? 'connected') === 'connected'
+
+  // Helper for displaying metrics: null/undefined -> '—', 0 -> '0'
+  const formatMetric = (val: number | string | null | undefined, formatter?: (n: number) => string): string => {
+    if (val === null || val === undefined || val === '') return '—'
+    const num = typeof val === 'number' ? val : Number(val)
+    if (isNaN(num)) return '—'
+    return formatter ? formatter(num) : num.toLocaleString()
+  }
+
   // GBP Metrics & Comparisons
-  const reviewsCount = report.gbpReviewsCount ?? report.gbpReviewCount ?? 0
-  const prevReviewsCount = report.prevGbpReviewsCount ?? 0
-  const gbpReviewsMoM = getMoMChange(reviewsCount, prevReviewsCount, { fallbackLabel: 'Baseline' })
-  const gbpCallsMoM = getMoMChange(report.gbpCalls, report.prevGbpCalls)
-  const gbpDirectionsMoM = getMoMChange(report.gbpDirections, report.prevGbpDirections)
-  const websiteClicks = report.gbpWebsiteClicks ?? (report as any).gbpViews ?? 0
-  const prevWebsiteClicks = report.prevGbpWebsiteClicks ?? (report as any).prevGbpViews ?? 0
-  const gbpWebsiteClicksMoM = getMoMChange(websiteClicks, prevWebsiteClicks)
-  const gbpViewsMoM = gbpWebsiteClicksMoM
+  const reviewsCount = report.gbpReviewsCount ?? report.gbpReviewCount ?? null
+  const prevReviewsCount = report.prevGbpReviewsCount ?? null
+  const gbpReviewsMoM = gbpConnected && reviewsCount !== null ? getMoMChange(reviewsCount, prevReviewsCount, { fallbackLabel: 'Baseline' }) : null
+  const gbpCallsMoM = gbpConnected && report.gbpCalls !== null && report.gbpCalls !== undefined ? getMoMChange(report.gbpCalls, report.prevGbpCalls) : null
+  const gbpDirectionsMoM = gbpConnected && report.gbpDirections !== null && report.gbpDirections !== undefined ? getMoMChange(report.gbpDirections, report.prevGbpDirections) : null
+  const websiteClicks = report.gbpWebsiteClicks ?? (report as any).gbpViews ?? null
+  const prevWebsiteClicks = report.prevGbpWebsiteClicks ?? (report as any).prevGbpViews ?? null
+  const gbpWebsiteClicksMoM = gbpConnected && websiteClicks !== null ? getMoMChange(websiteClicks, prevWebsiteClicks) : null
 
   // GSC Metrics & Comparisons
-  const gscCtrNum = parseDecimal(report.gscCtr)
-  const prevGscCtrNum = parseDecimal(report.prevGscCtr)
-  const gscClicksMoM = getMoMChange(report.gscClicks, report.prevGscClicks)
-  const gscImpressionsMoM = getMoMChange(report.gscImpressions, report.prevGscImpressions)
-  const gscCtrMoM = getMoMChange(gscCtrNum, prevGscCtrNum, { fallbackLabel: 'Baseline' })
-  const gscPositionMoM = getMoMPositionChange(report.gscPosition, report.prevGscPosition)
+  const gscCtrNum = report.gscCtr !== null && report.gscCtr !== undefined ? parseDecimal(report.gscCtr) : null
+  const prevGscCtrNum = report.prevGscCtr !== null && report.prevGscCtr !== undefined ? parseDecimal(report.prevGscCtr) : null
+  const gscClicksMoM = gscConnected && report.gscClicks !== null && report.gscClicks !== undefined ? getMoMChange(report.gscClicks, report.prevGscClicks) : null
+  const gscImpressionsMoM = gscConnected && report.gscImpressions !== null && report.gscImpressions !== undefined ? getMoMChange(report.gscImpressions, report.prevGscImpressions) : null
+  const gscCtrMoM = gscConnected && gscCtrNum !== null ? getMoMChange(gscCtrNum, prevGscCtrNum, { fallbackLabel: 'Baseline' }) : null
+  const gscPositionMoM = gscConnected && report.gscPosition !== null && report.gscPosition !== undefined ? getMoMPositionChange(report.gscPosition, report.prevGscPosition) : null
 
   // GA4 Metrics & Comparisons
-  const gaUsersMoM = getMoMChange(report.gaUsers, report.prevGaUsers)
-  const gaNewUsersMoM = getMoMChange(report.gaNewUsers, report.prevGaNewUsers)
-  const gaSessionsMoM = getMoMChange(report.gaSessions, report.prevGaSessions)
-  const gaViewsMoM = getMoMChange(report.gaViews, report.prevGaViews)
+  const gaUsersMoM = ga4Connected && report.gaUsers !== null && report.gaUsers !== undefined ? getMoMChange(report.gaUsers, report.prevGaUsers) : null
+  const gaNewUsersMoM = ga4Connected && report.gaNewUsers !== null && report.gaNewUsers !== undefined ? getMoMChange(report.gaNewUsers, report.prevGaNewUsers) : null
+  const gaSessionsMoM = ga4Connected && report.gaSessions !== null && report.gaSessions !== undefined ? getMoMChange(report.gaSessions, report.prevGaSessions) : null
+  const gaViewsMoM = ga4Connected && report.gaViews !== null && report.gaViews !== undefined ? getMoMChange(report.gaViews, report.prevGaViews) : null
 
   // Executive KPI summary calculations
-  const customerActions = (report.gbpCalls || 0) + (report.gbpDirections || 0)
+  const hasCustomerActions = gbpConnected && (report.gbpCalls !== null || report.gbpDirections !== null)
+  const customerActions = hasCustomerActions
+    ? (report.gbpCalls || 0) + (report.gbpDirections || 0)
+    : null
   const prevCustomerActions = (report.prevGbpCalls || 0) + (report.prevGbpDirections || 0)
-  const customerActionsMoM = getMoMChange(customerActions, prevCustomerActions)
+  const customerActionsMoM = customerActions !== null ? getMoMChange(customerActions, prevCustomerActions) : null
 
   return (
     <div
@@ -354,11 +374,11 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <Eye className="w-3.5 h-3.5" style={{ color: primaryColor }} />
               </div>
               <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
-                {report.gscImpressions?.toLocaleString() || 0}
+                {gscConnected ? formatMetric(report.gscImpressions) : '—'}
               </div>
               <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Total Visibility</span>
-                {renderMoMBadge(gscImpressionsMoM)}
+                {gscConnected ? renderMoMBadge(gscImpressionsMoM) : <span className="text-[10px] font-mono text-slate-400">N/A</span>}
               </div>
             </div>
 
@@ -376,11 +396,11 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <MousePointerClick className="w-3.5 h-3.5 text-emerald-600" />
               </div>
               <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
-                {report.gscClicks?.toLocaleString() || 0}
+                {gscConnected ? formatMetric(report.gscClicks) : '—'}
               </div>
               <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Search Traffic</span>
-                {renderMoMBadge(gscClicksMoM)}
+                {gscConnected ? renderMoMBadge(gscClicksMoM) : <span className="text-[10px] font-mono text-slate-400">N/A</span>}
               </div>
             </div>
 
@@ -398,11 +418,11 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <Zap className="w-3.5 h-3.5 text-amber-500" />
               </div>
               <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
-                {customerActions.toLocaleString()}
+                {customerActions !== null ? customerActions.toLocaleString() : '—'}
               </div>
               <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Calls & Directions</span>
-                {renderMoMBadge(customerActionsMoM)}
+                {customerActions !== null ? renderMoMBadge(customerActionsMoM) : <span className="text-[10px] font-mono text-slate-400">N/A</span>}
               </div>
             </div>
 
@@ -420,11 +440,13 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 <Target className="w-3.5 h-3.5 text-indigo-600" />
               </div>
               <div className="text-xl sm:text-2xl font-mono font-black text-slate-900 tracking-tight my-1">
-                {report.gscPosition ? parseDecimal(report.gscPosition).toFixed(1) : '—'}
+                {gscConnected && report.gscPosition !== null && report.gscPosition !== undefined
+                  ? parseDecimal(report.gscPosition).toFixed(1)
+                  : '—'}
               </div>
               <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
                 <span className="text-[9px] font-mono text-slate-400">Search Rank</span>
-                {renderMoMBadge(gscPositionMoM)}
+                {gscConnected ? renderMoMBadge(gscPositionMoM) : <span className="text-[10px] font-mono text-slate-400">N/A</span>}
               </div>
             </div>
           </div>
@@ -476,12 +498,19 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                 }}
               >
                 <div className="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
-                    <PhoneCall className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                    <span>Google Business Profile</span>
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
+                      <PhoneCall className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                      <span>Google Business Profile</span>
+                    </div>
+                    {hasMultipleLocations && (
+                      <span className="text-[10px] font-mono text-slate-500 font-semibold pl-5">
+                        Total across {locationBreakdown.length} locations
+                      </span>
+                    )}
                   </div>
                   <span
-                    className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold text-white shadow-2xs"
+                    className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold text-white shadow-2xs shrink-0"
                     style={{
                       backgroundColor: primaryColor,
                       WebkitPrintColorAdjust: 'exact',
@@ -492,67 +521,78 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </span>
                 </div>
 
-                <div className="space-y-1.5 font-mono text-xs">
-                  {/* Row 1: Total Reviews & Rating */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
-                      <span>Reviews</span>
+                {!gbpConnected ? (
+                  <div className="p-4 rounded-lg bg-white border border-slate-100 flex flex-col items-center justify-center text-center space-y-1 my-2">
+                    <span className="text-[11px] font-mono font-semibold text-slate-500">
+                      Channel Unavailable
                     </span>
-                    <div className="flex items-center gap-1.5 shrink-0 ml-auto">
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-900 border border-amber-200">
-                        <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
-                        <span>{Number(report.gbpRating || 5.0).toFixed(1)}</span>
-                      </span>
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {reviewsCount}
-                      </span>
-                      {renderMoMBadge(gbpReviewsMoM)}
-                    </div>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Google Business Profile access not configured or not applicable for this client.
+                    </span>
                   </div>
+                ) : (
+                  <div className="space-y-1.5 font-mono text-xs">
+                    {/* Row 1: Total Reviews & Rating */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                        <span>Reviews</span>
+                      </span>
+                      <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                          <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
+                          <span>{report.gbpRating !== null && report.gbpRating !== undefined ? Number(report.gbpRating).toFixed(1) : '5.0'}</span>
+                        </span>
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(reviewsCount)}
+                        </span>
+                        {renderMoMBadge(gbpReviewsMoM)}
+                      </div>
+                    </div>
 
-                  {/* Row 2: Calls */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <PhoneCall className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Phone Calls</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gbpCalls || 0}
+                    {/* Row 2: Calls */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <PhoneCall className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Phone Calls</span>
                       </span>
-                      {renderMoMBadge(gbpCallsMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gbpCalls)}
+                        </span>
+                        {renderMoMBadge(gbpCallsMoM)}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Row 3: Directions */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Navigation className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Directions</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gbpDirections || 0}
+                    {/* Row 3: Directions */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Navigation className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Directions</span>
                       </span>
-                      {renderMoMBadge(gbpDirectionsMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gbpDirections)}
+                        </span>
+                        {renderMoMBadge(gbpDirectionsMoM)}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Row 4: Website Clicks */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Globe className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Website Clicks</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {websiteClicks || 0}
+                    {/* Row 4: Website Clicks */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Globe className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Website Clicks</span>
                       </span>
-                      {renderMoMBadge(gbpWebsiteClicksMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(websiteClicks)}
+                        </span>
+                        {renderMoMBadge(gbpWebsiteClicksMoM)}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Card 2: Google Search Console (GSC) */}
@@ -582,63 +622,76 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </span>
                 </div>
 
-                <div className="space-y-1.5 font-mono text-xs">
-                  {/* Row 1: Clicks */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <MousePointerClick className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Clicks</span>
+                {!gscConnected ? (
+                  <div className="p-4 rounded-lg bg-white border border-slate-100 flex flex-col items-center justify-center text-center space-y-1 my-2">
+                    <span className="text-[11px] font-mono font-semibold text-slate-500">
+                      Channel Unavailable
                     </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gscClicks || 0}
-                      </span>
-                      {renderMoMBadge(gscClicksMoM)}
-                    </div>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Google Search Console access not configured or not applicable for this client.
+                    </span>
                   </div>
+                ) : (
+                  <div className="space-y-1.5 font-mono text-xs">
+                    {/* Row 1: Clicks */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <MousePointerClick className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Clicks</span>
+                      </span>
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gscClicks)}
+                        </span>
+                        {renderMoMBadge(gscClicksMoM)}
+                      </div>
+                    </div>
 
-                  {/* Row 2: Impressions (Safe layout without label collision) */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Impressions</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gscImpressions?.toLocaleString() || 0}
+                    {/* Row 2: Impressions */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Impressions</span>
                       </span>
-                      {renderMoMBadge(gscImpressionsMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gscImpressions)}
+                        </span>
+                        {renderMoMBadge(gscImpressionsMoM)}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Row 3: CTR % */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Target className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>CTR Rate</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {gscCtrNum.toFixed(1)}%
+                    {/* Row 3: CTR % */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Target className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>CTR Rate</span>
                       </span>
-                      {renderMoMBadge(gscCtrMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {gscCtrNum !== null ? `${gscCtrNum.toFixed(1)}%` : '—'}
+                        </span>
+                        {renderMoMBadge(gscCtrMoM)}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Row 4: Avg Position */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <TrendingUp className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Avg. Position</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gscPosition ? parseDecimal(report.gscPosition).toFixed(1) : '—'}
+                    {/* Row 4: Avg Position */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <TrendingUp className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Avg. Position</span>
                       </span>
-                      {renderMoMBadge(gscPositionMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {report.gscPosition !== null && report.gscPosition !== undefined
+                            ? parseDecimal(report.gscPosition).toFixed(1)
+                            : '—'}
+                        </span>
+                        {renderMoMBadge(gscPositionMoM)}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Card 3: Google Analytics 4 (GA4) */}
@@ -668,63 +721,74 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                   </span>
                 </div>
 
-                <div className="space-y-1.5 font-mono text-xs">
-                  {/* Row 1: Users */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Users className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Total Users</span>
+                {!ga4Connected ? (
+                  <div className="p-4 rounded-lg bg-white border border-slate-100 flex flex-col items-center justify-center text-center space-y-1 my-2">
+                    <span className="text-[11px] font-mono font-semibold text-slate-500">
+                      Channel Unavailable
                     </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gaUsers || 0}
-                      </span>
-                      {renderMoMBadge(gaUsersMoM)}
-                    </div>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Google Analytics 4 access not configured or not applicable for this client.
+                    </span>
                   </div>
+                ) : (
+                  <div className="space-y-1.5 font-mono text-xs">
+                    {/* Row 1: Users */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Users className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Total Users</span>
+                      </span>
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gaUsers)}
+                        </span>
+                        {renderMoMBadge(gaUsersMoM)}
+                      </div>
+                    </div>
 
-                  {/* Row 2: New Users */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Activity className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>New Users</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gaNewUsers || 0}
+                    {/* Row 2: New Users */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Activity className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>New Users</span>
                       </span>
-                      {renderMoMBadge(gaNewUsersMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gaNewUsers)}
+                        </span>
+                        {renderMoMBadge(gaNewUsersMoM)}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Row 3: Sessions */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Layers className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Sessions</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gaSessions || 0}
+                    {/* Row 3: Sessions */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Layers className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Sessions</span>
                       </span>
-                      {renderMoMBadge(gaSessionsMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gaSessions)}
+                        </span>
+                        {renderMoMBadge(gaSessionsMoM)}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Row 4: Pageviews */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
-                    <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
-                      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
-                      <span>Pageviews</span>
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 ml-auto">
-                      <span className="text-sm font-extrabold text-slate-900">
-                        {report.gaViews?.toLocaleString() || 0}
+                    {/* Row 4: Pageviews */}
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-lg bg-white border border-slate-100 min-w-0">
+                      <span className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 shrink-0">
+                        <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: primaryColor }} />
+                        <span>Pageviews</span>
                       </span>
-                      {renderMoMBadge(gaViewsMoM)}
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        <span className="text-sm font-extrabold text-slate-900">
+                          {formatMetric(report.gaViews)}
+                        </span>
+                        {renderMoMBadge(gaViewsMoM)}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -1041,6 +1105,83 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Google Business Profile Locations Breakdown (Multi-Location Clients) */}
+              {hasMultipleLocations && (
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/50 print:bg-white print:break-inside-avoid">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/80 mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-slate-900">
+                      <Building2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Google Business Profile Locations Breakdown</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      {locationBreakdown.length} Profiles Tracked
+                    </span>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs text-left">
+                      <thead>
+                        <tr className="border-b border-slate-200 text-[10px] font-mono uppercase text-slate-500">
+                          <th className="pb-1.5 font-bold">Location</th>
+                          <th className="pb-1.5 font-bold text-center">Status</th>
+                          <th className="pb-1.5 font-bold text-right">Calls</th>
+                          <th className="pb-1.5 font-bold text-right">Directions</th>
+                          <th className="pb-1.5 font-bold text-right">Website Clicks</th>
+                          <th className="pb-1.5 font-bold text-right">Rating</th>
+                          <th className="pb-1.5 font-bold text-right">Reviews</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
+                        {locationBreakdown.map((loc) => {
+                          const isConn = loc.accessStatus === 'connected'
+                          return (
+                            <tr key={loc.locationId} className="hover:bg-slate-50/60">
+                              <td className="py-1.5 pr-2">
+                                <span className="font-sans font-bold text-slate-900 block truncate" title={loc.name}>
+                                  {loc.name}
+                                </span>
+                                {loc.address && (
+                                  <span className="text-[10px] text-slate-400 font-sans block truncate" title={loc.address}>
+                                    {loc.address}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-1.5 text-center">
+                                <span
+                                  className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
+                                    isConn
+                                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                      : loc.accessStatus === 'no_access'
+                                      ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                                      : 'bg-slate-100 text-slate-600 border border-slate-200'
+                                  }`}
+                                >
+                                  {isConn ? 'Connected' : loc.accessStatus === 'no_access' ? 'No Access' : 'N/A'}
+                                </span>
+                              </td>
+                              <td className="py-1.5 text-right font-bold text-slate-800">
+                                {isConn ? (loc.gbpCalls !== null ? loc.gbpCalls.toLocaleString() : '—') : '—'}
+                              </td>
+                              <td className="py-1.5 text-right text-slate-700">
+                                {isConn ? (loc.gbpDirections !== null ? loc.gbpDirections.toLocaleString() : '—') : '—'}
+                              </td>
+                              <td className="py-1.5 text-right text-slate-700">
+                                {isConn ? (loc.gbpWebsiteClicks !== null ? loc.gbpWebsiteClicks.toLocaleString() : '—') : '—'}
+                              </td>
+                              <td className="py-1.5 text-right text-amber-600 font-bold">
+                                {isConn && loc.gbpRating !== null ? `${Number(loc.gbpRating).toFixed(1)} ★` : '—'}
+                              </td>
+                              <td className="py-1.5 text-right text-slate-800 font-bold">
+                                {isConn ? (loc.gbpReviewsCount !== null ? loc.gbpReviewsCount.toLocaleString() : '—') : '—'}
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               )}

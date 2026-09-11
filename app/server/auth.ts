@@ -15,6 +15,7 @@ export interface ActiveSession {
   partnerId?: string | null
   clientId: string | null
   email: string | null
+  name?: string | null
   isActive: boolean
 }
 
@@ -45,6 +46,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
         clientId: users.clientId,
         partnerId: users.partnerId,
         email: users.email,
+        name: users.name,
         deletedAt: users.deletedAt,
       })
       .from(users)
@@ -68,6 +70,7 @@ export async function assertActiveSession(): Promise<ActiveSession> {
         partnerId: dbUser.partnerId || null,
         clientId: dbUser.clientId || null,
         email: dbUser.email,
+        name: dbUser.name || null,
         isActive: dbUser.isActive,
       }
     } else if (session.role !== 'superadmin' && session.role !== 'admin') {

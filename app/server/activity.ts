@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, sql } from 'drizzle-orm'
+import { desc, eq, sql, and, or, inArray } from 'drizzle-orm'
 import { db, activityLogs, users } from '../db'
-import { assertActiveSession } from './auth'
+import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { parseDevice } from './activity-logger'
 
 export type ActivityAction =
@@ -70,7 +70,7 @@ function getActivityOrderBy(sort?: string, order: 'asc' | 'desc' = 'desc') {
 }
 
 /**
- * Server Function: Query activity logs with filtering and pagination (Superadmin only)
+ * Server Function: Query activity logs with filtering and pagination (Superadmin & Partner)
  */
 export const getActivityLogsServerFn = createServerFn({ method: 'GET' })
   .validator(
@@ -80,6 +80,7 @@ export const getActivityLogsServerFn = createServerFn({ method: 'GET' })
       pageSize?: number
       sort?: string
       order?: 'asc' | 'desc'
+      partnerId?: string
     }) => {
       return {
         filter: data?.filter || 'all',
@@ -87,32 +88,58 @@ export const getActivityLogsServerFn = createServerFn({ method: 'GET' })
         pageSize: Math.min(100, Math.max(10, Number(data?.pageSize) || 25)),
         sort: data?.sort,
         order: data?.order || 'desc',
+        partnerId: data?.partnerId,
       }
     }
   )
   .handler(async ({ data }): Promise<ActivityLogsResponse> => {
     const auth = await assertActiveSession()
-    if (auth.role !== 'superadmin') {
-      throw new Error('Unauthorized: Superadmin privileges required to view activity logs')
+    if (auth.role !== 'superadmin' && auth.role !== 'partner') {
+      throw new Error('Unauthorized: Access restricted to administrators and partners')
     }
 
-    const { filter, page, pageSize, sort, order } = data
+    const { filter, page, pageSize, sort, order, partnerId } = data
     const offset = (page - 1) * pageSize
 
-    let whereClause = undefined
-    if (filter === 'login') {
-      whereClause = eq(activityLogs.action, 'login')
-    } else if (filter === 'logout') {
-      whereClause = eq(activityLogs.action, 'logout')
-    } else if (filter === 'failed_login') {
-      whereClause = eq(activityLogs.action, 'failed_login')
-    } else if (filter === 'create_client') {
-      whereClause = eq(activityLogs.action, 'create_client')
-    } else if (filter === 'create_report') {
-      whereClause = eq(activityLogs.action, 'create_report')
-    } else if (filter === 'delete_report') {
-      whereClause = eq(activityLogs.action, 'delete_report')
+    // Tenancy resolution:
+    // For partner, always scope to their effectivePartnerId.
+    // For superadmin, honor optional partnerId filter if provided.
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const targetPartnerId = auth.role === 'superadmin' ? partnerId : effectivePartnerId
+
+    let agencyUserIds: string[] | null = null
+    if (targetPartnerId) {
+      const agencyUsers = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(or(eq(users.id, targetPartnerId), eq(users.partnerId, targetPartnerId)))
+      agencyUserIds = agencyUsers.map((u) => u.id)
+      // If agency has no users found (or just the partner), ensure targetPartnerId is included
+      if (!agencyUserIds.includes(targetPartnerId)) {
+        agencyUserIds.push(targetPartnerId)
+      }
     }
+
+    const conditions = []
+    if (agencyUserIds && agencyUserIds.length > 0) {
+      conditions.push(inArray(activityLogs.userId, agencyUserIds))
+    }
+
+    if (filter === 'login') {
+      conditions.push(eq(activityLogs.action, 'login'))
+    } else if (filter === 'logout') {
+      conditions.push(eq(activityLogs.action, 'logout'))
+    } else if (filter === 'failed_login') {
+      conditions.push(eq(activityLogs.action, 'failed_login'))
+    } else if (filter === 'create_client') {
+      conditions.push(eq(activityLogs.action, 'create_client'))
+    } else if (filter === 'create_report') {
+      conditions.push(eq(activityLogs.action, 'create_report'))
+    } else if (filter === 'delete_report') {
+      conditions.push(eq(activityLogs.action, 'delete_report'))
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
     // Total count for pagination
     const [countResult] = await db

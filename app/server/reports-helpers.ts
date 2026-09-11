@@ -6,7 +6,10 @@ import {
   tasks,
   keywords,
   keywordRankHistory,
+  clientLocations,
+  locationMonthlyMetrics,
   type DeliverablesSnapshot,
+  type LocationBreakdownItem,
 } from '../db'
 
 const MONTHS: Record<string, number> = {
@@ -54,6 +57,23 @@ export function parseDecimalValue(val: unknown): number {
   const num = parseFloat(cleaned)
   return isNaN(num) ? 0 : num
 }
+
+export function parseNullableInt(val: unknown): number | null {
+  if (val === null || val === undefined || val === '') return null
+  const cleaned = String(val).replace(/[^0-9-]/g, '')
+  if (!cleaned) return null
+  const num = parseInt(cleaned, 10)
+  return isNaN(num) ? null : num
+}
+
+export function parseNullableDecimal(val: unknown): number | null {
+  if (val === null || val === undefined || val === '') return null
+  const cleaned = String(val).replace(/[^0-9.-]/g, '')
+  if (!cleaned) return null
+  const num = parseFloat(cleaned)
+  return isNaN(num) ? null : num
+}
+
 
 /**
  * Helper function: Fetch all period-scoped deliverables and freeze into DeliverablesSnapshot
@@ -158,6 +178,53 @@ export async function collectDeliverablesSnapshot(
     }))
   }
 
+  // 6. Locations: active locations and their monthly metrics for the period
+  const periodMonth = periodStart.getUTCMonth() + 1
+  const periodYear = periodStart.getUTCFullYear()
+
+  const activeLocs = await db
+    .select()
+    .from(clientLocations)
+    .where(and(eq(clientLocations.clientId, clientId), eq(clientLocations.isActive, true)))
+    .orderBy(clientLocations.name)
+
+  let locationsBreakdown: LocationBreakdownItem[] = []
+  if (activeLocs.length > 0) {
+    const locIds = activeLocs.map((l) => l.id)
+    const locMetrics = await db
+      .select()
+      .from(locationMonthlyMetrics)
+      .where(
+        and(
+          inArray(locationMonthlyMetrics.locationId, locIds),
+          eq(locationMonthlyMetrics.month, periodMonth),
+          eq(locationMonthlyMetrics.year, periodYear)
+        )
+      )
+
+    const metricsByLocId = new Map<string, typeof locMetrics[0]>()
+    for (const lm of locMetrics) {
+      metricsByLocId.set(lm.locationId, lm)
+    }
+
+    locationsBreakdown = activeLocs.map((loc) => {
+      const m = metricsByLocId.get(loc.id)
+      return {
+        locationId: loc.id,
+        name: loc.name,
+        address: loc.address || null,
+        gbpPlaceId: loc.gbpPlaceId || null,
+        accessStatus: loc.accessStatus as 'connected' | 'no_access' | 'not_applicable',
+        gbpCalls: m?.gbpCalls ?? null,
+        gbpDirections: m?.gbpDirections ?? null,
+        gbpWebsiteClicks: m?.gbpWebsiteClicks ?? null,
+        gbpViews: m?.gbpViews ?? null,
+        gbpRating: m?.gbpRating !== null && m?.gbpRating !== undefined ? Number(m.gbpRating) : null,
+        gbpReviewsCount: m?.gbpReviewsCount ?? null,
+      }
+    })
+  }
+
   return {
     landingPages: livePages.map((p) => ({
       id: p.id,
@@ -186,5 +253,6 @@ export async function collectDeliverablesSnapshot(
       targetUrl: k.targetUrl ?? null,
     })),
     keywordRankHistory: rankHistoryList,
+    locations: locationsBreakdown.length > 0 ? locationsBreakdown : undefined,
   }
 }

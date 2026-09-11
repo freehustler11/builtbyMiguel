@@ -31,54 +31,37 @@ import {
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
 import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
+import { useBoardKeyboardNav } from './useBoardKeyboardNav'
 
 const STATUS_COLUMNS: Array<{
   id: 'planning' | 'copywriting' | 'design' | 'client_review' | 'live'
   label: string
-  color: string
-  bg: string
-  border: string
-  badgeBg: string
+  cardBorder: string
 }> = [
   {
     id: 'planning',
     label: 'Planning',
-    color: 'text-slate-700 dark:text-slate-300',
-    bg: 'bg-slate-50 dark:bg-slate-900/40',
-    border: 'border-slate-200 dark:border-slate-800',
-    badgeBg: 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300',
+    cardBorder: 'border-l-[var(--muted)]',
   },
   {
     id: 'copywriting',
     label: 'Copywriting',
-    color: 'text-blue-700 dark:text-blue-300',
-    bg: 'bg-blue-50/40 dark:bg-blue-950/20',
-    border: 'border-blue-200/60 dark:border-blue-900/40',
-    badgeBg: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300',
+    cardBorder: 'border-l-[var(--accent)]',
   },
   {
     id: 'design',
     label: 'Design',
-    color: 'text-purple-700 dark:text-purple-300',
-    bg: 'bg-purple-50/40 dark:bg-purple-950/20',
-    border: 'border-purple-200/60 dark:border-purple-900/40',
-    badgeBg: 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300',
+    cardBorder: 'border-l-[var(--accent)]',
   },
   {
     id: 'client_review',
-    label: 'Client Review',
-    color: 'text-amber-700 dark:text-amber-300',
-    bg: 'bg-amber-50/40 dark:bg-amber-950/20',
-    border: 'border-amber-200/60 dark:border-amber-900/40',
-    badgeBg: 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300',
+    label: 'Client review',
+    cardBorder: 'border-l-[var(--warning)]',
   },
   {
     id: 'live',
-    label: 'Live & Active',
-    color: 'text-emerald-700 dark:text-emerald-300',
-    bg: 'bg-emerald-50/40 dark:bg-emerald-950/20',
-    border: 'border-emerald-200/60 dark:border-emerald-900/40',
-    badgeBg: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300',
+    label: 'Live',
+    cardBorder: 'border-l-[var(--success)]',
   },
 ]
 
@@ -361,22 +344,29 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
     )
   })
 
+  const { focusedId, setFocusedId } = useBoardKeyboardNav({
+    items: filteredItems,
+    columns: STATUS_COLUMNS,
+    onStatusChange: (item, newStatus) => handleStatusChange(item, newStatus as any),
+    onOpenItem: (item) => handleOpenEdit(item),
+  })
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5">
       {/* Board Header Actions & Search */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
             <input
               type="text"
               placeholder="Search landing pages..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-3.5 py-2 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 w-64 text-slate-800 dark:text-slate-200"
+              className="pl-9 pr-3.5 py-1.5 text-[13px] rounded-[6px] bg-[var(--panel)] border border-[var(--line)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] w-64 text-[var(--ink)] placeholder-[var(--muted)]"
             />
           </div>
-          <span className="text-xs font-mono text-slate-400">
+          <span className="text-[12px] text-[var(--muted)] tabular-nums">
             {filteredItems.length} total {filteredItems.length === 1 ? 'page' : 'pages'}
           </span>
         </div>
@@ -384,199 +374,252 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
         <button
           type="button"
           onClick={handleOpenCreate}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition cursor-pointer shrink-0"
+          className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
-          <span>New Landing Page</span>
+          <span>New landing page</span>
         </button>
       </div>
 
-      {/* Kanban Board Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start min-h-[500px]">
-        {STATUS_COLUMNS.map((col) => {
-          const colItems = filteredItems.filter((it) => it.status === col.id)
-          return (
-            <div
-              key={col.id}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, col.id)}
-              className={`rounded-2xl border ${col.border} ${col.bg} p-3.5 flex flex-col min-h-[480px] transition-colors`}
-            >
-              {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/60 dark:border-slate-800/60">
-                <div className="flex items-center gap-2">
-                  <h4 className={`text-xs font-bold tracking-wide uppercase ${col.color}`}>
-                    {col.label}
-                  </h4>
-                  <span
-                    className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold ${col.badgeBg}`}
-                  >
-                    {colItems.length}
-                  </span>
-                </div>
-              </div>
-
-              {/* Column Cards */}
-              <div className="space-y-3 flex-1">
-                {colItems.length === 0 ? (
-                  <div className="h-28 rounded-xl border border-dashed border-slate-200 dark:border-slate-800/80 flex items-center justify-center p-4 text-center">
-                    <span className="text-[11px] font-mono text-slate-400">
-                      Drop cards here
+      {/* Board Content */}
+      {items.length === 0 ? (
+        <div className="p-4 rounded-[8px] border border-dashed border-[var(--line)] bg-[var(--canvas)] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="space-y-0.5">
+            <p className="text-[13px] font-medium text-[var(--ink)]">No landing page deliverables yet</p>
+            <p className="text-[12px] text-[var(--muted)]">Track copywriting, design, and launch milestones for client landing pages.</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[12px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>New landing page</span>
+          </button>
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="py-8 text-center text-[13px] text-[var(--muted)] bg-[var(--canvas)] rounded-[8px] border border-[var(--line)]">
+          No landing pages match your search.
+        </div>
+      ) : (
+        /* Kanban Board Grid */
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3 items-start">
+          {STATUS_COLUMNS.map((col) => {
+            const colItems = filteredItems.filter((it) => it.status === col.id)
+            const isDragging = draggedItemId !== null
+            return (
+              <div
+                key={col.id}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, col.id)}
+                className="rounded-[8px] border border-[var(--line)] bg-[var(--canvas)] p-2.5 flex flex-col transition-colors"
+              >
+                {/* Column Header */}
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-[var(--line)]">
+                  <div className="flex items-center gap-1.5">
+                    <h4 className="text-[12px] font-medium text-[var(--ink)]">
+                      {col.label}
+                    </h4>
+                    <span className="px-1.5 py-0.2 rounded-[4px] text-[10px] font-medium tabular-nums bg-[var(--panel)] text-[var(--muted)] border border-[var(--line)]">
+                      {colItems.length}
                     </span>
                   </div>
-                ) : (
-                  colItems.map((item) => (
-                    <div
-                      key={item.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, item.id)}
-                      className="p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md transition cursor-grab active:cursor-grabbing space-y-2.5 group"
-                    >
-                      {/* Client Badge (in Rollup View) */}
-                      {isRollup && (
-                        <div className="flex items-center gap-1.5 text-[10px] font-mono font-semibold text-rose-600 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/30 px-2 py-0.5 rounded-md border border-rose-200/50 dark:border-rose-900/40 truncate">
-                          <Building2 className="w-3 h-3 shrink-0" />
-                          <span className="truncate">
-                            {item.clientBusinessName || item.clientName || 'Client'}
-                          </span>
-                        </div>
-                      )}
+                </div>
 
-                      {/* Card Title & Actions */}
-                      <div className="flex items-start justify-between gap-2">
-                        <h5 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-2">
-                          {item.title}
-                        </h5>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEdit(item)}
-                            className="p-1 rounded-md text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-                            title="Edit"
-                          >
-                            <Edit2 className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setDeleteTarget(item)}
-                            className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
+                {/* Column Cards */}
+                <div className="space-y-2.5 flex-1">
+                  {colItems.length === 0 ? (
+                    isDragging ? (
+                      <div className="py-3.5 rounded-[6px] border border-dashed border-[var(--accent)]/50 bg-[var(--accent)]/5 flex items-center justify-center text-center">
+                        <span className="text-[11px] font-medium text-[var(--accent)]">
+                          Drop here
+                        </span>
                       </div>
-
-                      {/* Focus Keyword & CTA Goal */}
-                      {(item.focusKeyword || item.ctaGoal) && (
-                        <div className="space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
-                          {item.focusKeyword && (
-                            <div className="flex items-center gap-1.5 truncate">
-                              <span className="font-mono text-[10px] text-slate-400 uppercase tracking-wider">
-                                Keyword:
-                              </span>
-                              <span className="font-medium text-slate-700 dark:text-slate-300 truncate">
-                                {item.focusKeyword}
+                    ) : (
+                      <div className="py-1.5 text-center text-[11px] text-[var(--muted)] italic">
+                        Empty
+                      </div>
+                    )
+                  ) : (
+                    colItems.map((item) => {
+                      const isFocused = focusedId === item.id
+                      return (
+                        <div
+                          key={item.id}
+                          draggable
+                          tabIndex={0}
+                          onClick={() => setFocusedId(item.id)}
+                          onDragStart={(e) => handleDragStart(e, item.id)}
+                          className={`p-2.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] border-l-2 ${col.cardBorder} hover:border-[var(--line)] transition cursor-grab active:cursor-grabbing space-y-2 group ${
+                            isFocused ? 'ring-2 ring-[var(--accent)] shadow-md' : ''
+                          }`}
+                        >
+                          {/* Client Badge (in Rollup View) */}
+                          {isRollup && (
+                            <div className="flex items-center gap-1.5 text-[10px] font-medium text-[var(--muted)] bg-[var(--canvas)] px-1.5 py-0.5 rounded-[4px] border border-[var(--line)] truncate">
+                              <Building2 className="w-3 h-3 shrink-0" />
+                              <span className="truncate">
+                                {item.clientBusinessName || item.clientName || 'Client'}
                               </span>
                             </div>
                           )}
-                          {item.ctaGoal && (
-                            <div className="flex items-center gap-1.5 truncate">
-                              <span className="font-mono text-[10px] text-slate-400 uppercase tracking-wider">
-                                CTA:
-                              </span>
-                              <span className="text-slate-600 dark:text-slate-400 truncate">
-                                {item.ctaGoal}
-                              </span>
+
+                          {/* Card Title & Actions */}
+                          <div className="flex items-start justify-between gap-1.5">
+                            <h5 className="text-[12px] font-medium text-[var(--ink)] line-clamp-2 leading-snug">
+                              {item.title}
+                            </h5>
+                            <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition shrink-0">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleOpenEdit(item)
+                                }}
+                                className="p-1 rounded-[4px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--canvas)] transition"
+                                title="Edit"
+                              >
+                                <Edit2 className="w-3 h-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setDeleteTarget(item)
+                                }}
+                                className="p-1 rounded-[4px] text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--canvas)] transition"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
                             </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Draft URL & Target / Live URL */}
-                      <div className="space-y-1">
-                        {item.draftUrl && (
-                          <a
-                            href={item.draftUrl.startsWith('http') ? item.draftUrl : `https://${item.draftUrl}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-mono text-purple-600 dark:text-purple-400 hover:underline truncate max-w-full"
-                            title="Open Google Doc / Draft"
-                          >
-                            <FileText className="w-3 h-3 shrink-0" />
-                            <span className="truncate">Draft Doc</span>
-                            <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-                          </a>
-                        )}
-                        {item.targetUrl && (
-                          <a
-                            href={item.targetUrl.startsWith('http') ? item.targetUrl : `https://${item.targetUrl}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-mono text-blue-600 dark:text-blue-400 hover:underline truncate max-w-full"
-                          >
-                            <Globe className="w-3 h-3 shrink-0" />
-                            <span className="truncate">{item.targetUrl.replace(/^https?:\/\//, '')}</span>
-                            <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-                          </a>
-                        )}
-                      </div>
-
-                      {/* Deliverable Notes */}
-                      {item.notes && (
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                          {item.notes}
-                        </p>
-                      )}
-
-                      {/* Footer: Assignee & Live Timestamp */}
-                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                        <div className="flex items-center gap-1 truncate">
-                          <User className="w-3 h-3 shrink-0" />
-                          <span className="truncate">
-                            {item.assigneeName || item.assigneeEmail || 'Unassigned'}
-                          </span>
-                        </div>
-                        {item.wentLiveAt && (
-                          <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 className="w-3 h-3" />
-                            <span>
-                              {new Intl.DateTimeFormat('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                              }).format(new Date(item.wentLiveAt))}
-                            </span>
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                )}
+
+                          {/* Focus Keyword & CTA Goal */}
+                          {(item.focusKeyword || item.ctaGoal) && (
+                            <div className="space-y-0.5 text-[10px] text-[var(--muted)]">
+                              {item.focusKeyword && (
+                                <div className="flex items-center gap-1 truncate">
+                                  <span className="text-[10px] text-[var(--muted)]">
+                                    Keyword:
+                                  </span>
+                                  <span className="text-[11px] font-medium text-[var(--ink)] truncate">
+                                    {item.focusKeyword}
+                                  </span>
+                                </div>
+                              )}
+                              {item.ctaGoal && (
+                                <div className="flex items-center gap-1 truncate">
+                                  <span className="text-[10px] text-[var(--muted)]">
+                                    CTA:
+                                  </span>
+                                  <span className="text-[11px] text-[var(--ink)] truncate">
+                                    {item.ctaGoal}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Draft URL & Target / Live URL */}
+                          <div className="space-y-0.5">
+                            {item.draftUrl && (
+                              <a
+                                href={item.draftUrl.startsWith('http') ? item.draftUrl : `https://${item.draftUrl}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] text-[var(--accent)] hover:underline truncate max-w-full"
+                                title="Open Google Doc / Draft"
+                              >
+                                <FileText className="w-3 h-3 shrink-0" />
+                                <span className="truncate">Draft Doc</span>
+                                <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                              </a>
+                            )}
+                            {item.targetUrl && (
+                              <a
+                                href={item.targetUrl.startsWith('http') ? item.targetUrl : `https://${item.targetUrl}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] text-[var(--accent)] hover:underline truncate max-w-full"
+                              >
+                                <Globe className="w-3 h-3 shrink-0" />
+                                <span className="truncate">{item.targetUrl.replace(/^https?:\/\//, '')}</span>
+                                <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                              </a>
+                            )}
+                          </div>
+
+                          {/* Deliverable Notes */}
+                          {item.notes && (
+                            <p className="text-[11px] text-[var(--muted)] line-clamp-2 bg-[var(--canvas)] p-1.5 rounded-[4px] border border-[var(--line)]">
+                              {item.notes}
+                            </p>
+                          )}
+
+                          {/* Footer: Assignee & Live Timestamp */}
+                          <div className="pt-1.5 border-t border-[var(--line)] flex items-center justify-between text-[10px] text-[var(--muted)]">
+                            <div className="flex items-center gap-1 truncate">
+                              <User className="w-3 h-3 shrink-0" />
+                              <span className="truncate">
+                                {item.assigneeName || item.assigneeEmail || 'Unassigned'}
+                              </span>
+                            </div>
+                            {item.wentLiveAt && (
+                              <div className="flex items-center gap-1 text-[var(--success)] tabular-nums">
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span>
+                                  {new Intl.DateTimeFormat('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                  }).format(new Date(item.wentLiveAt))}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })
+                  )}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+      )}
+
+      {/* Keyboard Navigation Helper Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[11px] text-[var(--muted)] select-none">
+        <div className="flex flex-wrap items-center gap-3">
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">J</kbd> / <kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">K</kbd> Navigate cards</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">1-5</kbd> Move column</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">Enter</kbd> Edit</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">Esc</kbd> Clear focus</span>
+        </div>
+        {focusedId && (
+          <span className="text-[var(--accent)] font-medium">Card focused</span>
+        )}
       </div>
 
       {/* Live Transition Modal: Prompts for live URL */}
       {isLiveModalOpen && livePromptItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="w-full max-w-md bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 shadow-xl space-y-4">
             <div className="space-y-1.5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-[6px] bg-[var(--canvas)] text-[var(--success)] text-[11px] font-medium border border-[var(--line)]">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Marking Landing Page Live</span>
+                <span>Marking landing page live</span>
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                Set Published Live URL
+              <h3 className="text-[15px] font-medium text-[var(--ink)]">
+                Set published live URL
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-[13px] text-[var(--muted)]">
                 Moving <strong>{livePromptItem.title}</strong> to live will automatically record the launch timestamp. Enter the live destination URL:
               </p>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300">
+            <div className="space-y-1.5">
+              <label className="text-[12px] font-medium text-[var(--muted)]">
                 Live URL
               </label>
               <input
@@ -584,12 +627,12 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                 value={liveUrlInput}
                 onChange={(e) => setLiveUrlInput(e.target.value)}
                 placeholder="https://clientdomain.com/landing-page"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 autoFocus
               />
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-[var(--line)]">
               <button
                 type="button"
                 onClick={() => {
@@ -597,7 +640,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                   setLivePromptItem(null)
                 }}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] border border-[var(--line)] hover:bg-[var(--canvas)] transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -605,9 +648,9 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                 type="button"
                 onClick={handleLivePromptSubmit}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition shadow-sm cursor-pointer disabled:opacity-50"
+                className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50"
               >
-                {isSubmitting ? 'Updating...' : 'Confirm & Mark Live'}
+                {isSubmitting ? 'Updating...' : 'Confirm & mark live'}
               </button>
             </div>
           </div>
@@ -616,26 +659,26 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
 
       {/* Create / Edit Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-          <div className="w-full max-w-lg bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-2xl space-y-5 my-8">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                {editingItem ? 'Edit Landing Page' : 'New Landing Page Deliverable'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-lg bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 shadow-xl space-y-4 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+              <h3 className="text-[15px] font-medium text-[var(--ink)]">
+                {editingItem ? 'Edit landing page' : 'New landing page deliverable'}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                className="text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer text-sm"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-4 text-[13px]">
               {/* Client Selector (Roll-up mode only) */}
               {isRollup && (
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Client *
                   </label>
                   <select
@@ -643,7 +686,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                     onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
                     required
                     disabled={Boolean(editingItem)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     <option value="" disabled>Select client...</option>
                     {clientsList.map((c) => (
@@ -657,8 +700,8 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
 
               {/* Title */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Landing Page Title *
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Landing page title *
                 </label>
                 <input
                   type="text"
@@ -666,80 +709,80 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g., Emergency Dental Care Landing Page"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-rose-500"
+                  className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Draft / Google Docs URL */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                  <span>Google Docs / Draft Link</span>
-                  <span className="text-[11px] text-slate-400 font-normal">Optional</span>
+                <label className="text-[12px] font-medium text-[var(--muted)] flex items-center justify-between">
+                  <span>Google Docs / Draft link</span>
+                  <span className="text-[11px] text-[var(--muted)] font-normal">Optional</span>
                 </label>
                 <input
                   type="url"
                   value={formData.draftUrl}
                   onChange={(e) => setFormData({ ...formData, draftUrl: e.target.value })}
                   placeholder="https://docs.google.com/document/d/..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono text-xs"
+                  className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Target / Destination URL */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Live / Target URL
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Live / target URL
                 </label>
                 <input
                   type="url"
                   value={formData.targetUrl}
                   onChange={(e) => setFormData({ ...formData, targetUrl: e.target.value })}
                   placeholder="https://example.com/emergency"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono text-xs"
+                  className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Deliverable Notes */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                  <span>Notes / Draft Outline</span>
-                  <span className="text-[11px] text-slate-400 font-normal">Internal context & instructions</span>
+                <label className="text-[12px] font-medium text-[var(--muted)] flex items-center justify-between">
+                  <span>Notes / draft outline</span>
+                  <span className="text-[11px] text-[var(--muted)] font-normal">Internal context & instructions</span>
                 </label>
                 <textarea
                   rows={3}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="Add notes, outline, target audience, or specific requirements..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs resize-y"
+                  className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] resize-y focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Focus Keyword */}
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Focus Keyword
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
+                    Focus keyword
                   </label>
                   <input
                     type="text"
                     value={formData.focusKeyword}
                     onChange={(e) => setFormData({ ...formData, focusKeyword: e.target.value })}
                     placeholder="e.g., emergency dentist"
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 {/* CTA Goal */}
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    CTA Goal
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
+                    CTA goal
                   </label>
                   <input
                     type="text"
                     value={formData.ctaGoal}
                     onChange={(e) => setFormData({ ...formData, ctaGoal: e.target.value })}
                     placeholder="e.g., Phone Call / Booking"
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -747,8 +790,8 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Status */}
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Workflow Status
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
+                    Workflow status
                   </label>
                   <select
                     value={formData.status}
@@ -758,7 +801,7 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                         status: e.target.value as any,
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     {STATUS_COLUMNS.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -771,23 +814,23 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                 {/* Assignee */}
                 {isStaff ? (
                   <div className="space-y-1.5">
-                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                      Assigned Team Member
+                    <label className="text-[12px] font-medium text-[var(--muted)]">
+                      Assigned team member
                     </label>
-                    <div className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-blue-500" />
-                      <span>Assigned to You (automatically)</span>
+                    <div className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] font-medium text-[13px] flex items-center gap-2">
+                      <Users className="w-3.5 h-3.5 text-[var(--accent)]" />
+                      <span>Assigned to you</span>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                      Assigned Team Member
+                    <label className="text-[12px] font-medium text-[var(--muted)]">
+                      Assigned team member
                     </label>
                     <select
                       value={formData.assignedTo}
                       onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                      className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       <option value="">Unassigned</option>
                       {team.map((t) => (
@@ -800,21 +843,21 @@ export function LandingPagesBoard({ clientId, partnerId }: LandingPagesBoardProp
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--line)]">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] border border-[var(--line)] hover:bg-[var(--canvas)] transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition shadow-sm cursor-pointer disabled:opacity-50"
+                  className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Saving...' : editingItem ? 'Save Changes' : 'Create Landing Page'}
+                  {isSubmitting ? 'Saving...' : editingItem ? 'Save changes' : 'Create landing page'}
                 </button>
               </div>
             </form>

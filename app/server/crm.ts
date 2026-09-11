@@ -11,14 +11,18 @@ import {
   tasks,
   citations,
   monthlyMetrics,
+  clientLocations,
+  locationMonthlyMetrics,
   type LandingPage,
   type ClientArticle,
   type Keyword,
   type Task,
   type Citation,
   type MonthlyMetric,
+  type ClientLocation,
+  type LocationMonthlyMetric,
 } from '../db'
-export type { MonthlyMetric }
+export type { MonthlyMetric, ClientLocation, LocationMonthlyMetric }
 import { assertActiveSession, getEffectivePartnerId, type ActiveSession } from './auth'
 
 /**
@@ -1302,8 +1306,8 @@ export const getAgencyTeamPickerServerFn = createServerFn({ method: 'GET' })
     return members
   })
 
-import { recordMonthlyMetrics, type MonthlyMetricsInput } from './metrics'
-export type { MonthlyMetricsInput }
+import { recordMonthlyMetrics, type MonthlyMetricsInput, type LocationMonthlyMetricsInput } from './metrics'
+export type { MonthlyMetricsInput, LocationMonthlyMetricsInput }
 
 export const getMonthlyMetricsServerFn = createServerFn({ method: 'GET' })
   .validator((data: { clientId: string; month: number; year: number }) => data)
@@ -1342,6 +1346,41 @@ export const getMonthlyMetricsServerFn = createServerFn({ method: 'GET' })
         )
       )
 
+    // Fetch active locations for this client
+    const locations = await db
+      .select()
+      .from(clientLocations)
+      .where(and(eq(clientLocations.clientId, data.clientId), eq(clientLocations.isActive, true)))
+      .orderBy(clientLocations.name)
+
+    const locIds = locations.map((l) => l.id)
+    let currentLocMetrics: typeof locationMonthlyMetrics.$inferSelect[] = []
+    let previousLocMetrics: typeof locationMonthlyMetrics.$inferSelect[] = []
+
+    if (locIds.length > 0) {
+      currentLocMetrics = await db
+        .select()
+        .from(locationMonthlyMetrics)
+        .where(
+          and(
+            inArray(locationMonthlyMetrics.locationId, locIds),
+            eq(locationMonthlyMetrics.month, data.month),
+            eq(locationMonthlyMetrics.year, data.year)
+          )
+        )
+
+      previousLocMetrics = await db
+        .select()
+        .from(locationMonthlyMetrics)
+        .where(
+          and(
+            inArray(locationMonthlyMetrics.locationId, locIds),
+            eq(locationMonthlyMetrics.month, prevMonth),
+            eq(locationMonthlyMetrics.year, prevYear)
+          )
+        )
+    }
+
     return {
       client: {
         id: clientRecord.id,
@@ -1350,6 +1389,9 @@ export const getMonthlyMetricsServerFn = createServerFn({ method: 'GET' })
       },
       current: currentRecord || null,
       previous: previousRecord || null,
+      locations,
+      currentLocationMetrics: currentLocMetrics,
+      previousLocationMetrics: previousLocMetrics,
       month: data.month,
       year: data.year,
       prevMonth,

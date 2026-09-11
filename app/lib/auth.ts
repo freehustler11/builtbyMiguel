@@ -236,6 +236,7 @@ export interface ActiveSessionResult {
   partnerId?: string | null
   clientId: string | null
   email: string | null
+  name?: string | null
   isActive: boolean | null
 }
 
@@ -311,6 +312,7 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
           clientId: users.clientId,
           partnerId: users.partnerId,
           email: users.email,
+          name: users.name,
           deletedAt: users.deletedAt,
         })
         .from(users)
@@ -336,6 +338,7 @@ export const checkAuthServerFn = createServerFn({ method: 'GET' }).handler(
           partnerId: dbUser.partnerId || null,
           clientId: dbUser.clientId || null,
           email: dbUser.email,
+          name: dbUser.name || null,
           isActive: dbUser.isActive,
         }
         sessionCache.set(token, { result, cachedAt: Date.now() })

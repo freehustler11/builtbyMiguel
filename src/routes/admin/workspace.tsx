@@ -13,12 +13,12 @@ import {
   Globe,
   ArrowLeft,
   ChevronRight,
-  Filter,
-  X,
   Search,
+  Send,
+  Table2,
 } from 'lucide-react'
+import { AdminShell } from '../../components/AdminShell'
 import { checkAuthServerFn, requireAdmin } from '../../lib/auth'
-import { AdminNav } from '../../components/AdminNav'
 import { getClientsServerFn } from '../../server/clients'
 import { getPartnersServerFn, type PartnerItem } from '../../server/partners'
 import { LandingPagesBoard } from '../../components/crm/LandingPagesBoard'
@@ -26,29 +26,44 @@ import { ArticlesBoard } from '../../components/crm/ArticlesBoard'
 import { KeywordsBoard } from '../../components/crm/KeywordsBoard'
 import { TasksBoard } from '../../components/crm/TasksBoard'
 import { CitationsBoard } from '../../components/crm/CitationsBoard'
-import { MonthlyMetricsForm } from '../../components/crm/MonthlyMetricsForm'
+import { MonthlyKpiGrid } from '../../components/crm/MonthlyKpiGrid'
+import { PublishingQueue } from '../../components/crm/PublishingQueue'
 
 interface WorkspaceSearch {
-  tab?: 'landing-pages' | 'articles' | 'keywords' | 'deliverables' | 'citations' | 'metrics'
+  tab?: 'landing-pages' | 'articles' | 'keywords' | 'deliverables' | 'citations' | 'metrics' | 'queue'
   partnerId?: string
   client?: string
+  month?: number
+  year?: number
 }
 
 export const Route = createFileRoute('/admin/workspace')({
   validateSearch: (search: Record<string, unknown>): WorkspaceSearch => {
     const tab = search.tab as WorkspaceSearch['tab']
+    const month = typeof search.month === 'number' ? search.month : typeof search.month === 'string' ? parseInt(search.month, 10) : undefined
+    const year = typeof search.year === 'number' ? search.year : typeof search.year === 'string' ? parseInt(search.year, 10) : undefined
     return {
-      tab: ['landing-pages', 'articles', 'keywords', 'deliverables', 'citations', 'metrics'].includes(tab || '')
+      tab: ['landing-pages', 'articles', 'keywords', 'deliverables', 'citations', 'metrics', 'queue'].includes(tab || '')
         ? tab
         : undefined,
       partnerId: typeof search.partnerId === 'string' ? search.partnerId : undefined,
       client: typeof search.client === 'string' ? search.client : undefined,
+      month: month && month >= 1 && month <= 12 ? month : undefined,
+      year: year && year >= 2000 && year <= 2100 ? year : undefined,
     }
   },
   beforeLoad: async ({ location }) => {
     const auth = await requireAdmin({ location })
     if (auth.role === 'client') {
       throw redirect({ to: '/portal' })
+    }
+    const query = location.search as any
+    if (query?.client) {
+      throw redirect({
+        to: '/admin/clients/$clientId',
+        params: { clientId: query.client },
+        search: { tab: query.tab || 'landing-pages' } as any,
+      })
     }
     return { auth }
   },
@@ -80,17 +95,20 @@ function AgencyWorkspacePage() {
   const router = useRouter()
   const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
 
-  const activeTab: 'landing-pages' | 'articles' | 'keywords' | 'deliverables' | 'citations' | 'metrics' =
+  const activeTab: 'landing-pages' | 'articles' | 'keywords' | 'deliverables' | 'citations' | 'metrics' | 'queue' =
     search.tab || 'landing-pages'
 
   const selectedPartnerId = isSuperadmin ? search.partnerId : undefined
   const showAgenciesOverview = isSuperadmin && !selectedPartnerId
-  const selectedClientId = search.client || ''
   const [agencySearchQuery, setAgencySearchQuery] = useState('')
 
   const activeAgencyObj = selectedPartnerId
     ? partners.find((p) => p.id === selectedPartnerId)
     : null
+
+  const now = new Date()
+  const currentMonth = search.month || (now.getUTCMonth() + 1)
+  const currentYear = search.year || now.getUTCFullYear()
 
   // Scoped clients for the selected partner
   const scopedClients = useMemo(() => {
@@ -108,13 +126,13 @@ function AgencyWorkspacePage() {
     )
   }, [partners, agencySearchQuery])
 
-  const handleTabChange = (tab: 'landing-pages' | 'articles' | 'keywords' | 'deliverables' | 'citations' | 'metrics') => {
+  const handleTabChange = (tab: 'landing-pages' | 'articles' | 'keywords' | 'deliverables' | 'citations' | 'metrics' | 'queue') => {
     router.navigate({
       to: '/admin/workspace',
       search: {
+        ...search,
         tab,
         partnerId: selectedPartnerId,
-        client: selectedClientId || undefined,
       },
     })
   }
@@ -123,130 +141,144 @@ function AgencyWorkspacePage() {
     router.navigate({
       to: '/admin/workspace',
       search: {
+        ...search,
         tab: activeTab,
         partnerId: pId || undefined,
-        client: undefined,
       },
     })
   }
 
-  const handleClientChange = (cId: string) => {
+  const handleMonthChange = (month: number, year: number) => {
     router.navigate({
       to: '/admin/workspace',
       search: {
-        tab: activeTab,
-        partnerId: selectedPartnerId,
-        client: cId || undefined,
+        ...search,
+        month,
+        year,
       },
     })
   }
 
-  const activeClientObj = selectedClientId
-    ? scopedClients.find((c) => c.id === selectedClientId)
-    : null
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* AdminNav Bar */}
-        <AdminNav
-          activeTab="workspace"
-          title={
-            showAgenciesOverview
-              ? 'Agency Workspaces'
-              : activeAgencyObj
-              ? `${activeAgencyObj.name || activeAgencyObj.email} · Workspace`
-              : 'Agency Workspace'
-          }
-          description={
-            showAgenciesOverview
-              ? 'Select an agency below to access its workspace, deliverable pipelines, citations, and client KPIs.'
-              : 'Cross-client deliverable pipeline across all partner accounts. Internal tasks with no assigned client are grouped under Internal.'
-          }
-          userRole={auth?.role}
-          actions={
-            <div className="flex items-center gap-3">
-              <Link
-                to="/my-work"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-2xs"
-              >
-                <CheckSquare className="w-3.5 h-3.5 text-emerald-500" />
-                <span>My Assigned Work</span>
-              </Link>
-            </div>
-          }
-        />
-
+    <AdminShell
+      activeTab="workspace"
+      userRole={auth?.role}
+      userEmail={auth?.email}
+      userName={auth?.name}
+      month={currentMonth}
+      year={currentYear}
+      onMonthChange={handleMonthChange}
+      breadcrumb={{
+        agency: isSuperadmin ? { id: selectedPartnerId, name: activeAgencyObj?.name } : undefined,
+        client: null, // "All clients" roll-up mode
+        section: activeTab,
+        availableSections: [
+          { id: 'landing-pages', label: 'Landing pages' },
+          { id: 'articles', label: 'Articles' },
+          { id: 'keywords', label: 'Keywords' },
+          { id: 'deliverables', label: 'Tasks & Deliverables' },
+          { id: 'citations', label: 'Citations' },
+          { id: 'metrics', label: 'Monthly KPIs' },
+          { id: 'queue', label: 'Publishing Queue' },
+        ],
+        onSectionChange: (tab) => handleTabChange(tab as any),
+      }}
+      clients={clients}
+      agencies={partners}
+      title={
+        showAgenciesOverview
+          ? 'Agency workspaces'
+          : activeAgencyObj
+          ? `${activeAgencyObj.name || activeAgencyObj.email} workspace`
+          : 'Agency workspace'
+      }
+      description={
+        showAgenciesOverview
+          ? 'Select an agency below to access its workspace, deliverable pipelines, citations, and client KPIs.'
+          : 'Cross-client deliverable pipeline across all partner accounts. Internal tasks with no assigned client are grouped under Internal.'
+      }
+      actions={
+        <div className="flex items-center gap-2">
+          <Link
+            to="/my-work"
+            className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] border border-[var(--line)] hover:bg-[var(--line)]/50 transition"
+          >
+            <CheckSquare className="w-3.5 h-3.5 text-[var(--muted)]" />
+            <span>My assigned work</span>
+          </Link>
+        </div>
+      }
+    >
+      <div className="space-y-6">
         {/* Superadmin Agency-First Overview Mode */}
         {showAgenciesOverview ? (
           <div className="space-y-6">
-            {/* Search & Agency Stats Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            {/* Search & Stats Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
               <div className="space-y-0.5">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-rose-500" />
-                  <span>Partner Agencies ({partners.length})</span>
+                <h3 className="text-[15px] font-medium text-[var(--ink)] flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[var(--muted)]" />
+                  <span>Partner agency workspaces ({partners.length})</span>
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Select an agency below to view its deliverable pipeline, citations, and clients.
+                <p className="text-[13px] text-[var(--muted)]">
+                  Select an agency below to enter its workspace, deliverable pipelines, and client metrics.
                 </p>
               </div>
 
               <div className="relative min-w-[240px]">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
                 <input
                   type="text"
                   value={agencySearchQuery}
                   onChange={(e) => setAgencySearchQuery(e.target.value)}
-                  placeholder="Search partner agencies..."
-                  className="w-full pl-10 pr-4 py-2 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  placeholder="Search agency workspaces..."
+                  className="w-full h-8 pl-9 pr-3 rounded-[6px] text-[13px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
             </div>
 
             {/* Agencies Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredPartners.map((partner) => (
                 <div
                   key={partner.id}
-                  className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md transition flex flex-col justify-between space-y-5 group"
+                  className="p-5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] transition flex flex-col justify-between space-y-4 group"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-center font-bold text-base shadow-xs">
+                      <div className="w-10 h-10 rounded-[6px] bg-[var(--canvas)] text-[var(--ink)] border border-[var(--line)] flex items-center justify-center font-medium text-sm">
                         {(partner.name || partner.email).substring(0, 2).toUpperCase()}
                       </div>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                        <Users className="w-3 h-3" />
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-[6px] bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)] tabular-nums">
+                        <Users className="w-3 h-3 text-[var(--muted)]" />
                         <span>{partner.clientCount} clients</span>
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition truncate">
-                        {partner.name || partner.email}
-                      </h3>
-                      <p className="text-xs font-mono text-slate-500 dark:text-slate-400 truncate">
+                      <h4 className="text-[15px] font-medium text-[var(--ink)] group-hover:text-[var(--accent)] transition truncate">
+                        {partner.name || 'Unnamed Agency'}
+                      </h4>
+                      <p className="text-[12px] text-[var(--muted)] font-mono truncate mt-0.5">
                         {partner.email}
                       </p>
                     </div>
-                  </div>
 
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                    <div className="text-xs font-mono text-slate-400">
-                      <span>Managed Clients: </span>
-                      <strong className="text-slate-900 dark:text-white">{partner.clientCount}</strong>
+                    <div className="flex items-center gap-3 pt-2 text-[12px] text-[var(--muted)] border-t border-[var(--line)]/50">
+                      <span>{partner.reportsThisMonthCount} reports (mo)</span>
+                      <span>·</span>
+                      <span>{partner.staffCount} staff</span>
                     </div>
-
-                    <Link
-                      to="/admin/workspace"
-                      search={{ partnerId: partner.id }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-950/60 transition cursor-pointer"
-                    >
-                      <span>Open Workspace</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
                   </div>
+
+                  <Link
+                    to="/admin/workspace"
+                    search={{ partnerId: partner.id, tab: 'landing-pages' }}
+                    className="w-full h-8 flex items-center justify-center gap-1.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] hover:border-[var(--line)]/80 hover:bg-[var(--line)]/30 text-[12px] font-medium text-[var(--ink)] transition"
+                  >
+                    <span>Open workspace</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-[var(--muted)]" />
+                  </Link>
                 </div>
               ))}
             </div>
@@ -255,30 +287,31 @@ function AgencyWorkspacePage() {
           <>
             {/* Superadmin Back Breadcrumb & Agency Switcher */}
             {isSuperadmin && (
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
+                <div className="flex items-center gap-2 text-[13px] text-[var(--muted)]">
                   <Link
                     to="/admin/workspace"
                     search={{}}
-                    className="hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1 underline-offset-4 hover:underline"
+                    className="hover:text-[var(--ink)] transition flex items-center gap-1 hover:underline"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
-                    <span>All Agencies</span>
+                    <span>All agencies</span>
                   </Link>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="font-bold text-slate-900 dark:text-white">
+                  <ChevronRight className="w-3.5 h-3.5 text-[var(--line)]" />
+                  <span className="font-medium text-[var(--ink)]">
                     {activeAgencyObj ? (activeAgencyObj.name || activeAgencyObj.email) : 'Workspace'}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-slate-400 hidden sm:inline">Switch Agency:</span>
+                  <span className="text-[12px] text-[var(--muted)] hidden sm:inline">Switch agency:</span>
                   <select
                     value={selectedPartnerId || ''}
                     onChange={(e) => handlePartnerChange(e.target.value)}
-                    className="px-3 py-1.5 rounded-2xl text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    aria-label="Switch partner agency"
+                    className="h-8 px-2.5 rounded-[6px] text-[13px] font-medium bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   >
-                    <option value="">All Agencies Overview</option>
+                    <option value="">All agencies overview</option>
                     {partners.map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name || p.email} ({p.clientCount} clients)
@@ -289,201 +322,151 @@ function AgencyWorkspacePage() {
               </div>
             )}
 
-            {/* Aggregate Stats Summary Card */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-1">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-                  <span>Managed Clients</span>
-                  <Building2 className="w-4 h-4 text-blue-500" />
-                </div>
-                <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                  {scopedClients.length}
-                </div>
-                <span className="text-[11px] text-slate-500 font-mono">active client accounts</span>
+            {/* Inline Status Strip */}
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[12px] text-[var(--muted)] px-3.5 py-1.5 rounded-[6px] bg-[var(--panel)] border border-[var(--line)]">
+              <div className="flex items-center gap-2">
+                <span><strong className="text-[var(--ink)] font-semibold tabular-nums">{scopedClients.length}</strong> active clients in roll-up view</span>
               </div>
-
-              <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-1">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-                  <span>Scope Mode</span>
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                </div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white truncate">
-                  {activeClientObj
-                    ? activeClientObj.businessName || activeClientObj.name
-                    : activeAgencyObj
-                    ? activeAgencyObj.name || activeAgencyObj.email
-                    : 'Agency-Wide Roll-Up'}
-                </div>
-                <span className="text-[11px] text-slate-500 font-mono">
-                  {activeClientObj ? 'scoped to single client' : 'across all client portfolios'}
-                </span>
-              </div>
-
-              <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-1">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-                  <span>Quick Jump</span>
-                  <CheckSquare className="w-4 h-4 text-emerald-500" />
-                </div>
-                <Link
-                  to="/my-work"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline pt-1"
-                >
-                  <span>View your personally assigned items</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Link>
-              </div>
+              <Link
+                to="/my-work"
+                className="inline-flex items-center gap-1 text-[12px] font-medium text-[var(--accent)] hover:underline"
+              >
+                <span>My assigned items</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
             </div>
 
-            {/* Client Filter Dropdown */}
-            {scopedClients.length > 0 && (
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                <div className="flex items-center gap-2.5">
-                  <Filter className="w-4 h-4 text-slate-400" />
-                  <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Filter Client:</span>
-                  <select
-                    value={selectedClientId}
-                    onChange={(e) => handleClientChange(e.target.value)}
-                    className="px-3 py-1.5 rounded-xl text-xs font-medium bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  >
-                    <option value="">All Agency Clients ({scopedClients.length})</option>
-                    {scopedClients.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.businessName || c.name}
-                      </option>
-                    ))}
-                  </select>
-                  {selectedClientId && (
-                    <button
-                      type="button"
-                      onClick={() => handleClientChange('')}
-                      className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 transition cursor-pointer"
-                    >
-                      <X className="w-3 h-3" />
-                      <span>Clear filter</span>
-                    </button>
-                  )}
-                </div>
-                <div className="text-xs font-mono text-slate-400">
-                  {selectedClientId ? (
-                    <span>Scoped view for {activeClientObj?.businessName || activeClientObj?.name}</span>
-                  ) : (
-                    <span>Displaying all {scopedClients.length} clients</span>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* 6 Tabs Segmented Switcher */}
-            <div className="flex items-center p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-inner overflow-x-auto">
+            {/* 7 Tabs Segmented Switcher */}
+            <div className="flex items-center p-0.5 rounded-[8px] bg-[var(--canvas)] border border-[var(--line)] overflow-x-auto">
               <button
                 type="button"
                 onClick={() => handleTabChange('landing-pages')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-[6px] text-[13px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
                   activeTab === 'landing-pages'
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50'
                 }`}
               >
-                <Layers className="w-4 h-4 text-blue-500" />
-                <span>Landing Pages</span>
+                <Layers className={`w-3.5 h-3.5 transition-colors ${activeTab === 'landing-pages' ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
+                <span>Landing pages</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleTabChange('articles')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-[6px] text-[13px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
                   activeTab === 'articles'
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50'
                 }`}
               >
-                <FileText className="w-4 h-4 text-emerald-500" />
+                <FileText className={`w-3.5 h-3.5 transition-colors ${activeTab === 'articles' ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
                 <span>Articles</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleTabChange('keywords')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-[6px] text-[13px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
                   activeTab === 'keywords'
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50'
                 }`}
               >
-                <SearchIcon className="w-4 h-4 text-purple-500" />
+                <SearchIcon className={`w-3.5 h-3.5 transition-colors ${activeTab === 'keywords' ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
                 <span>Keywords</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleTabChange('deliverables')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-[6px] text-[13px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
                   activeTab === 'deliverables'
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50'
                 }`}
               >
-                <CheckSquare className="w-4 h-4 text-amber-500" />
+                <CheckSquare className={`w-3.5 h-3.5 transition-colors ${activeTab === 'deliverables' ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
                 <span>Deliverables</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleTabChange('citations')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-[6px] text-[13px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
                   activeTab === 'citations'
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50'
                 }`}
               >
-                <Globe className="w-4 h-4 text-cyan-500" />
+                <Globe className={`w-3.5 h-3.5 transition-colors ${activeTab === 'citations' ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
                 <span>Citations</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleTabChange('metrics')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-[6px] text-[13px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
                   activeTab === 'metrics'
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50'
                 }`}
               >
-                <BarChart3 className="w-4 h-4 text-rose-500" />
+                <BarChart3 className={`w-3.5 h-3.5 transition-colors ${activeTab === 'metrics' ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
                 <span>Monthly KPIs</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleTabChange('queue')}
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-[6px] text-[13px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                  activeTab === 'queue'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50'
+                }`}
+              >
+                <Send className={`w-3.5 h-3.5 transition-colors ${activeTab === 'queue' ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
+                <span>Publishing queue</span>
               </button>
             </div>
 
             {/* Tab Content */}
             <div className="space-y-6">
               {activeTab === 'landing-pages' && (
-                <LandingPagesBoard partnerId={selectedPartnerId} clientId={selectedClientId || undefined} />
+                <LandingPagesBoard partnerId={selectedPartnerId} />
               )}
 
               {activeTab === 'articles' && (
-                <ArticlesBoard partnerId={selectedPartnerId} clientId={selectedClientId || undefined} />
+                <ArticlesBoard partnerId={selectedPartnerId} />
               )}
 
               {activeTab === 'keywords' && (
-                <KeywordsBoard partnerId={selectedPartnerId} clientId={selectedClientId || undefined} />
+                <KeywordsBoard partnerId={selectedPartnerId} />
               )}
 
               {activeTab === 'deliverables' && (
-                <TasksBoard partnerId={selectedPartnerId} clientId={selectedClientId || undefined} />
+                <TasksBoard partnerId={selectedPartnerId} />
               )}
 
               {activeTab === 'citations' && (
-                <CitationsBoard partnerId={selectedPartnerId} clientId={selectedClientId || undefined} />
+                <CitationsBoard partnerId={selectedPartnerId} />
               )}
 
               {activeTab === 'metrics' && (
-                <MonthlyMetricsForm partnerId={selectedPartnerId} clientId={selectedClientId || undefined} />
+                <MonthlyKpiGrid
+                  partnerId={selectedPartnerId}
+                  initialMonth={currentMonth}
+                  initialYear={currentYear}
+                />
+              )}
+
+              {activeTab === 'queue' && (
+                <PublishingQueue partnerId={selectedPartnerId} />
               )}
             </div>
           </>
         )}
       </div>
-    </div>
+    </AdminShell>
   )
 }
-

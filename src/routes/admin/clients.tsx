@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useRouter, Link } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
 import {
   Users,
@@ -24,13 +24,17 @@ import {
   Briefcase,
   AlertCircle,
   Lock,
+  LayoutGrid,
+  List,
+  Download,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../lib/auth'
-import { AdminNav } from '../../components/AdminNav'
+import { AdminShell } from '../../components/AdminShell'
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../components/Toast'
 import { MediaPickerModal } from '../../components/MediaPickerModal'
 import { ClientCard } from '../../components/ClientCard'
+import { DataTable, type ColumnDef, type BulkAction } from '../../components/ui/DataTable'
 import {
   getClientsServerFn,
   createClientServerFn,
@@ -47,18 +51,44 @@ import {
   assignClientPartnerServerFn,
   type PartnerItem,
 } from '../../server/partners'
-import type { Client } from '../../db/schema'
+
+export interface ClientsSearch {
+  sort?: 'name' | 'website' | 'reports' | 'last_report' | 'access' | 'agency'
+  order?: 'asc' | 'desc'
+  filter?: 'all' | 'missing' | 'connected'
+  search?: string
+  view?: 'table' | 'grid'
+}
 
 export const Route = createFileRoute('/admin/clients')({
+  validateSearch: (search: Record<string, unknown>): ClientsSearch => {
+    const sort = search.sort as ClientsSearch['sort']
+    const order = search.order as ClientsSearch['order']
+    const filter = search.filter as ClientsSearch['filter']
+    const view = search.view as ClientsSearch['view']
+    return {
+      sort: ['name', 'website', 'reports', 'last_report', 'access', 'agency'].includes(sort || '') ? sort : undefined,
+      order: order === 'desc' ? 'desc' : order === 'asc' ? 'asc' : undefined,
+      filter: ['all', 'missing', 'connected'].includes(filter || '') ? filter : undefined,
+      search: typeof search.search === 'string' ? search.search : undefined,
+      view: view === 'grid' ? 'grid' : 'table',
+    }
+  },
   beforeLoad: async ({ location }) => {
     const auth = await requireAdmin({ location })
-    if (auth.role === 'superadmin' || auth.role === 'admin') {
-      throw redirect({ to: '/admin/agencies' })
-    }
     return { auth }
   },
-  loader: async ({ context }) => {
-    const { clients, partners } = await getClientsServerFn()
+  loaderDeps: ({ search }) => ({
+    sort: search.sort,
+    order: search.order,
+  }),
+  loader: async ({ deps, context }) => {
+    const { clients, partners } = await getClientsServerFn({
+      data: {
+        sort: deps.sort,
+        order: deps.order,
+      },
+    })
     return {
       clients,
       partners: partners || [],
@@ -101,6 +131,8 @@ function formatDate(dateInput: string | Date | null) {
 
 function AdminClientsPage() {
   const router = useRouter()
+  const navigate = useNavigate({ from: Route.fullPath })
+  const searchParams = Route.useSearch()
   const { clients: initialClients, partners: initialPartners, currentAdmin } = Route.useLoaderData()
   const isSuperadmin = currentAdmin?.role === 'superadmin' || currentAdmin?.role === 'admin'
 
@@ -116,13 +148,15 @@ function AdminClientsPage() {
   }, [initialPartners])
 
   // General State
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(searchParams.search || '')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingClient, setEditingClient] = useState<Client | null>(null)
+  const [editingClient, setEditingClient] = useState<ClientWithReportCount | null>(null)
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false)
   const [clientToDelete, setClientToDelete] = useState<ClientWithReportCount | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
+  const [accessFilter, setAccessFilter] = useState<'all' | 'missing' | 'connected'>(searchParams.filter || 'all')
+  const viewMode = searchParams.view || 'table'
 
   // Form State for Clients
   const [name, setName] = useState('')
@@ -262,15 +296,10 @@ function AdminClientsPage() {
           partnerId: targetPartnerId,
         },
       })
-      addToast(
-        'Assignment Updated',
-        matchedPartner
-          ? `Client assigned to ${matchedPartner.name || matchedPartner.email}.`
-          : 'Client set to Direct Agency Client (Superadmin).'
-      )
+      addToast('Partner Assigned', 'Client successfully reassigned.')
       await router.invalidate()
     } catch (err: unknown) {
-      addToast('Assignment Failed', err instanceof Error ? err.message : 'Could not reassign partner', 'error')
+      addToast('Assignment Failed', err instanceof Error ? err.message : 'Could not assign partner', 'error')
       await router.invalidate()
     } finally {
       setIsAssigningId(null)
@@ -278,33 +307,25 @@ function AdminClientsPage() {
   }
 
   // Toggle Partner active status
-  const handleTogglePartnerActive = async (partner: PartnerItem) => {
-    const nextActive = !partner.isActive
-    setTogglingPartnerId(partner.id)
-
-    // Optimistic update
-    setPartnerAccounts((prev) =>
-      prev.map((p) => (p.id === partner.id ? { ...p, isActive: nextActive } : p))
-    )
-
+  const handleTogglePartnerActive = async (partnerId: string, currentStatus: boolean) => {
+    setTogglingPartnerId(partnerId)
     try {
-      await togglePartnerActiveServerFn({
+      const res = await togglePartnerActiveServerFn({
         data: {
-          id: partner.id,
-          isActive: nextActive,
+          id: partnerId,
+          isActive: !currentStatus,
         },
       })
-      addToast(
-        nextActive ? 'Partner Activated' : 'Partner Suspended',
-        `${partner.name || partner.email} account is now ${nextActive ? 'active' : 'suspended'}.`
-      )
-      await router.invalidate()
+      if (res.success) {
+        addToast(
+          'Status Updated',
+          `Partner is now ${!currentStatus ? 'Active' : 'Suspended'}.`
+        )
+        await loadPartnerAccounts()
+        await router.invalidate()
+      }
     } catch (err: unknown) {
-      addToast('Status Update Failed', err instanceof Error ? err.message : 'Could not toggle partner status', 'error')
-      // Revert
-      setPartnerAccounts((prev) =>
-        prev.map((p) => (p.id === partner.id ? { ...p, isActive: partner.isActive } : p))
-      )
+      addToast('Error', err instanceof Error ? err.message : 'Failed to update partner status.', 'error')
     } finally {
       setTogglingPartnerId(null)
     }
@@ -335,19 +356,17 @@ function AdminClientsPage() {
     setPartnerFormError(null)
 
     if (!partnerFormName.trim()) {
-      setPartnerFormError('Partner name is required.')
+      setPartnerFormError('Partner / Agency name is required.')
       return
     }
+
     if (!partnerFormEmail.trim() || !partnerFormEmail.includes('@')) {
       setPartnerFormError('A valid email address is required.')
       return
     }
-    if (!editingPartner && (!partnerFormPassword || partnerFormPassword.length < 6)) {
-      setPartnerFormError('A password of at least 6 characters is required.')
-      return
-    }
-    if (editingPartner && partnerFormPassword && partnerFormPassword.length < 6) {
-      setPartnerFormError('New password must be at least 6 characters.')
+
+    if (!editingPartner && (!partnerFormPassword.trim() || partnerFormPassword.length < 8)) {
+      setPartnerFormError('Password must be at least 8 characters.')
       return
     }
 
@@ -359,11 +378,11 @@ function AdminClientsPage() {
             id: editingPartner.id,
             name: partnerFormName.trim(),
             email: partnerFormEmail.trim(),
-            password: partnerFormPassword.trim() || undefined,
+            password: partnerFormPassword.trim() ? partnerFormPassword.trim() : undefined,
             isActive: partnerFormIsActive,
           },
         })
-        addToast('Partner Updated', `Updated account for ${partnerFormName}.`)
+        addToast('Partner Updated', `Updated agency profile for ${partnerFormName}.`)
       } else {
         await createPartnerServerFn({
           data: {
@@ -502,88 +521,394 @@ function AdminClientsPage() {
     }
   }
 
+  const handleSortChange = (sortKey: string, order: 'asc' | 'desc') => {
+    navigate({
+      search: (prev: any) => ({
+        ...prev,
+        sort: sortKey,
+        order,
+      }),
+    })
+  }
+
+  const handleViewToggle = (mode: 'table' | 'grid') => {
+    navigate({
+      search: (prev: any) => ({
+        ...prev,
+        view: mode,
+      }),
+    })
+  }
+
+  const handleAccessFilterChange = (filter: 'all' | 'missing' | 'connected') => {
+    setAccessFilter(filter)
+    navigate({
+      search: (prev: any) => ({
+        ...prev,
+        filter: filter === 'all' ? undefined : filter,
+      }),
+    })
+  }
+
   const filteredClients = useMemo(() => {
     return clients.filter((c) => {
       const q = searchQuery.toLowerCase().trim()
-      if (!q) return true
-      const matchName = c.name.toLowerCase().includes(q)
-      const matchBiz = c.businessName.toLowerCase().includes(q)
-      const matchWeb = c.websiteUrl?.toLowerCase().includes(q)
-      const matchPartner = c.partner?.name?.toLowerCase().includes(q) || c.partner?.email?.toLowerCase().includes(q)
-      return matchName || matchBiz || matchWeb || matchPartner
+      const matchesSearch =
+        !q ||
+        c.name.toLowerCase().includes(q) ||
+        c.businessName.toLowerCase().includes(q) ||
+        c.websiteUrl?.toLowerCase().includes(q) ||
+        c.partner?.name?.toLowerCase().includes(q) ||
+        c.partner?.email?.toLowerCase().includes(q)
+      if (!matchesSearch) return false
+
+      if (accessFilter === 'missing') {
+        return Boolean(c.missingSources && c.missingSources.length > 0)
+      }
+      if (accessFilter === 'connected') {
+        return !c.missingSources || c.missingSources.length === 0
+      }
+      return true
     })
-  }, [clients, searchQuery])
+  }, [clients, searchQuery, accessFilter])
+
+  // Table Columns Definition
+  const clientColumns: ColumnDef<ClientWithReportCount>[] = [
+    {
+      id: 'client',
+      header: 'Client',
+      sortKey: 'name',
+      accessor: (c) => (
+        <div className="flex items-center gap-2.5">
+          {c.logoUrl ? (
+            <img
+              src={c.logoUrl}
+              alt={c.businessName}
+              className="w-5 h-5 rounded-[4px] object-contain shrink-0 border border-[var(--line)]"
+            />
+          ) : (
+            <div
+              className="w-5 h-5 rounded-[4px] text-white flex items-center justify-center font-bold text-[10px] shrink-0"
+              style={{ backgroundColor: c.primaryColor || '#2563eb' }}
+            >
+              {c.businessName.slice(0, 2).toUpperCase()}
+            </div>
+          )}
+          <div className="flex flex-col min-w-0">
+            <Link
+              to="/admin/clients/$clientId"
+              params={{ clientId: c.id }}
+              className="font-semibold text-[13px] text-[var(--ink)] hover:text-[var(--accent)] transition truncate"
+            >
+              {c.businessName}
+            </Link>
+            <span className="text-[11px] text-[var(--muted)] truncate">
+              {c.name}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    ...(isSuperadmin
+      ? [
+          {
+            id: 'agency',
+            header: 'Agency',
+            sortKey: 'agency',
+            accessor: (c: ClientWithReportCount) => (
+              <div className="min-w-0 max-w-[160px]">
+                {c.partner ? (
+                  <span className="text-[12px] font-medium text-[var(--ink)] truncate block" title={c.partner.name || c.partner.email}>
+                    {c.partner.name || c.partner.email}
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-[var(--muted)] italic">Unassigned</span>
+                )}
+              </div>
+            ),
+          } as ColumnDef<ClientWithReportCount>,
+        ]
+      : []),
+    {
+      id: 'website',
+      header: 'Website',
+      sortKey: 'website',
+      accessor: (c) =>
+        c.websiteUrl ? (
+          <a
+            href={c.websiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[12px] text-[var(--muted)] hover:text-[var(--ink)] hover:underline inline-flex items-center gap-1 font-mono truncate max-w-[180px]"
+          >
+            <span>{c.websiteUrl.replace(/^https?:\/\//, '')}</span>
+            <ExternalLink className="w-3 h-3 text-[var(--muted)]" />
+          </a>
+        ) : (
+          <span className="text-[12px] text-[var(--muted)]">—</span>
+        ),
+    },
+    {
+      id: 'reports',
+      header: 'Reports',
+      sortKey: 'reports',
+      align: 'right',
+      accessor: (c) => (
+        <span className="font-mono tabular-nums text-[13px]">{c.reportCount}</span>
+      ),
+    },
+    {
+      id: 'last_report',
+      header: 'Last report',
+      sortKey: 'last_report',
+      accessor: (c) => (
+        <span className="text-[12px] font-mono tabular-nums text-[var(--muted)]">
+          {c.latestReport ? c.latestReport.reportMonth : 'None'}
+        </span>
+      ),
+    },
+    {
+      id: 'access',
+      header: 'Sources',
+      sortKey: 'access',
+      accessor: (c) => {
+        const ds = c.dataSources || { gsc: 'connected', ga4: 'connected', gbp: 'connected' }
+        return (
+          <div className="flex items-center gap-1.5 text-[10px] font-mono">
+            <span
+              title={`GSC: ${ds.gsc}`}
+              className={`px-1.5 py-0.5 rounded-[4px] ${
+                ds.gsc === 'connected'
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400'
+                  : ds.gsc === 'no_access'
+                  ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400'
+                  : 'bg-[var(--line)]/50 text-[var(--muted)]'
+              }`}
+            >
+              GSC
+            </span>
+            <span
+              title={`GA4: ${ds.ga4}`}
+              className={`px-1.5 py-0.5 rounded-[4px] ${
+                ds.ga4 === 'connected'
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400'
+                  : ds.ga4 === 'no_access'
+                  ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400'
+                  : 'bg-[var(--line)]/50 text-[var(--muted)]'
+              }`}
+            >
+              GA4
+            </span>
+            <span
+              title={`GBP: ${ds.gbp}`}
+              className={`px-1.5 py-0.5 rounded-[4px] ${
+                ds.gbp === 'connected'
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400'
+                  : ds.gbp === 'no_access'
+                  ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400'
+                  : 'bg-[var(--line)]/50 text-[var(--muted)]'
+              }`}
+            >
+              GBP
+            </span>
+          </div>
+        )
+      },
+    },
+  ]
+
+  // Export CSV Helper
+  const handleExportCsv = (selected: ClientWithReportCount[]) => {
+    const headers = ['Business Name', 'Contact Name', 'Website', 'Reports', 'Last Report', 'Agency']
+    const rows = selected.map((c) => [
+      `"${(c.businessName || '').replace(/"/g, '""')}"`,
+      `"${(c.name || '').replace(/"/g, '""')}"`,
+      `"${(c.websiteUrl || '').replace(/"/g, '""')}"`,
+      c.reportCount,
+      `"${c.latestReport?.reportMonth || 'None'}"`,
+      `"${(c.partner?.name || c.partner?.email || 'Unassigned').replace(/"/g, '""')}"`,
+    ])
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', `clients_export_${new Date().toISOString().slice(0, 10)}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  // Bulk Actions
+  const bulkActions: BulkAction<ClientWithReportCount>[] = [
+    {
+      label: 'Generate Reports for Selected',
+      icon: FileSpreadsheet,
+      variant: 'accent',
+      onClick: (selectedItems, clearSelection) => {
+        if (selectedItems.length > 0) {
+          navigate({
+            to: '/admin/reports/new',
+            search: { clientId: selectedItems[0].id },
+          })
+        }
+        clearSelection()
+      },
+    },
+    {
+      label: 'Export CSV',
+      icon: Download,
+      variant: 'secondary',
+      onClick: (selectedItems, clearSelection) => {
+        handleExportCsv(selectedItems)
+        clearSelection()
+      },
+    },
+  ]
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0c111d] text-slate-900 dark:text-white p-4 sm:p-6 lg:p-8">
+    <AdminShell
+      activeTab="clients"
+      userRole={currentAdmin?.role}
+      userEmail={currentAdmin?.email}
+      userName={currentAdmin?.name}
+      title={isSuperadmin ? 'All clients' : 'Clients'}
+      description={
+        isSuperadmin
+          ? 'Manage agency clients across all partners, assign accounts, and configure white-label branding.'
+          : 'Manage your assigned agency clients and generate branded monthly performance reports.'
+      }
+      actions={
+        <div className="flex items-center gap-2">
+          {isSuperadmin && (
+            <button
+              type="button"
+              onClick={handleOpenPartnersModal}
+              className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] border border-[var(--line)] hover:bg-[var(--line)]/50 transition cursor-pointer"
+            >
+              <Briefcase className="w-3.5 h-3.5 text-[var(--muted)]" />
+              <span>Manage partners ({partnersList.length})</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={openCreateClientModal}
+            className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add client</span>
+          </button>
+        </div>
+      }
+    >
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header & Navigation */}
-        <AdminNav
-          activeTab="clients"
-          userRole={currentAdmin?.role}
-          title={isSuperadmin ? 'Client & Partner Manager' : 'Agency Clients'}
-          description={
-            isSuperadmin
-              ? 'Manage agency clients, assign accounts to partner agencies, and configure white-label branding.'
-              : 'Manage your assigned agency clients and generate branded monthly performance reports.'
-          }
-          actions={
-            <div className="flex items-center gap-2.5">
-              {isSuperadmin && (
-                <button
-                  type="button"
-                  onClick={handleOpenPartnersModal}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-2xs transition-all cursor-pointer"
-                >
-                  <Briefcase className="w-4 h-4 text-blue-500" />
-                  <span>Manage Partners ({partnersList.length})</span>
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={openCreateClientModal}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition-all cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Client</span>
-              </button>
-            </div>
-          }
-        />
+      <div className="space-y-4">
 
         {/* Search and Filters Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs">
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder={isSuperadmin ? 'Search clients, websites, partners...' : 'Search your assigned clients...'}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
-            />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 p-3 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto flex-1">
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" />
+              <input
+                type="text"
+                placeholder={isSuperadmin ? 'Search clients, websites, partners...' : 'Search your assigned clients...'}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-8 pl-9 pr-3 text-[13px] rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+              />
+            </div>
+
+            {/* Access Filter Pills */}
+            <div className="flex items-center gap-1 p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px]">
+              <button
+                type="button"
+                onClick={() => handleAccessFilterChange('all')}
+                className={`h-7 px-2.5 rounded-[6px] font-medium transition cursor-pointer ${
+                  accessFilter === 'all'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                All
+              </button>
+              <button
+                type="button"
+                onClick={() => handleAccessFilterChange('missing')}
+                className={`h-7 px-2.5 rounded-[6px] font-medium transition flex items-center gap-1 cursor-pointer ${
+                  accessFilter === 'missing'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <span>Missing access</span>
+                {clients.filter((c) => c.missingSources && c.missingSources.length > 0).length > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-[6px] text-[10px] bg-rose-50 dark:bg-rose-950/40 text-[var(--danger)] border border-rose-200/60 dark:border-rose-900/40">
+                    {clients.filter((c) => c.missingSources && c.missingSources.length > 0).length}
+                  </span>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleAccessFilterChange('connected')}
+                className={`h-7 px-2.5 rounded-[6px] font-medium transition cursor-pointer ${
+                  accessFilter === 'connected'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                All connected
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-mono">
+          <div className="flex items-center gap-3 text-[12px] text-[var(--muted)] w-full md:w-auto justify-between md:justify-end">
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-0.5 p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
+              <button
+                type="button"
+                onClick={() => handleViewToggle('table')}
+                title="Table view"
+                className={`h-7 px-2 rounded-[4px] transition cursor-pointer ${
+                  viewMode === 'table'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleViewToggle('grid')}
+                title="Grid view"
+                className={`h-7 px-2 rounded-[4px] transition cursor-pointer ${
+                  viewMode === 'grid'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] shadow-xs'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
             <span>
-              Showing <strong>{filteredClients.length}</strong> of <strong>{clients.length}</strong> clients
+              Showing <strong className="text-[var(--ink)] font-medium tabular-nums">{filteredClients.length}</strong> of <strong className="text-[var(--ink)] font-medium tabular-nums">{clients.length}</strong>
             </span>
           </div>
         </div>
 
-        {/* Client Cards Grid */}
+        {/* Clients Table or Cards Grid */}
         {filteredClients.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 p-12 text-center bg-white/50 dark:bg-slate-900/30 space-y-4">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-3xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900">
-              <Users className="w-7 h-7" />
+          <div className="rounded-[8px] border border-dashed border-[var(--line)] p-12 text-center bg-[var(--panel)] space-y-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-[8px] bg-[var(--canvas)] text-[var(--muted)] border border-[var(--line)]">
+              <Users className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="text-[15px] font-medium text-[var(--ink)]">
                 {searchQuery ? 'No matching clients found' : 'No clients found'}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+              <p className="text-[13px] text-[var(--muted)] max-w-sm mx-auto">
                 {searchQuery
                   ? 'Try modifying your search keywords.'
                   : isSuperadmin
@@ -595,13 +920,52 @@ function AdminClientsPage() {
               <button
                 type="button"
                 onClick={openCreateClientModal}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition cursor-pointer"
+                className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
-                <span>Create Client</span>
+                <span>Create client</span>
               </button>
             )}
           </div>
+        ) : viewMode === 'table' ? (
+          <DataTable<ClientWithReportCount>
+            data={filteredClients}
+            columns={clientColumns}
+            keyExtractor={(c) => c.id}
+            selectable
+            sortKey={searchParams.sort}
+            sortOrder={searchParams.order}
+            onSort={handleSortChange}
+            bulkActions={bulkActions}
+            rowActions={(client) => (
+              <div className="flex items-center justify-end gap-1">
+                <Link
+                  to="/admin/workspace"
+                  search={{ client: client.id }}
+                  title="Open client workspace"
+                  className="p-1 rounded-[4px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50 transition"
+                >
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => openEditClientModal(client)}
+                  title="Edit client details"
+                  className="p-1 rounded-[4px] text-[var(--muted)] hover:text-[var(--accent)] hover:bg-[var(--line)]/50 transition cursor-pointer"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setClientToDelete(client)}
+                  title="Archive client"
+                  className="p-1 rounded-[4px] text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--line)]/50 transition cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredClients.map((client) => (
@@ -731,7 +1095,7 @@ function AdminClientsPage() {
                             role="switch"
                             aria-checked={partner.isActive}
                             disabled={togglingPartnerId === partner.id}
-                            onClick={() => handleTogglePartnerActive(partner)}
+                            onClick={() => handleTogglePartnerActive(partner.id, partner.isActive)}
                             className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${
                               partner.isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
                             }`}
@@ -1294,28 +1658,28 @@ function AdminClientsPage() {
               </div>
 
               {/* Form Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--line)]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                  className="h-8 inline-flex items-center px-3 rounded-[6px] text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]/50 transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition disabled:opacity-50 cursor-pointer"
+                  className="h-8 inline-flex items-center gap-1.5 px-4 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                       <span>Saving...</span>
                     </>
                   ) : (
                     <>
-                      <Check className="w-4 h-4" />
-                      <span>{editingClient ? 'Save Changes' : 'Create Client'}</span>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{editingClient ? 'Save changes' : 'Create client'}</span>
                     </>
                   )}
                 </button>
@@ -1330,6 +1694,8 @@ function AdminClientsPage() {
         isOpen={isMediaModalOpen}
         onClose={() => setIsMediaModalOpen(false)}
         acceptTypes="images"
+        purpose="client"
+        clientId={editingClient?.id}
         title="Select Client Logo from Media Library"
         onSelect={(media) => {
           setLogoUrl(media.fileUrl)
@@ -1343,6 +1709,7 @@ function AdminClientsPage() {
         isOpen={isPartnerLogoModalOpen}
         onClose={() => setIsPartnerLogoModalOpen(false)}
         acceptTypes="images"
+        purpose="site"
         title="Select Partner Agency Logo from Media Library"
         onSelect={(media) => {
           setPartnerLogoUrl(media.fileUrl)
@@ -1369,6 +1736,6 @@ function AdminClientsPage() {
         variant="danger"
         isLoading={isSubmitting}
       />
-    </div>
+    </AdminShell>
   )
 }

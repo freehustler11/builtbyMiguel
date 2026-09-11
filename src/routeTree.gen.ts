@@ -29,6 +29,7 @@ import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as WebsitesCareRouteImport } from './routes/websites-care'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminActivityRouteImport } from './routes/admin/activity'
 import { Route as AdminClientsRouteImport } from './routes/admin/clients'
 import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
@@ -149,6 +150,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminClientsRoute = AdminClientsRouteImport.update({
   id: '/clients',
   path: '/clients',
@@ -265,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
@@ -304,6 +311,7 @@ export interface FileRoutesByTo {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
@@ -346,6 +354,7 @@ export interface FileRoutesById {
   '/thank-you': typeof ThankYouRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
@@ -389,6 +398,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/activity'
     | '/admin/clients'
     | '/admin/media'
     | '/admin/posts'
@@ -428,6 +438,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/activity'
     | '/admin/clients'
     | '/admin/media'
     | '/admin/posts'
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/websites-care'
     | '/work'
+    | '/admin/activity'
     | '/admin/clients'
     | '/admin/media'
     | '/admin/posts'
@@ -658,6 +670,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/clients': {
       id: '/admin/clients'
       path: '/clients'
@@ -807,6 +826,7 @@ const AdminReportsIdRouteWithChildren = AdminReportsIdRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
   AdminClientsRoute: typeof AdminClientsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminPostsRoute: typeof AdminPostsRoute
@@ -823,6 +843,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
   AdminClientsRoute: AdminClientsRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminPostsRoute: AdminPostsRoute,

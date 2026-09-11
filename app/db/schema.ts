@@ -5,6 +5,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgTable,
   text,
   timestamp,
@@ -100,23 +101,6 @@ export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 
 /**
- * Media table for storing uploaded images, documents, and assets (isolated per partner)
- */
-export const media = pgTable('media', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  filename: text('filename').notNull(),
-  fileUrl: text('file_url').notNull(),
-  mimeType: text('mime_type').notNull(),
-  fileSize: integer('file_size').notNull(),
-  uploadedBy: uuid('uploaded_by').references(() => users.id, { onDelete: 'set null' }),
-  partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-export type Media = typeof media.$inferSelect
-export type NewMedia = typeof media.$inferInsert
-
-/**
  * Clients table for managing agency clients and their branding
  */
 export const clients = pgTable(
@@ -142,11 +126,41 @@ export const clients = pgTable(
   },
   (table) => [
     index('clients_lower_business_name_idx').on(sql`lower(${table.businessName})`),
+    index('clients_partner_id_idx').on(table.partnerId),
+    index('clients_deleted_at_idx').on(table.deletedAt),
   ]
 )
 
 export type Client = typeof clients.$inferSelect
 export type NewClient = typeof clients.$inferInsert
+
+/**
+ * Media table for storing uploaded images, documents, and assets (isolated per partner/client/purpose)
+ */
+export const media = pgTable(
+  'media',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    filename: text('filename').notNull(),
+    fileUrl: text('file_url').notNull(),
+    mimeType: text('mime_type').notNull(),
+    fileSize: integer('file_size').notNull(),
+    uploadedBy: uuid('uploaded_by').references(() => users.id, { onDelete: 'set null' }),
+    partnerId: uuid('partner_id').references(() => users.id, { onDelete: 'cascade' }),
+    clientId: uuid('client_id').references(() => clients.id, { onDelete: 'set null' }),
+    purpose: text('purpose').default('site').notNull(), // 'site' | 'client' | 'report'
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('media_partner_id_idx').on(table.partnerId),
+    index('media_client_id_idx').on(table.clientId),
+    index('media_created_at_idx').on(sql`${table.createdAt} desc`),
+    index('media_uploaded_by_idx').on(table.uploadedBy),
+  ]
+)
+
+export type Media = typeof media.$inferSelect
+export type NewMedia = typeof media.$inferInsert
 
 export interface ClientSnapshot {
   businessName: string
@@ -160,6 +174,21 @@ export interface ClientSnapshot {
   partnerName?: string | null
   partnerLogoUrl?: string | null
   partnerLogoBgColor?: string | null
+  dataSources?: Record<'gsc' | 'ga4' | 'gbp', 'connected' | 'no_access' | 'not_applicable'>
+}
+
+export interface LocationBreakdownItem {
+  locationId: string
+  name: string
+  address?: string | null
+  gbpPlaceId?: string | null
+  accessStatus: 'connected' | 'no_access' | 'not_applicable'
+  gbpCalls: number | null
+  gbpDirections: number | null
+  gbpWebsiteClicks: number | null
+  gbpViews: number | null
+  gbpRating: number | null
+  gbpReviewsCount: number | null
 }
 
 export interface DeliverablesSnapshot {
@@ -195,6 +224,7 @@ export interface DeliverablesSnapshot {
     year: number
     rank: number | null
   }>
+  locations?: LocationBreakdownItem[]
 }
 
 /**
@@ -474,6 +504,32 @@ export type Citation = typeof citations.$inferSelect
 export type NewCitation = typeof citations.$inferInsert
 
 /**
+ * Client data sources tracking table (GSC, GA4, GBP access status per client)
+ */
+export const clientDataSources = pgTable(
+  'client_data_sources',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').notNull().references(() => clients.id, { onDelete: 'restrict' }),
+    source: text('source', { enum: ['gsc', 'ga4', 'gbp'] }).notNull(),
+    status: text('status', { enum: ['connected', 'no_access', 'not_applicable'] })
+      .default('connected')
+      .notNull(),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('client_data_sources_client_source_unique_idx').on(table.clientId, table.source),
+    index('client_data_sources_client_id_idx').on(table.clientId),
+  ]
+)
+
+export type ClientDataSource = typeof clientDataSources.$inferSelect
+export type NewClientDataSource = typeof clientDataSources.$inferInsert
+
+
+/**
  * Monthly metrics table (living editable entry surface and source of MoM history)
  */
 export const monthlyMetrics = pgTable(
@@ -511,3 +567,58 @@ export const monthlyMetrics = pgTable(
 
 export type MonthlyMetric = typeof monthlyMetrics.$inferSelect
 export type NewMonthlyMetric = typeof monthlyMetrics.$inferInsert
+
+/**
+ * Client locations table (for businesses with multiple Google Business Profiles)
+ */
+export const clientLocations = pgTable(
+  'client_locations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id').notNull().references(() => clients.id, { onDelete: 'restrict' }),
+    name: text('name').notNull(),
+    gbpPlaceId: text('gbp_place_id'),
+    address: text('address'),
+    accessStatus: text('access_status', { enum: ['connected', 'no_access', 'not_applicable'] })
+      .default('connected')
+      .notNull(),
+    accessNotes: text('access_notes'),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('client_locations_client_id_idx').on(table.clientId),
+  ]
+)
+
+export type ClientLocation = typeof clientLocations.$inferSelect
+export type NewClientLocation = typeof clientLocations.$inferInsert
+
+/**
+ * Location-level monthly metrics table for Google Business Profiles
+ */
+export const locationMonthlyMetrics = pgTable(
+  'location_monthly_metrics',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    locationId: uuid('location_id').notNull().references(() => clientLocations.id, { onDelete: 'restrict' }),
+    month: integer('month').notNull(),
+    year: integer('year').notNull(),
+    gbpCalls: integer('gbp_calls'),
+    gbpDirections: integer('gbp_directions'),
+    gbpWebsiteClicks: integer('gbp_website_clicks'),
+    gbpReviewsCount: integer('gbp_reviews_count'),
+    gbpRating: doublePrecision('gbp_rating'),
+    gbpViews: integer('gbp_views'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('location_monthly_metrics_loc_month_year_idx').on(table.locationId, table.month, table.year),
+    index('location_monthly_metrics_loc_year_month_idx').on(table.locationId, table.year, table.month),
+  ]
+)
+
+export type LocationMonthlyMetric = typeof locationMonthlyMetrics.$inferSelect
+export type NewLocationMonthlyMetric = typeof locationMonthlyMetrics.$inferInsert

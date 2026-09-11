@@ -24,8 +24,8 @@ import {
   Layers,
   Building2,
 } from 'lucide-react'
+import { AdminShell } from '../../components/AdminShell'
 import { checkAuthServerFn, requireAdmin } from '../../lib/auth'
-import { AdminNav } from '../../components/AdminNav'
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { ToastContainer, type ToastMessage } from '../../components/Toast'
 import {
@@ -38,6 +38,8 @@ import type { Media } from '../../db/schema'
 
 interface MediaSearch {
   type?: 'all' | 'images' | 'documents'
+  purpose?: 'all' | 'site' | 'client' | 'report'
+  clientId?: string
   q?: string
   partnerId?: string
 }
@@ -45,8 +47,11 @@ interface MediaSearch {
 export const Route = createFileRoute('/admin/media')({
   validateSearch: (search: Record<string, unknown>): MediaSearch => {
     const type = search.type as MediaSearch['type']
+    const purpose = search.purpose as MediaSearch['purpose']
     return {
       type: ['all', 'images', 'documents'].includes(type || '') ? type : 'all',
+      purpose: ['all', 'site', 'client', 'report'].includes(purpose || '') ? purpose : 'all',
+      clientId: typeof search.clientId === 'string' ? search.clientId : undefined,
       q: typeof search.q === 'string' ? search.q : undefined,
       partnerId: typeof search.partnerId === 'string' ? search.partnerId : undefined,
     }
@@ -61,6 +66,8 @@ export const Route = createFileRoute('/admin/media')({
       getMediaServerFn({
         data: {
           type: search.type || 'all',
+          purpose: search.purpose || 'all',
+          clientId: search.clientId,
           q: search.q,
           partnerId: search.partnerId,
         },
@@ -71,6 +78,7 @@ export const Route = createFileRoute('/admin/media')({
       ...mediaData,
       auth: (context as any)?.auth || (await checkAuthServerFn()),
       partners: clientsData.partners || [],
+      clients: clientsData.clients || [],
     }
   },
   head: () => ({
@@ -116,8 +124,8 @@ function getFileIcon(mimeType: string) {
 function AdminMediaPage() {
   const router = useRouter()
   const navigate = Route.useNavigate()
-  const { type = 'all', q, partnerId } = Route.useSearch()
-  const { media: mediaItems, storageInfo, auth, partners } = Route.useLoaderData()
+  const { type = 'all', purpose = 'all', clientId, q, partnerId } = Route.useSearch()
+  const { media: mediaItems, storageInfo, auth, partners, clients = [] } = Route.useLoaderData()
 
   const isPartner = auth.role === 'partner'
   const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
@@ -127,9 +135,25 @@ function AdminMediaPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<string | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [showGuide, setShowGuide] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [showGuide, setShowGuide] = useState(() => {
+    try {
+      return localStorage.getItem('ui_guide_media') === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  const handleToggleGuide = () => {
+    const next = !showGuide
+    setShowGuide(next)
+    try {
+      localStorage.setItem('ui_guide_media', String(next))
+    } catch {
+      // ignore
+    }
+  }
 
   // Custom Delete Modal State
   const [itemToDelete, setItemToDelete] = useState<Media | null>(null)
@@ -164,6 +188,8 @@ function AdminMediaPage() {
       to: '.',
       search: {
         type,
+        purpose,
+        clientId,
         q: searchInput.trim() || undefined,
         partnerId,
       },
@@ -175,6 +201,34 @@ function AdminMediaPage() {
       to: '.',
       search: {
         type: newType,
+        purpose,
+        clientId,
+        q: searchInput.trim() || undefined,
+        partnerId,
+      },
+    })
+  }
+
+  const handlePurposeTab = (newPurpose: 'all' | 'site' | 'client' | 'report') => {
+    navigate({
+      to: '.',
+      search: {
+        type,
+        purpose: newPurpose,
+        clientId: newPurpose === 'client' ? clientId : undefined,
+        q: searchInput.trim() || undefined,
+        partnerId,
+      },
+    })
+  }
+
+  const handleClientFilter = (newClientId: string) => {
+    navigate({
+      to: '.',
+      search: {
+        type,
+        purpose,
+        clientId: newClientId === 'all' ? undefined : newClientId,
         q: searchInput.trim() || undefined,
         partnerId,
       },
@@ -186,8 +240,10 @@ function AdminMediaPage() {
       to: '.',
       search: {
         type,
+        purpose,
+        clientId,
         q: searchInput.trim() || undefined,
-        partnerId: newPartnerId === 'all' ? undefined : newPartnerId,
+        partnerId: newPartnerId === 'direct' ? undefined : newPartnerId,
       },
     })
   }
@@ -217,6 +273,8 @@ function AdminMediaPage() {
             mimeType: file.type || 'application/octet-stream',
             base64,
             partnerId: partnerId || null,
+            clientId: clientId || null,
+            purpose: purpose && purpose !== 'all' ? purpose : 'site',
           },
         })
         successful++
@@ -278,72 +336,72 @@ function AdminMediaPage() {
   const docCount = totalFiles - imageCount
 
   return (
-    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
-      {/* Soft Ambient Light Glow Matching Homepage */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-teal-100/40 dark:from-rose-500/15 dark:via-orange-500/10 dark:to-teal-500/15 blur-[130px] rounded-full pointer-events-none -z-10" />
+    <AdminShell
+      activeTab="media"
+      userRole={auth.role}
+      userEmail={auth.email}
+      userName={auth.name}
+      title={isPartner ? 'Partner media library' : 'Media library & file manager'}
+      description={
+        isPartner
+          ? 'Upload and manage image assets and documents for your agency and clients.'
+          : 'Upload, organize, and manage image assets, case study attachments, and documents for blog posts and site components.'
+      }
+      actions={
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] hover:bg-[var(--canvas)] border border-[var(--line)] transition cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw
+              className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[var(--accent)]' : ''}`}
+            />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
 
-      {/* Toast Notification Container */}
-      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload file</span>
+          </button>
+        </div>
+      }
+    >
+      <div className="space-y-3.5">
+        {/* Soft Ambient Light Glow Matching Homepage */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-teal-100/40 dark:from-rose-500/15 dark:via-orange-500/10 dark:to-teal-500/15 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* Navigation Header */}
-      <AdminNav
-        activeTab="media"
-        userRole={auth.role}
-        title={isPartner ? 'Partner Media Library' : 'Media Library & File Manager'}
-        description={
-          isPartner
-            ? 'Upload and manage image assets and documents for your agency and clients.'
-            : 'Upload, organize, and manage image assets, case study attachments, and documents for blog posts and site components.'
-        }
-        actions={
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition cursor-pointer disabled:opacity-50 shadow-sm"
-            >
-              <RefreshCw
-                className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-rose-500' : ''}`}
-              />
-              <span>Refresh</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-md transition active:scale-95 cursor-pointer disabled:opacity-50"
-            >
-              <Upload className="w-4 h-4 text-rose-400 dark:text-white" />
-              <span>Upload Assets</span>
-            </button>
-          </div>
-        }
-      />
+        {/* Toast Notification Container */}
+        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
       {/* Beginner's Guide Collapsible Card */}
-      <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md overflow-hidden shadow-xs">
+      <div className="rounded-[8px] border border-[var(--line)] bg-[var(--panel)] overflow-hidden shadow-2xs">
         <div
-          onClick={() => setShowGuide(!showGuide)}
-          className="p-5 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 dark:hover:bg-slate-900/40 transition"
+          onClick={handleToggleGuide}
+          className="p-3 flex items-center justify-between cursor-pointer hover:bg-[var(--canvas)] transition"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-[6px] bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+              <Sparkles className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h2 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
+              <h2 className="text-[13px] font-medium text-[var(--ink)]">
                 Beginner's Quick Guide · Managing Media & Post Assets
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-[var(--muted)]">
                 How to upload photos, grab permanent URLs, and use them inside articles.
               </p>
             </div>
           </div>
           <button
             type="button"
-            className="text-xs font-mono font-semibold text-rose-600 dark:text-rose-400 hover:underline"
+            className="text-[12px] font-medium text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
           >
             {showGuide ? 'Hide Guide' : 'Show Guide'}
           </button>
@@ -537,17 +595,84 @@ function AdminMediaPage() {
           {isSuperadmin && partners.length > 0 && (
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
               <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase">Agency:</span>
+              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase">Scope:</span>
               <select
-                value={partnerId || 'all'}
+                value={partnerId || 'direct'}
                 onChange={(e) => handlePartnerFilter(e.target.value)}
                 className="text-xs font-mono font-semibold bg-transparent text-slate-800 dark:text-white focus:outline-none cursor-pointer"
               >
-                <option value="all">All Files (Global)</option>
-                <option value="direct">Direct Agency Only</option>
+                <option value="direct">My Media (Direct)</option>
+                <option value="all">All Agencies (Global)</option>
                 {partners.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name || p.email}
+                    Agency: {p.name || p.email}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Purpose Filter Pills */}
+          <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => handlePurposeTab('all')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                purpose === 'all'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              All Usages
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePurposeTab('site')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                purpose === 'site'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Marketing / Site
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePurposeTab('client')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                purpose === 'client'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Client Logos & Assets
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePurposeTab('report')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                purpose === 'report'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Reports
+            </button>
+          </div>
+
+          {/* Client Filter Dropdown when viewing Client Assets or All */}
+          {clients.length > 0 && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+              <span className="text-[11px] font-mono font-bold text-slate-500 uppercase">Client:</span>
+              <select
+                value={clientId || 'all'}
+                onChange={(e) => handleClientFilter(e.target.value)}
+                className="text-xs font-mono font-semibold bg-transparent text-slate-800 dark:text-white focus:outline-none cursor-pointer max-w-[150px] truncate"
+              >
+                <option value="all">All Clients</option>
+                {clients.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.businessName || c.name}
                   </option>
                 ))}
               </select>
@@ -649,9 +774,26 @@ function AdminMediaPage() {
                       <span>{formatFileSize(item.fileSize)}</span>
                       <span>{formatDate(item.createdAt)}</span>
                     </div>
-                    {isSuperadmin && item.partnerId && (
-                      <div className="pt-1">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-900/60 text-[10px] font-mono text-blue-600 dark:text-blue-400">
+                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                      {/* Purpose Tag */}
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 uppercase">
+                        {item.purpose || 'site'}
+                      </span>
+
+                      {/* Client Tag */}
+                      {item.clientId && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60">
+                          <span>
+                            {clients.find((c) => c.id === item.clientId)?.businessName ||
+                              clients.find((c) => c.id === item.clientId)?.name ||
+                              'Client Asset'}
+                          </span>
+                        </span>
+                      )}
+
+                      {/* Partner Tag for Superadmin */}
+                      {isSuperadmin && item.partnerId && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-900/60 text-[10px] font-mono text-blue-600 dark:text-blue-400">
                           <Building2 className="w-2.5 h-2.5" />
                           <span>
                             {partners.find((p) => p.id === item.partnerId)?.name ||
@@ -659,8 +801,8 @@ function AdminMediaPage() {
                               'Partner File'}
                           </span>
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
 
                   {/* Action Bar */}
@@ -712,6 +854,7 @@ function AdminMediaPage() {
         onConfirm={confirmDelete}
         onClose={() => setItemToDelete(null)}
       />
-    </div>
+      </div>
+    </AdminShell>
   )
 }

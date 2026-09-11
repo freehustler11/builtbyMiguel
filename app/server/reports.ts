@@ -7,6 +7,7 @@ import {
   reports,
   users,
   monthlyMetrics,
+  clientDataSources,
   type Report,
   type Client,
   type ClientSnapshot,
@@ -17,8 +18,30 @@ import { logActivity } from './activity-logger'
 import {
   parseReportPeriod,
   parseDecimalValue,
+  parseNullableInt,
+  parseNullableDecimal,
   collectDeliverablesSnapshot,
 } from './reports-helpers'
+
+async function getClientDataSourceMap(clientId: string): Promise<Record<'gsc' | 'ga4' | 'gbp', 'connected' | 'no_access' | 'not_applicable'>> {
+  const rows = await db
+    .select()
+    .from(clientDataSources)
+    .where(eq(clientDataSources.clientId, clientId))
+
+  const map: Record<'gsc' | 'ga4' | 'gbp', 'connected' | 'no_access' | 'not_applicable'> = {
+    gsc: 'connected',
+    ga4: 'connected',
+    gbp: 'connected',
+  }
+  for (const row of rows) {
+    if (row.source === 'gsc' || row.source === 'ga4' || row.source === 'gbp') {
+      map[row.source] = row.status as any
+    }
+  }
+  return map
+}
+
 
 export interface QueryItem {
   query: string
@@ -67,7 +90,7 @@ export interface ReportWithClient extends Report {
  * Server Function: Get all reports with associated client branding info (Admin only)
  */
 export const getReportsServerFn = createServerFn({ method: 'GET' })
-  .validator((data?: { clientId?: string; partnerId?: string }) => {
+  .validator((data?: { clientId?: string; partnerId?: string; sort?: string; order?: 'asc' | 'desc' }) => {
     return data || {}
   })
   .handler(async ({ data }) => {
@@ -210,6 +233,39 @@ export const getReportsServerFn = createServerFn({ method: 'GET' })
         clientPartnerLogoUrl: snap?.partnerLogoUrl !== undefined ? snap.partnerLogoUrl : r.clientPartnerLogoUrl,
       }
     })
+
+    if (data?.sort) {
+      const sortKey = data.sort
+      const isDesc = data.order === 'desc'
+      mapped.sort((a, b) => {
+        let comp = 0
+        if (sortKey === 'client') {
+          comp = (a.clientBusinessName || a.clientName || '').localeCompare(b.clientBusinessName || b.clientName || '')
+        } else if (sortKey === 'period') {
+          const timeA = a.periodStart ? new Date(a.periodStart as any).getTime() : 0
+          const timeB = b.periodStart ? new Date(b.periodStart as any).getTime() : 0
+          comp = timeA - timeB
+        } else if (sortKey === 'version') {
+          comp = (Number(a.version) || 1) - (Number(b.version) || 1)
+        } else if (sortKey === 'clicks' || sortKey === 'gscClicks') {
+          comp = (Number(a.gscClicks) || 0) - (Number(b.gscClicks) || 0)
+        } else if (sortKey === 'sessions' || sortKey === 'gaSessions') {
+          comp = (Number(a.gaSessions) || 0) - (Number(b.gaSessions) || 0)
+        } else if (sortKey === 'calls' || sortKey === 'gbpCalls') {
+          comp = (Number(a.gbpCalls) || 0) - (Number(b.gbpCalls) || 0)
+        } else if (sortKey === 'created' || sortKey === 'createdAt') {
+          const timeA = a.createdAt ? new Date(a.createdAt as any).getTime() : 0
+          const timeB = b.createdAt ? new Date(b.createdAt as any).getTime() : 0
+          comp = timeA - timeB
+        } else if (sortKey === 'status' || sortKey === 'share') {
+          const statusA = a.shareRevokedAt ? 'revoked' : a.shareToken ? 'active' : 'draft'
+          const statusB = b.shareRevokedAt ? 'revoked' : b.shareToken ? 'active' : 'draft'
+          comp = statusA.localeCompare(statusB)
+        }
+        return isDesc ? -comp : comp
+      })
+    }
+
     return { reports: mapped as (ReportWithClient & { versionCount: number })[] }
   })
 
@@ -431,10 +487,13 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
         )
       )
 
+    const dataSources = await getClientDataSourceMap(targetClient.id)
+
     if (!currentMetrics) {
       return {
         ready: false,
         missing: 'monthly_metrics' as const,
+        missingFields: [] as string[],
         month,
         year,
         clientName: targetClient.businessName || targetClient.name,
@@ -443,6 +502,51 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
         metrics: null,
         prevMetrics: null,
         deliverables: null,
+        dataSources,
+      }
+    }
+
+    // Check required metric fields on connected data sources
+    const missingFields: string[] = []
+    if (dataSources.gsc === 'connected') {
+      if (currentMetrics.gscClicks === null || currentMetrics.gscClicks === undefined) {
+        missingFields.push('GSC Clicks')
+      }
+      if (currentMetrics.gscImpressions === null || currentMetrics.gscImpressions === undefined) {
+        missingFields.push('GSC Impressions')
+      }
+    }
+    if (dataSources.ga4 === 'connected') {
+      if (currentMetrics.gaUsers === null || currentMetrics.gaUsers === undefined) {
+        missingFields.push('GA4 Total Users')
+      }
+      if (currentMetrics.gaSessions === null || currentMetrics.gaSessions === undefined) {
+        missingFields.push('GA4 Sessions')
+      }
+    }
+    if (dataSources.gbp === 'connected') {
+      if (currentMetrics.gbpViews === null || currentMetrics.gbpViews === undefined) {
+        missingFields.push('GBP Views')
+      }
+      if (currentMetrics.gbpCalls === null || currentMetrics.gbpCalls === undefined) {
+        missingFields.push('GBP Calls')
+      }
+    }
+
+    if (missingFields.length > 0) {
+      return {
+        ready: false,
+        missing: 'metrics_fields' as const,
+        missingFields,
+        month,
+        year,
+        clientName: targetClient.businessName || targetClient.name,
+        message: `Monthly metrics for ${data.reportMonth} are incomplete for ${targetClient.businessName || targetClient.name}. The following required fields are missing for connected data sources: ${missingFields.join(', ')}. Please update monthly metrics or change data source access before generating a report.`,
+        metricsFormUrl: `/admin/workspace?tab=metrics&client=${targetClient.id}`,
+        metrics: currentMetrics,
+        prevMetrics: prevMetrics || null,
+        deliverables: null,
+        dataSources,
       }
     }
 
@@ -452,6 +556,7 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
     return {
       ready: true,
       missing: null,
+      missingFields: [],
       month,
       year,
       clientName: targetClient.businessName || targetClient.name,
@@ -460,6 +565,7 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
       metrics: currentMetrics,
       prevMetrics: prevMetrics || null,
       deliverables,
+      dataSources,
     }
   })
 
@@ -472,37 +578,37 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       clientId: string
       title: string
       reportMonth: string
-      previousReportId?: string
-      gbpCalls?: number
-      gbpDirections?: number
-      gbpViews?: number
-      gbpWebsiteClicks?: number
-      prevGbpCalls?: number
-      prevGbpDirections?: number
-      prevGbpViews?: number
-      prevGbpWebsiteClicks?: number
-      gbpRating?: number
-      gbpReviewCount?: number
-      gbpReviewsCount?: number
-      prevGbpReviewsCount?: number
-      gscClicks?: number
-      gscImpressions?: number
-      gscCtr?: number | string
-      gscPosition?: number | string
-      prevGscClicks?: number
-      prevGscImpressions?: number
-      prevGscCtr?: number | string
-      prevGscPosition?: number | string
-      gaUsers?: number
-      gaNewUsers?: number
-      gaEngagementRate?: number | string
-      gaSessions?: number
-      gaViews?: number
-      prevGaUsers?: number
-      prevGaNewUsers?: number
-      prevGaEngagementRate?: number | string
-      prevGaSessions?: number
-      prevGaViews?: number
+      previousReportId?: string | null
+      gbpCalls?: number | string | null
+      gbpDirections?: number | string | null
+      gbpViews?: number | string | null
+      gbpWebsiteClicks?: number | string | null
+      prevGbpCalls?: number | string | null
+      prevGbpDirections?: number | string | null
+      prevGbpViews?: number | string | null
+      prevGbpWebsiteClicks?: number | string | null
+      gbpRating?: number | string | null
+      gbpReviewCount?: number | string | null
+      gbpReviewsCount?: number | string | null
+      prevGbpReviewsCount?: number | string | null
+      gscClicks?: number | string | null
+      gscImpressions?: number | string | null
+      gscCtr?: number | string | null
+      gscPosition?: number | string | null
+      prevGscClicks?: number | string | null
+      prevGscImpressions?: number | string | null
+      prevGscCtr?: number | string | null
+      prevGscPosition?: number | string | null
+      gaUsers?: number | string | null
+      gaNewUsers?: number | string | null
+      gaEngagementRate?: number | string | null
+      gaSessions?: number | string | null
+      gaViews?: number | string | null
+      prevGaUsers?: number | string | null
+      prevGaNewUsers?: number | string | null
+      prevGaEngagementRate?: number | string | null
+      prevGaSessions?: number | string | null
+      prevGaViews?: number | string | null
       displayOptions?: DisplayOptions
       topQueries?: QueryItem[]
       topPages?: PageItem[]
@@ -556,6 +662,41 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       )
     }
 
+    const dataSources = await getClientDataSourceMap(targetClient.id)
+
+    // Validate required fields for connected data sources
+    const missingFields: string[] = []
+    if (dataSources.gsc === 'connected') {
+      if (currentMetrics.gscClicks === null || currentMetrics.gscClicks === undefined) {
+        missingFields.push('GSC Clicks')
+      }
+      if (currentMetrics.gscImpressions === null || currentMetrics.gscImpressions === undefined) {
+        missingFields.push('GSC Impressions')
+      }
+    }
+    if (dataSources.ga4 === 'connected') {
+      if (currentMetrics.gaUsers === null || currentMetrics.gaUsers === undefined) {
+        missingFields.push('GA4 Total Users')
+      }
+      if (currentMetrics.gaSessions === null || currentMetrics.gaSessions === undefined) {
+        missingFields.push('GA4 Sessions')
+      }
+    }
+    if (dataSources.gbp === 'connected') {
+      if (currentMetrics.gbpViews === null || currentMetrics.gbpViews === undefined) {
+        missingFields.push('GBP Views')
+      }
+      if (currentMetrics.gbpCalls === null || currentMetrics.gbpCalls === undefined) {
+        missingFields.push('GBP Calls')
+      }
+    }
+
+    if (missingFields.length > 0) {
+      throw new Error(
+        `Cannot generate report: The following required fields are missing for connected data sources: ${missingFields.join(', ')}. Please complete monthly metrics or adjust client data sources.`
+      )
+    }
+
     // Determine version: Find existing reports for this client and periodStart
     const existingReportsForPeriod = await db
       .select({ version: reports.version })
@@ -580,9 +721,14 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       partnerName: targetClient.partnerName ?? null,
       partnerLogoUrl: targetClient.partnerLogoUrl ?? null,
       partnerLogoBgColor: targetClient.partnerLogoBgColor ?? '#ffffff',
+      dataSources,
     }
 
-    const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
+    const gbpConnected = dataSources.gbp === 'connected'
+    const gscConnected = dataSources.gsc === 'connected'
+    const ga4Connected = dataSources.ga4 === 'connected'
+
+    const reviewsCount = gbpConnected ? parseNullableInt(data.gbpReviewsCount ?? data.gbpReviewCount) : null
 
     const [created] = await db
       .insert(reports)
@@ -597,44 +743,45 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
         version: nextVersion,
         previousReportId: data.previousReportId || null,
         // GBP Current
-        gbpCalls: Number(data.gbpCalls) || 0,
-        gbpDirections: Number(data.gbpDirections) || 0,
-        gbpViews: Number(data.gbpViews) || 0,
-        gbpWebsiteClicks: Number(data.gbpWebsiteClicks ?? data.gbpViews) || 0,
+        gbpCalls: gbpConnected ? parseNullableInt(data.gbpCalls) : null,
+        gbpDirections: gbpConnected ? parseNullableInt(data.gbpDirections) : null,
+        gbpViews: gbpConnected ? parseNullableInt(data.gbpViews) : null,
+        gbpWebsiteClicks: gbpConnected ? parseNullableInt(data.gbpWebsiteClicks ?? data.gbpViews) : null,
         // GBP Previous
-        prevGbpCalls: Number(data.prevGbpCalls) || 0,
-        prevGbpDirections: Number(data.prevGbpDirections) || 0,
-        prevGbpViews: Number(data.prevGbpViews) || 0,
-        prevGbpWebsiteClicks: Number(data.prevGbpWebsiteClicks ?? data.prevGbpViews) || 0,
+        prevGbpCalls: gbpConnected ? parseNullableInt(data.prevGbpCalls) : null,
+        prevGbpDirections: gbpConnected ? parseNullableInt(data.prevGbpDirections) : null,
+        prevGbpViews: gbpConnected ? parseNullableInt(data.prevGbpViews) : null,
+        prevGbpWebsiteClicks: gbpConnected ? parseNullableInt(data.prevGbpWebsiteClicks ?? data.prevGbpViews) : null,
         // GBP Reputation
-        gbpRating: parseDecimalValue(data.gbpRating || 5.0),
+        gbpRating: gbpConnected ? parseNullableDecimal(data.gbpRating) : null,
         gbpReviewCount: reviewsCount,
         gbpReviewsCount: reviewsCount,
-        prevGbpReviewsCount: Number(data.prevGbpReviewsCount) || 0,
+        prevGbpReviewsCount: gbpConnected ? parseNullableInt(data.prevGbpReviewsCount) : null,
         // GSC Current
-        gscClicks: Number(data.gscClicks) || 0,
-        gscImpressions: Number(data.gscImpressions) || 0,
-        gscCtr: parseDecimalValue(data.gscCtr),
-        gscPosition: parseDecimalValue(data.gscPosition),
+        gscClicks: gscConnected ? parseNullableInt(data.gscClicks) : null,
+        gscImpressions: gscConnected ? parseNullableInt(data.gscImpressions) : null,
+        gscCtr: gscConnected ? parseNullableDecimal(data.gscCtr) : null,
+        gscPosition: gscConnected ? parseNullableDecimal(data.gscPosition) : null,
         // GSC Previous
-        prevGscClicks: Number(data.prevGscClicks) || 0,
-        prevGscImpressions: Number(data.prevGscImpressions) || 0,
-        prevGscCtr: parseDecimalValue(data.prevGscCtr),
-        prevGscPosition: parseDecimalValue(data.prevGscPosition),
+        prevGscClicks: gscConnected ? parseNullableInt(data.prevGscClicks) : null,
+        prevGscImpressions: gscConnected ? parseNullableInt(data.prevGscImpressions) : null,
+        prevGscCtr: gscConnected ? parseNullableDecimal(data.prevGscCtr) : null,
+        prevGscPosition: gscConnected ? parseNullableDecimal(data.prevGscPosition) : null,
         // GA4 Current
-        gaUsers: Number(data.gaUsers) || 0,
-        gaNewUsers: Number(data.gaNewUsers) || 0,
-        gaEngagementRate: parseDecimalValue(data.gaEngagementRate),
-        gaSessions: Number(data.gaSessions) || 0,
-        gaViews: Number(data.gaViews) || 0,
+        gaUsers: ga4Connected ? parseNullableInt(data.gaUsers) : null,
+        gaNewUsers: ga4Connected ? parseNullableInt(data.gaNewUsers) : null,
+        gaEngagementRate: ga4Connected ? parseNullableDecimal(data.gaEngagementRate) : null,
+        gaSessions: ga4Connected ? parseNullableInt(data.gaSessions) : null,
+        gaViews: ga4Connected ? parseNullableInt(data.gaViews) : null,
         // GA4 Previous
-        prevGaUsers: Number(data.prevGaUsers) || 0,
-        prevGaNewUsers: Number(data.prevGaNewUsers) || 0,
-        prevGaEngagementRate: parseDecimalValue(data.prevGaEngagementRate),
-        prevGaSessions: Number(data.prevGaSessions) || 0,
-        prevGaViews: Number(data.prevGaViews) || 0,
+        prevGaUsers: ga4Connected ? parseNullableInt(data.prevGaUsers) : null,
+        prevGaNewUsers: ga4Connected ? parseNullableInt(data.prevGaNewUsers) : null,
+        prevGaEngagementRate: ga4Connected ? parseNullableDecimal(data.prevGaEngagementRate) : null,
+        prevGaSessions: ga4Connected ? parseNullableInt(data.prevGaSessions) : null,
+        prevGaViews: ga4Connected ? parseNullableInt(data.prevGaViews) : null,
         // Display Options
         displayOptions: data.displayOptions || {
+
           show_agency_info: false,
           show_contact_person: true,
           show_date_generated: false,
@@ -740,8 +887,10 @@ export const regenerateReportServerFn = createServerFn({ method: 'POST' })
 
     const nextVersion = (allVersions[0]?.version || existing.version || 1) + 1
 
-    // Collect fresh deliverables snapshot
-    const deliverablesSnapshot = await collectDeliverablesSnapshot(existing.clientId, periodStart, nextMonthStart)
+    const dataSources = await getClientDataSourceMap(existing.clientId)
+    const gbpConnected = dataSources.gbp === 'connected'
+    const gscConnected = dataSources.gsc === 'connected'
+    const ga4Connected = dataSources.ga4 === 'connected'
 
     // Update client branding snapshot
     const clientSnapshot: ClientSnapshot = {
@@ -756,7 +905,13 @@ export const regenerateReportServerFn = createServerFn({ method: 'POST' })
       partnerName: targetClient.partnerName ?? null,
       partnerLogoUrl: targetClient.partnerLogoUrl ?? null,
       partnerLogoBgColor: targetClient.partnerLogoBgColor ?? '#ffffff',
+      dataSources,
     }
+
+    const reviewsCount = gbpConnected ? (currentMetrics.gbpReviewsCount ?? existing.gbpReviewsCount ?? null) : null
+
+    // Collect and freeze deliverables snapshot for regeneration period
+    const deliverablesSnapshot = await collectDeliverablesSnapshot(targetClient.id, periodStart, nextMonthStart)
 
     // Insert new version
     const [newReport] = await db
@@ -771,43 +926,43 @@ export const regenerateReportServerFn = createServerFn({ method: 'POST' })
         deliverablesSnapshot,
         version: nextVersion,
         previousReportId: existing.previousReportId,
-        // GBP Current (from monthly_metrics or fallback to existing)
-        gbpCalls: currentMetrics.gbpCalls ?? existing.gbpCalls ?? 0,
-        gbpDirections: currentMetrics.gbpDirections ?? existing.gbpDirections ?? 0,
-        gbpViews: currentMetrics.gbpViews ?? existing.gbpViews ?? 0,
-        gbpWebsiteClicks: currentMetrics.gbpWebsiteClicks ?? existing.gbpWebsiteClicks ?? 0,
+        // GBP Current
+        gbpCalls: gbpConnected ? (currentMetrics.gbpCalls ?? existing.gbpCalls ?? null) : null,
+        gbpDirections: gbpConnected ? (currentMetrics.gbpDirections ?? existing.gbpDirections ?? null) : null,
+        gbpViews: gbpConnected ? (currentMetrics.gbpViews ?? existing.gbpViews ?? null) : null,
+        gbpWebsiteClicks: gbpConnected ? (currentMetrics.gbpWebsiteClicks ?? existing.gbpWebsiteClicks ?? null) : null,
         // GBP Previous
-        prevGbpCalls: prevMetrics?.gbpCalls ?? existing.prevGbpCalls ?? 0,
-        prevGbpDirections: prevMetrics?.gbpDirections ?? existing.prevGbpDirections ?? 0,
-        prevGbpViews: prevMetrics?.gbpViews ?? existing.prevGbpViews ?? 0,
-        prevGbpWebsiteClicks: prevMetrics?.gbpWebsiteClicks ?? existing.prevGbpWebsiteClicks ?? 0,
+        prevGbpCalls: gbpConnected ? (prevMetrics?.gbpCalls ?? existing.prevGbpCalls ?? null) : null,
+        prevGbpDirections: gbpConnected ? (prevMetrics?.gbpDirections ?? existing.prevGbpDirections ?? null) : null,
+        prevGbpViews: gbpConnected ? (prevMetrics?.gbpViews ?? existing.prevGbpViews ?? null) : null,
+        prevGbpWebsiteClicks: gbpConnected ? (prevMetrics?.gbpWebsiteClicks ?? existing.prevGbpWebsiteClicks ?? null) : null,
         // Reputation
-        gbpRating: currentMetrics.gbpRating ?? existing.gbpRating ?? 5.0,
-        gbpReviewCount: currentMetrics.gbpReviewsCount ?? existing.gbpReviewCount ?? 0,
-        gbpReviewsCount: currentMetrics.gbpReviewsCount ?? existing.gbpReviewsCount ?? 0,
-        prevGbpReviewsCount: prevMetrics?.gbpReviewsCount ?? existing.prevGbpReviewsCount ?? 0,
+        gbpRating: gbpConnected ? (currentMetrics.gbpRating ?? existing.gbpRating ?? null) : null,
+        gbpReviewCount: reviewsCount,
+        gbpReviewsCount: reviewsCount,
+        prevGbpReviewsCount: gbpConnected ? (prevMetrics?.gbpReviewsCount ?? existing.prevGbpReviewsCount ?? null) : null,
         // GSC Current
-        gscClicks: currentMetrics.gscClicks ?? existing.gscClicks ?? 0,
-        gscImpressions: currentMetrics.gscImpressions ?? existing.gscImpressions ?? 0,
-        gscCtr: currentMetrics.gscCtr ?? existing.gscCtr ?? 0,
-        gscPosition: currentMetrics.gscPosition ?? existing.gscPosition ?? 0,
+        gscClicks: gscConnected ? (currentMetrics.gscClicks ?? existing.gscClicks ?? null) : null,
+        gscImpressions: gscConnected ? (currentMetrics.gscImpressions ?? existing.gscImpressions ?? null) : null,
+        gscCtr: gscConnected ? (currentMetrics.gscCtr ?? existing.gscCtr ?? null) : null,
+        gscPosition: gscConnected ? (currentMetrics.gscPosition ?? existing.gscPosition ?? null) : null,
         // GSC Previous
-        prevGscClicks: prevMetrics?.gscClicks ?? existing.prevGscClicks ?? 0,
-        prevGscImpressions: prevMetrics?.gscImpressions ?? existing.prevGscImpressions ?? 0,
-        prevGscCtr: prevMetrics?.gscCtr ?? existing.prevGscCtr ?? 0,
-        prevGscPosition: prevMetrics?.gscPosition ?? existing.prevGscPosition ?? 0,
+        prevGscClicks: gscConnected ? (prevMetrics?.gscClicks ?? existing.prevGscClicks ?? null) : null,
+        prevGscImpressions: gscConnected ? (prevMetrics?.gscImpressions ?? existing.prevGscImpressions ?? null) : null,
+        prevGscCtr: gscConnected ? (prevMetrics?.gscCtr ?? existing.prevGscCtr ?? null) : null,
+        prevGscPosition: gscConnected ? (prevMetrics?.gscPosition ?? existing.prevGscPosition ?? null) : null,
         // GA4 Current
-        gaUsers: currentMetrics.gaUsers ?? existing.gaUsers ?? 0,
-        gaNewUsers: currentMetrics.gaNewUsers ?? existing.gaNewUsers ?? 0,
-        gaEngagementRate: currentMetrics.gaEngagementRate ?? existing.gaEngagementRate ?? 0,
-        gaSessions: currentMetrics.gaSessions ?? existing.gaSessions ?? 0,
-        gaViews: currentMetrics.gaViews ?? existing.gaViews ?? 0,
+        gaUsers: ga4Connected ? (currentMetrics.gaUsers ?? existing.gaUsers ?? null) : null,
+        gaNewUsers: ga4Connected ? (currentMetrics.gaNewUsers ?? existing.gaNewUsers ?? null) : null,
+        gaEngagementRate: ga4Connected ? (currentMetrics.gaEngagementRate ?? existing.gaEngagementRate ?? null) : null,
+        gaSessions: ga4Connected ? (currentMetrics.gaSessions ?? existing.gaSessions ?? null) : null,
+        gaViews: ga4Connected ? (currentMetrics.gaViews ?? existing.gaViews ?? null) : null,
         // GA4 Previous
-        prevGaUsers: prevMetrics?.gaUsers ?? existing.prevGaUsers ?? 0,
-        prevGaNewUsers: prevMetrics?.gaNewUsers ?? existing.prevGaNewUsers ?? 0,
-        prevGaEngagementRate: prevMetrics?.gaEngagementRate ?? existing.prevGaEngagementRate ?? 0,
-        prevGaSessions: prevMetrics?.gaSessions ?? existing.prevGaSessions ?? 0,
-        prevGaViews: prevMetrics?.gaViews ?? existing.prevGaViews ?? 0,
+        prevGaUsers: ga4Connected ? (prevMetrics?.gaUsers ?? existing.prevGaUsers ?? null) : null,
+        prevGaNewUsers: ga4Connected ? (prevMetrics?.gaNewUsers ?? existing.prevGaNewUsers ?? null) : null,
+        prevGaEngagementRate: ga4Connected ? (prevMetrics?.gaEngagementRate ?? existing.prevGaEngagementRate ?? null) : null,
+        prevGaSessions: ga4Connected ? (prevMetrics?.gaSessions ?? existing.prevGaSessions ?? null) : null,
+        prevGaViews: ga4Connected ? (prevMetrics?.gaViews ?? existing.prevGaViews ?? null) : null,
         // Retain display options, deep tables & narrative
         displayOptions: existing.displayOptions,
         topQueries: existing.topQueries,
@@ -848,37 +1003,37 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       clientId: string
       title: string
       reportMonth: string
-      previousReportId?: string
-      gbpCalls?: number
-      gbpDirections?: number
-      gbpViews?: number
-      gbpWebsiteClicks?: number
-      prevGbpCalls?: number
-      prevGbpDirections?: number
-      prevGbpViews?: number
-      prevGbpWebsiteClicks?: number
-      gbpRating?: number
-      gbpReviewCount?: number
-      gbpReviewsCount?: number
-      prevGbpReviewsCount?: number
-      gscClicks?: number
-      gscImpressions?: number
-      gscCtr?: number | string
-      gscPosition?: number | string
-      prevGscClicks?: number
-      prevGscImpressions?: number
-      prevGscCtr?: number | string
-      prevGscPosition?: number | string
-      gaUsers?: number
-      gaNewUsers?: number
-      gaEngagementRate?: number | string
-      gaSessions?: number
-      gaViews?: number
-      prevGaUsers?: number
-      prevGaNewUsers?: number
-      prevGaEngagementRate?: number | string
-      prevGaSessions?: number
-      prevGaViews?: number
+      previousReportId?: string | null
+      gbpCalls?: number | string | null
+      gbpDirections?: number | string | null
+      gbpViews?: number | string | null
+      gbpWebsiteClicks?: number | string | null
+      prevGbpCalls?: number | string | null
+      prevGbpDirections?: number | string | null
+      prevGbpViews?: number | string | null
+      prevGbpWebsiteClicks?: number | string | null
+      gbpRating?: number | string | null
+      gbpReviewCount?: number | string | null
+      gbpReviewsCount?: number | string | null
+      prevGbpReviewsCount?: number | string | null
+      gscClicks?: number | string | null
+      gscImpressions?: number | string | null
+      gscCtr?: number | string | null
+      gscPosition?: number | string | null
+      prevGscClicks?: number | string | null
+      prevGscImpressions?: number | string | null
+      prevGscCtr?: number | string | null
+      prevGscPosition?: number | string | null
+      gaUsers?: number | string | null
+      gaNewUsers?: number | string | null
+      gaEngagementRate?: number | string | null
+      gaSessions?: number | string | null
+      gaViews?: number | string | null
+      prevGaUsers?: number | string | null
+      prevGaNewUsers?: number | string | null
+      prevGaEngagementRate?: number | string | null
+      prevGaSessions?: number | string | null
+      prevGaViews?: number | string | null
       displayOptions?: DisplayOptions
       topQueries?: QueryItem[]
       topPages?: PageItem[]
@@ -924,6 +1079,11 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       .from(clients)
       .where(and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt)))
 
+    const dataSources = await getClientDataSourceMap(data.clientId.trim())
+    const gbpConnected = dataSources.gbp === 'connected'
+    const gscConnected = dataSources.gsc === 'connected'
+    const ga4Connected = dataSources.ga4 === 'connected'
+
     const clientSnapshot: ClientSnapshot | undefined = clientRow
       ? {
           businessName: clientRow.businessName || clientRow.name,
@@ -937,10 +1097,11 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
           partnerName: clientRow.partnerName || null,
           partnerLogoUrl: clientRow.partnerLogoUrl || null,
           partnerLogoBgColor: clientRow.partnerLogoBgColor || '#ffffff',
+          dataSources,
         }
       : undefined
 
-    const reviewsCount = Number(data.gbpReviewsCount ?? data.gbpReviewCount) || 0
+    const reviewsCount = gbpConnected ? parseNullableInt(data.gbpReviewsCount ?? data.gbpReviewCount) : null
 
     const updatePayload: Record<string, any> = {
       clientId: data.clientId.trim(),
@@ -951,42 +1112,42 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       ...(clientSnapshot ? { clientSnapshot } : {}),
       previousReportId: data.previousReportId || null,
       // GBP Current
-      gbpCalls: Number(data.gbpCalls) || 0,
-      gbpDirections: Number(data.gbpDirections) || 0,
-      gbpViews: Number(data.gbpViews) || 0,
-      gbpWebsiteClicks: Number(data.gbpWebsiteClicks ?? data.gbpViews) || 0,
+      gbpCalls: gbpConnected ? parseNullableInt(data.gbpCalls) : null,
+      gbpDirections: gbpConnected ? parseNullableInt(data.gbpDirections) : null,
+      gbpViews: gbpConnected ? parseNullableInt(data.gbpViews) : null,
+      gbpWebsiteClicks: gbpConnected ? parseNullableInt(data.gbpWebsiteClicks ?? data.gbpViews) : null,
       // GBP Previous
-      prevGbpCalls: Number(data.prevGbpCalls) || 0,
-      prevGbpDirections: Number(data.prevGbpDirections) || 0,
-      prevGbpViews: Number(data.prevGbpViews) || 0,
-      prevGbpWebsiteClicks: Number(data.prevGbpWebsiteClicks ?? data.prevGbpViews) || 0,
+      prevGbpCalls: gbpConnected ? parseNullableInt(data.prevGbpCalls) : null,
+      prevGbpDirections: gbpConnected ? parseNullableInt(data.prevGbpDirections) : null,
+      prevGbpViews: gbpConnected ? parseNullableInt(data.prevGbpViews) : null,
+      prevGbpWebsiteClicks: gbpConnected ? parseNullableInt(data.prevGbpWebsiteClicks ?? data.prevGbpViews) : null,
       // GBP Reputation
-      gbpRating: parseDecimalValue(data.gbpRating || 5.0),
+      gbpRating: gbpConnected ? parseNullableDecimal(data.gbpRating) : null,
       gbpReviewCount: reviewsCount,
       gbpReviewsCount: reviewsCount,
-      prevGbpReviewsCount: Number(data.prevGbpReviewsCount) || 0,
+      prevGbpReviewsCount: gbpConnected ? parseNullableInt(data.prevGbpReviewsCount) : null,
       // GSC Current
-      gscClicks: Number(data.gscClicks) || 0,
-      gscImpressions: Number(data.gscImpressions) || 0,
-      gscCtr: parseDecimalValue(data.gscCtr),
-      gscPosition: parseDecimalValue(data.gscPosition),
+      gscClicks: gscConnected ? parseNullableInt(data.gscClicks) : null,
+      gscImpressions: gscConnected ? parseNullableInt(data.gscImpressions) : null,
+      gscCtr: gscConnected ? parseNullableDecimal(data.gscCtr) : null,
+      gscPosition: gscConnected ? parseNullableDecimal(data.gscPosition) : null,
       // GSC Previous
-      prevGscClicks: Number(data.prevGscClicks) || 0,
-      prevGscImpressions: Number(data.prevGscImpressions) || 0,
-      prevGscCtr: parseDecimalValue(data.prevGscCtr),
-      prevGscPosition: parseDecimalValue(data.prevGscPosition),
+      prevGscClicks: gscConnected ? parseNullableInt(data.prevGscClicks) : null,
+      prevGscImpressions: gscConnected ? parseNullableInt(data.prevGscImpressions) : null,
+      prevGscCtr: gscConnected ? parseNullableDecimal(data.prevGscCtr) : null,
+      prevGscPosition: gscConnected ? parseNullableDecimal(data.prevGscPosition) : null,
       // GA4 Current
-      gaUsers: Number(data.gaUsers) || 0,
-      gaNewUsers: Number(data.gaNewUsers) || 0,
-      gaEngagementRate: parseDecimalValue(data.gaEngagementRate),
-      gaSessions: Number(data.gaSessions) || 0,
-      gaViews: Number(data.gaViews) || 0,
+      gaUsers: ga4Connected ? parseNullableInt(data.gaUsers) : null,
+      gaNewUsers: ga4Connected ? parseNullableInt(data.gaNewUsers) : null,
+      gaEngagementRate: ga4Connected ? parseNullableDecimal(data.gaEngagementRate) : null,
+      gaSessions: ga4Connected ? parseNullableInt(data.gaSessions) : null,
+      gaViews: ga4Connected ? parseNullableInt(data.gaViews) : null,
       // GA4 Previous
-      prevGaUsers: Number(data.prevGaUsers) || 0,
-      prevGaNewUsers: Number(data.prevGaNewUsers) || 0,
-      prevGaEngagementRate: parseDecimalValue(data.prevGaEngagementRate),
-      prevGaSessions: Number(data.prevGaSessions) || 0,
-      prevGaViews: Number(data.prevGaViews) || 0,
+      prevGaUsers: ga4Connected ? parseNullableInt(data.prevGaUsers) : null,
+      prevGaNewUsers: ga4Connected ? parseNullableInt(data.prevGaNewUsers) : null,
+      prevGaEngagementRate: ga4Connected ? parseNullableDecimal(data.prevGaEngagementRate) : null,
+      prevGaSessions: ga4Connected ? parseNullableInt(data.prevGaSessions) : null,
+      prevGaViews: ga4Connected ? parseNullableInt(data.prevGaViews) : null,
       // Deep Metric Tables
       topQueries: Array.isArray(data.topQueries) ? data.topQueries : [],
       topPages: Array.isArray(data.topPages) ? data.topPages : [],
@@ -995,20 +1156,6 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       summary: data.summary?.trim() || null,
       workCompleted: data.workCompleted?.trim() || null,
       nextSteps: data.nextSteps?.trim() || null,
-    }
-
-    if (clientRow) {
-      updatePayload.clientSnapshot = {
-        businessName: clientRow.businessName || clientRow.name,
-        name: clientRow.name || null,
-        websiteUrl: clientRow.websiteUrl || null,
-        logoUrl: clientRow.logoUrl ?? null,
-        primaryColor: clientRow.primaryColor || '#2563eb',
-        secondaryColor: clientRow.secondaryColor || '#1e293b',
-        isWhiteLabel: Boolean(clientRow.isWhiteLabel),
-        partnerName: clientRow.partnerName ?? null,
-        partnerLogoUrl: clientRow.partnerLogoUrl ?? null,
-      }
     }
 
     if (data.displayOptions) {

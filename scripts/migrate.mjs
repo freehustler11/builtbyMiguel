@@ -459,6 +459,160 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "citations_client_id_idx" ON "citations" ("client_id");`
     await sql`CREATE INDEX IF NOT EXISTS "citations_partner_id_idx" ON "citations" ("partner_id");`
 
+    // 21. Ensure client_data_sources table exists, indexes exist, and backfill all clients
+    await sql`
+      CREATE TABLE IF NOT EXISTS "client_data_sources" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "source" text NOT NULL,
+        "status" text DEFAULT 'connected' NOT NULL,
+        "notes" text,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE UNIQUE INDEX IF NOT EXISTS "client_data_sources_client_source_unique_idx" ON "client_data_sources" ("client_id", "source");`
+    await sql`CREATE INDEX IF NOT EXISTS "client_data_sources_client_id_idx" ON "client_data_sources" ("client_id");`
+
+    // Backfill every existing client with gsc, ga4, and gbp set to 'connected'
+    await sql`
+      INSERT INTO "client_data_sources" ("client_id", "source", "status", "created_at", "updated_at")
+      SELECT c."id", s."source", 'connected', now(), now()
+      FROM "clients" c
+      CROSS JOIN (VALUES ('gsc'), ('ga4'), ('gbp')) AS s("source")
+      ON CONFLICT ("client_id", "source") DO NOTHING;
+    `
+
+    // 22. Ensure client_locations and location_monthly_metrics tables exist, with migration backfill
+    await sql`
+      CREATE TABLE IF NOT EXISTS "client_locations" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "client_id" uuid NOT NULL REFERENCES "clients"("id") ON DELETE RESTRICT,
+        "name" text NOT NULL,
+        "gbp_place_id" text,
+        "address" text,
+        "access_status" text DEFAULT 'connected' NOT NULL,
+        "access_notes" text,
+        "is_active" boolean DEFAULT true NOT NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "client_locations_client_id_idx" ON "client_locations" ("client_id");`
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS "location_monthly_metrics" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "location_id" uuid NOT NULL REFERENCES "client_locations"("id") ON DELETE RESTRICT,
+        "month" integer NOT NULL,
+        "year" integer NOT NULL,
+        "gbp_calls" integer,
+        "gbp_directions" integer,
+        "gbp_website_clicks" integer,
+        "gbp_reviews_count" integer,
+        "gbp_rating" numeric(3, 2),
+        "gbp_views" integer,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE UNIQUE INDEX IF NOT EXISTS "location_monthly_metrics_loc_month_year_idx" ON "location_monthly_metrics" ("location_id", "month", "year");`
+    await sql`CREATE INDEX IF NOT EXISTS "location_monthly_metrics_loc_year_month_idx" ON "location_monthly_metrics" ("location_id", "year", "month");`
+
+    // Count before migration
+    const [clientsBefore] = await sql`SELECT count(*)::int as count FROM "clients";`
+    const [monthlyMetricsBefore] = await sql`SELECT count(*)::int as count FROM "monthly_metrics";`
+    const [locsBefore] = await sql`SELECT count(*)::int as count FROM "client_locations";`
+    const [locMetricsBefore] = await sql`SELECT count(*)::int as count FROM "location_monthly_metrics";`
+    console.log(`📊 Migration 22 pre-check: ${clientsBefore.count} clients, ${monthlyMetricsBefore.count} monthly_metrics, ${locsBefore.count} existing locations, ${locMetricsBefore.count} location metrics`)
+
+    // Backfill 1: Create one default location per client named after the business
+    // Inherit GBP access status from client_data_sources if present
+    await sql`
+      INSERT INTO "client_locations" ("client_id", "name", "access_status", "access_notes", "is_active", "created_at", "updated_at")
+      SELECT 
+        c."id", 
+        c."business_name", 
+        COALESCE(cds."status", 'connected'), 
+        cds."notes",
+        true, 
+        now(), 
+        now()
+      FROM "clients" c
+      LEFT JOIN "client_data_sources" cds ON cds."client_id" = c."id" AND cds."source" = 'gbp'
+      WHERE NOT EXISTS (
+        SELECT 1 FROM "client_locations" cl WHERE cl."client_id" = c."id"
+      );
+    `
+
+    // Backfill 2: Move existing GBP values from monthly_metrics into location_monthly_metrics
+    // using the client's default location
+    await sql`
+      INSERT INTO "location_monthly_metrics" (
+        "location_id",
+        "month",
+        "year",
+        "gbp_calls",
+        "gbp_directions",
+        "gbp_website_clicks",
+        "gbp_reviews_count",
+        "gbp_rating",
+        "gbp_views",
+        "created_at",
+        "updated_at"
+      )
+      SELECT 
+        cl."id",
+        mm."month",
+        mm."year",
+        mm."gbp_calls",
+        mm."gbp_directions",
+        mm."gbp_website_clicks",
+        mm."gbp_reviews_count",
+        mm."gbp_rating"::numeric(3, 2),
+        mm."gbp_views",
+        now(),
+        now()
+      FROM "monthly_metrics" mm
+      JOIN "client_locations" cl ON cl."client_id" = mm."client_id"
+      WHERE (
+        mm."gbp_calls" IS NOT NULL OR
+        mm."gbp_directions" IS NOT NULL OR
+        mm."gbp_website_clicks" IS NOT NULL OR
+        mm."gbp_reviews_count" IS NOT NULL OR
+        mm."gbp_rating" IS NOT NULL OR
+        mm."gbp_views" IS NOT NULL
+      )
+      ON CONFLICT ("location_id", "month", "year") DO NOTHING;
+    `
+
+    // Count after migration
+    const [locsAfter] = await sql`SELECT count(*)::int as count FROM "client_locations";`
+    const [locMetricsAfter] = await sql`SELECT count(*)::int as count FROM "location_monthly_metrics";`
+    console.log(`📊 Migration 22 post-check: ${locsAfter.count} client_locations (was ${locsBefore.count}), ${locMetricsAfter.count} location_monthly_metrics (was ${locMetricsBefore.count})`)
+
+    // 23. Media Library Isolation: Add client_id, purpose, and indexes
+    console.log('🔄 Migration 23: Adding client_id, purpose, and indexes to media table...')
+    await sql`ALTER TABLE "media" ADD COLUMN IF NOT EXISTS "client_id" uuid REFERENCES "clients"("id") ON DELETE SET NULL`
+    await sql`ALTER TABLE "media" ADD COLUMN IF NOT EXISTS "purpose" text DEFAULT 'site' NOT NULL`
+    await sql`CREATE INDEX IF NOT EXISTS "media_partner_id_idx" ON "media" ("partner_id")`
+    await sql`CREATE INDEX IF NOT EXISTS "media_client_id_idx" ON "media" ("client_id")`
+    await sql`CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media" ("created_at" DESC)`
+
+    // Backfill purpose = 'client' and client_id for media matching client logos
+    const backfilledMedia = await sql`
+      UPDATE "media" m
+      SET "purpose" = 'client', "client_id" = c."id"
+      FROM "clients" c
+      WHERE m."file_url" = c."logo_url"
+        AND (m."client_id" IS NULL OR m."purpose" = 'site')
+      RETURNING m."id", m."filename", c."name" AS "client_name";
+    `
+    if (backfilledMedia.length > 0) {
+      console.log(`🖼️ Backfilled ${backfilledMedia.length} media item(s) as client assets:`)
+      backfilledMedia.forEach((row) => console.log(`   - ${row.filename} -> client "${row.client_name}"`))
+    }
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

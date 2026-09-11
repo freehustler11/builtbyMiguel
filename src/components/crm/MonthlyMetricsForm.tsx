@@ -19,9 +19,11 @@ import {
   getMonthlyMetricsServerFn,
   saveMonthlyMetricsServerFn,
   type MonthlyMetricsInput,
+  type LocationMonthlyMetricsInput,
   type MonthlyMetric,
 } from '../../server/crm'
-import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
+import { getClientsServerFn, getClientDataSourcesServerFn, type ClientWithReportCount } from '../../server/clients'
+import type { ClientLocation } from '../../db/schema'
 import { ToastContainer, type ToastMessage } from '../Toast'
 import { ConfirmModal } from '../ConfirmModal'
 
@@ -101,6 +103,16 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
   const [prevRecord, setPrevRecord] = useState<MonthlyMetric | null>(null)
   const [currentRecord, setCurrentRecord] = useState<MonthlyMetric | null>(null)
   const [clientInfo, setClientInfo] = useState<{ id: string; name: string; businessName: string } | null>(null)
+  const [clientDataSources, setClientDataSources] = useState<Record<string, 'connected' | 'no_access' | 'not_applicable'>>({
+    gsc: 'connected',
+    ga4: 'connected',
+    gbp: 'connected',
+  })
+
+  // Multi-location state
+  const [locations, setLocations] = useState<ClientLocation[]>([])
+  const [locationFormData, setLocationFormData] = useState<Record<string, Record<string, string>>>({})
+  const [prevLocationRecords, setPrevLocationRecords] = useState<Record<string, any>>({})
 
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -136,12 +148,30 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
     if (!cId) return
     setIsLoading(true)
     try {
-      const res = await getMonthlyMetricsServerFn({
-        data: { clientId: cId, month: m, year: y },
-      })
+      const [res, sourcesRes] = await Promise.all([
+        getMonthlyMetricsServerFn({
+          data: { clientId: cId, month: m, year: y },
+        }),
+        getClientDataSourcesServerFn({
+          data: { clientId: cId },
+        }).catch(() => ({ dataSources: [] })),
+      ])
       setClientInfo(res.client)
       setCurrentRecord(res.current)
       setPrevRecord(res.previous)
+      setLocations(res.locations || [])
+
+      const dsMap: Record<string, 'connected' | 'no_access' | 'not_applicable'> = {
+        gsc: 'connected',
+        ga4: 'connected',
+        gbp: 'connected',
+      }
+      if (sourcesRes && sourcesRes.dataSources) {
+        for (const s of sourcesRes.dataSources) {
+          dsMap[s.source] = s.status
+        }
+      }
+      setClientDataSources(dsMap)
 
       // Populate form state from current record if available
       const initialForm: Record<string, string> = {}
@@ -150,6 +180,27 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
         initialForm[field.key] = val !== null && val !== undefined ? String(val) : ''
       }
       setFormData(initialForm)
+
+      // Populate per-location form state and prior records
+      const initialLocForm: Record<string, Record<string, string>> = {}
+      const curLocMetricsMap = new Map((res.currentLocationMetrics || []).map((m: any) => [m.locationId, m]))
+      const prevLocMetricsMap = new Map((res.previousLocationMetrics || []).map((m: any) => [m.locationId, m]))
+
+      const prevLocsRecordObj: Record<string, any> = {}
+      for (const loc of res.locations || []) {
+        prevLocsRecordObj[loc.id] = prevLocMetricsMap.get(loc.id) || null
+        const curM = curLocMetricsMap.get(loc.id)
+        initialLocForm[loc.id] = {
+          gbpCalls: curM?.gbpCalls !== null && curM?.gbpCalls !== undefined ? String(curM.gbpCalls) : '',
+          gbpDirections: curM?.gbpDirections !== null && curM?.gbpDirections !== undefined ? String(curM.gbpDirections) : '',
+          gbpWebsiteClicks: curM?.gbpWebsiteClicks !== null && curM?.gbpWebsiteClicks !== undefined ? String(curM.gbpWebsiteClicks) : '',
+          gbpViews: curM?.gbpViews !== null && curM?.gbpViews !== undefined ? String(curM.gbpViews) : '',
+          gbpRating: curM?.gbpRating !== null && curM?.gbpRating !== undefined ? String(curM.gbpRating) : '',
+          gbpReviewsCount: curM?.gbpReviewsCount !== null && curM?.gbpReviewsCount !== undefined ? String(curM.gbpReviewsCount) : '',
+        }
+      }
+      setLocationFormData(initialLocForm)
+      setPrevLocationRecords(prevLocsRecordObj)
     } catch (err: any) {
       addToast('error', 'Failed to Load Metrics', err.message || 'Error fetching monthly records')
     } finally {
@@ -165,6 +216,16 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
 
   const handleInputChange = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const handleLocationInputChange = (locationId: string, key: string, value: string) => {
+    setLocationFormData((prev) => ({
+      ...prev,
+      [locationId]: {
+        ...(prev[locationId] || {}),
+        [key]: value,
+      },
+    }))
   }
 
   // Calculate discrepancies > 50%
@@ -226,6 +287,12 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
     try {
       const payload: MonthlyMetricsInput = {}
       for (const field of METRIC_FIELDS) {
+        // Enforce null for disconnected sources
+        if (field.category in clientDataSources && clientDataSources[field.category] !== 'connected') {
+          ;(payload as any)[field.key] = null
+          continue
+        }
+
         const str = formData[field.key]
         if (str !== undefined && str.trim() !== '') {
           const num = Number(str)
@@ -233,6 +300,30 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
         } else {
           ;(payload as any)[field.key] = null
         }
+      }
+
+      // If client has configured locations, attach per-location metrics
+      if (locations.length > 0) {
+        const locPayloads: LocationMonthlyMetricsInput[] = []
+        for (const loc of locations) {
+          const locFields = locationFormData[loc.id] || {}
+          const parseNum = (v?: string) => {
+            if (!v || v.trim() === '') return null
+            const n = Number(v)
+            return isNaN(n) ? null : n
+          }
+
+          locPayloads.push({
+            locationId: loc.id,
+            gbpCalls: parseNum(locFields.gbpCalls),
+            gbpDirections: parseNum(locFields.gbpDirections),
+            gbpWebsiteClicks: parseNum(locFields.gbpWebsiteClicks),
+            gbpViews: parseNum(locFields.gbpViews),
+            gbpRating: parseNum(locFields.gbpRating),
+            gbpReviewsCount: parseNum(locFields.gbpReviewsCount),
+          })
+        }
+        payload.locationMetrics = locPayloads
       }
 
       await saveMonthlyMetricsServerFn({
@@ -462,77 +553,207 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 1. Google Search Console */}
           <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
-                <Search className="w-4 h-4" />
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
+                  <Search className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Search Console (GSC)</h3>
+                  <p className="text-[11px] text-slate-400">Search impressions, clicks, CTR, and SERP positions</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Search Console (GSC)</h3>
-                <p className="text-[11px] text-slate-400">Search impressions, clicks, CTR, and SERP positions</p>
-              </div>
+              {clientDataSources.gsc !== 'connected' && (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  clientDataSources.gsc === 'no_access'
+                    ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
+                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                }`}>
+                  {clientDataSources.gsc === 'no_access' ? 'No Access' : 'Not Applicable'}
+                </span>
+              )}
             </div>
 
-            <div className="space-y-3.5">
-              {METRIC_FIELDS.filter((f) => f.category === 'gsc').map((field) => (
-                <MetricInputRow
-                  key={field.key}
-                  field={field}
-                  value={formData[field.key] || ''}
-                  prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
-                  onChange={(val) => handleInputChange(field.key, val)}
-                />
-              ))}
-            </div>
+            {clientDataSources.gsc !== 'connected' ? (
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+                  <Info className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Access Not Configured ({clientDataSources.gsc === 'no_access' ? 'No Access' : 'Not Applicable'})</span>
+                </div>
+                <p className="text-[11px] leading-relaxed">
+                  Search Console metrics are excluded for this client and saved as unmeasured (NULL). Change access on the client page if this channel is active.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3.5">
+                {METRIC_FIELDS.filter((f) => f.category === 'gsc').map((field) => (
+                  <MetricInputRow
+                    key={field.key}
+                    field={field}
+                    value={formData[field.key] || ''}
+                    prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
+                    onChange={(val) => handleInputChange(field.key, val)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 2. Google Analytics 4 */}
           <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
-                <BarChart3 className="w-4 h-4" />
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
+                  <BarChart3 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Analytics 4 (GA4)</h3>
+                  <p className="text-[11px] text-slate-400">Sessions, unique users, pageviews, and engagement rate</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Analytics 4 (GA4)</h3>
-                <p className="text-[11px] text-slate-400">Sessions, unique users, pageviews, and engagement rate</p>
-              </div>
+              {clientDataSources.ga4 !== 'connected' && (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  clientDataSources.ga4 === 'no_access'
+                    ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
+                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                }`}>
+                  {clientDataSources.ga4 === 'no_access' ? 'No Access' : 'Not Applicable'}
+                </span>
+              )}
             </div>
 
-            <div className="space-y-3.5">
-              {METRIC_FIELDS.filter((f) => f.category === 'ga4').map((field) => (
-                <MetricInputRow
-                  key={field.key}
-                  field={field}
-                  value={formData[field.key] || ''}
-                  prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
-                  onChange={(val) => handleInputChange(field.key, val)}
-                />
-              ))}
-            </div>
+            {clientDataSources.ga4 !== 'connected' ? (
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+                  <Info className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Access Not Configured ({clientDataSources.ga4 === 'no_access' ? 'No Access' : 'Not Applicable'})</span>
+                </div>
+                <p className="text-[11px] leading-relaxed">
+                  Google Analytics metrics are excluded for this client and saved as unmeasured (NULL). Change access on the client page if this channel is active.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3.5">
+                {METRIC_FIELDS.filter((f) => f.category === 'ga4').map((field) => (
+                  <MetricInputRow
+                    key={field.key}
+                    field={field}
+                    value={formData[field.key] || ''}
+                    prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
+                    onChange={(val) => handleInputChange(field.key, val)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 3. Google Business Profile */}
           <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
-                <Building2 className="w-4 h-4" />
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
+                  <Building2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Business Profile (GBP)</h3>
+                  <p className="text-[11px] text-slate-400">Local map calls, directions, website clicks, and reviews</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Google Business Profile (GBP)</h3>
-                <p className="text-[11px] text-slate-400">Local map calls, directions, website clicks, and reviews</p>
-              </div>
+              {clientDataSources.gbp !== 'connected' && (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  clientDataSources.gbp === 'no_access'
+                    ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
+                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                }`}>
+                  {clientDataSources.gbp === 'no_access' ? 'No Access' : 'Not Applicable'}
+                </span>
+              )}
             </div>
 
-            <div className="space-y-3.5">
-              {METRIC_FIELDS.filter((f) => f.category === 'gbp').map((field) => (
-                <MetricInputRow
-                  key={field.key}
-                  field={field}
-                  value={formData[field.key] || ''}
-                  prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
-                  onChange={(val) => handleInputChange(field.key, val)}
-                />
-              ))}
-            </div>
+            {clientDataSources.gbp !== 'connected' ? (
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+                  <Info className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Access Not Configured ({clientDataSources.gbp === 'no_access' ? 'No Access' : 'Not Applicable'})</span>
+                </div>
+                <p className="text-[11px] leading-relaxed">
+                  Google Business Profile metrics are excluded for this client and saved as unmeasured (NULL). Change access on the client page if this channel is active.
+                </p>
+              </div>
+            ) : locations.length > 1 ? (
+              /* Multi-Location Rendering: One sub-card per active location */
+              <div className="space-y-4">
+                <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 text-xs text-emerald-800 dark:text-emerald-300 flex items-center justify-between">
+                  <span>Tracking <strong>{locations.length}</strong> Google Business Profile locations for this client. Figures roll up automatically into the client report.</span>
+                </div>
+
+                {locations.map((loc) => {
+                  const locFields = locationFormData[loc.id] || {}
+                  const prevLoc = prevLocationRecords[loc.id]
+                  const locConnected = loc.accessStatus === 'connected'
+
+                  return (
+                    <div
+                      key={loc.id}
+                      className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-3.5"
+                    >
+                      <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                        <div className="min-w-0">
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate" title={loc.name}>
+                            {loc.name}
+                          </h4>
+                          {loc.address && (
+                            <p className="text-[11px] text-slate-400 truncate">{loc.address}</p>
+                          )}
+                        </div>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold shrink-0 ${
+                            loc.accessStatus === 'connected'
+                              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                              : loc.accessStatus === 'no_access'
+                              ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                              : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                          }`}
+                        >
+                          {loc.accessStatus === 'connected' ? 'Connected' : loc.accessStatus === 'no_access' ? 'No Access' : 'N/A'}
+                        </span>
+                      </div>
+
+                      {!locConnected ? (
+                        <div className="p-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 text-xs text-slate-500 italic">
+                          Profile access is marked as {loc.accessStatus === 'no_access' ? 'No Access' : 'Not Applicable'}. Metrics for this location are excluded from roll-up.
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {METRIC_FIELDS.filter((f) => f.category === 'gbp').map((field) => (
+                            <MetricInputRow
+                              key={field.key}
+                              field={field}
+                              value={locFields[field.key] || ''}
+                              prevVal={prevLoc ? prevLoc[field.key] : null}
+                              onChange={(val) => handleLocationInputChange(loc.id, field.key, val)}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              /* Single Location (or default) Rendering: identical to before */
+              <div className="space-y-3.5">
+                {METRIC_FIELDS.filter((f) => f.category === 'gbp').map((field) => (
+                  <MetricInputRow
+                    key={field.key}
+                    field={field}
+                    value={formData[field.key] || ''}
+                    prevVal={prevRecord ? (prevRecord as any)[field.key] : null}
+                    onChange={(val) => handleInputChange(field.key, val)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 4. SEMrush Domain Authority & Keywords */}

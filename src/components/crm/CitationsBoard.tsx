@@ -27,16 +27,22 @@ import {
 } from '../../server/crm'
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
 import { ConfirmModal } from '../ConfirmModal'
+import { useBoardKeyboardNav } from './useBoardKeyboardNav'
+
+const CITATION_COLUMNS = [
+  { id: 'submitted', label: 'Submitted' },
+  { id: 'live', label: 'Live & Verified' },
+  { id: 'needs_update', label: 'Needs Update' },
+]
 
 const STATUS_TABS: Array<{
   id: 'all' | 'submitted' | 'live' | 'needs_update'
   label: string
-  color: string
 }> = [
-  { id: 'all', label: 'All Citations', color: 'text-slate-700 dark:text-slate-300' },
-  { id: 'live', label: 'Live & Verified', color: 'text-emerald-700 dark:text-emerald-300' },
-  { id: 'submitted', label: 'Submitted (Pending)', color: 'text-amber-700 dark:text-amber-300' },
-  { id: 'needs_update', label: 'Needs Update', color: 'text-rose-700 dark:text-rose-300' },
+  { id: 'all', label: 'All citations' },
+  { id: 'live', label: 'Live & verified' },
+  { id: 'submitted', label: 'Submitted' },
+  { id: 'needs_update', label: 'Needs update' },
 ]
 
 const POPULAR_DIRECTORIES = [
@@ -261,39 +267,73 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
     )
   })
 
+  const { focusedId, setFocusedId } = useBoardKeyboardNav({
+    items: filteredItems,
+    columns: CITATION_COLUMNS,
+    onStatusChange: async (item, newStatus) => {
+      try {
+        const updated = await updateCitationServerFn({
+          data: {
+            id: item.id,
+            directory: item.directory,
+            status: newStatus as any,
+          },
+        })
+        setItems((prev) =>
+          prev.map((it) => (it.id === item.id ? { ...it, ...updated } : it))
+        )
+      } catch (err) {
+        console.error('Failed to update citation status:', err)
+      }
+    },
+    onOpenItem: (item) => handleOpenEdit(item),
+  })
+
   const getStatusBadge = (status: 'submitted' | 'pending' | 'live' | 'needs_update') => {
     switch (status) {
       case 'live':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-900/40">
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-[6px] bg-[var(--canvas)] text-[var(--success)] border border-[var(--line)]">
             <CheckCircle2 className="w-3 h-3" />
-            <span>Live &amp; Verified</span>
+            <span>Live &amp; verified</span>
           </span>
         )
       case 'submitted':
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/40">
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-[6px] bg-[var(--canvas)] text-[var(--warning)] border border-[var(--line)]">
             <Clock className="w-3 h-3" />
             <span>Submitted</span>
           </span>
         )
       case 'needs_update':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200/60 dark:border-rose-900/40">
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-[6px] bg-[var(--canvas)] text-[var(--danger)] border border-[var(--line)]">
             <ShieldAlert className="w-3 h-3" />
-            <span>Needs Update</span>
+            <span>Needs update</span>
           </span>
         )
     }
   }
 
+  const getCardStatusBorder = (status: 'submitted' | 'pending' | 'live' | 'needs_update') => {
+    switch (status) {
+      case 'live':
+        return 'border-l-[var(--success)]'
+      case 'submitted':
+      case 'pending':
+        return 'border-l-[var(--warning)]'
+      case 'needs_update':
+        return 'border-l-[var(--danger)]'
+    }
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5">
       {/* Controls Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         {/* Status Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-x-auto max-w-full">
+        <div className="flex items-center gap-1 p-0.5 bg-[var(--canvas)] rounded-[6px] border border-[var(--line)] overflow-x-auto max-w-full">
           {STATUS_TABS.map((tab) => {
             const isActive = statusFilter === tab.id
             return (
@@ -301,10 +341,10 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                 key={tab.id}
                 type="button"
                 onClick={() => setStatusFilter(tab.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition whitespace-nowrap cursor-pointer ${
+                className={`px-2.5 py-1 rounded-[4px] text-[12px] font-medium transition whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs border border-slate-200/80 dark:border-slate-700/80'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)]'
+                    : 'text-[var(--muted)] hover:text-[var(--ink)]'
                 }`}
               >
                 {tab.label}
@@ -316,53 +356,65 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
         {/* Search & Add Citation */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="relative flex-1 sm:w-64">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[var(--muted)] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search citations or credentials..."
-              className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500"
+              placeholder="Search citations..."
+              className="w-full pl-9 pr-3.5 h-8 text-[13px] rounded-[6px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)]"
             />
           </div>
 
           <button
             type="button"
             onClick={handleOpenCreate}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition shadow-sm cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
           >
             <Plus className="w-4 h-4" />
-            <span>Add Citation</span>
+            <span>Add citation</span>
           </button>
         </div>
       </div>
 
       {/* Citations Grid */}
       {isLoading ? (
-        <div className="py-16 text-center text-xs font-mono text-slate-400">
-          Loading citation records and credentials...
+        <div className="py-8 text-center text-[13px] text-[var(--muted)]">
+          Loading citation records...
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="py-16 text-center text-xs font-mono text-slate-400 bg-slate-50/50 dark:bg-slate-900/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 space-y-2">
-          <Globe className="w-8 h-8 mx-auto text-slate-400 opacity-60" />
-          <p>No citation records found.</p>
-          <p className="text-[11px] text-slate-500">
-            Track business directories, listing URLs, and login credentials for NAP consistency.
-          </p>
+        <div className="p-4 text-center sm:text-left text-[13px] text-[var(--muted)] bg-[var(--canvas)] rounded-[8px] border border-dashed border-[var(--line)] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <p className="text-[13px] font-medium text-[var(--ink)]">No citation records found</p>
+            <p className="text-[12px] text-[var(--muted)]">
+              Track business directories, listing URLs, and login credentials for NAP consistency.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[12px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Add citation</span>
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredItems.map((item) => {
             const isRevealed = revealedIds.has(item.id)
+            const isFocused = focusedId === item.id
             return (
               <div
                 key={item.id}
-                className="p-5 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-md transition flex flex-col justify-between group space-y-4"
+                tabIndex={0}
+                onClick={() => setFocusedId(item.id)}
+                className={`p-4 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] border-l-2 ${getCardStatusBorder(item.status)} transition flex flex-col justify-between group space-y-3 cursor-pointer ${isFocused ? 'ring-2 ring-[var(--accent)] shadow-md' : ''}`}
               >
                 {/* Header: Directory Name + Status */}
                 <div className="space-y-2">
                   {isRollup && (
-                    <div className="flex items-center gap-1.5 text-[10px] font-mono font-semibold text-rose-600 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/30 px-2 py-0.5 rounded-md border border-rose-200/50 dark:border-rose-900/40 truncate">
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--muted)] bg-[var(--canvas)] px-2 py-0.5 rounded-[6px] border border-[var(--line)] truncate">
                       <Building2 className="w-3 h-3 shrink-0" />
                       <span className="truncate">
                         {item.clientBusinessName || item.clientName || 'Client'}
@@ -372,7 +424,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
 
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                      <h4 className="text-[15px] font-medium text-[var(--ink)] truncate">
                         {item.directory}
                       </h4>
                       {item.listingUrl ? (
@@ -380,14 +432,14 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                           href={item.listingUrl.startsWith('http') ? item.listingUrl : `https://${item.listingUrl}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] font-mono text-blue-600 dark:text-blue-400 hover:underline truncate max-w-full mt-0.5"
+                          className="inline-flex items-center gap-1 text-[11px] text-[var(--accent)] hover:underline truncate max-w-full mt-0.5"
                         >
                           <Globe className="w-3 h-3 shrink-0" />
-                          <span className="truncate">View Listing</span>
+                          <span className="truncate">View listing</span>
                           <ExternalLink className="w-2.5 h-2.5 shrink-0" />
                         </a>
                       ) : (
-                        <span className="text-[11px] font-mono text-slate-400 italic">
+                        <span className="text-[11px] text-[var(--muted)] italic">
                           No URL recorded
                         </span>
                       )}
@@ -399,7 +451,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(item)}
-                          className="p-1 rounded-md text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                          className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--canvas)] transition cursor-pointer"
                           title="Edit"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -407,7 +459,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                         <button
                           type="button"
                           onClick={() => setDeleteTarget(item)}
-                          className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+                          className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--canvas)] transition cursor-pointer"
                           title="Delete"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -418,26 +470,26 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                 </div>
 
                 {/* Credentials Vault Box */}
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 space-y-2 text-xs">
+                <div className="p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] space-y-2 text-[13px]">
                   {/* Username */}
-                  <div className="flex items-center justify-between gap-2 font-mono">
-                    <div className="flex items-center gap-1.5 text-slate-400 text-[11px] shrink-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 text-[var(--muted)] text-[11px] shrink-0">
                       <User className="w-3 h-3" />
                       <span>User:</span>
                     </div>
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <span className="text-slate-800 dark:text-slate-200 font-semibold truncate select-all">
+                      <span className="text-[var(--ink)] font-medium truncate select-all">
                         {item.username || '—'}
                       </span>
                       {item.username && (
                         <button
                           type="button"
                           onClick={() => copyToClipboard(item.username!, `u-${item.id}`)}
-                          className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition cursor-pointer"
+                          className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
                           title="Copy Username"
                         >
                           {copiedId === `u-${item.id}` ? (
-                            <Check className="w-3 h-3 text-emerald-600" />
+                            <Check className="w-3 h-3 text-[var(--success)]" />
                           ) : (
                             <Copy className="w-3 h-3" />
                           )}
@@ -447,13 +499,13 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                   </div>
 
                   {/* Password */}
-                  <div className="flex items-center justify-between gap-2 font-mono border-t border-slate-200/60 dark:border-slate-800/60 pt-2">
-                    <div className="flex items-center gap-1.5 text-slate-400 text-[11px] shrink-0">
+                  <div className="flex items-center justify-between gap-2 border-t border-[var(--line)] pt-2">
+                    <div className="flex items-center gap-1.5 text-[var(--muted)] text-[11px] shrink-0">
                       <Key className="w-3 h-3" />
                       <span>Pass:</span>
                     </div>
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <span className="text-slate-800 dark:text-slate-200 font-semibold truncate">
+                      <span className="text-[var(--ink)] font-medium truncate">
                         {!item.password
                           ? '—'
                           : isRevealed
@@ -465,7 +517,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                           <button
                             type="button"
                             onClick={() => togglePasswordReveal(item.id)}
-                            className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition cursor-pointer"
+                            className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
                             title={isRevealed ? 'Hide Password' : 'Show Password'}
                           >
                             {isRevealed ? (
@@ -477,11 +529,11 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                           <button
                             type="button"
                             onClick={() => copyToClipboard(item.password!, `p-${item.id}`)}
-                            className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition cursor-pointer"
+                            className="p-1 rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
                             title="Copy Password"
                           >
                             {copiedId === `p-${item.id}` ? (
-                              <Check className="w-3 h-3 text-emerald-600" />
+                              <Check className="w-3 h-3 text-[var(--success)]" />
                             ) : (
                               <Copy className="w-3 h-3" />
                             )}
@@ -494,7 +546,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
 
                 {/* Notes */}
                 {item.notes && (
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 bg-slate-50/50 dark:bg-slate-900/30 p-2 rounded-lg border border-slate-100 dark:border-slate-800/60">
+                  <p className="text-[11px] text-[var(--muted)] line-clamp-2 bg-[var(--canvas)] p-2 rounded-[6px] border border-[var(--line)]">
                     {item.notes}
                   </p>
                 )}
@@ -504,28 +556,41 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
         </div>
       )}
 
+      {/* Keyboard Navigation Helper Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[11px] text-[var(--muted)] select-none">
+        <div className="flex flex-wrap items-center gap-3">
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">J</kbd> / <kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">K</kbd> Navigate citations</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">1-3</kbd> Set status (1: Submitted, 2: Live, 3: Needs Update)</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">Enter</kbd> Edit</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">Esc</kbd> Clear focus</span>
+        </div>
+        {focusedId && (
+          <span className="text-[var(--accent)] font-medium">Citation focused</span>
+        )}
+      </div>
+
       {/* Create / Edit Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-          <div className="w-full max-w-lg bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-2xl space-y-5 my-8">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                {editingItem ? 'Edit Directory Citation' : 'Add Directory Citation'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-lg bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 shadow-xl space-y-5 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+              <h3 className="text-[15px] font-medium text-[var(--ink)]">
+                {editingItem ? 'Edit directory citation' : 'Add directory citation'}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                className="text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-4 text-[13px]">
               {/* Client Selector (Roll-up mode only) */}
               {isRollup && (
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="font-medium text-[var(--ink)]">
                     Client *
                   </label>
                   <select
@@ -533,7 +598,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                     onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
                     required
                     disabled={Boolean(editingItem)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] font-normal cursor-pointer"
                   >
                     <option value="" disabled>Select client...</option>
                     {clientsList.map((c) => (
@@ -547,8 +612,8 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
 
               {/* Directory Name with Quick Select */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Directory / Platform Name *
+                <label className="font-medium text-[var(--ink)]">
+                  Directory / platform name *
                 </label>
                 <input
                   type="text"
@@ -557,7 +622,7 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
                   value={formData.directory}
                   onChange={(e) => setFormData({ ...formData, directory: e.target.value })}
                   placeholder="e.g., Yelp, YellowPages, Google Business Profile"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-rose-500 font-medium"
+                  className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)] font-normal"
                 />
                 <datalist id="popular-directories">
                   {POPULAR_DIRECTORIES.map((dir) => (
@@ -568,92 +633,92 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
 
               {/* Listing URL */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Listing Live URL
+                <label className="font-medium text-[var(--ink)]">
+                  Listing live URL
                 </label>
                 <input
                   type="url"
                   value={formData.listingUrl}
                   onChange={(e) => setFormData({ ...formData, listingUrl: e.target.value })}
                   placeholder="https://www.yelp.com/biz/..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono"
+                  className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
               {/* Credentials Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)]">
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Account Username / Email
+                  <label className="font-medium text-[var(--ink)]">
+                    Account username / email
                   </label>
                   <input
                     type="text"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     placeholder="e.g., admin@business.com"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono text-xs"
+                    className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Account Password / PIN
+                  <label className="font-medium text-[var(--ink)]">
+                    Account password / PIN
                   </label>
                   <input
                     type="text"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="e.g., Pass123!"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono text-xs"
+                    className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
               </div>
 
               {/* Status */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Verification Status
+                <label className="font-medium text-[var(--ink)]">
+                  Verification status
                 </label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                  className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] font-normal cursor-pointer"
                 >
                   <option value="submitted">Submitted (Pending Review / Pin Verification)</option>
-                  <option value="live">Live & Verified (Active)</option>
+                  <option value="live">Live &amp; Verified (Active)</option>
                   <option value="needs_update">Needs Update (NAP Discrepancy / Suspended)</option>
                 </select>
               </div>
 
               {/* Notes */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Notes / Verification Details
+                <label className="font-medium text-[var(--ink)]">
+                  Notes / verification details
                 </label>
                 <textarea
                   rows={2}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="e.g., Postcard pin required, phone verification sent to client..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 resize-none"
+                  className="w-full p-2.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)] resize-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--line)]">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] border border-[var(--line)] hover:bg-[var(--canvas)] transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition shadow-sm cursor-pointer disabled:opacity-50"
+                  className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Saving...' : editingItem ? 'Save Changes' : 'Add Citation'}
+                  {isSubmitting ? 'Saving...' : editingItem ? 'Save changes' : 'Add citation'}
                 </button>
               </div>
             </form>
@@ -674,3 +739,4 @@ export function CitationsBoard({ clientId, partnerId }: CitationsBoardProps) {
     </div>
   )
 }
+

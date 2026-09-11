@@ -27,54 +27,37 @@ import {
 import { getClientsServerFn, type ClientWithReportCount } from '../../server/clients'
 import { checkAuthServerFn, type ActiveSessionResult } from '../../lib/auth'
 import { ConfirmModal } from '../ConfirmModal'
+import { useBoardKeyboardNav } from './useBoardKeyboardNav'
 
 const STATUS_COLUMNS: Array<{
   id: 'idea' | 'drafting' | 'review' | 'approved' | 'live'
   label: string
-  color: string
-  bg: string
-  border: string
-  badgeBg: string
+  cardBorder: string
 }> = [
   {
     id: 'idea',
-    label: 'Topic Idea',
-    color: 'text-slate-700 dark:text-slate-300',
-    bg: 'bg-slate-50 dark:bg-slate-900/40',
-    border: 'border-slate-200 dark:border-slate-800',
-    badgeBg: 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300',
+    label: 'Topic idea',
+    cardBorder: 'border-l-[var(--muted)]',
   },
   {
     id: 'drafting',
-    label: 'In Drafting',
-    color: 'text-blue-700 dark:text-blue-300',
-    bg: 'bg-blue-50/40 dark:bg-blue-950/20',
-    border: 'border-blue-200/60 dark:border-blue-900/40',
-    badgeBg: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300',
+    label: 'In drafting',
+    cardBorder: 'border-l-[var(--accent)]',
   },
   {
     id: 'review',
-    label: 'Internal Review',
-    color: 'text-amber-700 dark:text-amber-300',
-    bg: 'bg-amber-50/40 dark:bg-amber-950/20',
-    border: 'border-amber-200/60 dark:border-amber-900/40',
-    badgeBg: 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300',
+    label: 'Internal review',
+    cardBorder: 'border-l-[var(--accent)]',
   },
   {
     id: 'approved',
     label: 'Approved',
-    color: 'text-purple-700 dark:text-purple-300',
-    bg: 'bg-purple-50/40 dark:bg-purple-950/20',
-    border: 'border-purple-200/60 dark:border-purple-900/40',
-    badgeBg: 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300',
+    cardBorder: 'border-l-[var(--warning)]',
   },
   {
     id: 'live',
-    label: 'Published Live',
-    color: 'text-emerald-700 dark:text-emerald-300',
-    bg: 'bg-emerald-50/40 dark:bg-emerald-950/20',
-    border: 'border-emerald-200/60 dark:border-emerald-900/40',
-    badgeBg: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300',
+    label: 'Live',
+    cardBorder: 'border-l-[var(--success)]',
   },
 ]
 
@@ -315,22 +298,29 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
     )
   })
 
+  const { focusedId, setFocusedId } = useBoardKeyboardNav({
+    items: filteredItems,
+    columns: STATUS_COLUMNS,
+    onStatusChange: (item, newStatus) => handleStatusChange(item, newStatus as any),
+    onOpenItem: (item) => handleOpenEdit(item),
+  })
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5">
       {/* Board Header Actions & Search */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
             <input
               type="text"
               placeholder="Search articles by title, keyword, or writer..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-3.5 py-2 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 w-72 text-slate-800 dark:text-slate-200"
+              className="pl-9 pr-3.5 py-1.5 text-[13px] rounded-[6px] bg-[var(--panel)] border border-[var(--line)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] w-72 text-[var(--ink)] placeholder-[var(--muted)]"
             />
           </div>
-          <span className="text-xs font-mono text-slate-400">
+          <span className="text-[12px] text-[var(--muted)] tabular-nums">
             {filteredItems.length} total {filteredItems.length === 1 ? 'article' : 'articles'}
           </span>
         </div>
@@ -338,184 +328,236 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
         <button
           type="button"
           onClick={handleOpenCreate}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-sm transition cursor-pointer shrink-0"
+          className="inline-flex items-center gap-2 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
-          <span>New Client Article</span>
+          <span>New client article</span>
         </button>
       </div>
 
-      {/* Kanban Board Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start min-h-[500px]">
-        {STATUS_COLUMNS.map((col) => {
-          const colItems = filteredItems.filter((it) => it.status === col.id)
-          return (
-            <div
-              key={col.id}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, col.id)}
-              className={`rounded-2xl border ${col.border} ${col.bg} p-3.5 flex flex-col min-h-[480px] transition-colors`}
-            >
-              {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/60 dark:border-slate-800/60">
-                <div className="flex items-center gap-2">
-                  <h4 className={`text-xs font-bold tracking-wide uppercase ${col.color}`}>
-                    {col.label}
-                  </h4>
-                  <span
-                    className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold ${col.badgeBg}`}
-                  >
-                    {colItems.length}
-                  </span>
-                </div>
-              </div>
-
-              {/* Column Cards */}
-              <div className="space-y-3 flex-1">
-                {colItems.length === 0 ? (
-                  <div className="h-28 rounded-xl border border-dashed border-slate-200 dark:border-slate-800/80 flex items-center justify-center p-4 text-center">
-                    <span className="text-[11px] font-mono text-slate-400">
-                      Drop articles here
+      {/* Board Content */}
+      {items.length === 0 ? (
+        <div className="p-4 rounded-[8px] border border-dashed border-[var(--line)] bg-[var(--canvas)] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="space-y-0.5">
+            <p className="text-[13px] font-medium text-[var(--ink)]">No client article deliverables yet</p>
+            <p className="text-[12px] text-[var(--muted)]">Track article briefs, copywriting, design, and publishing status.</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[12px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>New client article</span>
+          </button>
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="py-8 text-center text-[13px] text-[var(--muted)] bg-[var(--canvas)] rounded-[8px] border border-[var(--line)]">
+          No articles match your search.
+        </div>
+      ) : (
+        /* Kanban Board Grid */
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3 items-start">
+          {STATUS_COLUMNS.map((col) => {
+            const colItems = filteredItems.filter((it) => it.status === col.id)
+            const isDragging = draggedItemId !== null
+            return (
+              <div
+                key={col.id}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, col.id)}
+                className="rounded-[8px] border border-[var(--line)] bg-[var(--canvas)] p-2.5 flex flex-col transition-colors"
+              >
+                {/* Column Header */}
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-[var(--line)]">
+                  <div className="flex items-center gap-1.5">
+                    <h4 className="text-[12px] font-medium text-[var(--ink)]">
+                      {col.label}
+                    </h4>
+                    <span className="px-1.5 py-0.2 rounded-[4px] text-[10px] font-medium tabular-nums bg-[var(--panel)] text-[var(--muted)] border border-[var(--line)]">
+                      {colItems.length}
                     </span>
                   </div>
-                ) : (
-                  colItems.map((item) => (
-                    <div
-                      key={item.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, item.id)}
-                      className="p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md transition cursor-grab active:cursor-grabbing space-y-2.5 group"
-                    >
-                      {/* Client Badge (in Rollup View) */}
-                      {isRollup && (
-                        <div className="flex items-center gap-1.5 text-[10px] font-mono font-semibold text-rose-600 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/30 px-2 py-0.5 rounded-md border border-rose-200/50 dark:border-rose-900/40 truncate">
-                          <Building2 className="w-3 h-3 shrink-0" />
-                          <span className="truncate">
-                            {item.clientBusinessName || item.clientName || 'Client'}
-                          </span>
-                        </div>
-                      )}
+                </div>
 
-                      {/* Card Title & Actions */}
-                      <div className="flex items-start justify-between gap-2">
-                        <h5 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-2">
-                          {item.title}
-                        </h5>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEdit(item)}
-                            className="p-1 rounded-md text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-                            title="Edit"
-                          >
-                            <Edit2 className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setDeleteTarget(item)}
-                            className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
+                {/* Column Cards */}
+                <div className="space-y-2.5 flex-1">
+                  {colItems.length === 0 ? (
+                    isDragging ? (
+                      <div className="py-3.5 rounded-[6px] border border-dashed border-[var(--accent)]/50 bg-[var(--accent)]/5 flex items-center justify-center text-center">
+                        <span className="text-[11px] font-medium text-[var(--accent)]">
+                          Drop here
+                        </span>
                       </div>
-
-                      {/* Target Keyword */}
-                      {item.targetKeyword && (
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-600 dark:text-slate-400">
-                          <Hash className="w-3 h-3 text-slate-400 shrink-0" />
-                          <span className="font-mono text-slate-700 dark:text-slate-300 truncate">
-                            {item.targetKeyword}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Links: Draft / Live URLs */}
-                      <div className="space-y-1">
-                        {item.draftUrl && (
-                          <a
-                            href={item.draftUrl.startsWith('http') ? item.draftUrl : `https://${item.draftUrl}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-mono text-purple-600 dark:text-purple-400 hover:underline truncate max-w-full"
-                          >
-                            <FileText className="w-3 h-3 shrink-0" />
-                            <span className="truncate">Draft Doc</span>
-                            <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-                          </a>
-                        )}
-                        {item.liveUrl && (
-                          <a
-                            href={item.liveUrl.startsWith('http') ? item.liveUrl : `https://${item.liveUrl}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 hover:underline truncate max-w-full"
-                          >
-                            <ExternalLink className="w-3 h-3 shrink-0" />
-                            <span className="truncate">{item.liveUrl.replace(/^https?:\/\//, '')}</span>
-                          </a>
-                        )}
+                    ) : (
+                      <div className="py-1.5 text-center text-[11px] text-[var(--muted)] italic">
+                        Empty
                       </div>
+                    )
+                  ) : (
+                    colItems.map((item) => {
+                      const isFocused = focusedId === item.id
+                      return (
+                        <div
+                          key={item.id}
+                          draggable
+                          tabIndex={0}
+                          onClick={() => setFocusedId(item.id)}
+                          onDragStart={(e) => handleDragStart(e, item.id)}
+                          className={`p-2.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] border-l-2 ${col.cardBorder} hover:border-[var(--line)] transition cursor-grab active:cursor-grabbing space-y-2 group ${
+                            isFocused ? 'ring-2 ring-[var(--accent)] shadow-md' : ''
+                          }`}
+                        >
+                          {/* Client Badge (in Rollup View) */}
+                          {isRollup && (
+                            <div className="flex items-center gap-1.5 text-[10px] font-medium text-[var(--muted)] bg-[var(--canvas)] px-1.5 py-0.5 rounded-[4px] border border-[var(--line)] truncate">
+                              <Building2 className="w-3 h-3 shrink-0" />
+                              <span className="truncate">
+                                {item.clientBusinessName || item.clientName || 'Client'}
+                              </span>
+                            </div>
+                          )}
 
-                      {/* Deliverable Notes */}
-                      {item.notes && (
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
-                          {item.notes}
-                        </p>
-                      )}
-
-                      {/* Footer: Writer & Published Date */}
-                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                        <div className="flex items-center gap-1 truncate">
-                          <PenTool className="w-3 h-3 shrink-0 text-slate-400" />
-                          <span className="truncate">
-                            {item.writerName || item.writerEmail || 'Unassigned Writer'}
-                          </span>
-                        </div>
-                        {item.publishedAt && (
-                          <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 className="w-3 h-3" />
-                            <span>
-                              {new Intl.DateTimeFormat('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                              }).format(new Date(item.publishedAt))}
-                            </span>
+                          {/* Card Title & Actions */}
+                          <div className="flex items-start justify-between gap-1.5">
+                            <h5 className="text-[12px] font-medium text-[var(--ink)] line-clamp-2 leading-snug">
+                              {item.title}
+                            </h5>
+                            <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition shrink-0">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleOpenEdit(item)
+                                }}
+                                className="p-1 rounded-[4px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--canvas)] transition"
+                                title="Edit"
+                              >
+                                <Edit2 className="w-3 h-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setDeleteTarget(item)
+                                }}
+                                className="p-1 rounded-[4px] text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--canvas)] transition"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                )}
+
+                          {/* Target Keyword */}
+                          {item.targetKeyword && (
+                            <div className="flex items-center gap-1 text-[10px] text-[var(--muted)]">
+                              <Hash className="w-3 h-3 text-[var(--muted)] shrink-0" />
+                              <span className="text-[11px] font-medium text-[var(--ink)] truncate">
+                                {item.targetKeyword}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Links: Draft / Live URLs */}
+                          <div className="space-y-0.5">
+                            {item.draftUrl && (
+                              <a
+                                href={item.draftUrl.startsWith('http') ? item.draftUrl : `https://${item.draftUrl}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] text-[var(--accent)] hover:underline truncate max-w-full"
+                                title="Open Google Doc / Draft"
+                              >
+                                <FileText className="w-3 h-3 shrink-0" />
+                                <span className="truncate">Draft Doc</span>
+                                <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                              </a>
+                            )}
+                            {item.liveUrl && (
+                              <a
+                                href={item.liveUrl.startsWith('http') ? item.liveUrl : `https://${item.liveUrl}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] text-[var(--accent)] hover:underline truncate max-w-full"
+                              >
+                                <ExternalLink className="w-3 h-3 shrink-0" />
+                                <span className="truncate">{item.liveUrl.replace(/^https?:\/\//, '')}</span>
+                              </a>
+                            )}
+                          </div>
+
+                          {/* Deliverable Notes */}
+                          {item.notes && (
+                            <p className="text-[11px] text-[var(--muted)] line-clamp-2 bg-[var(--canvas)] p-1.5 rounded-[4px] border border-[var(--line)]">
+                              {item.notes}
+                            </p>
+                          )}
+
+                          {/* Footer: Writer & Published Date */}
+                          <div className="pt-1.5 border-t border-[var(--line)] flex items-center justify-between text-[10px] text-[var(--muted)]">
+                            <div className="flex items-center gap-1.5 truncate">
+                              <User className="w-3 h-3 shrink-0" />
+                              <span className="truncate">{item.writerName || 'Unassigned'}</span>
+                            </div>
+                            {item.publishedAt && (
+                              <div className="flex items-center gap-1 shrink-0 text-[var(--success)]">
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span>
+                                  {new Intl.DateTimeFormat('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                  }).format(new Date(item.publishedAt))}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })
+                  )}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+      )}
+
+      {/* Keyboard Navigation Helper Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[11px] text-[var(--muted)] select-none">
+        <div className="flex flex-wrap items-center gap-3">
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">J</kbd> / <kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">K</kbd> Navigate cards</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">1-5</kbd> Move column</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">Enter</kbd> Edit</span>
+          <span><kbd className="px-1.5 py-0.5 rounded bg-[var(--panel)] border border-[var(--line)] font-mono text-[10px] font-semibold text-[var(--ink)]">Esc</kbd> Clear focus</span>
+        </div>
+        {focusedId && (
+          <span className="text-[var(--accent)] font-medium">Card focused</span>
+        )}
       </div>
 
       {/* Create / Edit Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-          <div className="w-full max-w-lg bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-2xl space-y-5 my-8">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                {editingItem ? 'Edit Client Article Deliverable' : 'New Client Article Deliverable'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-lg bg-[var(--panel)] rounded-[8px] border border-[var(--line)] p-6 shadow-xl space-y-4 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+              <h3 className="text-[15px] font-medium text-[var(--ink)]">
+                {editingItem ? 'Edit client article deliverable' : 'New client article deliverable'}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                className="text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer text-sm"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-4 text-[13px]">
               {/* Client Selector (Roll-up mode only) */}
               {isRollup && (
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Client *
                   </label>
                   <select
@@ -523,7 +565,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                     onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
                     required
                     disabled={Boolean(editingItem)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     <option value="" disabled>Select client...</option>
                     {clientsList.map((c) => (
@@ -537,8 +579,8 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
 
               {/* Title */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Article Title *
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Article title *
                 </label>
                 <input
                   type="text"
@@ -546,28 +588,28 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g., 5 Signs You Need Immediate Dental Treatment"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-rose-500"
+                  className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Target Keyword */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Target Keyword
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Target keyword
                 </label>
                 <input
                   type="text"
                   value={formData.targetKeyword}
                   onChange={(e) => setFormData({ ...formData, targetKeyword: e.target.value })}
                   placeholder="e.g., emergency dentist signs"
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                  className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Draft Document URL */}
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
                     Draft URL (Google Doc / Notion)
                   </label>
                   <input
@@ -575,44 +617,44 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                     value={formData.draftUrl}
                     onChange={(e) => setFormData({ ...formData, draftUrl: e.target.value })}
                     placeholder="https://docs.google.com/..."
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 {/* Published Live URL */}
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Published Live URL
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
+                    Published live URL
                   </label>
                   <input
                     type="url"
                     value={formData.liveUrl}
                     onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
                     placeholder="https://clientdomain.com/blog/article"
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               {/* Deliverable Notes */}
               <div className="space-y-1.5">
-                <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                  Deliverable Notes / Outline
+                <label className="text-[12px] font-medium text-[var(--muted)]">
+                  Deliverable notes / outline
                 </label>
                 <textarea
                   rows={2}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="Outline notes, brief specifications, revision comments..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 resize-none"
+                  className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] resize-none focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Status */}
                 <div className="space-y-1.5">
-                  <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    Workflow Status
+                  <label className="text-[12px] font-medium text-[var(--muted)]">
+                    Workflow status
                   </label>
                   <select
                     value={formData.status}
@@ -622,7 +664,7 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                         status: e.target.value as any,
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                    className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     {STATUS_COLUMNS.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -635,25 +677,25 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                 {/* Writer Picker (Scoped to agency team) */}
                 {isStaff ? (
                   <div className="space-y-1.5">
-                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                      Assigned Writer
+                    <label className="text-[12px] font-medium text-[var(--muted)]">
+                      Assigned writer
                     </label>
-                    <div className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-rose-500" />
-                      <span>Assigned to You (automatically)</span>
+                    <div className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] font-medium text-[13px] flex items-center gap-2">
+                      <Users className="w-3.5 h-3.5 text-[var(--accent)]" />
+                      <span>Assigned to you</span>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    <label className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                      Assigned Writer
+                    <label className="text-[12px] font-medium text-[var(--muted)]">
+                      Assigned writer
                     </label>
                     <select
                       value={formData.writerId}
                       onChange={(e) => setFormData({ ...formData, writerId: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium cursor-pointer"
+                      className="w-full px-3 py-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[13px] text-[var(--ink)] font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                     >
-                      <option value="">Unassigned Writer</option>
+                      <option value="">Unassigned writer</option>
                       {team.map((t) => (
                         <option key={t.id} value={t.id}>
                           {t.name || t.email} ({t.role})
@@ -664,21 +706,21 @@ export function ArticlesBoard({ clientId, partnerId }: ArticlesBoardProps) {
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--line)]">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] border border-[var(--line)] hover:bg-[var(--canvas)] transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition shadow-sm cursor-pointer disabled:opacity-50"
+                  className="h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Saving...' : editingItem ? 'Save Changes' : 'Create Client Article'}
+                  {isSubmitting ? 'Saving...' : editingItem ? 'Save changes' : 'Create client article'}
                 </button>
               </div>
             </form>

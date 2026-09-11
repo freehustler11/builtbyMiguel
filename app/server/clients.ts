@@ -1,8 +1,20 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq, inArray, and, isNull, sql } from 'drizzle-orm'
-import { db, clients, reports, users, type Client } from '../db'
+import {
+  db,
+  clients,
+  reports,
+  users,
+  clientDataSources,
+  clientLocations,
+  type Client,
+  type ClientDataSource,
+  type ClientLocation,
+} from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { logActivity } from './activity-logger'
+
+export type DataSourceStatus = 'connected' | 'no_access' | 'not_applicable'
 
 export interface ClientWithReportCount extends Client {
   reportCount: number
@@ -10,6 +22,17 @@ export interface ClientWithReportCount extends Client {
     id: string
     name: string | null
     email: string
+  } | null
+  dataSources?: Record<'gsc' | 'ga4' | 'gbp', DataSourceStatus>
+  missingSources?: Array<'gsc' | 'ga4' | 'gbp'>
+  locationCount?: number
+  locations?: ClientLocation[]
+  latestReport?: {
+    id: string
+    periodStart: Date
+    periodEnd: Date
+    reportMonth: string
+    createdAt: Date
   } | null
 }
 
@@ -20,12 +43,22 @@ export interface PartnerSummary {
   isActive: boolean
 }
 
+export interface ClientDataSourceItem {
+  id: string
+  clientId: string
+  source: 'gsc' | 'ga4' | 'gbp'
+  status: DataSourceStatus
+  notes: string | null
+  createdAt: Date
+  updatedAt: Date
+}
+
 /**
- * Server Function: Get clients with report counts and partner info.
+ * Server Function: Get clients with report counts, partner info, and data source access status.
  * If user is a partner, scopes results strictly to clients where partner_id === auth.userId.
  */
 export const getClientsServerFn = createServerFn({ method: 'GET' })
-  .validator((data?: { partnerId?: string }) => data || {})
+  .validator((data?: { partnerId?: string; sort?: string; order?: 'asc' | 'desc' }) => data || {})
   .handler(
     async ({ data }): Promise<{ clients: ClientWithReportCount[]; partners: PartnerSummary[] }> => {
       const auth = await assertActiveSession()
@@ -34,6 +67,42 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
       }
 
       const isSuperadmin = auth.role === 'superadmin' || auth.role === 'admin'
+
+      // Helper to query and construct data sources map
+      const buildDataSourcesMaps = async (ids: string[]) => {
+        const dataSourcesMap: Record<string, Record<'gsc' | 'ga4' | 'gbp', DataSourceStatus>> = {}
+        const missingSourcesMap: Record<string, Array<'gsc' | 'ga4' | 'gbp'>> = {}
+        if (ids.length === 0) return { dataSourcesMap, missingSourcesMap }
+
+        const rows = await db
+          .select()
+          .from(clientDataSources)
+          .where(inArray(clientDataSources.clientId, ids))
+
+        for (const id of ids) {
+          dataSourcesMap[id] = { gsc: 'connected', ga4: 'connected', gbp: 'connected' }
+          missingSourcesMap[id] = []
+        }
+
+        for (const row of rows) {
+          const s = row.source as 'gsc' | 'ga4' | 'gbp'
+          const st = row.status as DataSourceStatus
+          if (dataSourcesMap[row.clientId]) {
+            dataSourcesMap[row.clientId][s] = st
+          }
+        }
+
+        for (const id of ids) {
+          const ds = dataSourcesMap[id]
+          const missing: Array<'gsc' | 'ga4' | 'gbp'> = []
+          if (ds.gsc === 'no_access') missing.push('gsc')
+          if (ds.ga4 === 'no_access') missing.push('ga4')
+          if (ds.gbp === 'no_access') missing.push('gbp')
+          missingSourcesMap[id] = missing
+        }
+
+        return { dataSourcesMap, missingSourcesMap }
+      }
 
       // 1. If user is a partner or partner employee, only fetch their assigned agency clients.
       // For partner and partner_employee, the partnerId argument is ignored entirely and scoped to getEffectivePartnerId(auth).
@@ -51,23 +120,81 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
 
         const clientIds = partnerClients.map((c) => c.id)
         const countMap: Record<string, number> = {}
+        const locCountMap: Record<string, number> = {}
+        const latestReportMap: Record<string, { id: string; periodStart: Date; periodEnd: Date; reportMonth: string; createdAt: Date }> = {}
         if (clientIds.length > 0) {
           const partnerReports = await db
-            .select({ clientId: reports.clientId })
+            .select({
+              id: reports.id,
+              clientId: reports.clientId,
+              periodStart: reports.periodStart,
+              periodEnd: reports.periodEnd,
+              reportMonth: reports.reportMonth,
+              createdAt: reports.createdAt,
+            })
             .from(reports)
             .where(inArray(reports.clientId, clientIds))
+            .orderBy(desc(reports.periodStart), desc(reports.createdAt))
+
           for (const r of partnerReports) {
             if (r.clientId) {
+              if (!latestReportMap[r.clientId]) {
+                latestReportMap[r.clientId] = {
+                  id: r.id,
+                  periodStart: r.periodStart,
+                  periodEnd: r.periodEnd,
+                  reportMonth: r.reportMonth,
+                  createdAt: r.createdAt,
+                }
+              }
               countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+            }
+          }
+
+          const partnerLocs = await db
+            .select({ clientId: clientLocations.clientId })
+            .from(clientLocations)
+            .where(and(inArray(clientLocations.clientId, clientIds), eq(clientLocations.isActive, true)))
+          for (const l of partnerLocs) {
+            if (l.clientId) {
+              locCountMap[l.clientId] = (locCountMap[l.clientId] || 0) + 1
             }
           }
         }
 
+        const { dataSourcesMap, missingSourcesMap } = await buildDataSourcesMaps(clientIds)
+
         const clientList: ClientWithReportCount[] = partnerClients.map((c) => ({
           ...c,
           reportCount: countMap[c.id] || 0,
+          locationCount: locCountMap[c.id] || 0,
           partner: null,
+          dataSources: dataSourcesMap[c.id] || { gsc: 'connected', ga4: 'connected', gbp: 'connected' },
+          missingSources: missingSourcesMap[c.id] || [],
+          latestReport: latestReportMap[c.id] || null,
         }))
+
+        if (data?.sort) {
+          const sortKey = data.sort
+          const isDesc = data.order === 'desc'
+          clientList.sort((a, b) => {
+            let comp = 0
+            if (sortKey === 'name' || sortKey === 'client') {
+              comp = (a.businessName || a.name || '').localeCompare(b.businessName || b.name || '')
+            } else if (sortKey === 'website') {
+              comp = (a.websiteUrl || '').localeCompare(b.websiteUrl || '')
+            } else if (sortKey === 'reports') {
+              comp = a.reportCount - b.reportCount
+            } else if (sortKey === 'last_report' || sortKey === 'lastReport') {
+              const timeA = a.latestReport ? new Date(a.latestReport.periodStart).getTime() : 0
+              const timeB = b.latestReport ? new Date(b.latestReport.periodStart).getTime() : 0
+              comp = timeA - timeB
+            } else if (sortKey === 'access') {
+              comp = (a.missingSources?.length || 0) - (b.missingSources?.length || 0)
+            }
+            return isDesc ? -comp : comp
+          })
+        }
 
         return { clients: clientList, partners: [] }
       }
@@ -88,14 +215,45 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
 
       const clientIds = allClients.map((c) => c.id)
       const countMap: Record<string, number> = {}
+      const locCountMap: Record<string, number> = {}
+      const latestReportMap: Record<string, { id: string; periodStart: Date; periodEnd: Date; reportMonth: string; createdAt: Date }> = {}
+
       if (clientIds.length > 0) {
         const matchingReports = await db
-          .select({ clientId: reports.clientId })
+          .select({
+            id: reports.id,
+            clientId: reports.clientId,
+            periodStart: reports.periodStart,
+            periodEnd: reports.periodEnd,
+            reportMonth: reports.reportMonth,
+            createdAt: reports.createdAt,
+          })
           .from(reports)
           .where(inArray(reports.clientId, clientIds))
+          .orderBy(desc(reports.periodStart), desc(reports.createdAt))
+
         for (const r of matchingReports) {
           if (r.clientId) {
+            if (!latestReportMap[r.clientId]) {
+              latestReportMap[r.clientId] = {
+                id: r.id,
+                periodStart: r.periodStart,
+                periodEnd: r.periodEnd,
+                reportMonth: r.reportMonth,
+                createdAt: r.createdAt,
+              }
+            }
             countMap[r.clientId] = (countMap[r.clientId] || 0) + 1
+          }
+        }
+
+        const matchingLocs = await db
+          .select({ clientId: clientLocations.clientId })
+          .from(clientLocations)
+          .where(and(inArray(clientLocations.clientId, clientIds), eq(clientLocations.isActive, true)))
+        for (const l of matchingLocs) {
+          if (l.clientId) {
+            locCountMap[l.clientId] = (locCountMap[l.clientId] || 0) + 1
           }
         }
       }
@@ -111,16 +269,52 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
         .where(and(eq(users.role, 'partner'), isNull(users.deletedAt)))
         .orderBy(sql`coalesce(lower(${users.name}), lower(${users.email})) asc nulls last`)
 
-      const partnerMap: Record<string, { id: string; name: string | null; email: string }> = {}
-      for (const p of partnerUsers) {
-        partnerMap[p.id] = { id: p.id, name: p.name, email: p.email }
-      }
+      const partnerMap = new Map(partnerUsers.map((p) => [p.id, p]))
 
-      const clientList: ClientWithReportCount[] = allClients.map((c) => ({
-        ...c,
-        reportCount: countMap[c.id] || 0,
-        partner: c.partnerId ? partnerMap[c.partnerId] || null : null,
-      }))
+      const { dataSourcesMap, missingSourcesMap } = await buildDataSourcesMaps(clientIds)
+
+      const clientList: ClientWithReportCount[] = allClients.map((c) => {
+        const partner = c.partnerId ? partnerMap.get(c.partnerId) || null : null
+        return {
+          ...c,
+          reportCount: countMap[c.id] || 0,
+          locationCount: locCountMap[c.id] || 0,
+          partner: partner
+            ? {
+                id: partner.id,
+                name: partner.name,
+                email: partner.email,
+              }
+            : null,
+          dataSources: dataSourcesMap[c.id] || { gsc: 'connected', ga4: 'connected', gbp: 'connected' },
+          missingSources: missingSourcesMap[c.id] || [],
+          latestReport: latestReportMap[c.id] || null,
+        }
+      })
+
+      if (data?.sort) {
+        const sortKey = data.sort
+        const isDesc = data.order === 'desc'
+        clientList.sort((a, b) => {
+          let comp = 0
+          if (sortKey === 'name' || sortKey === 'client') {
+            comp = (a.businessName || a.name || '').localeCompare(b.businessName || b.name || '')
+          } else if (sortKey === 'website') {
+            comp = (a.websiteUrl || '').localeCompare(b.websiteUrl || '')
+          } else if (sortKey === 'reports') {
+            comp = a.reportCount - b.reportCount
+          } else if (sortKey === 'last_report' || sortKey === 'lastReport') {
+            const timeA = a.latestReport ? new Date(a.latestReport.periodStart).getTime() : 0
+            const timeB = b.latestReport ? new Date(b.latestReport.periodStart).getTime() : 0
+            comp = timeA - timeB
+          } else if (sortKey === 'access') {
+            comp = (a.missingSources?.length || 0) - (b.missingSources?.length || 0)
+          } else if (sortKey === 'agency') {
+            comp = (a.partner?.name || a.partner?.email || '').localeCompare(b.partner?.name || b.partner?.email || '')
+          }
+          return isDesc ? -comp : comp
+        })
+      }
 
       return {
         clients: clientList,
@@ -130,7 +324,7 @@ export const getClientsServerFn = createServerFn({ method: 'GET' })
   )
 
 /**
- * Server Function: Get a single client by ID with their reports
+ * Server Function: Get a single client by ID with their reports and data sources
  */
 export const getClientByIdServerFn = createServerFn({ method: 'GET' })
   .validator((data: { id: string }) => {
@@ -165,8 +359,172 @@ export const getClientByIdServerFn = createServerFn({ method: 'GET' })
       .where(eq(reports.clientId, data.id))
       .orderBy(desc(reports.createdAt))
 
-    return { client, reports: clientReports }
+    const rawDataSources = await db
+      .select()
+      .from(clientDataSources)
+      .where(eq(clientDataSources.clientId, data.id))
+
+    // Ensure all 3 sources exist in dataSources map
+    const dataSources: Record<'gsc' | 'ga4' | 'gbp', DataSourceStatus> = {
+      gsc: 'connected',
+      ga4: 'connected',
+      gbp: 'connected',
+    }
+    for (const r of rawDataSources) {
+      if (['gsc', 'ga4', 'gbp'].includes(r.source)) {
+        dataSources[r.source as 'gsc' | 'ga4' | 'gbp'] = r.status as DataSourceStatus
+      }
+    }
+
+    const locations = await db
+      .select()
+      .from(clientLocations)
+      .where(eq(clientLocations.clientId, data.id))
+      .orderBy(clientLocations.name)
+
+    return { client, reports: clientReports, dataSources, rawDataSources, locations }
   })
+
+/**
+ * Server Function: Get full data source records with notes for a client
+ */
+export const getClientDataSourcesServerFn = createServerFn({ method: 'GET' })
+  .validator((data: { clientId: string }) => {
+    if (!data.clientId) throw new Error('Client ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Client accounts cannot view data source configuration')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const [targetClient] = await db
+      .select()
+      .from(clients)
+      .where(
+        effectivePartnerId
+          ? and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt))
+          : and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt))
+      )
+    if (!targetClient) {
+      throw new Error(effectivePartnerId ? 'Unauthorized: Client does not belong to your partner account' : 'Client not found')
+    }
+
+    const rows = await db
+      .select()
+      .from(clientDataSources)
+      .where(eq(clientDataSources.clientId, targetClient.id))
+
+    const sourcesMap: Record<string, ClientDataSource> = {}
+    for (const r of rows) {
+      sourcesMap[r.source] = r
+    }
+
+    const standardSources: Array<'gsc' | 'ga4' | 'gbp'> = ['gsc', 'ga4', 'gbp']
+    const result: ClientDataSource[] = []
+
+    for (const s of standardSources) {
+      if (sourcesMap[s]) {
+        result.push(sourcesMap[s])
+      } else {
+        const now = new Date()
+        const [inserted] = await db
+          .insert(clientDataSources)
+          .values({
+            clientId: targetClient.id,
+            source: s,
+            status: 'connected',
+            notes: null,
+            createdAt: now,
+            updatedAt: now,
+          })
+          .onConflictDoNothing()
+          .returning()
+        if (inserted) {
+          result.push(inserted)
+        } else {
+          const [existing] = await db
+            .select()
+            .from(clientDataSources)
+            .where(and(eq(clientDataSources.clientId, targetClient.id), eq(clientDataSources.source, s)))
+          if (existing) result.push(existing)
+        }
+      }
+    }
+
+    return { dataSources: result }
+  })
+
+/**
+ * Server Function: Update data source status & notes for a client
+ * Staff (partner_employee), partners, and superadmins are allowed.
+ */
+export const updateClientDataSourceServerFn = createServerFn({ method: 'POST' })
+  .validator(
+    (data: {
+      clientId: string
+      source: 'gsc' | 'ga4' | 'gbp'
+      status: 'connected' | 'no_access' | 'not_applicable'
+      notes?: string | null
+    }) => {
+      if (!data.clientId) throw new Error('Client ID is required')
+      if (!['gsc', 'ga4', 'gbp'].includes(data.source)) throw new Error('Invalid data source')
+      if (!['connected', 'no_access', 'not_applicable'].includes(data.status)) throw new Error('Invalid status')
+      return data
+    }
+  )
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Staff or admin access required')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const [targetClient] = await db
+      .select()
+      .from(clients)
+      .where(
+        effectivePartnerId
+          ? and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt))
+          : and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt))
+      )
+    if (!targetClient) {
+      throw new Error(effectivePartnerId ? 'Unauthorized: Client does not belong to your partner account' : 'Client not found')
+    }
+
+    const now = new Date()
+    const [upserted] = await db
+      .insert(clientDataSources)
+      .values({
+        clientId: targetClient.id,
+        source: data.source,
+        status: data.status,
+        notes: data.notes?.trim() || null,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .onConflictDoUpdate({
+        target: [clientDataSources.clientId, clientDataSources.source],
+        set: {
+          status: data.status,
+          notes: data.notes?.trim() || null,
+          updatedAt: now,
+        },
+      })
+      .returning()
+
+    await logActivity({
+      userId: auth.userId || null,
+      userEmail: auth.email || null,
+      role: auth.role,
+      action: 'update_client_data_source',
+    })
+
+    return { success: true, dataSource: upserted }
+  })
+
 
 /**
  * Server Function: Create a new client
@@ -341,3 +699,205 @@ export const deleteClientServerFn = createServerFn({ method: 'POST' })
 
     return { success: true }
   })
+
+/**
+ * Server Function: Get all locations for a client
+ */
+export const getClientLocationsServerFn = createServerFn({ method: 'GET' })
+  .validator((data: { clientId: string }) => {
+    if (!data.clientId) throw new Error('Client ID is required')
+    return data
+  })
+  .handler(async ({ data }): Promise<{ locations: ClientLocation[] }> => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client' && auth.clientId !== data.clientId) {
+      throw new Error('Unauthorized access to client locations')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const [targetClient] = await db
+      .select()
+      .from(clients)
+      .where(
+        effectivePartnerId
+          ? and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt))
+          : and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt))
+      )
+    if (!targetClient) {
+      throw new Error('Client not found')
+    }
+
+    const locs = await db
+      .select()
+      .from(clientLocations)
+      .where(eq(clientLocations.clientId, targetClient.id))
+      .orderBy(clientLocations.name)
+
+    return { locations: locs }
+  })
+
+/**
+ * Server Function: Create a location for a client (Staff and above)
+ */
+export const createClientLocationServerFn = createServerFn({ method: 'POST' })
+  .validator((data: {
+    clientId: string
+    name: string
+    address?: string
+    gbpPlaceId?: string
+    accessStatus?: 'connected' | 'no_access' | 'not_applicable'
+    accessNotes?: string
+    isActive?: boolean
+  }) => {
+    if (!data.clientId?.trim()) throw new Error('Client ID is required')
+    if (!data.name?.trim()) throw new Error('Location name is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Staff or partner role required')
+    }
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    const [targetClient] = await db
+      .select()
+      .from(clients)
+      .where(
+        effectivePartnerId
+          ? and(eq(clients.id, data.clientId.trim()), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt))
+          : and(eq(clients.id, data.clientId.trim()), isNull(clients.deletedAt))
+      )
+    if (!targetClient) throw new Error('Client not found')
+
+    const now = new Date()
+    const [created] = await db
+      .insert(clientLocations)
+      .values({
+        clientId: targetClient.id,
+        name: data.name.trim(),
+        address: data.address?.trim() || null,
+        gbpPlaceId: data.gbpPlaceId?.trim() || null,
+        accessStatus: data.accessStatus || 'connected',
+        accessNotes: data.accessNotes?.trim() || null,
+        isActive: data.isActive !== undefined ? data.isActive : true,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning()
+
+    await logActivity({
+      userId: auth.userId || null,
+      userEmail: auth.email || null,
+      role: auth.role,
+      action: 'create_client_location',
+    })
+
+    return { success: true, location: created }
+  })
+
+/**
+ * Server Function: Update a client location (Staff and above)
+ */
+export const updateClientLocationServerFn = createServerFn({ method: 'POST' })
+  .validator((data: {
+    id: string
+    name?: string
+    address?: string | null
+    gbpPlaceId?: string | null
+    accessStatus?: 'connected' | 'no_access' | 'not_applicable'
+    accessNotes?: string | null
+    isActive?: boolean
+  }) => {
+    if (!data.id?.trim()) throw new Error('Location ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Staff or partner role required')
+    }
+
+    const [existing] = await db
+      .select()
+      .from(clientLocations)
+      .where(eq(clientLocations.id, data.id.trim()))
+    if (!existing) throw new Error('Location not found')
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      const [targetClient] = await db
+        .select()
+        .from(clients)
+        .where(and(eq(clients.id, existing.clientId), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
+      if (!targetClient) {
+        throw new Error('Unauthorized: Location belongs to another agency client')
+      }
+    }
+
+    const updateFields: Record<string, any> = {
+      updatedAt: new Date(),
+    }
+    if (data.name !== undefined) {
+      if (!data.name.trim()) throw new Error('Location name cannot be empty')
+      updateFields.name = data.name.trim()
+    }
+    if (data.address !== undefined) updateFields.address = data.address?.trim() || null
+    if (data.gbpPlaceId !== undefined) updateFields.gbpPlaceId = data.gbpPlaceId?.trim() || null
+    if (data.accessStatus !== undefined) updateFields.accessStatus = data.accessStatus
+    if (data.accessNotes !== undefined) updateFields.accessNotes = data.accessNotes?.trim() || null
+    if (data.isActive !== undefined) updateFields.isActive = data.isActive
+
+    const [updated] = await db
+      .update(clientLocations)
+      .set(updateFields)
+      .where(eq(clientLocations.id, existing.id))
+      .returning()
+
+    return { success: true, location: updated }
+  })
+
+/**
+ * Server Function: Delete / deactivate a location
+ */
+export const deleteClientLocationServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { id: string }) => {
+    if (!data.id?.trim()) throw new Error('Location ID is required')
+    return data
+  })
+  .handler(async ({ data }) => {
+    const auth = await assertActiveSession()
+    if (auth.role === 'client') {
+      throw new Error('Unauthorized: Staff or partner role required')
+    }
+
+    const [existing] = await db
+      .select()
+      .from(clientLocations)
+      .where(eq(clientLocations.id, data.id.trim()))
+    if (!existing) throw new Error('Location not found')
+
+    const effectivePartnerId = getEffectivePartnerId(auth)
+    if (effectivePartnerId) {
+      const [targetClient] = await db
+        .select()
+        .from(clients)
+        .where(and(eq(clients.id, existing.clientId), eq(clients.partnerId, effectivePartnerId), isNull(clients.deletedAt)))
+      if (!targetClient) {
+        throw new Error('Unauthorized: Location belongs to another agency client')
+      }
+    }
+
+    // Attempt delete; if restricted by location_monthly_metrics foreign key, soft-deactivate by setting isActive = false
+    try {
+      await db.delete(clientLocations).where(eq(clientLocations.id, existing.id))
+    } catch {
+      await db
+        .update(clientLocations)
+        .set({ isActive: false, updatedAt: new Date() })
+        .where(eq(clientLocations.id, existing.id))
+    }
+
+    return { success: true }
+  })
+

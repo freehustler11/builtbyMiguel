@@ -29,14 +29,12 @@ export const Route = createFileRoute('/login')({
           to: search.redirect && search.redirect.startsWith('/portal') ? search.redirect : '/portal',
         })
       }
-      if (auth.role === 'partner' || auth.role === 'partner_employee') {
+      if (auth.role === 'partner_employee') {
         throw redirect({
-          to: search.redirect && (search.redirect.startsWith('/admin/clients') || search.redirect.startsWith('/admin/reports') || search.redirect.startsWith('/admin/media'))
-            ? search.redirect
-            : '/admin/clients',
+          to: search.redirect && !search.redirect.startsWith('/portal') ? search.redirect : '/my-work',
         })
       }
-      // superadmin
+      // superadmin & partner
       throw redirect({
         to: search.redirect && !search.redirect.startsWith('/portal') ? search.redirect : '/admin',
       })
@@ -94,14 +92,12 @@ function LoginPage() {
           navigate({
             to: redirectTo && redirectTo.startsWith('/portal') ? redirectTo : '/portal',
           })
-        } else if (userRole === 'partner' || userRole === 'partner_employee') {
+        } else if (userRole === 'partner_employee') {
           navigate({
-            to: redirectTo && (redirectTo.startsWith('/admin/clients') || redirectTo.startsWith('/admin/reports') || redirectTo.startsWith('/admin/media'))
-              ? redirectTo
-              : '/admin/clients',
+            to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/my-work',
           })
         } else {
-          // superadmin
+          // superadmin & partner
           navigate({
             to: redirectTo && !redirectTo.startsWith('/portal') ? redirectTo : '/admin',
           })

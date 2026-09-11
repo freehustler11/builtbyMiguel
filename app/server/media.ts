@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, isNull, sql } from 'drizzle-orm'
+import { and, desc, eq, isNull, sql } from 'drizzle-orm'
 import { db, media, users, type Media } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { uploadFileToStorage, deleteFileFromStorage, getStorageProviderInfo } from './storage'
@@ -8,15 +8,20 @@ export interface MediaItemWithPartner extends Media {
   partnerName?: string | null
 }
 
+export type MediaPurpose = 'site' | 'client' | 'report'
+
 /**
- * Server Function: Get uploaded media with filtering, search, and partner isolation.
+ * Server Function: Get uploaded media with filtering, search, purpose, and partner isolation.
  * - Partners and employees can ONLY view their agency's uploaded media (media.partnerId === effectivePartnerId).
- * - Superadmins can view all media or filter by partnerId ('all' | 'direct' | partner UUID).
+ * - Superadmins default to own direct media (media.partnerId IS NULL), or can filter by specific partnerId or view 'all'.
+ * - Contextual filtering: supports purpose ('all' | 'site' | 'client' | 'report') and clientId.
  */
 export const getMediaServerFn = createServerFn({ method: 'GET' })
   .validator(
     (data?: {
       type?: 'all' | 'images' | 'documents'
+      purpose?: 'all' | 'site' | 'client' | 'report'
+      clientId?: string
       q?: string
       partnerId?: string
     }) => {
@@ -29,41 +34,43 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
       throw new Error('Unauthorized: Admin or Partner access required')
     }
 
-    const { type = 'all', q, partnerId } = data || {}
+    const { type = 'all', purpose = 'all', clientId, q, partnerId } = data || {}
 
-    let items: Media[]
+    // Build conditions
+    const conditions: any[] = []
 
     const effectivePartnerId = getEffectivePartnerId(auth)
     if (effectivePartnerId) {
       // Partner agency / employee: strictly scoped to files where partner_id === effectivePartnerId
-      items = await db
-        .select()
-        .from(media)
-        .where(eq(media.partnerId, effectivePartnerId))
-        .orderBy(sql`${media.createdAt} desc nulls last`)
+      // Superadmin-supplied partnerId parameter is IGNORED for partner/employee as per STANDING RULES.
+      conditions.push(eq(media.partnerId, effectivePartnerId))
     } else {
-      // Superadmin: can view all, direct agency files, or filter by specific partner
-      if (partnerId && partnerId !== 'all') {
-        if (partnerId === 'direct') {
-          items = await db
-            .select()
-            .from(media)
-            .where(isNull(media.partnerId))
-            .orderBy(sql`${media.createdAt} desc nulls last`)
-        } else {
-          items = await db
-            .select()
-            .from(media)
-            .where(eq(media.partnerId, partnerId))
-            .orderBy(sql`${media.createdAt} desc nulls last`)
-        }
+      // Superadmin: default to OWN media (partnerId IS NULL) unless 'all' or specific partner UUID is requested
+      if (partnerId === 'all') {
+        // No partnerId filter, view everything
+      } else if (partnerId && partnerId !== 'direct') {
+        conditions.push(eq(media.partnerId, partnerId))
       } else {
-        items = await db
-          .select()
-          .from(media)
-          .orderBy(sql`${media.createdAt} desc nulls last`)
+        // Default ('direct' or undefined): superadmin's own platform marketing assets
+        conditions.push(isNull(media.partnerId))
       }
     }
+
+    // Filter by purpose if specified and not 'all'
+    if (purpose && purpose !== 'all') {
+      conditions.push(eq(media.purpose, purpose))
+    }
+
+    // Filter by client if specified
+    if (clientId) {
+      conditions.push(eq(media.clientId, clientId))
+    }
+
+    let items: Media[] = await db
+      .select()
+      .from(media)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(sql`${media.createdAt} desc nulls last`)
 
     // Filter by type
     if (type === 'images') {
@@ -99,7 +106,7 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
   })
 
 /**
- * Server Function: Upload a new media file (Base64 payload) with ownership tracking
+ * Server Function: Upload a new media file (Base64 payload) with ownership, client, and purpose tracking
  */
 export const uploadMediaServerFn = createServerFn({ method: 'POST' })
   .validator(
@@ -108,6 +115,8 @@ export const uploadMediaServerFn = createServerFn({ method: 'POST' })
       mimeType: string
       base64: string
       partnerId?: string | null
+      clientId?: string | null
+      purpose?: MediaPurpose
     }) => {
       if (!data || !data.filename || !data.base64) {
         throw new Error('Invalid file payload')
@@ -142,6 +151,9 @@ export const uploadMediaServerFn = createServerFn({ method: 'POST' })
       partnerId = data.partnerId
     }
 
+    const clientId = data.clientId || null
+    const purpose = data.purpose || 'site'
+
     // Upload to configured storage backend (S3 / Supabase / Local)
     const { fileUrl } = await uploadFileToStorage({
       filename: data.filename,
@@ -159,6 +171,8 @@ export const uploadMediaServerFn = createServerFn({ method: 'POST' })
         fileSize: buffer.length,
         uploadedBy,
         partnerId,
+        clientId,
+        purpose,
       })
       .returning()
 

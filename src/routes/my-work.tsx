@@ -15,7 +15,7 @@ import {
   Filter,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../lib/auth'
-import { AdminNav } from '../components/AdminNav'
+import { AdminShell } from '../components/AdminShell'
 import {
   getMyWorkServerFn,
   updateTaskStatusServerFn,
@@ -120,76 +120,51 @@ function MyWorkPage() {
   const userDisplayName = auth.email ? auth.email.split('@')[0] : 'Team Member'
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100">
+    <AdminShell
+      activeTab="my-work"
+      title={`My work — ${userDisplayName}`}
+      description="Everything assigned to your account across all clients: tasks, landing page deliverables, and articles."
+      userRole={auth?.role}
+      userEmail={auth?.email}
+      userName={auth?.name}
+      actions={
+        <div className="flex items-center gap-3">
+          <Link
+            to="/admin/workspace"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition"
+          >
+            <span>Agency workspace</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      }
+    >
       <ToastContainer
         toasts={toasts}
         onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Admin Navigation Bar */}
-        <AdminNav
-          activeTab="my-work"
-          title={`My Work · ${userDisplayName}`}
-          description="Everything assigned to your account across all clients: tasks, landing page deliverables, and articles."
-          userRole={auth?.role}
-          actions={
-            <div className="flex items-center gap-3">
-              <Link
-                to="/admin/workspace"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-sm transition"
-              >
-                <span>Agency Workspace</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          }
-        />
-
-        {/* Metric Counters Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-1">
-            <span className="text-xs font-mono text-slate-400 block">Total Assigned</span>
-            <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-              {data.counts.totalAssigned}
-            </div>
-            <span className="text-[11px] text-slate-500 font-mono">deliverables across CRM</span>
-          </div>
-
-          <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-1">
-            <span className="text-xs font-mono text-amber-500 block">Pending Tasks</span>
-            <div className="text-2xl font-black text-amber-600 dark:text-amber-400 font-mono">
-              {data.counts.pendingTasks}
-            </div>
-            <span className="text-[11px] text-slate-500 font-mono">action items to do</span>
-          </div>
-
-          <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-1">
-            <span className="text-xs font-mono text-blue-500 block">In-Progress Work</span>
-            <div className="text-2xl font-black text-blue-600 dark:text-blue-400 font-mono">
-              {data.counts.inProgressDeliverables}
-            </div>
-            <span className="text-[11px] text-slate-500 font-mono">pages, drafts & tasks</span>
-          </div>
-
-          <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xs space-y-1">
-            <span className="text-xs font-mono text-emerald-500 block">Live / Completed</span>
-            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
-              {data.counts.completedDeliverables}
-            </div>
-            <span className="text-[11px] text-slate-500 font-mono">delivered & signed off</span>
-          </div>
+      <div className="space-y-3.5">
+        {/* Metric Inline Strip */}
+        <div className="flex flex-wrap items-center gap-2 text-[13px] text-[var(--muted)] px-3.5 py-2 rounded-[6px] bg-[var(--panel)] border border-[var(--line)]">
+          <span><strong className="text-[var(--ink)] font-semibold tabular-nums">{data.counts.totalAssigned}</strong> assigned deliverables</span>
+          <span className="opacity-40">·</span>
+          <span><strong className="text-amber-600 dark:text-amber-400 font-semibold tabular-nums">{data.counts.pendingTasks}</strong> pending tasks</span>
+          <span className="opacity-40">·</span>
+          <span><strong className="text-blue-600 dark:text-blue-400 font-semibold tabular-nums">{data.counts.inProgressDeliverables}</strong> in progress</span>
+          <span className="opacity-40">·</span>
+          <span><strong className="text-emerald-600 dark:text-emerald-400 font-semibold tabular-nums">{data.counts.completedDeliverables}</strong> completed</span>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-inner w-fit">
+        <div className="flex items-center gap-1 p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] w-fit">
           <button
             type="button"
             onClick={() => setActiveFilter('all')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-[4px] text-[12px] font-medium transition-all cursor-pointer ${
               activeFilter === 'all'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-2xs'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
             All Items ({data.counts.totalAssigned})
@@ -197,10 +172,10 @@ function MyWorkPage() {
           <button
             type="button"
             onClick={() => setActiveFilter('tasks')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-[4px] text-[12px] font-medium transition-all cursor-pointer ${
               activeFilter === 'tasks'
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] shadow-2xs'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
             Tasks ({data.tasks.length})
@@ -468,6 +443,6 @@ function MyWorkPage() {
           </div>
         )}
       </div>
-    </div>
+    </AdminShell>
   )
 }
