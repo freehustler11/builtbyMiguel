@@ -960,8 +960,8 @@
     "semantic_hash": "fc37826fd2ce00be74d9b5a10316b04f"
   },
   "src/routes/admin/index.tsx": {
-    "mtime": 1789135871.318037,
-    "seen": 1789167154.5199223,
+    "mtime": 1789122903.441665,
+    "seen": 1789123995.0728183,
     "ast_hash": "942d035775a1d881fc1a23350918c086",
     "semantic_hash": ""
   },
@@ -2778,8 +2778,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1789167011.757939,
-    "seen": 1789167154.524583,
+    "mtime": 1789133868.035889,
+    "seen": 1789133968.0010767,
     "ast_hash": "e6f7f8c23f02e1c7b884503a9e17e018",
     "semantic_hash": ""
   },
@@ -2838,9 +2838,9 @@
     "semantic_hash": ""
   },
   "app/server/media.ts": {
-    "mtime": 1789166721.6360598,
-    "seen": 1789167154.5194511,
-    "ast_hash": "41d1c1f41bdce043b9dbaf51c03d98d9",
+    "mtime": 1789093172.2969267,
+    "seen": 1789094453.3036308,
+    "ast_hash": "9269b5ba651220249d235a98fab436b5",
     "semantic_hash": ""
   },
   "app/server/storage.ts": {
@@ -2856,9 +2856,9 @@
     "semantic_hash": ""
   },
   "src/routes/admin/media.tsx": {
-    "mtime": 1789166601.5477164,
-    "seen": 1789167154.5199275,
-    "ast_hash": "855c6fe0197eae1779b5cdbd7275223d",
+    "mtime": 1789133354.981814,
+    "seen": 1789133967.9984825,
+    "ast_hash": "a13f794408227e9efde481a32d8b5fe8",
     "semantic_hash": ""
   },
   "src/server/media.ts": {
@@ -2916,9 +2916,9 @@
     "semantic_hash": ""
   },
   "src/routes/admin/clients.tsx": {
-    "mtime": 1789135871.2995923,
-    "seen": 1789167154.5199103,
-    "ast_hash": "4f6913f61e9978c18344060161ac789e",
+    "mtime": 1789133575.9860692,
+    "seen": 1789133967.998476,
+    "ast_hash": "e0f92621140bfbbd1ce32aa9846f4297",
     "semantic_hash": ""
   },
   "src/routes/admin/reports/$id.tsx": {
@@ -3204,9 +3204,9 @@
     "semantic_hash": ""
   },
   "app/server/crm.ts": {
-    "mtime": 1789135871.3156898,
-    "seen": 1789167154.5194273,
-    "ast_hash": "a642e9f981e74023aa4c102562e73c5f",
+    "mtime": 1789133519.8842144,
+    "seen": 1789133967.9983127,
+    "ast_hash": "2f633835bbd62ca4ce89b047eeef152f",
     "semantic_hash": ""
   },
   "src/components/crm/ArticlesBoard.tsx": {
@@ -3348,9 +3348,9 @@
     "semantic_hash": ""
   },
   "app/server/workflow.ts": {
-    "mtime": 1789135871.3101134,
-    "seen": 1789167154.5195138,
-    "ast_hash": "3a213f781ef8e368b438e9a4b51523f3",
+    "mtime": 1789132822.0353532,
+    "seen": 1789133967.9983451,
+    "ast_hash": "43a415df0149c9d7bdac7996640c5de7",
     "semantic_hash": ""
   },
   "src/components/crm/MonthlyKpiGrid.tsx": {

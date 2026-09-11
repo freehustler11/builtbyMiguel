@@ -674,6 +674,35 @@ function AdminClientsPage() {
         ]
       : []),
     {
+      id: 'assigned_staff',
+      header: 'Assigned Staff',
+      sortKey: 'assigned_staff',
+      accessor: (c: ClientWithReportCount) => (
+        <div className="min-w-0 max-w-[170px]">
+          {c.assignedStaff ? (
+            <div className="flex items-center gap-1.5">
+              {c.assignedStaff.avatarUrl ? (
+                <img
+                  src={c.assignedStaff.avatarUrl}
+                  alt=""
+                  className="w-4 h-4 rounded-full object-cover border border-[var(--line)] shrink-0"
+                />
+              ) : (
+                <div className="w-4 h-4 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center font-bold text-[8px] shrink-0 border border-[var(--accent)]/20">
+                  {(c.assignedStaff.name || c.assignedStaff.email).slice(0, 2).toUpperCase()}
+                </div>
+              )}
+              <span className="text-[12px] font-medium text-[var(--ink)] truncate" title={c.assignedStaff.name || c.assignedStaff.email}>
+                {c.assignedStaff.name || c.assignedStaff.email}
+              </span>
+            </div>
+          ) : (
+            <span className="text-[11px] text-[var(--muted)] italic">Unassigned</span>
+          )}
+        </div>
+      ),
+    },
+    {
       id: 'website',
       header: 'Website',
       sortKey: 'website',

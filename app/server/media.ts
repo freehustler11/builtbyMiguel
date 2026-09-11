@@ -22,6 +22,7 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
       type?: 'all' | 'images' | 'documents'
       purpose?: 'all' | 'site' | 'client' | 'report'
       clientId?: string
+      strictClientOnly?: boolean
       q?: string
       partnerId?: string
     }) => {
@@ -34,7 +35,7 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
       throw new Error('Unauthorized: Admin or Partner access required')
     }
 
-    const { type = 'all', purpose = 'all', clientId, q, partnerId } = data || {}
+    const { type = 'all', purpose = 'all', clientId, strictClientOnly, q, partnerId } = data || {}
 
     // Build conditions
     const conditions: any[] = []
@@ -61,8 +62,8 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
       conditions.push(eq(media.purpose, purpose))
     }
 
-    // Filter by client if specified
-    if (clientId) {
+    // Filter by client if strictly requested
+    if (clientId && strictClientOnly) {
       conditions.push(eq(media.clientId, clientId))
     }
 
@@ -71,6 +72,14 @@ export const getMediaServerFn = createServerFn({ method: 'GET' })
       .from(media)
       .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(sql`${media.createdAt} desc nulls last`)
+
+    if (clientId && !strictClientOnly) {
+      items.sort((a, b) => {
+        if (a.clientId === clientId && b.clientId !== clientId) return -1
+        if (b.clientId === clientId && a.clientId !== clientId) return 1
+        return 0
+      })
+    }
 
     // Filter by type
     if (type === 'images') {

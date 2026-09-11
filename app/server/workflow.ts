@@ -588,7 +588,7 @@ export const getPublishingQueueServerFn = createServerFn({ method: 'GET' })
             ...clientFilter,
             or(eq(landingPages.status, 'client_review'), eq(landingPages.status, 'design')),
             isStaff && auth.userId
-              ? or(eq(landingPages.assignedTo, auth.userId), eq(clients.assignedStaffId, auth.userId))
+              ? eq(landingPages.assignedTo, auth.userId)
               : sql`1=1`
           )
         )
@@ -638,7 +638,7 @@ export const getPublishingQueueServerFn = createServerFn({ method: 'GET' })
             ...clientFilter,
             or(eq(clientArticles.status, 'review'), eq(clientArticles.status, 'approved')),
             isStaff && auth.userId
-              ? or(eq(clientArticles.writerId, auth.userId), eq(clients.assignedStaffId, auth.userId))
+              ? eq(clientArticles.writerId, auth.userId)
               : sql`1=1`
           )
         )
@@ -689,7 +689,10 @@ export const getPublishingQueueServerFn = createServerFn({ method: 'GET' })
                   eq(tasks.partnerId, effectivePartnerId),
                   and(isNotNull(tasks.clientId), ...clientFilter)
                 )
-              : undefined
+              : undefined,
+            isStaff && auth.userId
+              ? eq(tasks.assignedTo, auth.userId)
+              : sql`1=1`
           )
         )
 

@@ -89,6 +89,7 @@ export const getLandingPagesServerFn = createServerFn({ method: 'GET' })
     }
 
     const effectivePartnerId = resolveQueryPartnerId(auth, data?.partnerId)
+    const isStaff = auth.role === 'partner_employee'
 
     if (data?.clientId) {
       await assertClientAccess(data.clientId, auth, effectivePartnerId)
@@ -125,7 +126,10 @@ export const getLandingPagesServerFn = createServerFn({ method: 'GET' })
             ? eq(landingPages.clientId, data.clientId)
             : effectivePartnerId
               ? eq(clients.partnerId, effectivePartnerId)
-              : sql`1=1`
+              : sql`1=1`,
+          isStaff && auth.userId
+            ? eq(landingPages.assignedTo, auth.userId)
+            : sql`1=1`
         )
       )
       .orderBy(desc(landingPages.createdAt))
@@ -348,6 +352,7 @@ export const getClientArticlesServerFn = createServerFn({ method: 'GET' })
     }
 
     const effectivePartnerId = resolveQueryPartnerId(auth, data?.partnerId)
+    const isStaff = auth.role === 'partner_employee'
 
     if (data?.clientId) {
       await assertClientAccess(data.clientId, auth, effectivePartnerId)
@@ -383,7 +388,10 @@ export const getClientArticlesServerFn = createServerFn({ method: 'GET' })
             ? eq(clientArticles.clientId, data.clientId)
             : effectivePartnerId
               ? eq(clients.partnerId, effectivePartnerId)
-              : sql`1=1`
+              : sql`1=1`,
+          isStaff && auth.userId
+            ? eq(clientArticles.writerId, auth.userId)
+            : sql`1=1`
         )
       )
       .orderBy(desc(clientArticles.createdAt))
@@ -867,6 +875,7 @@ export const getTasksServerFn = createServerFn({ method: 'GET' })
     }
 
     const effectivePartnerId = resolveQueryPartnerId(auth, data?.partnerId)
+    const isStaff = auth.role === 'partner_employee'
 
     if (data?.clientId) {
       await assertClientAccess(data.clientId, auth, effectivePartnerId)
@@ -905,7 +914,8 @@ export const getTasksServerFn = createServerFn({ method: 'GET' })
           // If task has a clientId, client must not be soft-deleted
           or(isNull(tasks.clientId), isNotNull(clients.id)),
           data?.category && data.category !== 'all' ? eq(tasks.category, data.category as any) : sql`1=1`,
-          data?.status ? eq(tasks.status, data.status) : sql`1=1`
+          data?.status ? eq(tasks.status, data.status) : sql`1=1`,
+          isStaff && auth.userId ? eq(tasks.assignedTo, auth.userId) : sql`1=1`
         )
       )
       .orderBy(asc(tasks.status), desc(tasks.createdAt))
