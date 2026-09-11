@@ -320,7 +320,7 @@ export const getAdminDashboardDataServerFn = createServerFn({ method: 'GET' })
     if (clientIds.length > 0) {
       // Look for reports matching client and month name or start of period
       const startOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0))
-      const endOfMonth = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999))
+      const endOfMonth = new Date(Date.UTC(year, month, 1, 0, 0, 0, 0))
 
       const reportRows = await db
         .select({ clientId: reports.clientId, reportMonth: reports.reportMonth })
@@ -331,8 +331,8 @@ export const getAdminDashboardDataServerFn = createServerFn({ method: 'GET' })
             or(
               sql`lower(${reports.reportMonth}) = lower(${monthName})`,
               and(
-                sql`${reports.periodStart} >= ${startOfMonth}`,
-                sql`${reports.periodStart} <= ${endOfMonth}`
+                sql`${reports.periodStart} >= ${startOfMonth.toISOString()}::timestamptz`,
+                sql`${reports.periodStart} < ${endOfMonth.toISOString()}::timestamptz`
               )
             )
           )
