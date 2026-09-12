@@ -222,7 +222,9 @@ function RootComponent() {
     currentPath === '/seo' ||
     currentPath.startsWith('/seo/') ||
     currentPath === '/systems-auto' ||
-    currentPath.startsWith('/systems-auto/')
+    currentPath.startsWith('/systems-auto/') ||
+    currentPath === '/websites' ||
+    currentPath.startsWith('/websites/')
 
   const topProgressBar = isNavigating ? (
     <div className="fixed top-0 left-0 right-0 z-[99999] pointer-events-none">

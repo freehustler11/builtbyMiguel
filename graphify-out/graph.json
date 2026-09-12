@@ -17,17 +17,43 @@
       "source_location": "L61"
     },
     {
-      "id": "src_components_freesystemsauditcta_freesystemsauditctaprops",
-      "label": "FreeSystemsAuditCTAProps",
+      "id": "src_components_themetoggle_themetoggleprops",
+      "label": "ThemeToggleProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 0,
       "community_name": "routeTree.gen.ts",
       "file_type": "code",
-      "norm_label": "freesystemsauditctaprops",
-      "source_file": "src/components/FreeSystemsAuditCTA.tsx",
-      "source_location": "L18"
+      "norm_label": "themetoggleprops",
+      "source_file": "src/components/ThemeToggle.tsx",
+      "source_location": "L4"
+    },
+    {
+      "id": "src_routes_admin_workspace_workspacesearch",
+      "label": "WorkspaceSearch",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "workspacesearch",
+      "source_file": "src/routes/admin/workspace.tsx",
+      "source_location": "L32"
+    },
+    {
+      "id": "src_routes_login_loginsearch",
+      "label": "LoginSearch",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "loginsearch",
+      "source_file": "src/routes/login.tsx",
+      "source_location": "L7"
     },
     {
       "id": "src_routetree_gen_adminreportsidroutechildren",
@@ -186,6 +212,19 @@
       "source_location": "L1278"
     },
     {
+      "id": "src_components_clientpickermodal_clientpickermodalprops",
+      "label": "ClientPickerModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "clients_.$clientId.tsx",
+      "file_type": "code",
+      "norm_label": "clientpickermodalprops",
+      "source_file": "src/components/ClientPickerModal.tsx",
+      "source_location": "L38"
+    },
+    {
       "id": "src_components_crm_articlesboard_articlesboardprops",
       "label": "ArticlesBoardProps",
       "_callable": true,
@@ -303,19 +342,6 @@
       "source_location": "L51"
     },
     {
-      "id": "src_routes_admin_workspace_workspacesearch",
-      "label": "WorkspaceSearch",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "clients_.$clientId.tsx",
-      "file_type": "code",
-      "norm_label": "workspacesearch",
-      "source_file": "src/routes/admin/workspace.tsx",
-      "source_location": "L32"
-    },
-    {
       "id": "app_server_leads_auditleadpayload",
       "label": "AuditLeadPayload",
       "_callable": true,
@@ -374,7 +400,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "media",
       "source_file": "app/db/schema.ts",
@@ -387,7 +413,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "mediaitemwithpartner",
       "source_file": "app/server/media.ts",
@@ -400,7 +426,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "mediapurpose",
       "source_file": "app/server/media.ts",
@@ -413,50 +439,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "uploadresult",
       "source_file": "app/server/storage.ts",
       "source_location": "L5"
-    },
-    {
-      "id": "app_server_team_agencyownerinfo",
-      "label": "AgencyOwnerInfo",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "agencyownerinfo",
-      "source_file": "app/server/team.ts",
-      "source_location": "L20"
-    },
-    {
-      "id": "app_server_team_employeeitem",
-      "label": "EmployeeItem",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "employeeitem",
-      "source_file": "app/server/team.ts",
-      "source_location": "L8"
-    },
-    {
-      "id": "src_components_crm_locationsboard_locationsboardprops",
-      "label": "LocationsBoardProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "locationsboardprops",
-      "source_file": "src/components/crm/LocationsBoard.tsx",
-      "source_location": "L26"
     },
     {
       "id": "src_components_editprofilemodal_editprofilemodalprops",
@@ -465,7 +452,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "editprofilemodalprops",
       "source_file": "src/components/EditProfileModal.tsx",
@@ -478,11 +465,24 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "mediapickermodalprops",
       "source_file": "src/components/MediaPickerModal.tsx",
       "source_location": "L17"
+    },
+    {
+      "id": "src_routes_admin_media_mediasearch",
+      "label": "MediaSearch",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 125,
+      "community_name": "media.tsx",
+      "file_type": "code",
+      "norm_label": "mediasearch",
+      "source_file": "src/routes/admin/media.tsx",
+      "source_location": "L33"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testfixturevalidation",
@@ -732,6 +732,32 @@
       "source_location": "L9"
     },
     {
+      "id": "app_server_team_agencyownerinfo",
+      "label": "AgencyOwnerInfo",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "agencyownerinfo",
+      "source_file": "app/server/team.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "app_server_team_employeeitem",
+      "label": "EmployeeItem",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "employeeitem",
+      "source_file": "app/server/team.ts",
+      "source_location": "L8"
+    },
+    {
       "id": "src_components_clientcard_clientcardprops",
       "label": "ClientCardProps",
       "_callable": true,
@@ -862,19 +888,6 @@
       "source_location": "L59"
     },
     {
-      "id": "src_routes_admin_media_mediasearch",
-      "label": "MediaSearch",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "clients.tsx",
-      "file_type": "code",
-      "norm_label": "mediasearch",
-      "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L33"
-    },
-    {
       "id": "src_routes_admin_reports_index_reportssearch",
       "label": "ReportsSearch",
       "_callable": true,
@@ -979,121 +992,17 @@
       "source_location": "L41"
     },
     {
-      "id": "app_server_workflow_navblockercounts",
-      "label": "NavBlockerCounts",
+      "id": "src_components_freesystemsauditcta_freesystemsauditctaprops",
+      "label": "FreeSystemsAuditCTAProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 321,
-      "community_name": "AdminShell.tsx",
+      "community_name": "systems-audit.tsx",
       "file_type": "code",
-      "norm_label": "navblockercounts",
-      "source_file": "app/server/workflow.ts",
-      "source_location": "L831"
-    },
-    {
-      "id": "src_components_adminnav_adminnavprops",
-      "label": "AdminNavProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "adminnavprops",
-      "source_file": "src/components/AdminNav.tsx",
-      "source_location": "L6"
-    },
-    {
-      "id": "src_components_adminshell_adminshellprops",
-      "label": "AdminShellProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "adminshellprops",
-      "source_file": "src/components/AdminShell.tsx",
-      "source_location": "L60"
-    },
-    {
-      "id": "src_components_adminshell_breadcrumbcontext",
-      "label": "BreadcrumbContext",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "breadcrumbcontext",
-      "source_file": "src/components/AdminShell.tsx",
-      "source_location": "L45"
-    },
-    {
-      "id": "src_components_adminshell_navgroupdef",
-      "label": "NavGroupDef",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "navgroupdef",
-      "source_file": "src/components/AdminShell.tsx",
-      "source_location": "L97"
-    },
-    {
-      "id": "src_components_adminshell_navitemdef",
-      "label": "NavItemDef",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "navitemdef",
-      "source_file": "src/components/AdminShell.tsx",
-      "source_location": "L88"
-    },
-    {
-      "id": "src_components_clientpickermodal_agencyitem",
-      "label": "AgencyItem",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "agencyitem",
-      "source_file": "src/components/ClientPickerModal.tsx",
-      "source_location": "L32"
-    },
-    {
-      "id": "src_components_clientpickermodal_clientitem",
-      "label": "ClientItem",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "clientitem",
-      "source_file": "src/components/ClientPickerModal.tsx",
-      "source_location": "L15"
-    },
-    {
-      "id": "src_components_clientpickermodal_clientpickermodalprops",
-      "label": "ClientPickerModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "clientpickermodalprops",
-      "source_file": "src/components/ClientPickerModal.tsx",
-      "source_location": "L38"
+      "norm_label": "freesystemsauditctaprops",
+      "source_file": "src/components/FreeSystemsAuditCTA.tsx",
+      "source_location": "L18"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_data_contracts_testgeneratedcatalogcontract",
@@ -1317,19 +1226,6 @@
       "source_location": "L510"
     },
     {
-      "id": "app_db_schema_client",
-      "label": "Client",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "client",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L138"
-    },
-    {
       "id": "app_db_schema_clientarticle",
       "label": "ClientArticle",
       "_callable": true,
@@ -1380,19 +1276,6 @@
       "norm_label": "clientsnapshot",
       "source_file": "app/db/schema.ts",
       "source_location": "L169"
-    },
-    {
-      "id": "app_db_schema_deliverablessnapshot",
-      "label": "DeliverablesSnapshot",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "deliverablessnapshot",
-      "source_file": "app/db/schema.ts",
-      "source_location": "L198"
     },
     {
       "id": "app_db_schema_keyword",
@@ -1746,19 +1629,6 @@
       "source_location": "L12"
     },
     {
-      "id": "app_server_clients_assignedstaffsummary",
-      "label": "AssignedStaffSummary",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "assignedstaffsummary",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L20"
-    },
-    {
       "id": "app_server_crm_citationitem",
       "label": "CitationItem",
       "_callable": true,
@@ -1941,6 +1811,58 @@
       "source_location": "L12"
     },
     {
+      "id": "src_components_crm_monthlymetricsform_metricfieldconfig",
+      "label": "MetricFieldConfig",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "metricfieldconfig",
+      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "source_location": "L49"
+    },
+    {
+      "id": "src_components_crm_monthlymetricsform_monthlymetricsformprops",
+      "label": "MonthlyMetricsFormProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "monthlymetricsformprops",
+      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "source_location": "L89"
+    },
+    {
+      "id": "app_db_schema_client",
+      "label": "Client",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 438,
+      "community_name": "new.tsx",
+      "file_type": "code",
+      "norm_label": "client",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L138"
+    },
+    {
+      "id": "app_db_schema_deliverablessnapshot",
+      "label": "DeliverablesSnapshot",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 438,
+      "community_name": "new.tsx",
+      "file_type": "code",
+      "norm_label": "deliverablessnapshot",
+      "source_file": "app/db/schema.ts",
+      "source_location": "L198"
+    },
+    {
       "id": "app_db_schema_report",
       "label": "Report",
       "_callable": true,
@@ -2006,19 +1928,6 @@
       "source_location": "L74"
     },
     {
-      "id": "src_components_navbar_navitem",
-      "label": "NavItem",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "navitem",
-      "source_file": "src/components/Navbar.tsx",
-      "source_location": "L15"
-    },
-    {
       "id": "src_components_reportdocument_reportdocumentprops",
       "label": "ReportDocumentProps",
       "_callable": true,
@@ -2042,19 +1951,6 @@
       "file_type": "code",
       "norm_label": "themednumberinputprops",
       "source_file": "src/components/ThemedNumberInput.tsx",
-      "source_location": "L4"
-    },
-    {
-      "id": "src_components_themetoggle_themetoggleprops",
-      "label": "ThemeToggleProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "themetoggleprops",
-      "source_file": "src/components/ThemeToggle.tsx",
       "source_location": "L4"
     },
     {
@@ -2526,17 +2422,17 @@
       "source_location": "L5"
     },
     {
-      "id": "src_routes_login_loginsearch",
-      "label": "LoginSearch",
+      "id": "app_server_clients_assignedstaffsummary",
+      "label": "AssignedStaffSummary",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 704,
-      "community_name": "app/lib/auth.ts",
+      "community": 705,
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "loginsearch",
-      "source_file": "src/routes/login.tsx",
-      "source_location": "L7"
+      "norm_label": "assignedstaffsummary",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L20"
     },
     {
       "id": "app_server_clients_clientdatasourceitem",
@@ -2545,7 +2441,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "clientdatasourceitem",
       "source_file": "app/server/clients.ts",
@@ -2558,7 +2454,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "datasourcestatus",
       "source_file": "app/server/clients.ts",
@@ -2571,7 +2467,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "datasourcesboardprops",
       "source_file": "src/components/crm/DataSourcesBoard.tsx",
@@ -2584,37 +2480,37 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "sourcemeta",
       "source_file": "src/components/crm/DataSourcesBoard.tsx",
       "source_location": "L26"
     },
     {
-      "id": "src_components_crm_monthlymetricsform_metricfieldconfig",
-      "label": "MetricFieldConfig",
+      "id": "src_components_crm_locationsboard_locationsboardprops",
+      "label": "LocationsBoardProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "metricfieldconfig",
-      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
-      "source_location": "L49"
+      "norm_label": "locationsboardprops",
+      "source_file": "src/components/crm/LocationsBoard.tsx",
+      "source_location": "L26"
     },
     {
-      "id": "src_components_crm_monthlymetricsform_monthlymetricsformprops",
-      "label": "MonthlyMetricsFormProps",
+      "id": "src_components_navbar_navitem",
+      "label": "NavItem",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community": 706,
+      "community_name": "Navbar.tsx",
       "file_type": "code",
-      "norm_label": "monthlymetricsformprops",
-      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
-      "source_location": "L89"
+      "norm_label": "navitem",
+      "source_file": "src/components/Navbar.tsx",
+      "source_location": "L15"
     },
     {
       "id": "src_components_freeauditcta_freeauditctaprops",
@@ -2675,7 +2571,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "activesessionresult",
       "source_file": "app/lib/auth.ts",
@@ -2688,7 +2584,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "datasourcestatus",
       "source_file": "app/server/workflow.ts",
@@ -2701,7 +2597,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "kpigridclientrow",
       "source_file": "app/server/workflow.ts",
@@ -2714,11 +2610,24 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "kpigridlocationrow",
       "source_file": "app/server/workflow.ts",
       "source_location": "L25"
+    },
+    {
+      "id": "app_server_workflow_navblockercounts",
+      "label": "NavBlockerCounts",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "navblockercounts",
+      "source_file": "app/server/workflow.ts",
+      "source_location": "L831"
     },
     {
       "id": "app_server_workflow_publishingqueueitem",
@@ -2727,7 +2636,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "publishingqueueitem",
       "source_file": "app/server/workflow.ts",
@@ -2740,7 +2649,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "queueitemtype",
       "source_file": "app/server/workflow.ts",
@@ -2753,11 +2662,102 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "reportsduerow",
       "source_file": "app/server/workflow.ts",
       "source_location": "L307"
+    },
+    {
+      "id": "src_components_adminnav_adminnavprops",
+      "label": "AdminNavProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "adminnavprops",
+      "source_file": "src/components/AdminNav.tsx",
+      "source_location": "L6"
+    },
+    {
+      "id": "src_components_adminshell_adminshellprops",
+      "label": "AdminShellProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "adminshellprops",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L60"
+    },
+    {
+      "id": "src_components_adminshell_breadcrumbcontext",
+      "label": "BreadcrumbContext",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "breadcrumbcontext",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L45"
+    },
+    {
+      "id": "src_components_adminshell_navgroupdef",
+      "label": "NavGroupDef",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "navgroupdef",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L97"
+    },
+    {
+      "id": "src_components_adminshell_navitemdef",
+      "label": "NavItemDef",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "navitemdef",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L88"
+    },
+    {
+      "id": "src_components_clientpickermodal_agencyitem",
+      "label": "AgencyItem",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "agencyitem",
+      "source_file": "src/components/ClientPickerModal.tsx",
+      "source_location": "L32"
+    },
+    {
+      "id": "src_components_clientpickermodal_clientitem",
+      "label": "ClientItem",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "clientitem",
+      "source_file": "src/components/ClientPickerModal.tsx",
+      "source_location": "L15"
     },
     {
       "id": "src_components_crm_monthlykpigrid_clientrowformstate",
@@ -2766,7 +2766,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "clientrowformstate",
       "source_file": "src/components/crm/MonthlyKpiGrid.tsx",
@@ -2779,7 +2779,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "monthlykpigridprops",
       "source_file": "src/components/crm/MonthlyKpiGrid.tsx",
@@ -2792,7 +2792,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "publishingqueueprops",
       "source_file": "src/components/crm/PublishingQueue.tsx",
@@ -2805,7 +2805,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "reportsduetableprops",
       "source_file": "src/components/crm/ReportsDueTable.tsx",
@@ -2873,16 +2873,16 @@
       "source_location": "L618"
     },
     {
-      "id": "src_components_freesystemsauditcta_freesystemsauditcta",
-      "label": "FreeSystemsAuditCTA()",
+      "id": "src_components_themetoggle_themetoggle",
+      "label": "ThemeToggle()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
       "community_name": "routeTree.gen.ts",
       "file_type": "code",
-      "norm_label": "freesystemsauditcta()",
-      "source_file": "src/components/FreeSystemsAuditCTA.tsx",
-      "source_location": "L22"
+      "norm_label": "themetoggle()",
+      "source_file": "src/components/ThemeToggle.tsx",
+      "source_location": "L9"
     },
     {
       "id": "src_routes_about_aboutpage",
@@ -2933,6 +2933,18 @@
       "source_location": "L52"
     },
     {
+      "id": "src_routes_admin_workspace_agencyworkspacepage",
+      "label": "AgencyWorkspacePage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "agencyworkspacepage()",
+      "source_file": "src/routes/admin/workspace.tsx",
+      "source_location": "L92"
+    },
+    {
       "id": "src_routes_cookie_policy_cookiepolicypage",
       "label": "CookiePolicyPage()",
       "_callable": true,
@@ -2957,6 +2969,54 @@
       "source_location": "L231"
     },
     {
+      "id": "src_routes_portal_index_formatdate",
+      "label": "formatDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "formatdate()",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L36"
+    },
+    {
+      "id": "src_routes_portal_index_portaldashboardpage",
+      "label": "PortalDashboardPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "portaldashboardpage()",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L46"
+    },
+    {
+      "id": "src_routes_portal_portallayout",
+      "label": "PortalLayout()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "portallayout()",
+      "source_file": "src/routes/portal.tsx",
+      "source_location": "L27"
+    },
+    {
+      "id": "src_routes_portal_reports_id_clientportalreportpage",
+      "label": "ClientPortalReportPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "clientportalreportpage()",
+      "source_file": "src/routes/portal/reports/$id.tsx",
+      "source_location": "L43"
+    },
+    {
       "id": "src_routes_privacy_policy_privacypolicypage",
       "label": "PrivacyPolicyPage()",
       "_callable": true,
@@ -2967,6 +3027,18 @@
       "norm_label": "privacypolicypage()",
       "source_file": "src/routes/privacy-policy.tsx",
       "source_location": "L27"
+    },
+    {
+      "id": "src_routes_r_sharetoken_publicsharereportpage",
+      "label": "PublicShareReportPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "publicsharereportpage()",
+      "source_file": "src/routes/r/$shareToken.tsx",
+      "source_location": "L39"
     },
     {
       "id": "src_routes_seo_seopillarpage",
@@ -2991,18 +3063,6 @@
       "norm_label": "superadminlayout()",
       "source_file": "src/routes/superadmin.tsx",
       "source_location": "L15"
-    },
-    {
-      "id": "src_routes_systems_audit_systemsauditpage",
-      "label": "SystemsAuditPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "routeTree.gen.ts",
-      "file_type": "code",
-      "norm_label": "systemsauditpage()",
-      "source_file": "src/routes/systems-audit.tsx",
-      "source_location": "L48"
     },
     {
       "id": "src_routes_systems_auto_systemsautopage",
@@ -3041,6 +3101,18 @@
       "source_location": "L47"
     },
     {
+      "id": "src_routes_websites_websitespage",
+      "label": "WebsitesPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "websitespage()",
+      "source_file": "src/routes/websites.tsx",
+      "source_location": "L186"
+    },
+    {
       "id": "src_routes_work_workpage",
       "label": "WorkPage()",
       "_callable": true,
@@ -3075,6 +3147,42 @@
       "norm_label": "resolvequerypartnerid()",
       "source_file": "app/server/crm.ts",
       "source_location": "L64"
+    },
+    {
+      "id": "src_components_clientpickermodal_clientpickermodal",
+      "label": "ClientPickerModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "clients_.$clientId.tsx",
+      "file_type": "code",
+      "norm_label": "clientpickermodal()",
+      "source_file": "src/components/ClientPickerModal.tsx",
+      "source_location": "L82"
+    },
+    {
+      "id": "src_components_clientpickermodal_getrecentclients",
+      "label": "getRecentClients()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "clients_.$clientId.tsx",
+      "file_type": "code",
+      "norm_label": "getrecentclients()",
+      "source_file": "src/components/ClientPickerModal.tsx",
+      "source_location": "L73"
+    },
+    {
+      "id": "src_components_clientpickermodal_recordrecentclient",
+      "label": "recordRecentClient()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "clients_.$clientId.tsx",
+      "file_type": "code",
+      "norm_label": "recordrecentclient()",
+      "source_file": "src/components/ClientPickerModal.tsx",
+      "source_location": "L53"
     },
     {
       "id": "src_components_crm_articlesboard_articlesboard",
@@ -3171,18 +3279,6 @@
       "norm_label": "clientworkspacepage()",
       "source_file": "src/routes/admin/clients_.$clientId.tsx",
       "source_location": "L118"
-    },
-    {
-      "id": "src_routes_admin_workspace_agencyworkspacepage",
-      "label": "AgencyWorkspacePage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "clients_.$clientId.tsx",
-      "file_type": "code",
-      "norm_label": "agencyworkspacepage()",
-      "source_file": "src/routes/admin/workspace.tsx",
-      "source_location": "L92"
     },
     {
       "id": "src_routes_my_work_formatdate",
@@ -3365,72 +3461,12 @@
       "source_location": "L61"
     },
     {
-      "id": "app_lib_auth_hashpassword",
-      "label": "hashPassword()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "hashpassword()",
-      "source_file": "app/lib/auth.ts",
-      "source_location": "L68"
-    },
-    {
-      "id": "app_server_activity_logger_logactivity",
-      "label": "logActivity()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "logactivity()",
-      "source_file": "app/server/activity-logger.ts",
-      "source_location": "L65"
-    },
-    {
-      "id": "app_server_auth_assertactivesession",
-      "label": "assertActiveSession()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "assertactivesession()",
-      "source_file": "app/server/auth.ts",
-      "source_location": "L27"
-    },
-    {
-      "id": "app_server_auth_geteffectivepartnerid",
-      "label": "getEffectivePartnerId()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "geteffectivepartnerid()",
-      "source_file": "app/server/auth.ts",
-      "source_location": "L118"
-    },
-    {
-      "id": "app_server_auth_getserverutils",
-      "label": "getServerUtils()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "getserverutils()",
-      "source_file": "app/server/auth.ts",
-      "source_location": "L8"
-    },
-    {
       "id": "app_server_storage_deletefilefromstorage",
       "label": "deleteFileFromStorage()",
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "deletefilefromstorage()",
       "source_file": "app/server/storage.ts",
@@ -3442,7 +3478,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "getstorageproviderinfo()",
       "source_file": "app/server/storage.ts",
@@ -3454,23 +3490,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "uploadfiletostorage()",
       "source_file": "app/server/storage.ts",
       "source_location": "L40"
-    },
-    {
-      "id": "src_components_crm_locationsboard_locationsboard",
-      "label": "LocationsBoard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "locationsboard()",
-      "source_file": "src/components/crm/LocationsBoard.tsx",
-      "source_location": "L30"
     },
     {
       "id": "src_components_editprofilemodal_editprofilemodal",
@@ -3478,7 +3502,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "editprofilemodal()",
       "source_file": "src/components/EditProfileModal.tsx",
@@ -3490,7 +3514,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "formatfilesize()",
       "source_file": "src/components/MediaPickerModal.tsx",
@@ -3502,7 +3526,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "getfileicon()",
       "source_file": "src/components/MediaPickerModal.tsx",
@@ -3514,47 +3538,59 @@
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "mediapickermodal()",
       "source_file": "src/components/MediaPickerModal.tsx",
       "source_location": "L46"
     },
     {
-      "id": "src_routes_admin_reports_id_brandedreportviewpage",
-      "label": "BrandedReportViewPage()",
+      "id": "src_routes_admin_media_adminmediapage",
+      "label": "AdminMediaPage()",
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
-      "norm_label": "brandedreportviewpage()",
-      "source_file": "src/routes/admin/reports/$id.tsx",
-      "source_location": "L71"
+      "norm_label": "adminmediapage()",
+      "source_file": "src/routes/admin/media.tsx",
+      "source_location": "L119"
     },
     {
-      "id": "src_routes_admin_team_adminteampage",
-      "label": "AdminTeamPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "adminteampage()",
-      "source_file": "src/routes/admin/team.tsx",
-      "source_location": "L128"
-    },
-    {
-      "id": "src_routes_admin_team_formatdate",
+      "id": "src_routes_admin_media_formatdate",
       "label": "formatDate()",
       "_callable": true,
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "formatdate()",
-      "source_file": "src/routes/admin/team.tsx",
-      "source_location": "L118"
+      "source_file": "src/routes/admin/media.tsx",
+      "source_location": "L96"
+    },
+    {
+      "id": "src_routes_admin_media_formatfilesize",
+      "label": "formatFileSize()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 125,
+      "community_name": "media.tsx",
+      "file_type": "code",
+      "norm_label": "formatfilesize()",
+      "source_file": "src/routes/admin/media.tsx",
+      "source_location": "L90"
+    },
+    {
+      "id": "src_routes_admin_media_getfileicon",
+      "label": "getFileIcon()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 125,
+      "community_name": "media.tsx",
+      "file_type": "code",
+      "norm_label": "getfileicon()",
+      "source_file": "src/routes/admin/media.tsx",
+      "source_location": "L106"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testfixturevalidation_test_rejects_bad_count_duplicate_id_and_grade",
@@ -4229,6 +4265,30 @@
       "source_location": "L36"
     },
     {
+      "id": "app_server_activity_logger_getclientrequestmeta",
+      "label": "getClientRequestMeta()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 175,
+      "community_name": "admin/activity.tsx",
+      "file_type": "code",
+      "norm_label": "getclientrequestmeta()",
+      "source_file": "app/server/activity-logger.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "app_server_activity_logger_getserverutils",
+      "label": "getServerUtils()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 175,
+      "community_name": "admin/activity.tsx",
+      "file_type": "code",
+      "norm_label": "getserverutils()",
+      "source_file": "app/server/activity-logger.ts",
+      "source_location": "L4"
+    },
+    {
       "id": "app_server_activity_logger_parsedevice",
       "label": "parseDevice()",
       "_callable": true,
@@ -4661,6 +4721,18 @@
       "source_location": "L46"
     },
     {
+      "id": "app_server_team_getteamorderby",
+      "label": "getTeamOrderBy()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "getteamorderby()",
+      "source_file": "app/server/team.ts",
+      "source_location": "L28"
+    },
+    {
       "id": "src_components_adminshell_adminshell",
       "label": "AdminShell()",
       "_callable": true,
@@ -4829,54 +4901,6 @@
       "source_location": "L132"
     },
     {
-      "id": "src_routes_admin_media_adminmediapage",
-      "label": "AdminMediaPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "clients.tsx",
-      "file_type": "code",
-      "norm_label": "adminmediapage()",
-      "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L119"
-    },
-    {
-      "id": "src_routes_admin_media_formatdate",
-      "label": "formatDate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "clients.tsx",
-      "file_type": "code",
-      "norm_label": "formatdate()",
-      "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L96"
-    },
-    {
-      "id": "src_routes_admin_media_formatfilesize",
-      "label": "formatFileSize()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "clients.tsx",
-      "file_type": "code",
-      "norm_label": "formatfilesize()",
-      "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L90"
-    },
-    {
-      "id": "src_routes_admin_media_getfileicon",
-      "label": "getFileIcon()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "clients.tsx",
-      "file_type": "code",
-      "norm_label": "getfileicon()",
-      "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L106"
-    },
-    {
       "id": "src_routes_admin_reports_index_adminreportslistpage",
       "label": "AdminReportsListPage()",
       "_callable": true,
@@ -4899,6 +4923,30 @@
       "norm_label": "formatdate()",
       "source_file": "src/routes/admin/reports/index.tsx",
       "source_location": "L110"
+    },
+    {
+      "id": "src_routes_admin_team_adminteampage",
+      "label": "AdminTeamPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "adminteampage()",
+      "source_file": "src/routes/admin/team.tsx",
+      "source_location": "L128"
+    },
+    {
+      "id": "src_routes_admin_team_formatdate",
+      "label": "formatDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "formatdate()",
+      "source_file": "src/routes/admin/team.tsx",
+      "source_location": "L118"
     },
     {
       "id": "src_routes_messages_messagespage",
@@ -6365,52 +6413,28 @@
       "source_location": "L41"
     },
     {
-      "id": "src_components_adminnav_adminnav",
-      "label": "AdminNav()",
+      "id": "src_components_freesystemsauditcta_freesystemsauditcta",
+      "label": "FreeSystemsAuditCTA()",
       "_callable": true,
       "_origin": "ast",
       "community": 321,
-      "community_name": "AdminShell.tsx",
+      "community_name": "systems-audit.tsx",
       "file_type": "code",
-      "norm_label": "adminnav()",
-      "source_file": "src/components/AdminNav.tsx",
-      "source_location": "L32"
+      "norm_label": "freesystemsauditcta()",
+      "source_file": "src/components/FreeSystemsAuditCTA.tsx",
+      "source_location": "L22"
     },
     {
-      "id": "src_components_clientpickermodal_clientpickermodal",
-      "label": "ClientPickerModal()",
+      "id": "src_routes_systems_audit_systemsauditpage",
+      "label": "SystemsAuditPage()",
       "_callable": true,
       "_origin": "ast",
       "community": 321,
-      "community_name": "AdminShell.tsx",
+      "community_name": "systems-audit.tsx",
       "file_type": "code",
-      "norm_label": "clientpickermodal()",
-      "source_file": "src/components/ClientPickerModal.tsx",
-      "source_location": "L82"
-    },
-    {
-      "id": "src_components_clientpickermodal_getrecentclients",
-      "label": "getRecentClients()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "getrecentclients()",
-      "source_file": "src/components/ClientPickerModal.tsx",
-      "source_location": "L73"
-    },
-    {
-      "id": "src_components_clientpickermodal_recordrecentclient",
-      "label": "recordRecentClient()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "recordrecentclient()",
-      "source_file": "src/components/ClientPickerModal.tsx",
-      "source_location": "L53"
+      "norm_label": "systemsauditpage()",
+      "source_file": "src/routes/systems-audit.tsx",
+      "source_location": "L48"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_apply_reasoning",
@@ -8033,30 +8057,6 @@
       "source_location": "L38"
     },
     {
-      "id": "app_server_activity_logger_getclientrequestmeta",
-      "label": "getClientRequestMeta()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "getclientrequestmeta()",
-      "source_file": "app/server/activity-logger.ts",
-      "source_location": "L11"
-    },
-    {
-      "id": "app_server_activity_logger_getserverutils",
-      "label": "getServerUtils()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "getserverutils()",
-      "source_file": "app/server/activity-logger.ts",
-      "source_location": "L4"
-    },
-    {
       "id": "app_server_metrics_recordmonthlymetrics",
       "label": "recordMonthlyMetrics()",
       "_callable": true,
@@ -8069,160 +8069,28 @@
       "source_location": "L52"
     },
     {
-      "id": "app_server_reports_getclientdatasourcemap",
-      "label": "getClientDataSourceMap()",
+      "id": "src_components_crm_monthlymetricsform_metricinputrow",
+      "label": "MetricInputRow()",
       "_callable": true,
       "_origin": "ast",
       "community": 43,
       "community_name": "app/server/crm.ts",
       "file_type": "code",
-      "norm_label": "getclientdatasourcemap()",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L26"
+      "norm_label": "metricinputrow()",
+      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "source_location": "L923"
     },
     {
-      "id": "app_server_reports_helpers_collectdeliverablessnapshot",
-      "label": "collectDeliverablesSnapshot()",
+      "id": "src_components_crm_monthlymetricsform_monthlymetricsform",
+      "label": "MonthlyMetricsForm()",
       "_callable": true,
       "_origin": "ast",
       "community": 43,
       "community_name": "app/server/crm.ts",
       "file_type": "code",
-      "norm_label": "collectdeliverablessnapshot()",
-      "source_file": "app/server/reports-helpers.ts",
-      "source_location": "L82"
-    },
-    {
-      "id": "app_server_reports_helpers_parsedecimalvalue",
-      "label": "parseDecimalValue()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "parsedecimalvalue()",
-      "source_file": "app/server/reports-helpers.ts",
-      "source_location": "L53"
-    },
-    {
-      "id": "app_server_reports_helpers_parsenullabledecimal",
-      "label": "parseNullableDecimal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "parsenullabledecimal()",
-      "source_file": "app/server/reports-helpers.ts",
-      "source_location": "L69"
-    },
-    {
-      "id": "app_server_reports_helpers_parsenullableint",
-      "label": "parseNullableInt()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "parsenullableint()",
-      "source_file": "app/server/reports-helpers.ts",
-      "source_location": "L61"
-    },
-    {
-      "id": "app_server_reports_helpers_parsereportperiod",
-      "label": "parseReportPeriod()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "parsereportperiod()",
-      "source_file": "app/server/reports-helpers.ts",
-      "source_location": "L20"
-    },
-    {
-      "id": "scripts_simulate_runsimulations",
-      "label": "runSimulations()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "runsimulations()",
-      "source_file": "scripts/simulate.ts",
-      "source_location": "L31"
-    },
-    {
-      "id": "scripts_simulate_runsimulations_assert",
-      "label": "assert()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "assert()",
-      "source_file": "scripts/simulate.ts",
-      "source_location": "L39"
-    },
-    {
-      "id": "scripts_simulate_runsimulations_checkmomdeviation",
-      "label": "checkMoMDeviation()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "checkmomdeviation()",
-      "source_file": "scripts/simulate.ts",
-      "source_location": "L1835"
-    },
-    {
-      "id": "scripts_simulate_runsimulations_getvisiblegroupsforrole",
-      "label": "getVisibleGroupsForRole()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "getvisiblegroupsforrole()",
-      "source_file": "scripts/simulate.ts",
-      "source_location": "L4002"
-    },
-    {
-      "id": "scripts_simulate_runsimulations_simulateassertclientaccess",
-      "label": "simulateAssertClientAccess()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "simulateassertclientaccess()",
-      "source_file": "scripts/simulate.ts",
-      "source_location": "L1525"
-    },
-    {
-      "id": "src_components_navbar_navbar",
-      "label": "Navbar()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "navbar()",
-      "source_file": "src/components/Navbar.tsx",
-      "source_location": "L43"
-    },
-    {
-      "id": "src_components_navbar_navbar_handleclickoutside",
-      "label": "handleClickOutside()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "handleclickoutside()",
-      "source_file": "src/components/Navbar.tsx",
-      "source_location": "L50"
+      "norm_label": "monthlymetricsform()",
+      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "source_location": "L94"
     },
     {
       "id": "src_components_reportdocument_formatdate",
@@ -8321,18 +8189,6 @@
       "source_location": "L16"
     },
     {
-      "id": "src_components_themetoggle_themetoggle",
-      "label": "ThemeToggle()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "themetoggle()",
-      "source_file": "src/components/ThemeToggle.tsx",
-      "source_location": "L9"
-    },
-    {
       "id": "src_routes_admin_reports_new_adminreportformpage",
       "label": "AdminReportFormPage()",
       "_callable": true,
@@ -8403,54 +8259,6 @@
       "norm_label": "parsenullableint()",
       "source_file": "src/routes/admin/reports/new.tsx",
       "source_location": "L44"
-    },
-    {
-      "id": "src_routes_portal_index_formatdate",
-      "label": "formatDate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "formatdate()",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L36"
-    },
-    {
-      "id": "src_routes_portal_index_portaldashboardpage",
-      "label": "PortalDashboardPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "portaldashboardpage()",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L46"
-    },
-    {
-      "id": "src_routes_portal_reports_id_clientportalreportpage",
-      "label": "ClientPortalReportPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "clientportalreportpage()",
-      "source_file": "src/routes/portal/reports/$id.tsx",
-      "source_location": "L43"
-    },
-    {
-      "id": "src_routes_r_sharetoken_publicsharereportpage",
-      "label": "PublicShareReportPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "publicsharereportpage()",
-      "source_file": "src/routes/r/$shareToken.tsx",
-      "source_location": "L39"
     },
     {
       "id": "scripts_prerender_prerender",
@@ -10985,6 +10793,18 @@
       "source_location": "L185"
     },
     {
+      "id": "app_lib_auth_hashpassword",
+      "label": "hashPassword()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "app/lib/auth.ts",
+      "file_type": "code",
+      "norm_label": "hashpassword()",
+      "source_file": "app/lib/auth.ts",
+      "source_location": "L68"
+    },
+    {
       "id": "app_lib_auth_invalidatesessioncache",
       "label": "invalidateSessionCache()",
       "_callable": true,
@@ -11031,18 +10851,6 @@
       "norm_label": "getusersorderby()",
       "source_file": "app/server/passwords.ts",
       "source_location": "L182"
-    },
-    {
-      "id": "app_server_team_getteamorderby",
-      "label": "getTeamOrderBy()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 704,
-      "community_name": "app/lib/auth.ts",
-      "file_type": "code",
-      "norm_label": "getteamorderby()",
-      "source_file": "app/server/team.ts",
-      "source_location": "L28"
     },
     {
       "id": "scripts_security_audit_invokerpc",
@@ -11093,6 +10901,66 @@
       "source_location": "L160"
     },
     {
+      "id": "scripts_simulate_runsimulations",
+      "label": "runSimulations()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "app/lib/auth.ts",
+      "file_type": "code",
+      "norm_label": "runsimulations()",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "scripts_simulate_runsimulations_assert",
+      "label": "assert()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "app/lib/auth.ts",
+      "file_type": "code",
+      "norm_label": "assert()",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "scripts_simulate_runsimulations_checkmomdeviation",
+      "label": "checkMoMDeviation()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "app/lib/auth.ts",
+      "file_type": "code",
+      "norm_label": "checkmomdeviation()",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L1835"
+    },
+    {
+      "id": "scripts_simulate_runsimulations_getvisiblegroupsforrole",
+      "label": "getVisibleGroupsForRole()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "app/lib/auth.ts",
+      "file_type": "code",
+      "norm_label": "getvisiblegroupsforrole()",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L4002"
+    },
+    {
+      "id": "scripts_simulate_runsimulations_simulateassertclientaccess",
+      "label": "simulateAssertClientAccess()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 704,
+      "community_name": "app/lib/auth.ts",
+      "file_type": "code",
+      "norm_label": "simulateassertclientaccess()",
+      "source_file": "scripts/simulate.ts",
+      "source_location": "L1525"
+    },
+    {
       "id": "src_components_changepasswordmodal_changepasswordmodal",
       "label": "ChangePasswordModal()",
       "_callable": true,
@@ -11129,16 +10997,124 @@
       "source_location": "L54"
     },
     {
-      "id": "src_routes_portal_portallayout",
-      "label": "PortalLayout()",
+      "id": "app_server_activity_logger_logactivity",
+      "label": "logActivity()",
       "_callable": true,
       "_origin": "ast",
-      "community": 704,
-      "community_name": "app/lib/auth.ts",
+      "community": 705,
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "portallayout()",
-      "source_file": "src/routes/portal.tsx",
+      "norm_label": "logactivity()",
+      "source_file": "app/server/activity-logger.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "app_server_auth_assertactivesession",
+      "label": "assertActiveSession()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "assertactivesession()",
+      "source_file": "app/server/auth.ts",
       "source_location": "L27"
+    },
+    {
+      "id": "app_server_auth_geteffectivepartnerid",
+      "label": "getEffectivePartnerId()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "geteffectivepartnerid()",
+      "source_file": "app/server/auth.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "app_server_auth_getserverutils",
+      "label": "getServerUtils()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getserverutils()",
+      "source_file": "app/server/auth.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_server_reports_getclientdatasourcemap",
+      "label": "getClientDataSourceMap()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getclientdatasourcemap()",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "app_server_reports_helpers_collectdeliverablessnapshot",
+      "label": "collectDeliverablesSnapshot()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "collectdeliverablessnapshot()",
+      "source_file": "app/server/reports-helpers.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "app_server_reports_helpers_parsedecimalvalue",
+      "label": "parseDecimalValue()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "parsedecimalvalue()",
+      "source_file": "app/server/reports-helpers.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "app_server_reports_helpers_parsenullabledecimal",
+      "label": "parseNullableDecimal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "parsenullabledecimal()",
+      "source_file": "app/server/reports-helpers.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "app_server_reports_helpers_parsenullableint",
+      "label": "parseNullableInt()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "parsenullableint()",
+      "source_file": "app/server/reports-helpers.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "app_server_reports_helpers_parsereportperiod",
+      "label": "parseReportPeriod()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "parsereportperiod()",
+      "source_file": "app/server/reports-helpers.ts",
+      "source_location": "L20"
     },
     {
       "id": "src_components_crm_datasourcesboard_datasourcesboard",
@@ -11146,35 +11122,59 @@
       "_callable": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "datasourcesboard()",
       "source_file": "src/components/crm/DataSourcesBoard.tsx",
       "source_location": "L66"
     },
     {
-      "id": "src_components_crm_monthlymetricsform_metricinputrow",
-      "label": "MetricInputRow()",
+      "id": "src_components_crm_locationsboard_locationsboard",
+      "label": "LocationsBoard()",
       "_callable": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "metricinputrow()",
-      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
-      "source_location": "L923"
+      "norm_label": "locationsboard()",
+      "source_file": "src/components/crm/LocationsBoard.tsx",
+      "source_location": "L30"
     },
     {
-      "id": "src_components_crm_monthlymetricsform_monthlymetricsform",
-      "label": "MonthlyMetricsForm()",
+      "id": "src_routes_admin_reports_id_brandedreportviewpage",
+      "label": "BrandedReportViewPage()",
       "_callable": true,
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "monthlymetricsform()",
-      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
-      "source_location": "L94"
+      "norm_label": "brandedreportviewpage()",
+      "source_file": "src/routes/admin/reports/$id.tsx",
+      "source_location": "L71"
+    },
+    {
+      "id": "src_components_navbar_navbar",
+      "label": "Navbar()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 706,
+      "community_name": "Navbar.tsx",
+      "file_type": "code",
+      "norm_label": "navbar()",
+      "source_file": "src/components/Navbar.tsx",
+      "source_location": "L43"
+    },
+    {
+      "id": "src_components_navbar_navbar_handleclickoutside",
+      "label": "handleClickOutside()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 706,
+      "community_name": "Navbar.tsx",
+      "file_type": "code",
+      "norm_label": "handleclickoutside()",
+      "source_file": "src/components/Navbar.tsx",
+      "source_location": "L50"
     },
     {
       "id": "src_components_freeauditcta_freeauditcta",
@@ -11297,18 +11297,6 @@
       "source_location": "L132"
     },
     {
-      "id": "src_routes_websites_websitespillarpage",
-      "label": "WebsitesPillarPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 73,
-      "community_name": "website-design.tsx",
-      "file_type": "code",
-      "norm_label": "websitespillarpage()",
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L145"
-    },
-    {
       "id": "agents_skills_ui_styling_scripts_tests_test_shadcn_add_testshadcninstaller_test_get_installed_components_with_files",
       "label": ".test_get_installed_components_with_files()",
       "_callable": true,
@@ -11429,12 +11417,24 @@
       "source_location": "L37"
     },
     {
+      "id": "src_components_adminnav_adminnav",
+      "label": "AdminNav()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "adminnav()",
+      "source_file": "src/components/AdminNav.tsx",
+      "source_location": "L32"
+    },
+    {
       "id": "src_components_crm_monthlykpigrid_monthlykpigrid",
       "label": "MonthlyKpiGrid()",
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "monthlykpigrid()",
       "source_file": "src/components/crm/MonthlyKpiGrid.tsx",
@@ -11446,7 +11446,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "noaccessbadge()",
       "source_file": "src/components/crm/MonthlyKpiGrid.tsx",
@@ -11458,7 +11458,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "numericinput()",
       "source_file": "src/components/crm/MonthlyKpiGrid.tsx",
@@ -11470,7 +11470,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "publishingqueue()",
       "source_file": "src/components/crm/PublishingQueue.tsx",
@@ -11482,7 +11482,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "reportsduetable()",
       "source_file": "src/components/crm/ReportsDueTable.tsx",
@@ -11763,26 +11763,26 @@
       "source_location": "L69"
     },
     {
-      "id": "app_server_dashboard_getadmindashboarddataserverfn",
-      "label": "getAdminDashboardDataServerFn",
+      "id": "app_server_reports_getportalreportsserverfn",
+      "label": "getPortalReportsServerFn",
       "_origin": "ast",
       "community": 0,
       "community_name": "routeTree.gen.ts",
       "file_type": "code",
-      "norm_label": "getadmindashboarddataserverfn",
-      "source_file": "app/server/dashboard.ts",
-      "source_location": "L99"
+      "norm_label": "getportalreportsserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L381"
     },
     {
-      "id": "app_server_posts_getadminpostsserverfn",
-      "label": "getAdminPostsServerFn",
+      "id": "app_server_reports_getpublicreportbysharetokenserverfn",
+      "label": "getPublicReportByShareTokenServerFn",
       "_origin": "ast",
       "community": 0,
       "community_name": "routeTree.gen.ts",
       "file_type": "code",
-      "norm_label": "getadminpostsserverfn",
-      "source_file": "app/server/posts.ts",
-      "source_location": "L9"
+      "norm_label": "getpublicreportbysharetokenserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L1419"
     },
     {
       "id": "app_server_reports_getreportbyidserverfn",
@@ -11796,14 +11796,25 @@
       "source_location": "L312"
     },
     {
-      "id": "src_components_freesystemsauditcta",
-      "label": "FreeSystemsAuditCTA.tsx",
+      "id": "src_components_themetoggle",
+      "label": "ThemeToggle.tsx",
       "_origin": "ast",
       "community": 0,
       "community_name": "routeTree.gen.ts",
       "file_type": "code",
-      "norm_label": "freesystemsauditcta.tsx",
-      "source_file": "src/components/FreeSystemsAuditCTA.tsx",
+      "norm_label": "themetoggle.tsx",
+      "source_file": "src/components/ThemeToggle.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_lib_auth",
+      "label": "src/lib/auth.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "src/lib/auth.ts",
+      "source_file": "src/lib/auth.ts",
       "source_location": "L1"
     },
     {
@@ -11939,15 +11950,15 @@
       "source_location": "L41"
     },
     {
-      "id": "src_routes_admin_posts_route",
-      "label": "Route",
+      "id": "src_routes_admin_reports_id",
+      "label": "admin/reports/$id.tsx",
       "_origin": "ast",
       "community": 0,
       "community_name": "routeTree.gen.ts",
       "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/admin/posts.tsx",
-      "source_location": "L73"
+      "norm_label": "admin/reports/$id.tsx",
+      "source_file": "src/routes/admin/reports/$id.tsx",
+      "source_location": "L1"
     },
     {
       "id": "src_routes_admin_reports_id_edit",
@@ -12016,6 +12027,17 @@
       "source_location": "L4"
     },
     {
+      "id": "src_routes_admin_workspace",
+      "label": "workspace.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "workspace.tsx",
+      "source_file": "src/routes/admin/workspace.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_routes_admin_workspace_route",
       "label": "Route",
       "_origin": "ast",
@@ -12082,6 +12104,17 @@
       "source_location": "L26"
     },
     {
+      "id": "src_routes_login",
+      "label": "login.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "login.tsx",
+      "source_file": "src/routes/login.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_routes_login_route",
       "label": "Route",
       "_origin": "ast",
@@ -12112,6 +12145,39 @@
       "file_type": "code",
       "norm_label": "portal.tsx",
       "source_file": "src/routes/portal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_routes_portal_index",
+      "label": "portal/index.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "portal/index.tsx",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_routes_portal_index_route",
+      "label": "Route",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "route",
+      "source_file": "src/routes/portal/index.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "src_routes_portal_reports_id",
+      "label": "portal/reports/$id.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "portal/reports/$id.tsx",
+      "source_file": "src/routes/portal/reports/$id.tsx",
       "source_location": "L1"
     },
     {
@@ -12157,6 +12223,28 @@
       "norm_label": "route",
       "source_file": "src/routes/privacy-policy.tsx",
       "source_location": "L4"
+    },
+    {
+      "id": "src_routes_r_sharetoken",
+      "label": "$shareToken.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "$sharetoken.tsx",
+      "source_file": "src/routes/r/$shareToken.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_routes_r_sharetoken_route",
+      "label": "Route",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "route",
+      "source_file": "src/routes/r/$shareToken.tsx",
+      "source_location": "L7"
     },
     {
       "id": "src_routes_seo",
@@ -12247,28 +12335,6 @@
       "source_location": "L4"
     },
     {
-      "id": "src_routes_systems_audit",
-      "label": "systems-audit.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "routeTree.gen.ts",
-      "file_type": "code",
-      "norm_label": "systems-audit.tsx",
-      "source_file": "src/routes/systems-audit.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_systems_audit_route",
-      "label": "Route",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "routeTree.gen.ts",
-      "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/systems-audit.tsx",
-      "source_location": "L4"
-    },
-    {
       "id": "src_routes_systems_auto",
       "label": "systems-auto.tsx",
       "_origin": "ast",
@@ -12355,6 +12421,50 @@
       "norm_label": "route",
       "source_file": "src/routes/thank-you.tsx",
       "source_location": "L12"
+    },
+    {
+      "id": "src_routes_websites",
+      "label": "websites.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "websites.tsx",
+      "source_file": "src/routes/websites.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_routes_websites_route",
+      "label": "Route",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "route",
+      "source_file": "src/routes/websites.tsx",
+      "source_location": "L117"
+    },
+    {
+      "id": "src_routes_websites_websites_faq",
+      "label": "WEBSITES_FAQ",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "websites_faq",
+      "source_file": "src/routes/websites.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "src_routes_websites_websites_json_ld",
+      "label": "WEBSITES_JSON_LD",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
+      "file_type": "code",
+      "norm_label": "websites_json_ld",
+      "source_file": "src/routes/websites.tsx",
+      "source_location": "L65"
     },
     {
       "id": "src_routes_work",
@@ -12984,26 +13094,15 @@
       "source_location": "L1"
     },
     {
-      "id": "app_server_clients_getclientbyidserverfn",
-      "label": "getClientByIdServerFn",
+      "id": "src_server_reports",
+      "label": "src/server/reports.ts",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "clients_.$clientId.tsx",
+      "community": 0,
+      "community_name": "routeTree.gen.ts",
       "file_type": "code",
-      "norm_label": "getclientbyidserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L370"
-    },
-    {
-      "id": "app_server_clients_updateclientserverfn",
-      "label": "updateClientServerFn",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "clients_.$clientId.tsx",
-      "file_type": "code",
-      "norm_label": "updateclientserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L653"
+      "norm_label": "src/server/reports.ts",
+      "source_file": "src/server/reports.ts",
+      "source_location": "L1"
     },
     {
       "id": "app_server_crm_commitsemrushcsvimportserverfn",
@@ -13303,6 +13402,17 @@
       "source_location": "L991"
     },
     {
+      "id": "src_components_clientpickermodal",
+      "label": "ClientPickerModal.tsx",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "clients_.$clientId.tsx",
+      "file_type": "code",
+      "norm_label": "clientpickermodal.tsx",
+      "source_file": "src/components/ClientPickerModal.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_components_crm_articlesboard",
       "label": "ArticlesBoard.tsx",
       "_origin": "ast",
@@ -13487,17 +13597,6 @@
       "file_type": "code",
       "norm_label": "clients_.$clientid.tsx",
       "source_file": "src/routes/admin/clients_.$clientId.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_admin_workspace",
-      "label": "workspace.tsx",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "clients_.$clientId.tsx",
-      "file_type": "code",
-      "norm_label": "workspace.tsx",
-      "source_file": "src/routes/admin/workspace.tsx",
       "source_location": "L1"
     },
     {
@@ -20225,88 +20324,11 @@
       "source_location": "L1"
     },
     {
-      "id": "app_server_clients_assignclientstaffserverfn",
-      "label": "assignClientStaffServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "assignclientstaffserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L965"
-    },
-    {
-      "id": "app_server_clients_createclientlocationserverfn",
-      "label": "createClientLocationServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "createclientlocationserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L804"
-    },
-    {
-      "id": "app_server_clients_createclientserverfn",
-      "label": "createClientServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "createclientserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L587"
-    },
-    {
-      "id": "app_server_clients_deleteclientlocationserverfn",
-      "label": "deleteClientLocationServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "deleteclientlocationserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L925"
-    },
-    {
-      "id": "app_server_clients_deleteclientserverfn",
-      "label": "deleteClientServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "deleteclientserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L729"
-    },
-    {
-      "id": "app_server_clients_getclientlocationsserverfn",
-      "label": "getClientLocationsServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "getclientlocationsserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L768"
-    },
-    {
-      "id": "app_server_clients_updateclientlocationserverfn",
-      "label": "updateClientLocationServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "updateclientlocationserverfn",
-      "source_file": "app/server/clients.ts",
-      "source_location": "L864"
-    },
-    {
       "id": "app_server_media",
       "label": "app/server/media.ts",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "app/server/media.ts",
       "source_file": "app/server/media.ts",
@@ -20317,7 +20339,7 @@
       "label": "deleteMediaServerFn",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "deletemediaserverfn",
       "source_file": "app/server/media.ts",
@@ -20328,7 +20350,7 @@
       "label": "getMediaServerFn",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "getmediaserverfn",
       "source_file": "app/server/media.ts",
@@ -20339,172 +20361,51 @@
       "label": "uploadMediaServerFn",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "uploadmediaserverfn",
       "source_file": "app/server/media.ts",
       "source_location": "L120"
     },
     {
-      "id": "app_server_reports_deletereportserverfn",
-      "label": "deleteReportServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "deletereportserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L1232"
-    },
-    {
-      "id": "app_server_reports_generatereportsharelinkserverfn",
-      "label": "generateReportShareLinkServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "generatereportsharelinkserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L1276"
-    },
-    {
-      "id": "app_server_reports_getreportsserverfn",
-      "label": "getReportsServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "getreportsserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L92"
-    },
-    {
-      "id": "app_server_reports_regeneratereportserverfn",
-      "label": "regenerateReportServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "regeneratereportserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L819"
-    },
-    {
-      "id": "app_server_reports_revokereportsharelinkserverfn",
-      "label": "revokeReportShareLinkServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "revokereportsharelinkserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L1348"
-    },
-    {
-      "id": "app_server_reports_updatereportdisplayoptionsserverfn",
-      "label": "updateReportDisplayOptionsServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "updatereportdisplayoptionsserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L1178"
-    },
-    {
       "id": "app_server_storage",
       "label": "storage.ts",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "storage.ts",
       "source_file": "app/server/storage.ts",
       "source_location": "L1"
     },
     {
-      "id": "app_server_team",
-      "label": "app/server/team.ts",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "app/server/team.ts",
-      "source_file": "app/server/team.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "app_server_team_createteammemberserverfn",
-      "label": "createTeamMemberServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "createteammemberserverfn",
-      "source_file": "app/server/team.ts",
-      "source_location": "L230"
-    },
-    {
-      "id": "app_server_team_deleteteammemberserverfn",
-      "label": "deleteTeamMemberServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "deleteteammemberserverfn",
-      "source_file": "app/server/team.ts",
-      "source_location": "L345"
-    },
-    {
       "id": "app_server_team_getmyprofileserverfn",
       "label": "getMyProfileServerFn",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "getmyprofileserverfn",
       "source_file": "app/server/team.ts",
       "source_location": "L453"
     },
     {
-      "id": "app_server_team_toggleteammemberactiveserverfn",
-      "label": "toggleTeamMemberActiveServerFn",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "toggleteammemberactiveserverfn",
-      "source_file": "app/server/team.ts",
-      "source_location": "L402"
-    },
-    {
       "id": "app_server_team_updatemyprofileserverfn",
       "label": "updateMyProfileServerFn",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "updatemyprofileserverfn",
       "source_file": "app/server/team.ts",
       "source_location": "L495"
     },
     {
-      "id": "src_components_crm_locationsboard",
-      "label": "LocationsBoard.tsx",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "locationsboard.tsx",
-      "source_file": "src/components/crm/LocationsBoard.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_components_editprofilemodal",
       "label": "EditProfileModal.tsx",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "editprofilemodal.tsx",
       "source_file": "src/components/EditProfileModal.tsx",
@@ -20515,7 +20416,7 @@
       "label": "MediaPickerModal.tsx",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "mediapickermodal.tsx",
       "source_file": "src/components/MediaPickerModal.tsx",
@@ -20526,21 +20427,21 @@
       "label": "src/db/schema.ts",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "src/db/schema.ts",
       "source_file": "src/db/schema.ts",
       "source_location": "L1"
     },
     {
-      "id": "src_routes_admin_reports_id",
-      "label": "admin/reports/$id.tsx",
+      "id": "src_routes_admin_media",
+      "label": "media.tsx",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
-      "norm_label": "admin/reports/$id.tsx",
-      "source_file": "src/routes/admin/reports/$id.tsx",
+      "norm_label": "media.tsx",
+      "source_file": "src/routes/admin/media.tsx",
       "source_location": "L1"
     },
     {
@@ -20548,21 +20449,10 @@
       "label": "src/server/media.ts",
       "_origin": "ast",
       "community": 125,
-      "community_name": "assertActiveSession",
+      "community_name": "media.tsx",
       "file_type": "code",
       "norm_label": "src/server/media.ts",
       "source_file": "src/server/media.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_server_team",
-      "label": "src/server/team.ts",
-      "_origin": "ast",
-      "community": 125,
-      "community_name": "assertActiveSession",
-      "file_type": "code",
-      "norm_label": "src/server/team.ts",
-      "source_file": "src/server/team.ts",
       "source_location": "L1"
     },
     {
@@ -32293,6 +32183,17 @@
       "source_location": "L75"
     },
     {
+      "id": "app_server_activity_logger",
+      "label": "activity-logger.ts",
+      "_origin": "ast",
+      "community": 175,
+      "community_name": "admin/activity.tsx",
+      "file_type": "code",
+      "norm_label": "activity-logger.ts",
+      "source_file": "app/server/activity-logger.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "src_routes_admin_activity",
       "label": "admin/activity.tsx",
       "_origin": "ast",
@@ -36890,6 +36791,61 @@
       "source_location": "L368"
     },
     {
+      "id": "app_server_passwords_getallusersforadminserverfn",
+      "label": "getAllUsersForAdminServerFn",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "getallusersforadminserverfn",
+      "source_file": "app/server/passwords.ts",
+      "source_location": "L215"
+    },
+    {
+      "id": "app_server_team",
+      "label": "app/server/team.ts",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "app/server/team.ts",
+      "source_file": "app/server/team.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_server_team_createteammemberserverfn",
+      "label": "createTeamMemberServerFn",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "createteammemberserverfn",
+      "source_file": "app/server/team.ts",
+      "source_location": "L230"
+    },
+    {
+      "id": "app_server_team_getteammembersserverfn",
+      "label": "getTeamMembersServerFn",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "getteammembersserverfn",
+      "source_file": "app/server/team.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "app_server_team_toggleteammemberactiveserverfn",
+      "label": "toggleTeamMemberActiveServerFn",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "toggleteammemberactiveserverfn",
+      "source_file": "app/server/team.ts",
+      "source_location": "L402"
+    },
+    {
       "id": "src_components_clientcard",
       "label": "ClientCard.tsx",
       "_origin": "ast",
@@ -36931,17 +36887,6 @@
       "file_type": "code",
       "norm_label": "datatable.tsx",
       "source_file": "src/components/ui/DataTable.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_lib_auth",
-      "label": "src/lib/auth.ts",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "clients.tsx",
-      "file_type": "code",
-      "norm_label": "src/lib/auth.ts",
-      "source_file": "src/lib/auth.ts",
       "source_location": "L1"
     },
     {
@@ -37000,17 +36945,6 @@
       "source_location": "L119"
     },
     {
-      "id": "src_routes_admin_media",
-      "label": "media.tsx",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "clients.tsx",
-      "file_type": "code",
-      "norm_label": "media.tsx",
-      "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_routes_admin_reports_index",
       "label": "reports/index.tsx",
       "_origin": "ast",
@@ -37031,6 +36965,17 @@
       "norm_label": "team.tsx",
       "source_file": "src/routes/admin/team.tsx",
       "source_location": "L1"
+    },
+    {
+      "id": "src_routes_admin_team_route",
+      "label": "Route",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "route",
+      "source_file": "src/routes/admin/team.tsx",
+      "source_location": "L56"
     },
     {
       "id": "src_routes_messages",
@@ -37085,6 +37030,17 @@
       "file_type": "code",
       "norm_label": "src/server/partners.ts",
       "source_file": "src/server/partners.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_server_team",
+      "label": "src/server/team.ts",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "clients.tsx",
+      "file_type": "code",
+      "norm_label": "src/server/team.ts",
+      "source_file": "src/server/team.ts",
       "source_location": "L1"
     },
     {
@@ -57158,81 +57114,37 @@
       "source_location": "L67"
     },
     {
-      "id": "app_server_workflow_getnavblockersserverfn",
-      "label": "getNavBlockersServerFn",
+      "id": "src_components_freesystemsauditcta",
+      "label": "FreeSystemsAuditCTA.tsx",
       "_origin": "ast",
       "community": 321,
-      "community_name": "AdminShell.tsx",
+      "community_name": "systems-audit.tsx",
       "file_type": "code",
-      "norm_label": "getnavblockersserverfn",
-      "source_file": "app/server/workflow.ts",
-      "source_location": "L845"
-    },
-    {
-      "id": "src_components_adminnav",
-      "label": "AdminNav.tsx",
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "adminnav.tsx",
-      "source_file": "src/components/AdminNav.tsx",
+      "norm_label": "freesystemsauditcta.tsx",
+      "source_file": "src/components/FreeSystemsAuditCTA.tsx",
       "source_location": "L1"
     },
     {
-      "id": "src_components_adminshell",
-      "label": "AdminShell.tsx",
+      "id": "src_routes_systems_audit",
+      "label": "systems-audit.tsx",
       "_origin": "ast",
       "community": 321,
-      "community_name": "AdminShell.tsx",
+      "community_name": "systems-audit.tsx",
       "file_type": "code",
-      "norm_label": "adminshell.tsx",
-      "source_file": "src/components/AdminShell.tsx",
+      "norm_label": "systems-audit.tsx",
+      "source_file": "src/routes/systems-audit.tsx",
       "source_location": "L1"
     },
     {
-      "id": "src_components_adminshell_default_client_sections",
-      "label": "DEFAULT_CLIENT_SECTIONS",
+      "id": "src_routes_systems_audit_route",
+      "label": "Route",
       "_origin": "ast",
       "community": 321,
-      "community_name": "AdminShell.tsx",
+      "community_name": "systems-audit.tsx",
       "file_type": "code",
-      "norm_label": "default_client_sections",
-      "source_file": "src/components/AdminShell.tsx",
-      "source_location": "L242"
-    },
-    {
-      "id": "src_components_adminshell_month_names",
-      "label": "MONTH_NAMES",
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "month_names",
-      "source_file": "src/components/AdminShell.tsx",
-      "source_location": "L227"
-    },
-    {
-      "id": "src_components_adminshell_nav_groups",
-      "label": "NAV_GROUPS",
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "nav_groups",
-      "source_file": "src/components/AdminShell.tsx",
-      "source_location": "L102"
-    },
-    {
-      "id": "src_components_clientpickermodal",
-      "label": "ClientPickerModal.tsx",
-      "_origin": "ast",
-      "community": 321,
-      "community_name": "AdminShell.tsx",
-      "file_type": "code",
-      "norm_label": "clientpickermodal.tsx",
-      "source_file": "src/components/ClientPickerModal.tsx",
-      "source_location": "L1"
+      "norm_label": "route",
+      "source_file": "src/routes/systems-audit.tsx",
+      "source_location": "L4"
     },
     {
       "id": "agents_skills_sms_references_sequence_templates_post_purchase_flow",
@@ -69336,17 +69248,6 @@
       "source_location": "L80"
     },
     {
-      "id": "app_server_activity_logger",
-      "label": "activity-logger.ts",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "activity-logger.ts",
-      "source_file": "app/server/activity-logger.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "app_server_auth",
       "label": "server/auth.ts",
       "_origin": "ast",
@@ -69355,17 +69256,6 @@
       "file_type": "code",
       "norm_label": "server/auth.ts",
       "source_file": "app/server/auth.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "app_server_clients",
-      "label": "app/server/clients.ts",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "app/server/clients.ts",
-      "source_file": "app/server/clients.ts",
       "source_location": "L1"
     },
     {
@@ -69378,6 +69268,28 @@
       "norm_label": "app/server/crm.ts",
       "source_file": "app/server/crm.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "app_server_crm_getmonthlymetricsserverfn",
+      "label": "getMonthlyMetricsServerFn",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "getmonthlymetricsserverfn",
+      "source_file": "app/server/crm.ts",
+      "source_location": "L1332"
+    },
+    {
+      "id": "app_server_crm_savemonthlymetricsserverfn",
+      "label": "saveMonthlyMetricsServerFn",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "savemonthlymetricsserverfn",
+      "source_file": "app/server/crm.ts",
+      "source_location": "L1422"
     },
     {
       "id": "app_server_dashboard",
@@ -69424,6 +69336,17 @@
       "source_location": "L1"
     },
     {
+      "id": "app_server_posts_getadminpostsserverfn",
+      "label": "getAdminPostsServerFn",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "getadminpostsserverfn",
+      "source_file": "app/server/posts.ts",
+      "source_location": "L9"
+    },
+    {
       "id": "app_server_posts_getpostbyidserverfn",
       "label": "getPostByIdServerFn",
       "_origin": "ast",
@@ -69433,39 +69356,6 @@
       "norm_label": "getpostbyidserverfn",
       "source_file": "app/server/posts.ts",
       "source_location": "L79"
-    },
-    {
-      "id": "app_server_reports",
-      "label": "app/server/reports.ts",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "app/server/reports.ts",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "app_server_reports_createreportserverfn",
-      "label": "createReportServerFn",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "createreportserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L576"
-    },
-    {
-      "id": "app_server_reports_getreportpreflightdataserverfn",
-      "label": "getReportPreflightDataServerFn",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "getreportpreflightdataserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L436"
     },
     {
       "id": "app_server_reports_helpers",
@@ -69490,17 +69380,6 @@
       "source_location": "L15"
     },
     {
-      "id": "app_server_reports_updatereportserverfn",
-      "label": "updateReportServerFn",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "updatereportserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L1000"
-    },
-    {
       "id": "app_server_workflow",
       "label": "app/server/workflow.ts",
       "_origin": "ast",
@@ -69510,17 +69389,6 @@
       "norm_label": "app/server/workflow.ts",
       "source_file": "app/server/workflow.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "app_server_workflow_savemonthlykpirowserverfn",
-      "label": "saveMonthlyKpiRowServerFn",
-      "_origin": "ast",
-      "community": 43,
-      "community_name": "app/server/crm.ts",
-      "file_type": "code",
-      "norm_label": "savemonthlykpirowserverfn",
-      "source_file": "app/server/workflow.ts",
-      "source_location": "L269"
     },
     {
       "id": "scripts_security_audit",
@@ -69556,6 +69424,39 @@
       "source_location": "L1"
     },
     {
+      "id": "src_components_crm_monthlymetricsform",
+      "label": "MonthlyMetricsForm.tsx",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "monthlymetricsform.tsx",
+      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_crm_monthlymetricsform_metric_fields",
+      "label": "METRIC_FIELDS",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "metric_fields",
+      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "source_location": "L62"
+    },
+    {
+      "id": "src_components_crm_monthlymetricsform_month_names",
+      "label": "MONTH_NAMES",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "month_names",
+      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "source_location": "L34"
+    },
+    {
       "id": "src_db_index",
       "label": "src/db/index.ts",
       "_origin": "ast",
@@ -69565,6 +69466,17 @@
       "norm_label": "src/db/index.ts",
       "source_file": "src/db/index.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "src_routes_admin_posts_route",
+      "label": "Route",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "app/server/crm.ts",
+      "file_type": "code",
+      "norm_label": "route",
+      "source_file": "src/routes/admin/posts.tsx",
+      "source_location": "L73"
     },
     {
       "id": "agents_skills_popups_skill_close_button",
@@ -70163,50 +70075,6 @@
       "source_location": "L275"
     },
     {
-      "id": "app_server_reports_getportalreportsserverfn",
-      "label": "getPortalReportsServerFn",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "getportalreportsserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L381"
-    },
-    {
-      "id": "app_server_reports_getpublicreportbysharetokenserverfn",
-      "label": "getPublicReportByShareTokenServerFn",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "getpublicreportbysharetokenserverfn",
-      "source_file": "app/server/reports.ts",
-      "source_location": "L1419"
-    },
-    {
-      "id": "src_components_navbar",
-      "label": "Navbar.tsx",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "navbar.tsx",
-      "source_file": "src/components/Navbar.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_navbar_service_items",
-      "label": "SERVICE_ITEMS",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "service_items",
-      "source_file": "src/components/Navbar.tsx",
-      "source_location": "L22"
-    },
-    {
       "id": "src_components_reportdocument",
       "label": "ReportDocument.tsx",
       "_origin": "ast",
@@ -70226,17 +70094,6 @@
       "file_type": "code",
       "norm_label": "themednumberinput.tsx",
       "source_file": "src/components/ThemedNumberInput.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_themetoggle",
-      "label": "ThemeToggle.tsx",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "themetoggle.tsx",
-      "source_file": "src/components/ThemeToggle.tsx",
       "source_location": "L1"
     },
     {
@@ -70293,72 +70150,6 @@
       "norm_label": "years",
       "source_file": "src/routes/admin/reports/new.tsx",
       "source_location": "L133"
-    },
-    {
-      "id": "src_routes_portal_index",
-      "label": "portal/index.tsx",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "portal/index.tsx",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_portal_index_route",
-      "label": "Route",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/portal/index.tsx",
-      "source_location": "L18"
-    },
-    {
-      "id": "src_routes_portal_reports_id",
-      "label": "portal/reports/$id.tsx",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "portal/reports/$id.tsx",
-      "source_file": "src/routes/portal/reports/$id.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_r_sharetoken",
-      "label": "$shareToken.tsx",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "$sharetoken.tsx",
-      "source_file": "src/routes/r/$shareToken.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_r_sharetoken_route",
-      "label": "Route",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/r/$shareToken.tsx",
-      "source_location": "L7"
-    },
-    {
-      "id": "src_server_reports",
-      "label": "src/server/reports.ts",
-      "_origin": "ast",
-      "community": 438,
-      "community_name": "new.tsx",
-      "file_type": "code",
-      "norm_label": "src/server/reports.ts",
-      "source_file": "src/server/reports.ts",
-      "source_location": "L1"
     },
     {
       "id": "agents_skills_sms_references_sequence_templates_abandoned_cart_highest_roi_flow_for_ecom",
@@ -91614,28 +91405,6 @@
       "source_location": "L23"
     },
     {
-      "id": "app_server_passwords_getallusersforadminserverfn",
-      "label": "getAllUsersForAdminServerFn",
-      "_origin": "ast",
-      "community": 704,
-      "community_name": "app/lib/auth.ts",
-      "file_type": "code",
-      "norm_label": "getallusersforadminserverfn",
-      "source_file": "app/server/passwords.ts",
-      "source_location": "L215"
-    },
-    {
-      "id": "app_server_team_getteammembersserverfn",
-      "label": "getTeamMembersServerFn",
-      "_origin": "ast",
-      "community": 704,
-      "community_name": "app/lib/auth.ts",
-      "file_type": "code",
-      "norm_label": "getteammembersserverfn",
-      "source_file": "app/server/team.ts",
-      "source_location": "L63"
-    },
-    {
       "id": "src_components_changepasswordmodal",
       "label": "ChangePasswordModal.tsx",
       "_origin": "ast",
@@ -91669,28 +91438,6 @@
       "source_location": "L1"
     },
     {
-      "id": "src_routes_admin_team_route",
-      "label": "Route",
-      "_origin": "ast",
-      "community": 704,
-      "community_name": "app/lib/auth.ts",
-      "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/admin/team.tsx",
-      "source_location": "L56"
-    },
-    {
-      "id": "src_routes_login",
-      "label": "login.tsx",
-      "_origin": "ast",
-      "community": 704,
-      "community_name": "app/lib/auth.ts",
-      "file_type": "code",
-      "norm_label": "login.tsx",
-      "source_file": "src/routes/login.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_server_passwords",
       "label": "src/server/passwords.ts",
       "_origin": "ast",
@@ -91702,55 +91449,286 @@
       "source_location": "L1"
     },
     {
+      "id": "app_server_clients",
+      "label": "app/server/clients.ts",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "app/server/clients.ts",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_server_clients_assignclientstaffserverfn",
+      "label": "assignClientStaffServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "assignclientstaffserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L965"
+    },
+    {
+      "id": "app_server_clients_createclientlocationserverfn",
+      "label": "createClientLocationServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "createclientlocationserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L804"
+    },
+    {
+      "id": "app_server_clients_createclientserverfn",
+      "label": "createClientServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "createclientserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L587"
+    },
+    {
+      "id": "app_server_clients_deleteclientlocationserverfn",
+      "label": "deleteClientLocationServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "deleteclientlocationserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L925"
+    },
+    {
+      "id": "app_server_clients_deleteclientserverfn",
+      "label": "deleteClientServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "deleteclientserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L729"
+    },
+    {
+      "id": "app_server_clients_getclientbyidserverfn",
+      "label": "getClientByIdServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getclientbyidserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L370"
+    },
+    {
       "id": "app_server_clients_getclientdatasourcesserverfn",
       "label": "getClientDataSourcesServerFn",
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "getclientdatasourcesserverfn",
       "source_file": "app/server/clients.ts",
       "source_location": "L446"
     },
     {
+      "id": "app_server_clients_getclientlocationsserverfn",
+      "label": "getClientLocationsServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getclientlocationsserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L768"
+    },
+    {
       "id": "app_server_clients_updateclientdatasourceserverfn",
       "label": "updateClientDataSourceServerFn",
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "updateclientdatasourceserverfn",
       "source_file": "app/server/clients.ts",
       "source_location": "L519"
     },
     {
-      "id": "app_server_crm_getmonthlymetricsserverfn",
-      "label": "getMonthlyMetricsServerFn",
+      "id": "app_server_clients_updateclientlocationserverfn",
+      "label": "updateClientLocationServerFn",
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "getmonthlymetricsserverfn",
-      "source_file": "app/server/crm.ts",
-      "source_location": "L1332"
+      "norm_label": "updateclientlocationserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L864"
     },
     {
-      "id": "app_server_crm_savemonthlymetricsserverfn",
-      "label": "saveMonthlyMetricsServerFn",
+      "id": "app_server_clients_updateclientserverfn",
+      "label": "updateClientServerFn",
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "savemonthlymetricsserverfn",
-      "source_file": "app/server/crm.ts",
-      "source_location": "L1422"
+      "norm_label": "updateclientserverfn",
+      "source_file": "app/server/clients.ts",
+      "source_location": "L653"
+    },
+    {
+      "id": "app_server_dashboard_getadmindashboarddataserverfn",
+      "label": "getAdminDashboardDataServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getadmindashboarddataserverfn",
+      "source_file": "app/server/dashboard.ts",
+      "source_location": "L99"
+    },
+    {
+      "id": "app_server_reports",
+      "label": "app/server/reports.ts",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "app/server/reports.ts",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_server_reports_createreportserverfn",
+      "label": "createReportServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "createreportserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L576"
+    },
+    {
+      "id": "app_server_reports_deletereportserverfn",
+      "label": "deleteReportServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "deletereportserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L1232"
+    },
+    {
+      "id": "app_server_reports_generatereportsharelinkserverfn",
+      "label": "generateReportShareLinkServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "generatereportsharelinkserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L1276"
+    },
+    {
+      "id": "app_server_reports_getreportpreflightdataserverfn",
+      "label": "getReportPreflightDataServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getreportpreflightdataserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L436"
+    },
+    {
+      "id": "app_server_reports_getreportsserverfn",
+      "label": "getReportsServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getreportsserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "app_server_reports_regeneratereportserverfn",
+      "label": "regenerateReportServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "regeneratereportserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L819"
+    },
+    {
+      "id": "app_server_reports_revokereportsharelinkserverfn",
+      "label": "revokeReportShareLinkServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "revokereportsharelinkserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L1348"
+    },
+    {
+      "id": "app_server_reports_updatereportdisplayoptionsserverfn",
+      "label": "updateReportDisplayOptionsServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "updatereportdisplayoptionsserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L1178"
+    },
+    {
+      "id": "app_server_reports_updatereportserverfn",
+      "label": "updateReportServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "updatereportserverfn",
+      "source_file": "app/server/reports.ts",
+      "source_location": "L1000"
+    },
+    {
+      "id": "app_server_team_deleteteammemberserverfn",
+      "label": "deleteTeamMemberServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "deleteteammemberserverfn",
+      "source_file": "app/server/team.ts",
+      "source_location": "L345"
+    },
+    {
+      "id": "app_server_workflow_getnavblockersserverfn",
+      "label": "getNavBlockersServerFn",
+      "_origin": "ast",
+      "community": 705,
+      "community_name": "assertActiveSession",
+      "file_type": "code",
+      "norm_label": "getnavblockersserverfn",
+      "source_file": "app/server/workflow.ts",
+      "source_location": "L845"
     },
     {
       "id": "src_components_crm_datasourcesboard",
       "label": "DataSourcesBoard.tsx",
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "datasourcesboard.tsx",
       "source_file": "src/components/crm/DataSourcesBoard.tsx",
@@ -91761,44 +91739,44 @@
       "label": "SOURCES",
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
       "norm_label": "sources",
       "source_file": "src/components/crm/DataSourcesBoard.tsx",
       "source_location": "L36"
     },
     {
-      "id": "src_components_crm_monthlymetricsform",
-      "label": "MonthlyMetricsForm.tsx",
+      "id": "src_components_crm_locationsboard",
+      "label": "LocationsBoard.tsx",
       "_origin": "ast",
       "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community_name": "assertActiveSession",
       "file_type": "code",
-      "norm_label": "monthlymetricsform.tsx",
-      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
+      "norm_label": "locationsboard.tsx",
+      "source_file": "src/components/crm/LocationsBoard.tsx",
       "source_location": "L1"
     },
     {
-      "id": "src_components_crm_monthlymetricsform_metric_fields",
-      "label": "METRIC_FIELDS",
+      "id": "src_components_navbar",
+      "label": "Navbar.tsx",
       "_origin": "ast",
-      "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community": 706,
+      "community_name": "Navbar.tsx",
       "file_type": "code",
-      "norm_label": "metric_fields",
-      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
-      "source_location": "L62"
+      "norm_label": "navbar.tsx",
+      "source_file": "src/components/Navbar.tsx",
+      "source_location": "L1"
     },
     {
-      "id": "src_components_crm_monthlymetricsform_month_names",
-      "label": "MONTH_NAMES",
+      "id": "src_components_navbar_service_items",
+      "label": "SERVICE_ITEMS",
       "_origin": "ast",
-      "community": 705,
-      "community_name": "MonthlyMetricsForm.tsx",
+      "community": 706,
+      "community_name": "Navbar.tsx",
       "file_type": "code",
-      "norm_label": "month_names",
-      "source_file": "src/components/crm/MonthlyMetricsForm.tsx",
-      "source_location": "L34"
+      "norm_label": "service_items",
+      "source_file": "src/components/Navbar.tsx",
+      "source_location": "L22"
     },
     {
       "id": "agents_skills_marketing_psychology_skill_availability_heuristic",
@@ -93167,50 +93145,6 @@
       "norm_label": "website_design_json_ld",
       "source_file": "src/routes/website-design.tsx",
       "source_location": "L49"
-    },
-    {
-      "id": "src_routes_websites",
-      "label": "websites.tsx",
-      "_origin": "ast",
-      "community": 73,
-      "community_name": "website-design.tsx",
-      "file_type": "code",
-      "norm_label": "websites.tsx",
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_websites_route",
-      "label": "Route",
-      "_origin": "ast",
-      "community": 73,
-      "community_name": "website-design.tsx",
-      "file_type": "code",
-      "norm_label": "route",
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L95"
-    },
-    {
-      "id": "src_routes_websites_websites_pillar_faq",
-      "label": "WEBSITES_PILLAR_FAQ",
-      "_origin": "ast",
-      "community": 73,
-      "community_name": "website-design.tsx",
-      "file_type": "code",
-      "norm_label": "websites_pillar_faq",
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L20"
-    },
-    {
-      "id": "src_routes_websites_websites_pillar_json_ld",
-      "label": "WEBSITES_PILLAR_JSON_LD",
-      "_origin": "ast",
-      "community": 73,
-      "community_name": "website-design.tsx",
-      "file_type": "code",
-      "norm_label": "websites_pillar_json_ld",
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L43"
     },
     {
       "id": "agents_skills_ui_styling_scripts_tests_test_shadcn_add_rationale_77",
@@ -94652,7 +94586,7 @@
       "label": "advancePublishingQueueItemServerFn",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "advancepublishingqueueitemserverfn",
       "source_file": "app/server/workflow.ts",
@@ -94663,7 +94597,7 @@
       "label": "getMonthlyKpiGridServerFn",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "getmonthlykpigridserverfn",
       "source_file": "app/server/workflow.ts",
@@ -94674,7 +94608,7 @@
       "label": "getPublishingQueueServerFn",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "getpublishingqueueserverfn",
       "source_file": "app/server/workflow.ts",
@@ -94685,18 +94619,84 @@
       "label": "getReportsDueServerFn",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "getreportsdueserverfn",
       "source_file": "app/server/workflow.ts",
       "source_location": "L332"
     },
     {
+      "id": "app_server_workflow_savemonthlykpirowserverfn",
+      "label": "saveMonthlyKpiRowServerFn",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "savemonthlykpirowserverfn",
+      "source_file": "app/server/workflow.ts",
+      "source_location": "L269"
+    },
+    {
+      "id": "src_components_adminnav",
+      "label": "AdminNav.tsx",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "adminnav.tsx",
+      "source_file": "src/components/AdminNav.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_adminshell",
+      "label": "AdminShell.tsx",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "adminshell.tsx",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_adminshell_default_client_sections",
+      "label": "DEFAULT_CLIENT_SECTIONS",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "default_client_sections",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L242"
+    },
+    {
+      "id": "src_components_adminshell_month_names",
+      "label": "MONTH_NAMES",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "month_names",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L227"
+    },
+    {
+      "id": "src_components_adminshell_nav_groups",
+      "label": "NAV_GROUPS",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "AdminShell.tsx",
+      "file_type": "code",
+      "norm_label": "nav_groups",
+      "source_file": "src/components/AdminShell.tsx",
+      "source_location": "L102"
+    },
+    {
       "id": "src_components_crm_monthlykpigrid",
       "label": "MonthlyKpiGrid.tsx",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "monthlykpigrid.tsx",
       "source_file": "src/components/crm/MonthlyKpiGrid.tsx",
@@ -94707,7 +94707,7 @@
       "label": "MONTH_NAMES",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "month_names",
       "source_file": "src/components/crm/MonthlyKpiGrid.tsx",
@@ -94718,7 +94718,7 @@
       "label": "PublishingQueue.tsx",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "publishingqueue.tsx",
       "source_file": "src/components/crm/PublishingQueue.tsx",
@@ -94729,7 +94729,7 @@
       "label": "ReportsDueTable.tsx",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "reportsduetable.tsx",
       "source_file": "src/components/crm/ReportsDueTable.tsx",
@@ -94740,7 +94740,7 @@
       "label": "MONTH_NAMES",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "month_names",
       "source_file": "src/components/crm/ReportsDueTable.tsx",
@@ -94751,7 +94751,7 @@
       "label": "src/server/workflow.ts",
       "_origin": "ast",
       "community": 8,
-      "community_name": "MonthlyKpiGrid.tsx",
+      "community_name": "AdminShell.tsx",
       "file_type": "code",
       "norm_label": "src/server/workflow.ts",
       "source_file": "src/server/workflow.ts",
@@ -122273,18 +122273,6 @@
       "weight": 1.0
     },
     {
-      "source": "src_routes_websites",
-      "target": "src_components_freewebsitedemocta_freewebsitedemocta",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L1",
-      "weight": 1.0
-    },
-    {
       "source": "src_routes_websites_care",
       "target": "src_components_freeauditcta_freeauditcta",
       "relation": "imports",
@@ -126326,18 +126314,6 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/website-design.tsx",
-      "source_location": "L1",
-      "weight": 1.0
-    },
-    {
-      "source": "src_routes_websites",
-      "target": "src_components_freewebsitedemocta",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/routes/websites.tsx",
       "source_location": "L1",
       "weight": 1.0
     },
@@ -206027,35 +206003,35 @@
     },
     {
       "source": "src_routes_websites",
-      "target": "src_routes_websites_websites_pillar_faq",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L20",
-      "weight": 1.0
-    },
-    {
-      "source": "src_routes_websites",
-      "target": "src_routes_websites_websites_pillar_json_ld",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/routes/websites.tsx",
-      "source_location": "L43",
-      "weight": 1.0
-    },
-    {
-      "source": "src_routes_websites",
       "target": "src_routes_websites_route",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/websites.tsx",
-      "source_location": "L95",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "src_routes_websites",
+      "target": "src_routes_websites_websites_faq",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/routes/websites.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "src_routes_websites",
+      "target": "src_routes_websites_websites_json_ld",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/routes/websites.tsx",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -216067,14 +216043,14 @@
     },
     {
       "source": "src_routes_websites",
-      "target": "src_routes_websites_websitespillarpage",
+      "target": "src_routes_websites_websitespage",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/websites.tsx",
-      "source_location": "L142",
+      "source_location": "L183",
       "weight": 1.0
     },
     {
@@ -216191,5 +216167,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0937036a33d051833bcee9a67992f88884a1889a"
+  "built_at_commit": "569544a758c6da3cf3917be3c841c089e7f20564"
 }

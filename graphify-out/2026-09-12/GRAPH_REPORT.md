@@ -1,22 +1,22 @@
 # Graph Report - built by Miguel  (2026-09-12)
 
 ## Corpus Check
-- 560 files · ~904,084 words
+- 560 files · ~905,955 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8364 nodes · 10376 edges · 719 communities (664 shown, 40 thin omitted)
+- 8364 nodes · 10372 edges · 721 communities (666 shown, 40 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 80 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `34729ab1`
+- Built from commit: `0937036a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - routeTree.gen.ts
-- assertActiveSession
+- clients_.$clientId.tsx
 - clients.tsx
 - persist_design_system
 - validate_data.py
@@ -58,7 +58,7 @@
 - The 17 sections (scored 0–5 each)
 - Measurement Framework — KPIs, North Stars, Cadence
 - search_stack
-- app/db/schema.ts
+- app/server/crm.ts
 - The Templates
 - Google Ads Setup
 - Logo Usage Rules
@@ -139,7 +139,7 @@
 - Sales Enablement
 - Navigation Patterns
 - app/server/leads.ts
-- media.tsx
+- assertActiveSession
 - Motion-Style Video Ads (Faceless, Fully Generated)
 - Dunning Playbook
 - Positioning Variations Library
@@ -449,7 +449,7 @@
 - Common Issues by Site Type
 - Output Format
 - Slides
-- app/server/reports.ts
+- new.tsx
 - Abandoned Cart (highest-ROI flow for ecom)
 - Content Repurposing System
 - 2. Tenancy & The Partner Model
@@ -662,7 +662,7 @@
 - Voice & Audio Generation
 - .test_init_default_project_root
 - .test_init_dry_run
-- systems-auto.tsx
+- CodeTerminalInspector.tsx
 - .test_get_installed_components_empty
 - .test_add_components_no_components
 - .test_add_fonts
@@ -705,6 +705,8 @@
 - Core Principles
 - Internal Linking Strategy
 - DesignSystemGenerator
+- app/lib/auth.ts
+- MonthlyMetricsForm.tsx
 - Product/App Events
 - Custom Dimensions and Metrics
 - Case Study Briefs (Sales Format)
@@ -733,33 +735,33 @@
 10. `ShadcnInstaller` - 34 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `LoginPage()` --calls--> `loginServerFn`  [EXTRACTED]
-  src/routes/login.tsx → app/lib/auth.ts
-- `PortalLayout()` --calls--> `logoutServerFn`  [EXTRACTED]
-  src/routes/portal.tsx → app/lib/auth.ts
+- `simulateAssertClientAccess()` --calls--> `getEffectivePartnerId()`  [EXTRACTED]
+  scripts/simulate.ts → app/server/auth.ts
+- `MetricFieldConfig` --references--> `MonthlyMetricsInput`  [EXTRACTED]
+  src/components/crm/MonthlyMetricsForm.tsx → app/server/metrics.ts
 - `runSimulations()` --indirect_call--> `ReportDocument()`  [INFERRED]
   scripts/simulate.ts → src/components/ReportDocument.tsx
-- `ArticlesBoard()` --calls--> `checkAuthServerFn`  [EXTRACTED]
-  src/components/crm/ArticlesBoard.tsx → app/lib/auth.ts
-- `LandingPagesBoard()` --calls--> `checkAuthServerFn`  [EXTRACTED]
-  src/components/crm/LandingPagesBoard.tsx → app/lib/auth.ts
+- `ReportDocumentProps` --references--> `Client`  [EXTRACTED]
+  src/components/ReportDocument.tsx → app/db/schema.ts
+- `runAudit()` --calls--> `hashPassword()`  [EXTRACTED]
+  scripts/security-audit.ts → app/lib/auth.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (719 total, 40 thin omitted)
+## Communities (721 total, 40 thin omitted)
 
 ### Community 0 - "routeTree.gen.ts"
-Cohesion: 0.03
-Nodes (109): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmin(), requireSuperadminAuth(), AdminDashboardData, getPartnersOrderBy(), getPartnersServerFn (+101 more)
+Cohesion: 0.02
+Nodes (110): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmin(), requireSuperadminAuth(), getClientsServerFn, AdminDashboardData, getAdminDashboardDataServerFn (+102 more)
 
-### Community 1 - "assertActiveSession"
-Cohesion: 0.05
-Nodes (100): Citation, ClientArticle, Keyword, LandingPage, Task, ActiveSessionResult, assertActiveSession(), getEffectivePartnerId() (+92 more)
+### Community 1 - "clients_.$clientId.tsx"
+Cohesion: 0.06
+Nodes (63): getClientByIdServerFn, updateClientServerFn, assertClientAccess(), commitSemrushCsvImportServerFn, createCitationServerFn, createClientArticleServerFn, createKeywordServerFn, createLandingPageServerFn (+55 more)
 
 ### Community 2 - "clients.tsx"
-Cohesion: 0.06
-Nodes (61): Message, assertSuperadminSession(), ClientWithReportCount, createClientServerFn, deleteClientServerFn, PartnerSummary, updateClientServerFn, deleteMessageServerFn (+53 more)
+Cohesion: 0.08
+Nodes (51): Message, assertSuperadminSession(), ClientWithReportCount, PartnerSummary, deleteMessageServerFn, getMessagesServerFn, updateMessageStatusServerFn, AgencyDetailData (+43 more)
 
 ### Community 3 - "persist_design_system"
 Cohesion: 0.14
@@ -782,8 +784,8 @@ Cohesion: 0.08
 Nodes (43): createPostServerFn, deletePostServerFn, getPublicPostBySlugServerFn, getPublicPostsServerFn, updatePostServerFn, AdminMarkdownBlockItem, AdminMarkdownRenderer(), AdminPostsPage() (+35 more)
 
 ### Community 8 - "MonthlyKpiGrid.tsx"
-Cohesion: 0.12
-Nodes (14): advancePublishingQueueItemServerFn, DataSourceStatus, getMonthlyKpiGridServerFn, KpiGridClientRow, KpiGridLocationRow, PublishingQueueItem, QueueItemType, saveMonthlyKpiRowServerFn (+6 more)
+Cohesion: 0.09
+Nodes (20): ActiveSessionResult, advancePublishingQueueItemServerFn, DataSourceStatus, getMonthlyKpiGridServerFn, getPublishingQueueServerFn, getReportsDueServerFn, KpiGridClientRow, KpiGridLocationRow (+12 more)
 
 ### Community 9 - "Social Listening & Engagement Triage"
 Cohesion: 0.04
@@ -921,9 +923,9 @@ Nodes (29): Acquisition leading indicators, Activation leading indicators, Ancho
 Cohesion: 0.10
 Nodes (10): _exact_stack_identifier(), _project_row(), Resolve a standalone API identifier even when its BM25 IDF is low., Search stack-specific guidelines, search_stack(), _valid_max_results(), _rows(), TestNativeDesktopStackFreshness (+2 more)
 
-### Community 43 - "app/db/schema.ts"
+### Community 43 - "app/server/crm.ts"
 Cohesion: 0.05
-Nodes (78): db, ActivityLog, activityLogs, citations, clientArticles, ClientDataSource, clientDataSources, ClientLocation (+70 more)
+Nodes (85): db, ActivityLog, activityLogs, Citation, citations, Client, ClientArticle, clientArticles (+77 more)
 
 ### Community 44 - "The Templates"
 Cohesion: 0.09
@@ -1245,9 +1247,9 @@ Nodes (18): Anti-Patterns, Blog Category Sidebar, Bottom Tab Bar, Breadcrumbs, C
 Cohesion: 0.16
 Nodes (14): AuditLeadPayload, ContactLeadPayload, DemoLeadPayload, LeadSubmissionResponse, submitAuditLead, submitContactLead, submitDemoLead, validateEmail() (+6 more)
 
-### Community 125 - "media.tsx"
-Cohesion: 0.09
-Nodes (32): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, MediaPurpose, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo() (+24 more)
+### Community 125 - "assertActiveSession"
+Cohesion: 0.08
+Nodes (46): Media, hashPassword(), logActivity(), assertActiveSession(), getEffectivePartnerId(), getServerUtils(), assignClientStaffServerFn, createClientLocationServerFn (+38 more)
 
 ### Community 126 - "Motion-Style Video Ads (Faceless, Fully Generated)"
 Cohesion: 0.12
@@ -2018,8 +2020,8 @@ Cohesion: 0.22
 Nodes (6): Canonical Overrides Hreflang, Canonicalization & i18n, International SEO: Evidence & Sources, Near-Duplicate Regional Variants, Pagination Across Locales, Self-Referencing Canonicals
 
 ### Community 321 - "AdminShell.tsx"
-Cohesion: 0.08
-Nodes (23): LogoutButton(), LogoutButtonProps, NavBlockerCounts, AdminNavProps, AdminShellProps, BreadcrumbContext, DEFAULT_CLIENT_SECTIONS, MONTH_NAMES (+15 more)
+Cohesion: 0.15
+Nodes (16): getNavBlockersServerFn, NavBlockerCounts, AdminNavProps, AdminShellProps, BreadcrumbContext, DEFAULT_CLIENT_SECTIONS, MONTH_NAMES, NAV_GROUPS (+8 more)
 
 ### Community 322 - "Post-Purchase Flow"
 Cohesion: 0.33
@@ -2481,9 +2483,9 @@ Nodes (6): 1. Page Hierarchy (ASCII Tree), 2. Visual Sitemap (Mermaid), 3. URL M
 Cohesion: 0.33
 Nodes (5): References (Knowledge Base), Routing, Slides, Subcommands, When to Use
 
-### Community 438 - "app/server/reports.ts"
+### Community 438 - "new.tsx"
 Cohesion: 0.06
-Nodes (54): Client, DeliverablesSnapshot, Report, createReportServerFn, DisplayOptions, generateReportShareLinkServerFn, getClientDataSourceMap(), getLatestReportForClientServerFn (+46 more)
+Nodes (38): Report, DisplayOptions, getLatestReportForClientServerFn, getPortalReportsServerFn, getPublicReportByShareTokenServerFn, PageItem, QueryItem, ReportWithClient (+30 more)
 
 ### Community 439 - "Abandoned Cart (highest-ROI flow for ecom)"
 Cohesion: 0.50
@@ -3273,9 +3275,9 @@ Nodes (3): 1.5 What Would Break If Either Directory Were Deleted?, If `/app` wer
 Cohesion: 0.20
 Nodes (10): Cartesia Sonic, Choosing a Voice Tool, ElevenLabs, OpenAI TTS, Other Voice Tools, Voice & Audio Generation, Voice Tool Comparison, Voicebox (Open Source) (+2 more)
 
-### Community 655 - "systems-auto.tsx"
-Cohesion: 0.15
-Nodes (10): CodeTab, CodeTerminalInspector(), CodeTerminalInspectorProps, DEFAULT_CODE_TABS, FreeSystemsAuditCTA(), FreeSystemsAuditCTAProps, Route, Route (+2 more)
+### Community 655 - "CodeTerminalInspector.tsx"
+Cohesion: 0.40
+Nodes (3): CodeTab, CodeTerminalInspectorProps, DEFAULT_CODE_TABS
 
 ### Community 683 - "Google Ads"
 Cohesion: 0.33
@@ -3357,6 +3359,14 @@ Nodes (5): Hub-and-Spoke Model, Internal Linking Rules, Internal Linking Strateg
 Cohesion: 0.11
 Nodes (12): DesignSystemGenerator, Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Execute searches across multiple domains., Select best matching result based on priority keywords., Extract results list from search result dict., Generate complete design system recommendation. variance/motion/density are…, Bucket a 1-10 dial value into its tier config. Returns None if value is None. (+4 more)
 
+### Community 704 - "app/lib/auth.ts"
+Cohesion: 0.08
+Nodes (33): LogoutButton(), LogoutButtonProps, CachedSession, createSessionToken(), getSecrets(), getServerUtils(), getSessionCookieOptions(), getSessionData() (+25 more)
+
+### Community 705 - "MonthlyMetricsForm.tsx"
+Cohesion: 0.14
+Nodes (15): ClientDataSourceItem, DataSourceStatus, getClientDataSourcesServerFn, updateClientDataSourceServerFn, getMonthlyMetricsServerFn, saveMonthlyMetricsServerFn, DataSourcesBoard(), DataSourcesBoardProps (+7 more)
+
 ### Community 711 - "Product/App Events"
 Cohesion: 0.50
 Nodes (4): Core Usage, Errors & Support, Onboarding, Product/App Events
@@ -3407,7 +3417,7 @@ Nodes (3): REDIRECT_MAP, resolveRedirect(), Route
 
 ## Knowledge Gaps
 - **5202 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+5197 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 5662 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 5663 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **40 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
@@ -3422,8 +3432,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `fs`, `path`, `fs` to the rest of the system?**
   _5202 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `routeTree.gen.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.025388765471278957 - nodes in this community are weakly interconnected._
-- **Should `assertActiveSession` be split into smaller, more focused modules?**
-  _Cohesion score 0.0540045766590389 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.024327784891165175 - nodes in this community are weakly interconnected._
+- **Should `clients_.$clientId.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.061621621621621624 - nodes in this community are weakly interconnected._
 - **Should `clients.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.05938037865748709 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08028919330289193 - nodes in this community are weakly interconnected._

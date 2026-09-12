@@ -1,16 +1,16 @@
 # Graph Report - built by Miguel  (2026-09-12)
 
 ## Corpus Check
-- 560 files · ~905,955 words
+- 560 files · ~907,645 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8364 nodes · 10372 edges · 721 communities (666 shown, 40 thin omitted)
+- 8364 nodes · 10370 edges · 722 communities (667 shown, 40 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 80 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0937036a`
+- Built from commit: `569544a7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -23,7 +23,7 @@
 - gray
 - search
 - posts.tsx
-- MonthlyKpiGrid.tsx
+- AdminShell.tsx
 - Social Listening & Engagement Triage
 - Ad Creative
 - Signup Flow CRO
@@ -139,7 +139,7 @@
 - Sales Enablement
 - Navigation Patterns
 - app/server/leads.ts
-- assertActiveSession
+- media.tsx
 - Motion-Style Video Ads (Faceless, Fully Generated)
 - Dunning Playbook
 - Positioning Variations Library
@@ -333,7 +333,7 @@
 - Public Relations & Earned Media
 - HubSpot Workflow Recipes
 - International SEO: Evidence & Sources
-- AdminShell.tsx
+- systems-audit.tsx
 - Post-Purchase Flow
 - Product Marketing Context: built by Miguel
 - Payback Period Budgeting
@@ -706,7 +706,8 @@
 - Internal Linking Strategy
 - DesignSystemGenerator
 - app/lib/auth.ts
-- MonthlyMetricsForm.tsx
+- assertActiveSession
+- Navbar.tsx
 - Product/App Events
 - Custom Dimensions and Metrics
 - Case Study Briefs (Sales Format)
@@ -735,33 +736,33 @@
 10. `ShadcnInstaller` - 34 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `PortalLayout()` --calls--> `logoutServerFn`  [EXTRACTED]
+  src/routes/portal.tsx → app/lib/auth.ts
 - `simulateAssertClientAccess()` --calls--> `getEffectivePartnerId()`  [EXTRACTED]
   scripts/simulate.ts → app/server/auth.ts
-- `MetricFieldConfig` --references--> `MonthlyMetricsInput`  [EXTRACTED]
-  src/components/crm/MonthlyMetricsForm.tsx → app/server/metrics.ts
 - `runSimulations()` --indirect_call--> `ReportDocument()`  [INFERRED]
   scripts/simulate.ts → src/components/ReportDocument.tsx
-- `ReportDocumentProps` --references--> `Client`  [EXTRACTED]
-  src/components/ReportDocument.tsx → app/db/schema.ts
-- `runAudit()` --calls--> `hashPassword()`  [EXTRACTED]
-  scripts/security-audit.ts → app/lib/auth.ts
+- `ArticlesBoard()` --calls--> `checkAuthServerFn`  [EXTRACTED]
+  src/components/crm/ArticlesBoard.tsx → app/lib/auth.ts
+- `LandingPagesBoard()` --calls--> `checkAuthServerFn`  [EXTRACTED]
+  src/components/crm/LandingPagesBoard.tsx → app/lib/auth.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (721 total, 40 thin omitted)
+## Communities (722 total, 40 thin omitted)
 
 ### Community 0 - "routeTree.gen.ts"
 Cohesion: 0.02
-Nodes (110): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmin(), requireSuperadminAuth(), getClientsServerFn, AdminDashboardData, getAdminDashboardDataServerFn (+102 more)
+Nodes (118): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmin(), requireSuperadminAuth(), getClientsServerFn, AdminDashboardData, getPortalReportsServerFn (+110 more)
 
 ### Community 1 - "clients_.$clientId.tsx"
 Cohesion: 0.06
-Nodes (63): getClientByIdServerFn, updateClientServerFn, assertClientAccess(), commitSemrushCsvImportServerFn, createCitationServerFn, createClientArticleServerFn, createKeywordServerFn, createLandingPageServerFn (+55 more)
+Nodes (64): assertClientAccess(), commitSemrushCsvImportServerFn, createCitationServerFn, createClientArticleServerFn, createKeywordServerFn, createLandingPageServerFn, createTaskServerFn, deleteCitationServerFn (+56 more)
 
 ### Community 2 - "clients.tsx"
-Cohesion: 0.08
-Nodes (51): Message, assertSuperadminSession(), ClientWithReportCount, PartnerSummary, deleteMessageServerFn, getMessagesServerFn, updateMessageStatusServerFn, AgencyDetailData (+43 more)
+Cohesion: 0.07
+Nodes (56): Message, assertSuperadminSession(), ClientWithReportCount, PartnerSummary, deleteMessageServerFn, getMessagesServerFn, updateMessageStatusServerFn, AgencyDetailData (+48 more)
 
 ### Community 3 - "persist_design_system"
 Cohesion: 0.14
@@ -783,9 +784,9 @@ Nodes (42): BM25, detect_domain(), get_cip_brief(), _load_csv(), Load CSV and re
 Cohesion: 0.08
 Nodes (43): createPostServerFn, deletePostServerFn, getPublicPostBySlugServerFn, getPublicPostsServerFn, updatePostServerFn, AdminMarkdownBlockItem, AdminMarkdownRenderer(), AdminPostsPage() (+35 more)
 
-### Community 8 - "MonthlyKpiGrid.tsx"
-Cohesion: 0.09
-Nodes (20): ActiveSessionResult, advancePublishingQueueItemServerFn, DataSourceStatus, getMonthlyKpiGridServerFn, getPublishingQueueServerFn, getReportsDueServerFn, KpiGridClientRow, KpiGridLocationRow (+12 more)
+### Community 8 - "AdminShell.tsx"
+Cohesion: 0.06
+Nodes (32): ActiveSessionResult, advancePublishingQueueItemServerFn, DataSourceStatus, getMonthlyKpiGridServerFn, getPublishingQueueServerFn, getReportsDueServerFn, KpiGridClientRow, KpiGridLocationRow (+24 more)
 
 ### Community 9 - "Social Listening & Engagement Triage"
 Cohesion: 0.04
@@ -925,7 +926,7 @@ Nodes (10): _exact_stack_identifier(), _project_row(), Resolve a standalone API 
 
 ### Community 43 - "app/server/crm.ts"
 Cohesion: 0.05
-Nodes (85): db, ActivityLog, activityLogs, Citation, citations, Client, ClientArticle, clientArticles (+77 more)
+Nodes (77): db, ActivityLog, activityLogs, Citation, citations, ClientArticle, clientArticles, ClientDataSource (+69 more)
 
 ### Community 44 - "The Templates"
 Cohesion: 0.09
@@ -1044,8 +1045,8 @@ Cohesion: 0.09
 Nodes (22): @apply Directive, Best Practices, Color Customization, Complete Tailwind Config, Configuration Examples, Content Configuration, Custom Color Palette, Custom Font Sizes (+14 more)
 
 ### Community 73 - "website-design.tsx"
-Cohesion: 0.18
-Nodes (8): FreeWebsiteDemoCTA(), FreeWebsiteDemoCTAProps, Route, WEBSITE_DESIGN_FAQ, WEBSITE_DESIGN_JSON_LD, Route, WEBSITES_PILLAR_FAQ, WEBSITES_PILLAR_JSON_LD
+Cohesion: 0.29
+Nodes (5): FreeWebsiteDemoCTA(), FreeWebsiteDemoCTAProps, Route, WEBSITE_DESIGN_FAQ, WEBSITE_DESIGN_JSON_LD
 
 ### Community 74 - "Security Audit & Integration Test Findings Report"
 Cohesion: 0.09
@@ -1247,9 +1248,9 @@ Nodes (18): Anti-Patterns, Blog Category Sidebar, Bottom Tab Bar, Breadcrumbs, C
 Cohesion: 0.16
 Nodes (14): AuditLeadPayload, ContactLeadPayload, DemoLeadPayload, LeadSubmissionResponse, submitAuditLead, submitContactLead, submitDemoLead, validateEmail() (+6 more)
 
-### Community 125 - "assertActiveSession"
-Cohesion: 0.08
-Nodes (46): Media, hashPassword(), logActivity(), assertActiveSession(), getEffectivePartnerId(), getServerUtils(), assignClientStaffServerFn, createClientLocationServerFn (+38 more)
+### Community 125 - "media.tsx"
+Cohesion: 0.13
+Nodes (23): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, MediaPurpose, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo() (+15 more)
 
 ### Community 126 - "Motion-Style Video Ads (Faceless, Fully Generated)"
 Cohesion: 0.12
@@ -1444,8 +1445,8 @@ Cohesion: 0.23
 Nodes (3): detect_domain(), Auto-detect the most relevant domain from query. Matches are weighted by…, TestDomainDetection
 
 ### Community 175 - "admin/activity.tsx"
-Cohesion: 0.23
-Nodes (12): ActivityAction, ActivityLogItem, ActivityLogsResponse, getActivityLogsServerFn, getActivityOrderBy(), parseDevice(), ActivitySearch, AdminActivityPage() (+4 more)
+Cohesion: 0.20
+Nodes (14): ActivityAction, ActivityLogItem, ActivityLogsResponse, getActivityLogsServerFn, getActivityOrderBy(), getClientRequestMeta(), getServerUtils(), parseDevice() (+6 more)
 
 ### Community 176 - "STANDING RULES"
 Cohesion: 0.13
@@ -2019,9 +2020,9 @@ Nodes (9): 1. MQL Alert and Assignment, 2. MQL SLA Escalation, 3. Lead Scoring U
 Cohesion: 0.22
 Nodes (6): Canonical Overrides Hreflang, Canonicalization & i18n, International SEO: Evidence & Sources, Near-Duplicate Regional Variants, Pagination Across Locales, Self-Referencing Canonicals
 
-### Community 321 - "AdminShell.tsx"
-Cohesion: 0.15
-Nodes (16): getNavBlockersServerFn, NavBlockerCounts, AdminNavProps, AdminShellProps, BreadcrumbContext, DEFAULT_CLIENT_SECTIONS, MONTH_NAMES, NAV_GROUPS (+8 more)
+### Community 321 - "systems-audit.tsx"
+Cohesion: 0.40
+Nodes (3): FreeSystemsAuditCTA(), FreeSystemsAuditCTAProps, Route
 
 ### Community 322 - "Post-Purchase Flow"
 Cohesion: 0.33
@@ -2484,8 +2485,8 @@ Cohesion: 0.33
 Nodes (5): References (Knowledge Base), Routing, Slides, Subcommands, When to Use
 
 ### Community 438 - "new.tsx"
-Cohesion: 0.06
-Nodes (38): Report, DisplayOptions, getLatestReportForClientServerFn, getPortalReportsServerFn, getPublicReportByShareTokenServerFn, PageItem, QueryItem, ReportWithClient (+30 more)
+Cohesion: 0.10
+Nodes (29): Client, DeliverablesSnapshot, Report, DisplayOptions, getLatestReportForClientServerFn, PageItem, QueryItem, ReportWithClient (+21 more)
 
 ### Community 439 - "Abandoned Cart (highest-ROI flow for ecom)"
 Cohesion: 0.50
@@ -3361,11 +3362,15 @@ Nodes (12): DesignSystemGenerator, Generates design system recommendations from 
 
 ### Community 704 - "app/lib/auth.ts"
 Cohesion: 0.08
-Nodes (33): LogoutButton(), LogoutButtonProps, CachedSession, createSessionToken(), getSecrets(), getServerUtils(), getSessionCookieOptions(), getSessionData() (+25 more)
+Nodes (30): LogoutButton(), LogoutButtonProps, CachedSession, createSessionToken(), getSecrets(), getServerUtils(), getSessionCookieOptions(), getSessionData() (+22 more)
 
-### Community 705 - "MonthlyMetricsForm.tsx"
-Cohesion: 0.14
-Nodes (15): ClientDataSourceItem, DataSourceStatus, getClientDataSourcesServerFn, updateClientDataSourceServerFn, getMonthlyMetricsServerFn, saveMonthlyMetricsServerFn, DataSourcesBoard(), DataSourcesBoardProps (+7 more)
+### Community 705 - "assertActiveSession"
+Cohesion: 0.12
+Nodes (43): logActivity(), assertActiveSession(), getEffectivePartnerId(), getServerUtils(), assignClientStaffServerFn, AssignedStaffSummary, ClientDataSourceItem, createClientLocationServerFn (+35 more)
+
+### Community 706 - "Navbar.tsx"
+Cohesion: 0.40
+Nodes (3): Navbar(), NavItem, SERVICE_ITEMS
 
 ### Community 711 - "Product/App Events"
 Cohesion: 0.50
@@ -3432,8 +3437,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `fs`, `path`, `fs` to the rest of the system?**
   _5202 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `routeTree.gen.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.024327784891165175 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.023311095774863892 - nodes in this community are weakly interconnected._
 - **Should `clients_.$clientId.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.061621621621621624 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05945945945945946 - nodes in this community are weakly interconnected._
 - **Should `clients.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.08028919330289193 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07092907092907093 - nodes in this community are weakly interconnected._
