@@ -2772,8 +2772,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1789222610.9142916,
-    "seen": 1789222997.9340346,
+    "mtime": 1789223314.2383778,
+    "seen": 1789224485.9404109,
     "ast_hash": "e6f7f8c23f02e1c7b884503a9e17e018",
     "semantic_hash": ""
   },
@@ -3006,9 +3006,9 @@
     "semantic_hash": "13e49cbb882c6777a182cdfc834c28a6"
   },
   "scripts/simulate.ts": {
-    "mtime": 1789111299.0548525,
-    "seen": 1789111629.5670254,
-    "ast_hash": "0dac5db271367a3453f1a9039b751ae5",
+    "mtime": 1789223929.0760565,
+    "seen": 1789224485.93943,
+    "ast_hash": "1aa8552c7d4cbc1a4359476db076669a",
     "semantic_hash": ""
   },
   "src/components/ThemedNumberInput.tsx": {
@@ -3414,9 +3414,9 @@
     "semantic_hash": ""
   },
   "src/routes/seo.tsx": {
-    "mtime": 1789221077.9560277,
-    "seen": 1789221289.180436,
-    "ast_hash": "8449f5854d7dadfc9662cf9eb5115168",
+    "mtime": 1789223248.2678993,
+    "seen": 1789224485.939623,
+    "ast_hash": "8c5e20a4aa0a2619659c4001cecc5c4e",
     "semantic_hash": ""
   },
   "src/routes/systems-audit.tsx": {

@@ -2199,6 +2199,18 @@ async function runSimulations() {
   // ---------------------------------------------------------------
   console.log('\n🔍 SIMULATION 19: Soft Delete Integrity, Report Retention & Auth Exclusion')
   try {
+    // 0. Pre-cleanup in case of prior interrupted run
+    const existingSim19 = await db.select().from(users).where(inArray(users.email, ['sim19-partner@builtbymiguel.test', 'sim19-staff@builtbymiguel.test']))
+    for (const u of existingSim19) {
+      const uClients = await db.select().from(clients).where(eq(clients.partnerId, u.id))
+      for (const c of uClients) {
+        await db.delete(reports).where(eq(reports.clientId, c.id))
+        await db.delete(clients).where(eq(clients.id, c.id))
+      }
+      await db.delete(activityLogs).where(eq(activityLogs.userId, u.id))
+      await db.delete(users).where(eq(users.id, u.id))
+    }
+
     // 1. Create a partner, client, staff member, and report with snapshot
     const [partner19] = await db
       .insert(users)
