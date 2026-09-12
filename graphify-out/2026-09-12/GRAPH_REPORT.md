@@ -1,16 +1,16 @@
 # Graph Report - built by Miguel  (2026-09-12)
 
 ## Corpus Check
-- 561 files · ~914,677 words
+- 561 files · ~914,681 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8365 nodes · 10367 edges · 733 communities (672 shown, 46 thin omitted)
+- 8365 nodes · 10367 edges · 735 communities (671 shown, 49 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 80 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d4204706`
+- Built from commit: `0883ba2d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -189,7 +189,7 @@
 - SMS Compliance Reference
 - TestShadcnInstaller
 - detect_domain
-- admin/activity.tsx
+- assertSuperadminSession
 - STANDING RULES
 - Creative Research Automation
 - Google Search Playbook (B2B)
@@ -366,7 +366,7 @@
 - 12. Tactical idea bank — 139-idea cross-reference
 - Section 3 — Current state
 - Project State Audit & Architectural Inventory
-- $slug.tsx
+- MonthlyMetricsForm.tsx
 - Ponytail Help
 - Story Angle Library
 - Common Workflows
@@ -421,7 +421,7 @@
 - Firecrawl Tools
 - Core Principles
 - Prioritizing Content Ideas
-- blog/index.tsx
+- seo_.national.tsx
 - Google Ads
 - Clarity & Message-Market Fit
 - Form Types: Specific Guidance
@@ -449,7 +449,7 @@
 - Common Issues by Site Type
 - Output Format
 - Slides
-- app/server/reports.ts
+- new.tsx
 - Abandoned Cart (highest-ROI flow for ecom)
 - Content Repurposing System
 - 2. Tenancy & The Partner Model
@@ -725,7 +725,7 @@
 - Output Format
 - Mode 2: Digital Watering Hole Research
 - routes/index.tsx
-- national-seo.tsx
+- about.tsx
 - seo_.local.tsx
 - cookie-policy.tsx
 - seo_.ai-search.tsx
@@ -733,6 +733,8 @@
 - .test_get_installed_components_with_files
 - privacy-policy.tsx
 - thank-you.tsx
+- terms.tsx
+- work.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `assertActiveSession()` - 86 edges
@@ -751,33 +753,33 @@
   src/routes/login.tsx → app/lib/auth.ts
 - `PortalLayout()` --calls--> `logoutServerFn`  [EXTRACTED]
   src/routes/portal.tsx → app/lib/auth.ts
-- `simulateAssertClientAccess()` --calls--> `getEffectivePartnerId()`  [EXTRACTED]
-  scripts/simulate.ts → app/server/auth.ts
 - `runSimulations()` --indirect_call--> `ReportDocument()`  [INFERRED]
   scripts/simulate.ts → src/components/ReportDocument.tsx
 - `ArticlesBoard()` --calls--> `checkAuthServerFn`  [EXTRACTED]
   src/components/crm/ArticlesBoard.tsx → app/lib/auth.ts
+- `LandingPagesBoard()` --calls--> `checkAuthServerFn`  [EXTRACTED]
+  src/components/crm/LandingPagesBoard.tsx → app/lib/auth.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (733 total, 46 thin omitted)
+## Communities (735 total, 49 thin omitted)
 
 ### Community 0 - "routeTree.gen.ts"
 Cohesion: 0.03
-Nodes (66): Route, Route, Route, Route, AboutRoute, AdminActivityRoute, AdminAgenciesIndexRoute, AdminAgenciesPartnerIdRoute (+58 more)
+Nodes (63): Route, AboutRoute, AdminActivityRoute, AdminAgenciesIndexRoute, AdminAgenciesPartnerIdRoute, AdminAgenciesUnassignedRoute, AdminClientsClientIdRoute, AdminClientsRoute (+55 more)
 
 ### Community 1 - "assertActiveSession"
-Cohesion: 0.06
-Nodes (87): Citation, ClientArticle, Keyword, LandingPage, Task, logActivity(), assertActiveSession(), getEffectivePartnerId() (+79 more)
+Cohesion: 0.07
+Nodes (73): Citation, Keyword, LandingPage, getActivityLogsServerFn, getActivityOrderBy(), assertActiveSession(), getEffectivePartnerId(), getServerUtils() (+65 more)
 
 ### Community 2 - "clients.tsx"
 Cohesion: 0.06
-Nodes (67): ClientLocation, ActiveSessionResult, ClientWithReportCount, PartnerSummary, getAgencyTeamPickerServerFn, TeamPickerMember, MonthlyMetricsInput, AgencyDetailData (+59 more)
+Nodes (70): ActiveSessionResult, ClientDataSourceItem, ClientWithReportCount, DataSourceStatus, PartnerSummary, updateClientServerFn, ClientArticleItem, TaskItem (+62 more)
 
 ### Community 3 - "AdminShell.tsx"
-Cohesion: 0.08
-Nodes (23): LogoutButton(), LogoutButtonProps, NavBlockerCounts, AdminNavProps, AdminShellProps, BreadcrumbContext, DEFAULT_CLIENT_SECTIONS, MONTH_NAMES (+15 more)
+Cohesion: 0.07
+Nodes (30): LogoutButton(), LogoutButtonProps, ActivityLogItem, ActivityLogsResponse, NavBlockerCounts, AdminNavProps, AdminShellProps, BreadcrumbContext (+22 more)
 
 ### Community 4 - "validate_data.py"
 Cohesion: 0.08
@@ -792,12 +794,12 @@ Cohesion: 0.07
 Nodes (42): BM25, detect_domain(), get_cip_brief(), _load_csv(), Load CSV and return list of dicts, Core search function using BM25, Auto-detect the most relevant domain from query, Main search function with auto-domain detection (+34 more)
 
 ### Community 7 - "posts.tsx"
-Cohesion: 0.10
-Nodes (35): Message, posts, assertSuperadminSession(), deleteMessageServerFn, getMessagesServerFn, updateMessageStatusServerFn, createPostServerFn, deletePostServerFn (+27 more)
+Cohesion: 0.08
+Nodes (41): Post, getPublicPostBySlugServerFn, getPublicPostsServerFn, AdminMarkdownBlockItem, AdminMarkdownRenderer(), AdminPostsPage(), AdminPostsSearch, analyzeSeo() (+33 more)
 
 ### Community 8 - "MonthlyKpiGrid.tsx"
-Cohesion: 0.12
-Nodes (14): advancePublishingQueueItemServerFn, DataSourceStatus, getMonthlyKpiGridServerFn, KpiGridClientRow, KpiGridLocationRow, PublishingQueueItem, QueueItemType, saveMonthlyKpiRowServerFn (+6 more)
+Cohesion: 0.09
+Nodes (19): advancePublishingQueueItemServerFn, DataSourceStatus, getPublishingQueueServerFn, getReportsDueServerFn, KpiGridClientRow, KpiGridLocationRow, PublishingQueueItem, QueueItemType (+11 more)
 
 ### Community 9 - "Social Listening & Engagement Triage"
 Cohesion: 0.04
@@ -937,7 +939,7 @@ Nodes (10): _exact_stack_identifier(), _project_row(), Resolve a standalone API 
 
 ### Community 43 - "app/db/schema.ts"
 Cohesion: 0.05
-Nodes (74): db, ActivityLog, citations, clientArticles, ClientDataSource, clientDataSources, clientLocations, clients (+66 more)
+Nodes (94): db, ActivityLog, activityLogs, citations, ClientArticle, clientArticles, ClientDataSource, clientDataSources (+86 more)
 
 ### Community 44 - "The Templates"
 Cohesion: 0.09
@@ -1260,8 +1262,8 @@ Cohesion: 0.16
 Nodes (14): AuditLeadPayload, ContactLeadPayload, DemoLeadPayload, LeadSubmissionResponse, submitAuditLead, submitContactLead, submitDemoLead, validateEmail() (+6 more)
 
 ### Community 125 - "media.tsx"
-Cohesion: 0.09
-Nodes (31): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, MediaPurpose, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo() (+23 more)
+Cohesion: 0.13
+Nodes (23): Media, deleteMediaServerFn, getMediaServerFn, MediaItemWithPartner, MediaPurpose, uploadMediaServerFn, deleteFileFromStorage(), getStorageProviderInfo() (+15 more)
 
 ### Community 126 - "Motion-Style Video Ads (Faceless, Fully Generated)"
 Cohesion: 0.12
@@ -1455,9 +1457,9 @@ Nodes (9): Test adding components in dry run mode., Test ShadcnInstaller class.,
 Cohesion: 0.23
 Nodes (3): detect_domain(), Auto-detect the most relevant domain from query. Matches are weighted by…, TestDomainDetection
 
-### Community 175 - "admin/activity.tsx"
-Cohesion: 0.19
-Nodes (15): activityLogs, ActivityAction, ActivityLogItem, ActivityLogsResponse, getActivityLogsServerFn, getActivityOrderBy(), getClientRequestMeta(), getServerUtils() (+7 more)
+### Community 175 - "assertSuperadminSession"
+Cohesion: 0.17
+Nodes (15): Message, posts, assertSuperadminSession(), deleteMessageServerFn, getMessagesServerFn, updateMessageStatusServerFn, getAllUsersForAdminServerFn, getUsersOrderBy() (+7 more)
 
 ### Community 176 - "STANDING RULES"
 Cohesion: 0.13
@@ -2163,9 +2165,9 @@ Nodes (8): Audit rubric snapshot, Marketing budget (current), Phase of SaaS grow
 Cohesion: 0.17
 Nodes (11): 2. MIGRATIONS, 3. SERVER FUNCTIONS, 4. ROUTES, 5. COMPONENTS — ORPHAN AUDIT, 9. WHAT IS ACTUALLY WIRED, Canonical Migration Path, Drift Between Schema and Migration Script, FLAGGED SERVER FUNCTIONS (No UI calls) (+3 more)
 
-### Community 354 - "$slug.tsx"
-Cohesion: 0.24
-Nodes (13): Post, getPublicPostBySlugServerFn, BlogPostPage(), calculateReadingTime(), cleanHeadingTitle(), formatDate(), MarkdownBlockItem, MarkdownRenderer() (+5 more)
+### Community 354 - "MonthlyMetricsForm.tsx"
+Cohesion: 0.17
+Nodes (12): MonthlyMetric, createClientLocationServerFn, deleteClientLocationServerFn, getClientLocationsServerFn, updateClientLocationServerFn, MonthlyMetricsInput, LocationsBoard(), LocationsBoardProps (+4 more)
 
 ### Community 355 - "Ponytail Help"
 Cohesion: 0.25
@@ -2383,10 +2385,6 @@ Nodes (6): 1. Facts Over Opinions, 2. Structured and Comparable, 3. Current Data
 Cohesion: 0.33
 Nodes (6): 1. Customer Impact (40%), 2. Content-Market Fit (30%), 3. Search Potential (20%), 4. Resource Requirements (10%), Prioritizing Content Ideas, Scoring Template
 
-### Community 409 - "blog/index.tsx"
-Cohesion: 0.43
-Nodes (5): getPublicPostsServerFn, BlogIndexPage(), calculateReadingTime(), formatDate(), Route
-
 ### Community 410 - "Google Ads"
 Cohesion: 0.33
 Nodes (6): Enhanced Conversions, Fire conversion events, Google Ads, Google Tag Manager alternative, Install the Google tag, Set up conversion actions
@@ -2495,9 +2493,9 @@ Nodes (6): 1. Page Hierarchy (ASCII Tree), 2. Visual Sitemap (Mermaid), 3. URL M
 Cohesion: 0.33
 Nodes (5): References (Knowledge Base), Routing, Slides, Subcommands, When to Use
 
-### Community 438 - "app/server/reports.ts"
-Cohesion: 0.08
-Nodes (44): Client, DeliverablesSnapshot, Report, createReportServerFn, DisplayOptions, getClientDataSourceMap(), getLatestReportForClientServerFn, getReportPreflightDataServerFn (+36 more)
+### Community 438 - "new.tsx"
+Cohesion: 0.11
+Nodes (28): Client, Report, DisplayOptions, getLatestReportForClientServerFn, PageItem, QueryItem, ReportWithClient, formatDate() (+20 more)
 
 ### Community 439 - "Abandoned Cart (highest-ROI flow for ecom)"
 Cohesion: 0.50
@@ -3373,7 +3371,7 @@ Nodes (5): Be Direct, Best Practices, Pepper in Humor (When Appropriate), Use An
 
 ### Community 704 - "checkAuthServerFn"
 Cohesion: 0.06
-Nodes (46): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmin(), requireSuperadminAuth(), getClientsServerFn, AdminDashboardData, getPublicReportByShareTokenServerFn (+38 more)
+Nodes (49): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmin(), requireSuperadminAuth(), getClientsServerFn, AdminDashboardData, generateReportShareLinkServerFn (+41 more)
 
 ### Community 705 - "portal/index.tsx"
 Cohesion: 0.60
@@ -3454,7 +3452,7 @@ Nodes (3): AEO_GEO_FAQ, AEO_GEO_JSON_LD, Route
 ## Knowledge Gaps
 - **5201 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+5196 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 5662 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **46 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **49 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -3468,8 +3466,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `fs`, `path`, `fs` to the rest of the system?**
   _5201 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `routeTree.gen.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.02850796001480933 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03125 - nodes in this community are weakly interconnected._
 - **Should `assertActiveSession` be split into smaller, more focused modules?**
-  _Cohesion score 0.06030855539971949 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07333333333333333 - nodes in this community are weakly interconnected._
 - **Should `clients.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.0624868504102672 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.057373737373737375 - nodes in this community are weakly interconnected._

@@ -224,7 +224,7 @@ function WebsitesCarePage() {
             </div>
             <div className="pt-2">
               <Link
-                to="/website-design"
+                to="/websites/design-and-development"
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline"
               >
                 <span>Explore Website Design and Development</span>

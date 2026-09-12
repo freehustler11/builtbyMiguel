@@ -29,7 +29,6 @@ import { Route as SystemsAutoRouteImport } from './routes/systems-auto'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as WebsiteDemoRouteImport } from './routes/website-demo'
-import { Route as WebsiteDesignRouteImport } from './routes/website-design'
 import { Route as WebsitesRouteImport } from './routes/websites'
 import { Route as WebsitesCareRouteImport } from './routes/websites-care'
 import { Route as WorkRouteImport } from './routes/work'
@@ -48,6 +47,7 @@ import { Route as SeoAiSearchRouteImport } from './routes/seo_.ai-search'
 import { Route as SeoLocalRouteImport } from './routes/seo_.local'
 import { Route as SeoNationalRouteImport } from './routes/seo_.national'
 import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
+import { Route as WebsitesDesignAndDevelopmentRouteImport } from './routes/websites_.design-and-development'
 import { Route as AdminAgenciesIndexRouteImport } from './routes/admin/agencies/index'
 import { Route as AdminAgenciesPartnerIdRouteImport } from './routes/admin/agencies/$partnerId'
 import { Route as AdminAgenciesUnassignedRouteImport } from './routes/admin/agencies/unassigned'
@@ -158,11 +158,6 @@ const WebsiteDemoRoute = WebsiteDemoRouteImport.update({
   path: '/website-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WebsiteDesignRoute = WebsiteDesignRouteImport.update({
-  id: '/website-design',
-  path: '/website-design',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const WebsitesRoute = WebsitesRouteImport.update({
   id: '/websites',
   path: '/websites',
@@ -253,6 +248,12 @@ const SuperadminActivityRoute = SuperadminActivityRouteImport.update({
   path: '/activity',
   getParentRoute: () => SuperadminRoute,
 } as any)
+const WebsitesDesignAndDevelopmentRoute =
+  WebsitesDesignAndDevelopmentRouteImport.update({
+    id: '/websites_/design-and-development',
+    path: '/websites/design-and-development',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminAgenciesIndexRoute = AdminAgenciesIndexRouteImport.update({
   id: '/agencies/',
   path: '/agencies/',
@@ -320,7 +321,6 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
   '/website-demo': typeof WebsiteDemoRoute
-  '/website-design': typeof WebsiteDesignRoute
   '/websites': typeof WebsitesRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
@@ -336,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/seo/local': typeof SeoLocalRoute
   '/seo/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
+  '/websites/design-and-development': typeof WebsitesDesignAndDevelopmentRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -368,7 +369,6 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
   '/website-demo': typeof WebsiteDemoRoute
-  '/website-design': typeof WebsiteDesignRoute
   '/websites': typeof WebsitesRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
@@ -384,6 +384,7 @@ export interface FileRoutesByTo {
   '/seo/local': typeof SeoLocalRoute
   '/seo/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
+  '/websites/design-and-development': typeof WebsitesDesignAndDevelopmentRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/portal': typeof PortalIndexRoute
@@ -419,7 +420,6 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
   '/website-demo': typeof WebsiteDemoRoute
-  '/website-design': typeof WebsiteDesignRoute
   '/websites': typeof WebsitesRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
@@ -435,6 +435,7 @@ export interface FileRoutesById {
   '/seo_/local': typeof SeoLocalRoute
   '/seo_/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
+  '/websites_/design-and-development': typeof WebsitesDesignAndDevelopmentRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -471,7 +472,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/thank-you'
     | '/website-demo'
-    | '/website-design'
     | '/websites'
     | '/websites-care'
     | '/work'
@@ -487,6 +487,7 @@ export interface FileRouteTypes {
     | '/seo/local'
     | '/seo/national'
     | '/superadmin/activity'
+    | '/websites/design-and-development'
     | '/admin/'
     | '/blog/'
     | '/portal/'
@@ -519,7 +520,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/thank-you'
     | '/website-demo'
-    | '/website-design'
     | '/websites'
     | '/websites-care'
     | '/work'
@@ -535,6 +535,7 @@ export interface FileRouteTypes {
     | '/seo/local'
     | '/seo/national'
     | '/superadmin/activity'
+    | '/websites/design-and-development'
     | '/admin'
     | '/blog'
     | '/portal'
@@ -569,7 +570,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/thank-you'
     | '/website-demo'
-    | '/website-design'
     | '/websites'
     | '/websites-care'
     | '/work'
@@ -585,6 +585,7 @@ export interface FileRouteTypes {
     | '/seo_/local'
     | '/seo_/national'
     | '/superadmin/activity'
+    | '/websites_/design-and-development'
     | '/admin/'
     | '/blog/'
     | '/portal/'
@@ -620,7 +621,6 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ThankYouRoute: typeof ThankYouRoute
   WebsiteDemoRoute: typeof WebsiteDemoRoute
-  WebsiteDesignRoute: typeof WebsiteDesignRoute
   WebsitesRoute: typeof WebsitesRoute
   WebsitesCareRoute: typeof WebsitesCareRoute
   WorkRoute: typeof WorkRoute
@@ -629,6 +629,7 @@ export interface RootRouteChildren {
   SeoAiSearchRoute: typeof SeoAiSearchRoute
   SeoLocalRoute: typeof SeoLocalRoute
   SeoNationalRoute: typeof SeoNationalRoute
+  WebsitesDesignAndDevelopmentRoute: typeof WebsitesDesignAndDevelopmentRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
@@ -774,13 +775,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebsiteDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/website-design': {
-      id: '/website-design'
-      path: '/website-design'
-      fullPath: '/website-design'
-      preLoaderRoute: typeof WebsiteDesignRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/websites': {
       id: '/websites'
       path: '/websites'
@@ -906,6 +900,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/superadmin/activity'
       preLoaderRoute: typeof SuperadminActivityRouteImport
       parentRoute: typeof SuperadminRoute
+    }
+    '/websites_/design-and-development': {
+      id: '/websites_/design-and-development'
+      path: '/websites/design-and-development'
+      fullPath: '/websites/design-and-development'
+      preLoaderRoute: typeof WebsitesDesignAndDevelopmentRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/agencies/': {
       id: '/admin/agencies/'
@@ -1067,7 +1068,6 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ThankYouRoute: ThankYouRoute,
   WebsiteDemoRoute: WebsiteDemoRoute,
-  WebsiteDesignRoute: WebsiteDesignRoute,
   WebsitesRoute: WebsitesRoute,
   WebsitesCareRoute: WebsitesCareRoute,
   WorkRoute: WorkRoute,
@@ -1076,6 +1076,7 @@ const rootRouteChildren: RootRouteChildren = {
   SeoAiSearchRoute: SeoAiSearchRoute,
   SeoLocalRoute: SeoLocalRoute,
   SeoNationalRoute: SeoNationalRoute,
+  WebsitesDesignAndDevelopmentRoute: WebsitesDesignAndDevelopmentRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport

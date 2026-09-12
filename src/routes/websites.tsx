@@ -368,7 +368,7 @@ function WebsitesPage() {
 
               <div className="pt-6 border-t border-slate-100 dark:border-slate-800 mt-6">
                 <Link
-                  to="/website-design"
+                  to="/websites/design-and-development"
                   className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:text-amber-500 transition-colors cursor-pointer"
                 >
                   <span>Explore Website Design & Development →</span>

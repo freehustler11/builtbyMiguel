@@ -47,13 +47,14 @@ export const REDIRECT_MAP = {
   '/contractor-websites': '/websites',
 
   // --- Website Design & Development Child ---
-  '/web-design': '/website-design',
-  '/services/web-design': '/website-design',
-  '/website-development': '/website-design',
-  '/custom-web-development': '/website-design',
-  '/website-redesign': '/website-design',
-  '/website-redesign-services': '/website-design',
-  '/small-business-website-design': '/website-design',
+  '/website-design': '/websites/design-and-development',
+  '/web-design': '/websites/design-and-development',
+  '/services/web-design': '/websites/design-and-development',
+  '/website-development': '/websites/design-and-development',
+  '/custom-web-development': '/websites/design-and-development',
+  '/website-redesign': '/websites/design-and-development',
+  '/website-redesign-services': '/websites/design-and-development',
+  '/small-business-website-design': '/websites/design-and-development',
 
   // --- Website Care & Hosting Child ---
   '/website-maintenance': '/websites-care',

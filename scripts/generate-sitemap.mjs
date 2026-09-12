@@ -33,7 +33,7 @@ const ROUTE_CONFIG = {
   'seo/national':   { priority: '0.9', changefreq: 'weekly' },
   'seo/ai-search':  { priority: '0.9', changefreq: 'weekly' },
   'websites':       { priority: '0.9', changefreq: 'weekly' },
-  'website-design': { priority: '0.9', changefreq: 'weekly' },
+  'websites/design-and-development': { priority: '0.9', changefreq: 'weekly' },
   'websites-care':  { priority: '0.9', changefreq: 'weekly' },
   'website-demo':   { priority: '0.9', changefreq: 'weekly' },
   'systems-auto':   { priority: '0.9', changefreq: 'weekly' },
