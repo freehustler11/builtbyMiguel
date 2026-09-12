@@ -12,13 +12,14 @@ export const REDIRECT_MAP = {
   '/seo-for-contractors': '/seo',
 
   // --- Local SEO & GBP Child ---
-  '/local-seo': '/local-seo-gbp',
-  '/services/local-seo': '/local-seo-gbp',
-  '/gbp': '/local-seo-gbp',
-  '/services/gbp': '/local-seo-gbp',
-  '/google-business-profile': '/local-seo-gbp',
-  '/google-business-profile-optimization': '/local-seo-gbp',
-  '/local-search': '/local-seo-gbp',
+  '/local-seo': '/seo/local',
+  '/services/local-seo': '/seo/local',
+  '/gbp': '/seo/local',
+  '/services/gbp': '/seo/local',
+  '/google-business-profile': '/seo/local',
+  '/google-business-profile-optimization': '/seo/local',
+  '/local-search': '/seo/local',
+  '/local-seo-gbp': '/seo/local',
 
   // --- National SEO Child ---
   '/national-seo-services': '/national-seo',

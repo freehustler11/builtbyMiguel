@@ -80,7 +80,7 @@ const CONTRACTOR_SEO_JSON_LD = {
             itemOffered: {
               '@type': 'Service',
               name: 'Local SEO & Google Maps',
-              url: 'https://builtbymiguel.net/local-seo-gbp',
+              url: 'https://builtbymiguel.net/seo/local',
             },
           },
           {
@@ -286,7 +286,7 @@ function SeoPillarPage() {
 
               <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/local-seo-gbp"
+                  to="/seo/local"
                   className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors group/link cursor-pointer"
                 >
                   <span>Explore Local SEO & Map Pack →</span>

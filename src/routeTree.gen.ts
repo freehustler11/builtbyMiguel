@@ -46,6 +46,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as RShareTokenRouteImport } from './routes/r/$shareToken'
+import { Route as SeoLocalRouteImport } from './routes/seo_.local'
 import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
 import { Route as AdminAgenciesIndexRouteImport } from './routes/admin/agencies/index'
 import { Route as AdminAgenciesPartnerIdRouteImport } from './routes/admin/agencies/$partnerId'
@@ -242,6 +243,11 @@ const RShareTokenRoute = RShareTokenRouteImport.update({
   path: '/r/$shareToken',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SeoLocalRoute = SeoLocalRouteImport.update({
+  id: '/seo_/local',
+  path: '/seo/local',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuperadminActivityRoute = SuperadminActivityRouteImport.update({
   id: '/activity',
   path: '/activity',
@@ -328,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/r/$shareToken': typeof RShareTokenRoute
+  '/seo/local': typeof SeoLocalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -375,6 +382,7 @@ export interface FileRoutesByTo {
   '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/r/$shareToken': typeof RShareTokenRoute
+  '/seo/local': typeof SeoLocalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
@@ -425,6 +433,7 @@ export interface FileRoutesById {
   '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/r/$shareToken': typeof RShareTokenRoute
+  '/seo_/local': typeof SeoLocalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -476,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/workspace'
     | '/blog/$slug'
     | '/r/$shareToken'
+    | '/seo/local'
     | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
@@ -523,6 +533,7 @@ export interface FileRouteTypes {
     | '/admin/workspace'
     | '/blog/$slug'
     | '/r/$shareToken'
+    | '/seo/local'
     | '/superadmin/activity'
     | '/admin'
     | '/blog'
@@ -572,6 +583,7 @@ export interface FileRouteTypes {
     | '/admin/workspace'
     | '/blog/$slug'
     | '/r/$shareToken'
+    | '/seo_/local'
     | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
@@ -616,6 +628,7 @@ export interface RootRouteChildren {
   WorkRoute: typeof WorkRoute
   BlogSlugRoute: typeof BlogSlugRoute
   RShareTokenRoute: typeof RShareTokenRoute
+  SeoLocalRoute: typeof SeoLocalRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
@@ -880,6 +893,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RShareTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seo_/local': {
+      id: '/seo_/local'
+      path: '/seo/local'
+      fullPath: '/seo/local'
+      preLoaderRoute: typeof SeoLocalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/superadmin/activity': {
       id: '/superadmin/activity'
       path: '/activity'
@@ -1055,6 +1075,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorkRoute: WorkRoute,
   BlogSlugRoute: BlogSlugRoute,
   RShareTokenRoute: RShareTokenRoute,
+  SeoLocalRoute: SeoLocalRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -22,13 +22,14 @@ const EXCLUDED_ROUTES = new Set([
   'portal',       // Client portal — requires login
   'my-work',      // Internal agent work log — requires login
   'r',            // /r/:shareToken public share links — transactional, not indexable
+  'local-seo-gbp',// Redirects 301 to /seo/local
 ])
 
 // Static-route priority & changefreq
 const ROUTE_CONFIG = {
   '':               { priority: '1.0', changefreq: 'daily' },
   'seo':            { priority: '0.9', changefreq: 'weekly' },
-  'local-seo-gbp':  { priority: '0.9', changefreq: 'weekly' },
+  'seo/local':      { priority: '0.9', changefreq: 'weekly' },
   'national-seo':   { priority: '0.9', changefreq: 'weekly' },
   'aeo-geo':        { priority: '0.9', changefreq: 'weekly' },
   'websites':       { priority: '0.9', changefreq: 'weekly' },
@@ -122,7 +123,7 @@ export async function buildSitemapXml() {
     const routeName = path.basename(entry.name, path.extname(entry.name))
     if (EXCLUDED_ROUTES.has(routeName) || routeName.startsWith('_')) continue
 
-    const routePath = routeName === 'index' ? '' : routeName
+    const routePath = routeName === 'index' ? '' : routeName.replace(/_\./g, '/')
     staticRoutes.push(routePath)
   }
 

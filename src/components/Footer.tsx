@@ -42,7 +42,7 @@ export function Footer() {
             </div>
             <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 font-sans">
               <li><Link to="/seo" className="hover:text-black dark:hover:text-white">SEO</Link></li>
-              <li><Link to="/local-seo-gbp" className="hover:text-black dark:hover:text-white">Local SEO</Link></li>
+              <li><Link to="/seo/local" className="hover:text-black dark:hover:text-white">Local SEO</Link></li>
               <li><Link to="/national-seo" className="hover:text-black dark:hover:text-white">National SEO</Link></li>
               <li><Link to="/aeo-geo" className="hover:text-black dark:hover:text-white">AEO & GEO</Link></li>
             </ul>
