@@ -13,7 +13,7 @@ export function Footer() {
               built by Miguel
             </Link>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-sans leading-relaxed max-w-xs">
-              Digital marketing agency for small business. Custom web development, Google Maps SEO, and automated lead dispatch.
+              Digital marketing services for small business. Custom web development, Google Maps SEO, and automated lead dispatch.
             </p>
             {/* Social Profile: Verified LinkedIn Only */}
             <div className="flex items-center gap-3 pt-2">
@@ -31,7 +31,7 @@ export function Footer() {
               </a>
             </div>
             <div className="pt-4 text-[11px] text-slate-400 dark:text-slate-500 font-mono">
-              © {currentYear} built by Miguel. All rights reserved
+              © {currentYear} built by Miguel. All rights reserved.
             </div>
           </div>
 
@@ -40,12 +40,27 @@ export function Footer() {
             <div className="text-xs font-bold text-[#141522] dark:text-white font-display">
               Solutions
             </div>
-            <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 font-sans">
-              <li><Link to="/seo" className="hover:text-black dark:hover:text-white">SEO</Link></li>
-              <li><Link to="/seo/local" className="hover:text-black dark:hover:text-white">Local SEO</Link></li>
-              <li><Link to="/seo/national" className="hover:text-black dark:hover:text-white">National SEO</Link></li>
-              <li><Link to="/seo/ai-search" className="hover:text-black dark:hover:text-white">AEO & GEO</Link></li>
-            </ul>
+            <div className="space-y-3 text-xs font-sans">
+              {/* Pillar 1: SEO */}
+              <ul className="space-y-1.5 text-slate-600 dark:text-slate-400">
+                <li><Link to="/seo" className="font-semibold text-slate-900 dark:text-slate-200 hover:text-black dark:hover:text-white">SEO</Link></li>
+                <li><Link to="/seo/local" className="hover:text-black dark:hover:text-white pl-1.5 block">Local SEO</Link></li>
+                <li><Link to="/seo/national" className="hover:text-black dark:hover:text-white pl-1.5 block">National SEO</Link></li>
+                <li><Link to="/seo/aeo-geo" className="hover:text-black dark:hover:text-white pl-1.5 block">AEO & GEO</Link></li>
+              </ul>
+
+              {/* Pillar 2: Websites */}
+              <ul className="space-y-1.5 text-slate-600 dark:text-slate-400">
+                <li><Link to="/websites" className="font-semibold text-slate-900 dark:text-slate-200 hover:text-black dark:hover:text-white">Websites</Link></li>
+                <li><Link to="/websites/design-and-development" className="hover:text-black dark:hover:text-white pl-1.5 block">Website Design & Development</Link></li>
+                <li><Link to="/websites/hosting-and-maintenance" className="hover:text-black dark:hover:text-white pl-1.5 block">Website Hosting & Care</Link></li>
+              </ul>
+
+              {/* Pillar 3: Systems & Automation */}
+              <ul className="space-y-1.5 text-slate-600 dark:text-slate-400">
+                <li><Link to="/systems-auto" className="font-semibold text-slate-900 dark:text-slate-200 hover:text-black dark:hover:text-white">Systems & Automation</Link></li>
+              </ul>
+            </div>
           </div>
 
           {/* Column 3: Support */}

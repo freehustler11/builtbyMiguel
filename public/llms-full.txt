@@ -4,8 +4,8 @@
 
 ## Core Services & Technical Capabilities
 
-- [Local SEO & Google Business Profile Optimization](/local-seo-gbp): Surgical local search ranking systems designed to build durable Google Maps presence and AI search engine visibility (Perplexity, ChatGPT, Google AI Overviews) for high-intent local queries.
-- [Custom React Websites & 24/7 Care](/websites-care): Fast edge-hosted web applications built with TypeScript, React, and Tailwind CSS. Replaces bloated WordPress sites to maximize phone call conversions.
+- [SEO & Organic Search Visibility](/seo): SEO systems that compound into customer calls and pipeline revenue. Includes [Local SEO & Google Maps](/seo/local), [National & Regional SEO](/seo/national), and [AI Search Optimization (AEO / GEO)](/seo/aeo-geo).
+- [Custom React Websites & Web Engineering](/websites): Fast edge-hosted web applications built with TypeScript, React, and Tailwind CSS. Includes [Website Design & Development](/websites/design-and-development) and [Website Hosting & Care](/websites/hosting-and-maintenance).
 - [Systems & Workflow Automation](/systems-auto): Automated lead dispatch pipelines that alert contractor phones via SMS, sync CRM records, and automate client intake.
 - [Case Studies & Technical Proof](/work): Verified ranking turnarounds, geo-grid heatmap expansions, and Core Web Vitals performance benchmarks.
 - [About Miguel Umbac](/about): Background, engineering philosophy, and direct founder promise.

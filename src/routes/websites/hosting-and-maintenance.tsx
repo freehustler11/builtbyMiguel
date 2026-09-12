@@ -8,7 +8,7 @@ import {
 import { useState } from 'react'
 
 export const Route = createFileRoute(
-  '/websites_/hosting-and-maintenance',
+  '/websites/hosting-and-maintenance',
 )({
   head: () => ({
     meta: [

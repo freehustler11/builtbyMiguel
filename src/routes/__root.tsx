@@ -221,8 +221,6 @@ function RootComponent() {
     currentPath === '/' ||
     currentPath === '/seo' ||
     currentPath.startsWith('/seo/') ||
-    currentPath === '/national-seo' ||
-    currentPath.startsWith('/national-seo/') ||
     currentPath === '/systems-auto' ||
     currentPath.startsWith('/systems-auto/') ||
     currentPath === '/websites' ||

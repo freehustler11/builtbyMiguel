@@ -23,7 +23,11 @@ const EXCLUDED_ROUTES = new Set([
   'my-work',      // Internal agent work log — requires login
   'r',            // /r/:shareToken public share links — transactional, not indexable
   'local-seo-gbp',// Redirects 301 to /seo/local
+  'national-seo', // Redirects 301 to /seo/national
+  'aeo-geo',      // Top-level legacy redirect (redirects 301 to /seo/aeo-geo)
+  'website-design', // Redirects 301 to /websites/design-and-development
   'websites-care',// Redirects 301 to /websites/hosting-and-maintenance
+  'seo/ai-search',// Redirects 301 to /seo/aeo-geo
 ])
 
 // Static-route priority & changefreq
@@ -32,7 +36,7 @@ const ROUTE_CONFIG = {
   'seo':            { priority: '0.9', changefreq: 'weekly' },
   'seo/local':      { priority: '0.9', changefreq: 'weekly' },
   'seo/national':   { priority: '0.9', changefreq: 'weekly' },
-  'seo/ai-search':  { priority: '0.9', changefreq: 'weekly' },
+  'seo/aeo-geo':    { priority: '0.9', changefreq: 'weekly' },
   'websites':       { priority: '0.9', changefreq: 'weekly' },
   'websites/design-and-development': { priority: '0.9', changefreq: 'weekly' },
   'websites/hosting-and-maintenance': { priority: '0.9', changefreq: 'weekly' },
@@ -105,28 +109,39 @@ export async function buildSitemapXml() {
   const today = new Date().toISOString().split('T')[0]
 
   // --- Static routes from src/routes ---
-  const entries = fs.readdirSync(routesDir, { withFileTypes: true })
   const staticRoutes = []
+  const EXCLUDED_DIRS = new Set(['admin', 'superadmin', 'portal', 'r', 'node_modules'])
 
-  // Private or utility directories — never add their index to the sitemap
-  const EXCLUDED_DIRS = new Set(['admin', 'superadmin', 'portal', 'r'])
-
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      // Include the /blog route (blog/index.tsx → /blog), exclude all private dirs
-      if (entry.name === 'blog' && !EXCLUDED_DIRS.has(entry.name)) {
-        staticRoutes.push('blog')
+  function scanDir(dir, prefix = '') {
+    const entries = fs.readdirSync(dir, { withFileTypes: true })
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        if (EXCLUDED_DIRS.has(entry.name)) continue
+        if (entry.name === 'blog') {
+          staticRoutes.push('blog')
+          continue
+        }
+        scanDir(path.join(dir, entry.name), prefix ? `${prefix}/${entry.name}` : entry.name)
+        continue
       }
-      continue
+      if (!entry.name.endsWith('.tsx') && !entry.name.endsWith('.ts')) continue
+
+      const routeName = path.basename(entry.name, path.extname(entry.name))
+      if (routeName.startsWith('_')) continue
+
+      let routePath = prefix
+        ? (routeName === 'index' ? prefix : `${prefix}/${routeName}`)
+        : (routeName === 'index' ? '' : routeName.replace(/_\.?/g, '/'))
+
+      if (EXCLUDED_ROUTES.has(routePath)) continue
+
+      if (routePath !== undefined && !staticRoutes.includes(routePath)) {
+        staticRoutes.push(routePath)
+      }
     }
-    if (!entry.name.endsWith('.tsx') && !entry.name.endsWith('.ts')) continue
-
-    const routeName = path.basename(entry.name, path.extname(entry.name))
-    if (EXCLUDED_ROUTES.has(routeName) || routeName.startsWith('_')) continue
-
-    const routePath = routeName === 'index' ? '' : routeName.replace(/_\.?/g, '/')
-    staticRoutes.push(routePath)
   }
+
+  scanDir(routesDir)
 
   // Sort: homepage first, then alphabetical
   staticRoutes.sort((a, b) => {

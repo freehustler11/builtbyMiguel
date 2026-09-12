@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/seo_/local')({
+export const Route = createFileRoute('/seo/local')({
   head: () => ({
     meta: [
       {
@@ -227,7 +227,7 @@ const FAQS = [
         </Link>{' '}
         covers multi-state reach, and{' '}
         <Link
-          to="/seo/ai-search"
+          to="/seo/aeo-geo"
           className="text-blue-600 dark:text-blue-400 underline font-semibold hover:text-blue-700 dark:hover:text-blue-300"
         >
           AEO & GEO Optimization
@@ -478,7 +478,7 @@ function LocalSeoPage() {
               </div>
               <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/seo/ai-search"
+                  to="/seo/aeo-geo"
                   className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors cursor-pointer group"
                 >
                   <span>View AI Search Optimization →</span>

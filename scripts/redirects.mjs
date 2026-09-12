@@ -32,15 +32,16 @@ export const REDIRECT_MAP = {
   '/franchise-seo-services': '/seo/national',
 
   // --- AEO & GEO / AI Search Child ---
-  '/aeo-geo': '/seo/ai-search',
-  '/aeo': '/seo/ai-search',
-  '/geo': '/seo/ai-search',
-  '/ai-seo': '/seo/ai-search',
-  '/services/aeo-geo': '/seo/ai-search',
-  '/generative-engine-optimization': '/seo/ai-search',
-  '/generative-engine-optimization-services': '/seo/ai-search',
-  '/answer-engine-optimization': '/seo/ai-search',
-  '/ai-search': '/seo/ai-search',
+  '/aeo-geo': '/seo/aeo-geo',
+  '/aeo': '/seo/aeo-geo',
+  '/geo': '/seo/aeo-geo',
+  '/ai-seo': '/seo/aeo-geo',
+  '/services/aeo-geo': '/seo/aeo-geo',
+  '/generative-engine-optimization': '/seo/aeo-geo',
+  '/generative-engine-optimization-services': '/seo/aeo-geo',
+  '/answer-engine-optimization': '/seo/aeo-geo',
+  '/ai-search': '/seo/aeo-geo',
+  '/seo/ai-search': '/seo/aeo-geo',
 
   // --- Websites Pillar ---
   '/services/websites': '/websites',
