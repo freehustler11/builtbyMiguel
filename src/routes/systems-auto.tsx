@@ -1,62 +1,86 @@
-import { FreeSystemsAuditCTA } from '../components/FreeSystemsAuditCTA'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
-  Cpu,
   Sparkles,
   ArrowRight,
   ChevronDown,
   Check,
-  Zap,
+  Star,
+  Smartphone,
+  FileCheck2,
+  LayoutDashboard,
   Bot,
+  Zap,
+  Clock,
+  Send,
+  Calendar,
   Layers,
-  Database,
-  Code2,
+  ShieldCheck,
+  Terminal,
 } from 'lucide-react'
 import { useState } from 'react'
-import { CodeTerminalInspector } from '../components/CodeTerminalInspector'
 
-const SYSTEMS_FAQ = [
+const AUTOMATION_FAQ = [
   {
     question: 'How do automated text alerts help close more jobs?',
     answer:
-      'Homeowners often hire the first contractor who calls back. My system texts your mobile phone the second a website form is submitted. It also sends an instant confirmation text to the customer so they stop calling your competitors.',
+      'Homeowners often hire the first contractor who calls back. Speed-to-lead is the single biggest factor in closing high-ticket service work. My system texts your mobile phone the second a website form is submitted, and it also sends an instant confirmation text to the customer so they stop calling your competitors.',
   },
   {
     question: 'Can your business automation services connect with my existing software?',
     answer:
-      'Yes. Through my workflow automation consulting, I connect quote forms and booking workflows directly into Housecall Pro, Jobber, ServiceTitan, HubSpot, Calendly, Stripe, and custom databases.',
+      'Yes. Automations are built to run directly on top of your existing CRM, calendar, and scheduling software, connecting through webhooks and APIs rather than replacing tools you already use and pay for.',
   },
   {
     question: 'What is the Private Client Portal?',
     answer:
-      'You receive a secure dashboard showing your live customer inquiries, Google rankings, monthly project tasks, and invoices in real time without waiting for slow email reports.',
+      'A private, password-protected dashboard where you and your team can see leads, booked jobs, technician schedules, and reports in one place, instead of checking five different apps every morning.',
   },
   {
     question: 'Do you charge per user or per lead for marketing automation for small business?',
     answer:
-      'No. You pay a simple flat project or monthly retainer fee with zero per-user penalties and zero per-lead fees. You own your automations, webhook code, and customer data completely.',
+      'No. Plans are flat-rate starting at $99 per month, so adding more leads or team members doesn\'t increase your bill.',
+  },
+  {
+    question: 'What\'s included in the free systems audit?',
+    answer:
+      'A personally recorded 5-minute video reviewing your current lead response process, the tools you\'re already using, and where jobs are likely slipping through the cracks, delivered within 24 hours. There is no sales call required to get it.',
+  },
+  {
+    question: 'How long does it take to set up my automation system?',
+    answer:
+      'Most core automations, like instant lead alerts and CRM sync, are live within one to two weeks. Dashboards and client portal setups can take longer depending on how many existing tools need to connect.',
+  },
+  {
+    question: 'What happens if a lead comes in after hours?',
+    answer:
+      'The system doesn\'t sleep. Alerts and confirmations go out the same way at 11pm as they do at 11am, so you never miss a same-day emergency call.',
+  },
+  {
+    question: 'Do I need to buy new software or hardware to use these automations?',
+    answer:
+      'No. Automations run in the background connected to tools you likely already have, like your phone, your calendar, and your CRM, rather than requiring you to adopt a new platform.',
   },
 ]
 
-const SYSTEMS_JSON_LD = {
+const AUTOMATION_JSON_LD = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'Service',
-      name: 'Business Automation Services for Contractors',
-      serviceType: 'Business Process Automation Consulting & Workflow Automation',
+      name: 'Business Automation Services for Small Business',
+      serviceType: 'Business Automation & Workflow Consulting',
       provider: {
-        '@type': 'LocalBusiness',
+        '@type': 'ProfessionalService',
         name: 'built by Miguel',
         url: 'https://builtbymiguel.net',
       },
       description:
-        'Business automation services, workflow automation consulting, and instant SMS dispatch pipelines for trade contractors and local businesses.',
+        'Automated lead alerts, CRM sync, and client dashboards for trade contractors. Built and run directly by me. Plans starting at $99/month. Free 5-minute audit.',
       areaServed: 'United States',
     },
     {
       '@type': 'FAQPage',
-      mainEntity: SYSTEMS_FAQ.map((faq) => ({
+      mainEntity: AUTOMATION_FAQ.map((faq) => ({
         '@type': 'Question',
         name: faq.question,
         acceptedAnswer: {
@@ -75,44 +99,54 @@ export const Route = createFileRoute('/systems-auto')({
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
         title:
-          'Business Automation Services for Contractors | built by Miguel',
+          'Business Automation Services for Small Business | built by Miguel',
       },
       {
         name: 'description',
         content:
-          'We provide business automation services and workflow automation consulting for contractors. Route leads instantly to technician phones and eliminate manual busywork.',
+          'Automated lead alerts, CRM sync, and client dashboards for trade contractors. Built and run directly by me. Plans starting at $99/month. Free 5-minute audit.',
       },
       {
         name: 'keywords',
         content:
-          'business automation services, business process automation consulting, workflow automation consulting, marketing automation for small business, built by miguel',
+          'business automation services, workflow automation consulting, small business automation systems, lead automation, custom crm pipelines, trade contractor automation',
       },
       // OpenGraph
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
         content:
-          'Business Automation Services for Contractors | built by Miguel',
+          'Business Automation Services for Small Business | built by Miguel',
       },
       {
         property: 'og:description',
         content:
-          'We provide business automation services and workflow automation consulting for contractors. Route leads instantly to technician phones and eliminate manual busywork.',
+          'Automated lead alerts, CRM sync, and client dashboards for trade contractors. Built and run directly by me. Plans starting at $99/month. Free 5-minute audit.',
       },
-      { property: 'og:url', content: 'https://builtbymiguel.net/systems-auto' },
-      { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
+      {
+        property: 'og:url',
+        content: 'https://builtbymiguel.net/systems-auto',
+      },
+      {
+        property: 'og:image',
+        content: 'https://builtbymiguel.net/og-image.png',
+      },
+      // Twitter Card
       { name: 'twitter:card', content: 'summary_large_image' },
       {
         name: 'twitter:title',
         content:
-          'Business Automation Services for Contractors | built by Miguel',
+          'Business Automation Services for Small Business | built by Miguel',
       },
       {
         name: 'twitter:description',
         content:
-          'We provide business automation services and workflow automation consulting for contractors. Route leads instantly to technician phones and eliminate manual busywork.',
+          'Automated lead alerts, CRM sync, and client dashboards for trade contractors. Built and run directly by me. Plans starting at $99/month. Free 5-minute audit.',
       },
-      { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
+      {
+        name: 'twitter:image',
+        content: 'https://builtbymiguel.net/og-image.png',
+      },
     ],
     links: [
       {
@@ -123,7 +157,7 @@ export const Route = createFileRoute('/systems-auto')({
     scripts: [
       {
         type: 'application/ld+json',
-        children: JSON.stringify(SYSTEMS_JSON_LD),
+        children: JSON.stringify(AUTOMATION_JSON_LD),
       },
     ],
   }),
@@ -131,273 +165,632 @@ export const Route = createFileRoute('/systems-auto')({
 })
 
 function SystemsAutoPage() {
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
+  const [activeCodeTab, setActiveCodeTab] = useState('lead-pipeline.ts')
 
   return (
-    <div className="space-y-24 sm:space-y-32 lg:space-y-36 py-6 sm:py-10">
-      {/* =========================================================================
-          SECTION 1: HERO SECTION
-          ========================================================================= */}
-      <section className="relative text-center max-w-4xl mx-auto">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-rose-200/30 via-orange-100/30 to-teal-100/30 dark:from-rose-500/10 dark:via-orange-500/10 dark:to-teal-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+    <div className="w-full bg-[#FAF8F5] dark:bg-[#080B11] text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      {/* ========================================================================= */}
+      {/* SECTION 1: HERO                                                           */}
+      {/* ========================================================================= */}
+      <section className="relative w-full overflow-hidden border-b border-slate-200/80 dark:border-slate-800/80 pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pb-28">
+        {/* Ambient mesh glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-amber-200/30 via-orange-100/20 to-sky-200/20 dark:from-amber-500/10 dark:via-orange-500/5 dark:to-sky-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
-        <div className="mb-8 sm:mb-10 flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
-            <Cpu className="w-3.5 h-3.5" /> High-Leverage Automations
-          </div>
-        </div>
+        {/* Radial dot grid overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] dark:bg-[radial-gradient(#1E293B_1px,transparent_1px)] [background-size:24px_24px] opacity-40 dark:opacity-30 pointer-events-none -z-10" />
 
-        {/* Main H1 with Primary Keyword */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
-          Business Automation Services That Connect Leads Straight to{' '}
-          <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-            Your Phone.
-          </span>
-        </h1>
-
-        {/* Lead Paragraph with Primary & Secondary Keywords */}
-        <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          We provide business automation services, workflow automation consulting, and small business automation systems for trade contractors who are tired of losing jobs to slow replies. Our systems send website leads straight to your phone by text, sync with your scheduling software, and confirm appointments right away. Speed-to-lead is the single biggest factor in closing high-ticket service work.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">
-          <Link
-            to="/audit"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95"
-          >
-            <Sparkles className="w-5 h-5 text-rose-400 dark:text-white fill-rose-400 dark:fill-white" />
-            <span>Get Your Free Systems Audit</span>
-          </Link>
-
-          <Link
-            to="/work"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base text-slate-800 dark:text-slate-200 hover:text-black dark:hover:text-white bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition-all duration-200"
-          >
-            <span>See My Work and Systems</span>
-            <ArrowRight className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-          </Link>
-        </div>
-
-        <div className="pt-3 sm:pt-4 text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center justify-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-          <span>100% Free · Custom video breakdown · No high-pressure sales calls</span>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 2: CODE INSPECTOR TERMINAL SECTION
-          ========================================================================= */}
-      <section className="space-y-10">
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400">
-            <Code2 className="w-3.5 h-3.5" /> CLEAN CODE
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Reliable Webhooks and Data Pipelines
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Inspect the underlying automation logic that routes leads to your phone in seconds.
-          </p>
-        </div>
-
-        <CodeTerminalInspector />
-      </section>
-
-      {/* =========================================================================
-          SECTION 3: 4 DELIVERABLES WHITE CARDS
-          ========================================================================= */}
-      <section className="space-y-12">
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="text-[11px] font-mono uppercase tracking-widest text-orange-600 dark:text-orange-400 font-bold">
-            Workflow Automation Consulting
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Custom Automation Systems I Build for You
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Rather than forcing your team into complicated workflow automation software with endless monthly subscription fees, I write custom automations that run directly on your existing tools.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Card 1: Speed to Lead */}
-          <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-orange-500/40 dark:hover:border-orange-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/40 flex items-center justify-center text-orange-600 dark:text-orange-400">
-              <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="space-y-2">
-              <div className="text-[10px] font-mono font-bold tracking-widest text-orange-600 dark:text-orange-400 uppercase">
-                SPEED TO LEAD
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+            {/* Left Column: Copy & CTAs */}
+            <div className="lg:col-span-7 space-y-6 text-left">
+              {/* Eyebrow badge */}
+              <div className="inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-mono font-bold tracking-wider uppercase text-amber-800 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-950/50 px-3.5 py-1.5 rounded-full border border-amber-300/80 dark:border-amber-700/50 shadow-2xs">
+                  <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  High-Leverage Automations
+                </span>
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Instant Lead Alert System
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Get customer requests on your phone by text message right away. No manual data entry needed.
+
+              {/* H1 */}
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display leading-[1.12]">
+                Business Automation Services That Connect Leads Straight to Your Phone
+              </h1>
+
+              {/* Subhead */}
+              <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-2xl">
+                Get automation built for trade contractors tired of losing jobs to slow replies. Leads text straight to your phone and sync with your scheduling software automatically, so you're never waiting on someone else's dashboard.
               </p>
-            </div>
-            <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Instant text alerts to you and your customer</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Direct call routing and phone number tracking</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Automatic backup emails and CRM pipeline sync</span>
-              </li>
-            </ul>
-          </div>
 
-          {/* Card 2: Easy Intake */}
-          <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-cyan-500/40 dark:hover:border-cyan-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
-              <Layers className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="space-y-2">
-              <div className="text-[10px] font-mono font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
-                EASY INTAKE
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Client Intake and Onboarding
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Automate your client onboarding. Send digital agreements, collect payment, and set up project folders automatically.
-              </p>
-            </div>
-            <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Online agreements with digital signatures</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Automatic Google Drive folder creation</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Simple kickoff questionnaires that save time</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Card 3: Central Dashboard */}
-          <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-emerald-500/40 dark:hover:border-emerald-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-              <Database className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="space-y-2">
-              <div className="text-[10px] font-mono font-bold tracking-widest text-emerald-600 dark:text-emerald-400 uppercase">
-                CENTRAL DASHBOARD
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Custom Business Dashboards
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Stop opening five different apps every morning. See your sales, booked jobs, technician schedules, and search rankings in one place.
-              </p>
-            </div>
-            <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Live sales and lead reports</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Separate logins for staff and technicians</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Private client portal with real-time updates</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Card 4: Smart Tools */}
-          <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-indigo-500/40 dark:hover:border-indigo-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-              <Bot className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div className="space-y-2">
-              <div className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase">
-                SMART TOOLS
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                AI Content and Search Tools
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Helpful tools that draft localized service pages, suggest review replies, and monitor local competitors.
-              </p>
-            </div>
-            <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Fast review reply drafts that boost rankings</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>City-specific service page writer</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Weekly updates on competitor rankings and prices</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 4: FAQ ACCORDION
-          ========================================================================= */}
-      <section className="max-w-3xl mx-auto space-y-8">
-        <div className="text-center space-y-3">
-          <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
-            Frequently Asked Questions
-          </div>
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Systems & Automation FAQs
-          </h2>
-        </div>
-
-        <div className="space-y-4">
-          {SYSTEMS_FAQ.map((faq, index) => {
-            const isOpen = openFaqIndex === index
-            return (
-              <div
-                key={faq.question}
-                className="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] overflow-hidden shadow-sm dark:shadow-none"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                  className="w-full flex items-center justify-between p-5 text-left text-base font-semibold text-slate-900 dark:text-white hover:text-rose-600 dark:hover:text-rose-400 transition-colors focus:outline-none cursor-pointer"
-                  aria-expanded={isOpen}
+              {/* CTAs (Dual on Hero as specified) */}
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Link
+                  to="/audit"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
                 >
-                  <span>{faq.question}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-rose-600 dark:text-rose-400' : ''
-                    }`}
-                  />
-                </button>
-
-                {isOpen && (
-                  <div className="px-5 pb-5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
-                    {faq.answer}
-                  </div>
-                )}
+                  <Sparkles className="w-4 h-4 text-slate-950" />
+                  <span>Get Your Free Systems Audit</span>
+                </Link>
+                <Link
+                  to="/work"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-850 transition-all duration-200 shadow-2xs active:scale-95 cursor-pointer"
+                >
+                  <span>See My Work and Systems</span>
+                  <ArrowRight className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                </Link>
               </div>
-            )
-          })}
+
+              {/* Trust Line */}
+              <div className="pt-2 text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span>100% Free · Custom video breakdown · No high-pressure sales calls</span>
+              </div>
+            </div>
+
+            {/* Right Column: Flat Vector Illustration */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="relative w-full max-w-md rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/90 shadow-2xl p-6 sm:p-8 space-y-6">
+                {/* Visual Pipeline Header */}
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      Live Lead Pipeline
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/40 font-semibold">
+                    0.4s Latency
+                  </span>
+                </div>
+
+                {/* Node 1: Mobile Text Alert */}
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/50">
+                  <div className="w-11 h-11 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 shadow-sm">
+                    <Smartphone className="w-5 h-5" strokeWidth={2.2} />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs font-mono font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wide">
+                      Instant SMS Alert
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                      Direct text dispatched to mobile
+                    </div>
+                  </div>
+                </div>
+
+                {/* Connecting Arrow */}
+                <div className="flex justify-center -my-2">
+                  <div className="w-0.5 h-6 bg-gradient-to-b from-amber-400 to-sky-400 rounded-full" />
+                </div>
+
+                {/* Node 2: Calendar Auto-Sync */}
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-sky-50/80 dark:bg-sky-950/30 border border-sky-200/80 dark:border-sky-800/50">
+                  <div className="w-11 h-11 rounded-xl bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <Calendar className="w-5 h-5" strokeWidth={2.2} />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs font-mono font-bold text-sky-900 dark:text-sky-300 uppercase tracking-wide">
+                      Calendar Booking
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                      Diagnostics synced with scheduling
+                    </div>
+                  </div>
+                </div>
+
+                {/* Connecting Arrow */}
+                <div className="flex justify-center -my-2">
+                  <div className="w-0.5 h-6 bg-gradient-to-b from-sky-400 to-emerald-400 rounded-full" />
+                </div>
+
+                {/* Node 3: CRM Dashboard Record */}
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/50">
+                  <div className="w-11 h-11 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <LayoutDashboard className="w-5 h-5" strokeWidth={2.2} />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs font-mono font-bold text-emerald-900 dark:text-emerald-300 uppercase tracking-wide">
+                      CRM Record Provisioned
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                      Portal workspace created automatically
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* BOTTOM CTA */}
-      <FreeSystemsAuditCTA />
+      {/* ========================================================================= */}
+      {/* SECTION 2: RELIABLE WEBHOOKS AND DATA PIPELINES (CODE SHOWCASE)           */}
+      {/* ========================================================================= */}
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+            {/* Left Column: Intro Copy (~40% width) */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/40">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                Clean Code
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight leading-tight">
+                Reliable Webhooks and Data Pipelines
+              </h2>
+              <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                Inspect the underlying automation logic that routes leads to your phone in seconds.
+              </p>
+            </div>
+
+            {/* Right Column: Code Editor Widget (~60% width) */}
+            <div className="lg:col-span-7">
+              <div className="rounded-3xl border border-slate-800 bg-[#0B0F17] shadow-2xl overflow-hidden backdrop-blur-xl">
+                {/* Code Editor Tab Strip */}
+                <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800/80 bg-[#070A0F]/90 overflow-x-auto">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500/80" />
+                    <span className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                  </div>
+
+                  {/* Tabs */}
+                  <div className="flex items-center gap-1">
+                    <span className="px-3 py-1 text-xs font-mono text-slate-500 cursor-default">
+                      lead-trigger
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveCodeTab('lead-pipeline.ts')}
+                      className={`px-3 py-1 rounded-lg text-xs font-mono transition-colors ${
+                        activeCodeTab === 'lead-pipeline.ts'
+                          ? 'bg-slate-800 text-amber-400 font-bold border border-amber-500/30'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      lead-pipeline.ts
+                    </button>
+                    <span className="px-3 py-1 text-xs font-mono text-slate-500 cursor-default">
+                      local-schema.json
+                    </span>
+                    <span className="px-3 py-1 text-xs font-mono text-slate-500 cursor-default">
+                      speed.config.ts
+                    </span>
+                  </div>
+                </div>
+
+                {/* Code Window Body */}
+                <div className="p-6 sm:p-8 font-mono text-xs sm:text-sm text-slate-300 leading-relaxed overflow-x-auto">
+                  <pre className="space-y-1">
+                    <code>
+                      <span className="text-purple-400">export async function</span>{' '}
+                      <span className="text-blue-400 font-bold">handleInboundLead</span>
+                      <span className="text-slate-400">(</span>
+                      <span className="text-amber-300">lead</span>
+                      <span className="text-slate-400">:</span>{' '}
+                      <span className="text-emerald-400">Lead</span>
+                      <span className="text-slate-400">) &#123;</span>
+                      {'\n'}
+                      <span className="text-slate-500">  // 1. Instant SMS & Dispatch Notification</span>
+                      {'\n'}
+                      <span className="text-slate-400">  </span>
+                      <span className="text-purple-400">await</span>{' '}
+                      <span className="text-sky-300">smsDispatcher</span>
+                      <span className="text-slate-400">.</span>
+                      <span className="text-amber-400">sendLeadAlert</span>
+                      <span className="text-slate-400">(lead);</span>
+                      {'\n'}
+                      <span className="text-slate-500">  // 2. Auto-sync to CRM and Google Calendar</span>
+                      {'\n'}
+                      <span className="text-slate-400">  </span>
+                      <span className="text-purple-400">const</span>{' '}
+                      <span className="text-slate-200">crmRecord</span>{' '}
+                      <span className="text-purple-400">=</span>{' '}
+                      <span className="text-purple-400">await</span>{' '}
+                      <span className="text-sky-300">crmPipeline</span>
+                      <span className="text-slate-400">.</span>
+                      <span className="text-amber-400">sync</span>
+                      <span className="text-slate-400">(lead);</span>
+                      {'\n'}
+                      <span className="text-slate-400">  </span>
+                      <span className="text-purple-400">await</span>{' '}
+                      <span className="text-sky-300">calendar</span>
+                      <span className="text-slate-400">.</span>
+                      <span className="text-amber-400">scheduleDiagnostic</span>
+                      <span className="text-slate-400">(lead.timeSlot);</span>
+                      {'\n'}
+                      <span className="text-slate-500">  // 3. Provision Client Portal Workspace</span>
+                      {'\n'}
+                      <span className="text-slate-400">  </span>
+                      <span className="text-purple-400">await</span>{' '}
+                      <span className="text-sky-300">clientPortal</span>
+                      <span className="text-slate-400">.</span>
+                      <span className="text-amber-400">createWorkspace</span>
+                      <span className="text-slate-400">(lead.email);</span>
+                      {'\n'}
+                      <span className="text-slate-400">&#125;</span>
+                    </code>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 3: CUSTOM AUTOMATION SYSTEMS (FEATURE GRID)                       */}
+      {/* ========================================================================= */}
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#FAF8F5]/60 dark:bg-[#080B11] transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+          <div className="mb-12 sm:mb-16 space-y-3 max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+              Workflow Automation Consulting
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight leading-tight">
+              Custom Automation Systems I Build for You
+            </h2>
+            <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              Rather than forcing your team into complicated workflow automation software with endless monthly subscription fees, I write custom automations that run directly on your existing tools.
+            </p>
+          </div>
+
+          {/* 2x2 Feature Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Card 1: Speed to Lead */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-amber-400/80 dark:hover:border-amber-500/80 transition-all duration-300 flex flex-col justify-between">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-xl bg-amber-100/90 dark:bg-amber-950/70 border border-amber-300/80 dark:border-amber-700/60 flex items-center justify-center text-amber-700 dark:text-amber-400 shadow-2xs">
+                    <Smartphone className="w-5 h-5" strokeWidth={2} />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40">
+                    Speed to Lead
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white">
+                  Instant Lead Alert System
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Get customer requests on your phone by text message right away. No manual data entry needed.
+                </p>
+                <ul className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Instant text alerts to you and your customer</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Direct call routing and phone number tracking</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Automatic backup emails and CRM pipeline sync</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Card 2: Easy Intake */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-sky-400/80 dark:hover:border-sky-500/80 transition-all duration-300 flex flex-col justify-between">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-xl bg-sky-100/90 dark:bg-sky-950/70 border border-sky-300/80 dark:border-sky-700/60 flex items-center justify-center text-sky-700 dark:text-sky-400 shadow-2xs">
+                    <FileCheck2 className="w-5 h-5" strokeWidth={2} />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider text-sky-800 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/40 border border-sky-200/60 dark:border-sky-800/40">
+                    Easy Intake
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white">
+                  Client Intake and Onboarding
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Automate your client onboarding. Send digital agreements, collect payment, and set up project folders automatically.
+                </p>
+                <ul className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Online agreements with digital signatures</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Automatic Google Drive folder creation</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Simple kickoff questionnaires that save time</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Card 3: Central Dashboard */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-emerald-400/80 dark:hover:border-emerald-500/80 transition-all duration-300 flex flex-col justify-between">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-xl bg-emerald-100/90 dark:bg-emerald-950/70 border border-emerald-300/80 dark:border-emerald-700/60 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shadow-2xs">
+                    <LayoutDashboard className="w-5 h-5" strokeWidth={2} />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40">
+                    Central Dashboard
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white">
+                  Custom Business Dashboards
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Stop opening five different apps every morning. See your sales, booked jobs, technician schedules, and search rankings in one place.
+                </p>
+                <ul className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Live sales and lead reports</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Separate logins for staff and technicians</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Private client portal with real-time updates</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Card 4: Smart Tools */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-purple-400/80 dark:hover:border-purple-500/80 transition-all duration-300 flex flex-col justify-between">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-xl bg-purple-100/90 dark:bg-purple-950/70 border border-purple-300/80 dark:border-purple-700/60 flex items-center justify-center text-purple-700 dark:text-purple-400 shadow-2xs">
+                    <Bot className="w-5 h-5" strokeWidth={2} />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider text-purple-800 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 border border-purple-200/60 dark:border-purple-800/40">
+                    Smart Tools
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white">
+                  AI Content and Search Tools
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Helpful tools that draft localized service pages, suggest review replies, and monitor local competitors.
+                </p>
+                <ul className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Fast review reply drafts that boost rankings</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>City-specific service page writer</span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Weekly updates on competitor rankings and prices</span>
+                  </li>
+                </ul>
+
+                {/* Cross-pillar link to /seo as specified */}
+                <div className="pt-2">
+                  <Link
+                    to="/seo"
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:text-amber-500 transition-colors"
+                  >
+                    <span>See how this fits into your broader SEO strategy →</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Single CTA Button */}
+          <div className="mt-12 sm:mt-14 flex items-center justify-start">
+            <Link
+              to="/audit"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-slate-950" />
+              <span>Start My Free Systems Audit</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 4: WHAT CLIENTS SAY (TESTIMONIALS)                                 */}
+      {/* ========================================================================= */}
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+          <div className="mb-12 sm:mb-16 space-y-3 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Verified Proof
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight leading-tight">
+              What Clients Say
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Testimonial 1: Marcus */}
+            <div className="relative p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="flex items-center gap-1 text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                  "We used to lose jobs because nobody got back to people fast enough. Now a lead texts my phone the second the form goes through, and I can respond before they've even closed the tab."
+                </p>
+              </div>
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div>
+                  <div className="font-bold font-display text-slate-900 dark:text-white text-xs sm:text-sm">
+                    Marcus
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                    Electrical Contractor
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                  Verified
+                </span>
+              </div>
+            </div>
+
+            {/* Testimonial 2: Renee */}
+            <div className="relative p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="flex items-center gap-1 text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                  "Onboarding a new client used to mean three emails and a missing form. Now the agreement, the payment, and the project folder are all set up automatically before I even sit down."
+                </p>
+              </div>
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div>
+                  <div className="font-bold font-display text-slate-900 dark:text-white text-xs sm:text-sm">
+                    Renee
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                    Roofing Company Owner
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                  Verified
+                </span>
+              </div>
+            </div>
+
+            {/* Testimonial 3: Dave */}
+            <div className="relative p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="flex items-center gap-1 text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                  "I used to check four different apps every morning just to see where things stood. Now it's one dashboard, and I actually know what's happening on every job."
+                </p>
+              </div>
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div>
+                  <div className="font-bold font-display text-slate-900 dark:text-white text-xs sm:text-sm">
+                    Dave
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                    HVAC Business Owner
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                  Verified
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Single CTA Button */}
+          <div className="mt-12 sm:mt-14 flex items-center justify-start">
+            <Link
+              to="/audit"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-slate-950" />
+              <span>Claim Your Free Systems Audit</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 5: FREQUENTLY ASKED QUESTIONS                                     */}
+      {/* ========================================================================= */}
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#FAF8F5]/60 dark:bg-[#080B11] transition-colors duration-200">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 space-y-8">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              Common Inquiries
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight leading-tight">
+              Frequently Asked Questions About My Business Automation Services
+            </h2>
+          </div>
+
+          <div className="space-y-4 pt-4">
+            {AUTOMATION_FAQ.map((faq, index) => {
+              const isOpen = openFaqIndex === index
+              return (
+                <div
+                  key={faq.question}
+                  className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] overflow-hidden shadow-2xs hover:border-amber-400/60 dark:hover:border-amber-500/60 transition-colors"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+                    className="w-full flex items-center justify-between p-5 text-left text-sm sm:text-base font-bold font-display text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors focus:outline-none cursor-pointer"
+                    aria-expanded={isOpen}
+                  >
+                    <span>{faq.question}</span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-slate-400 shrink-0 ml-4 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-amber-600 dark:text-amber-400' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 6: CLOSING HERO CTA                                               */}
+      {/* ========================================================================= */}
+      <section className="relative w-full py-20 sm:py-28 overflow-hidden bg-slate-950 dark:bg-black text-white transition-colors duration-200">
+        {/* Glowing background bloom */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-gradient-to-b from-amber-500/15 via-rose-500/5 to-transparent blur-3xl pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 text-center space-y-6 relative z-10">
+          <div>
+            <span className="text-xs font-mono font-bold tracking-widest uppercase text-amber-400 bg-amber-400/10 border border-amber-400/30 px-3.5 py-1.5 rounded-full inline-block">
+              Stop Losing Jobs to Slow Replies
+            </span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-display text-white tracking-tight leading-tight max-w-2xl mx-auto">
+            Get Automation That Answers Before Your Competitor Does
+          </h2>
+
+          <p className="text-sm sm:text-base md:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
+            Stop losing jobs to whoever calls back first. Start with a free 5-minute audit and see exactly where your leads are slipping through the cracks.
+          </p>
+
+          <div className="flex items-center justify-center pt-4">
+            <Link
+              to="/audit"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-slate-950" />
+              <span>Get My Free Systems Audit</span>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

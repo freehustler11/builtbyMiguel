@@ -217,7 +217,12 @@ function RootComponent() {
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
   const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
   const isIsolated = isInternalPath(currentPath)
-  const isFullWidthPage = currentPath === '/' || currentPath === '/seo' || currentPath.startsWith('/seo/')
+  const isFullWidthPage =
+    currentPath === '/' ||
+    currentPath === '/seo' ||
+    currentPath.startsWith('/seo/') ||
+    currentPath === '/systems-auto' ||
+    currentPath.startsWith('/systems-auto/')
 
   const topProgressBar = isNavigating ? (
     <div className="fixed top-0 left-0 right-0 z-[99999] pointer-events-none">
