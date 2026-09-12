@@ -23,6 +23,7 @@ const EXCLUDED_ROUTES = new Set([
   'my-work',      // Internal agent work log — requires login
   'r',            // /r/:shareToken public share links — transactional, not indexable
   'local-seo-gbp',// Redirects 301 to /seo/local
+  'websites-care',// Redirects 301 to /websites/hosting-and-maintenance
 ])
 
 // Static-route priority & changefreq
@@ -34,7 +35,7 @@ const ROUTE_CONFIG = {
   'seo/ai-search':  { priority: '0.9', changefreq: 'weekly' },
   'websites':       { priority: '0.9', changefreq: 'weekly' },
   'websites/design-and-development': { priority: '0.9', changefreq: 'weekly' },
-  'websites-care':  { priority: '0.9', changefreq: 'weekly' },
+  'websites/hosting-and-maintenance': { priority: '0.9', changefreq: 'weekly' },
   'website-demo':   { priority: '0.9', changefreq: 'weekly' },
   'systems-auto':   { priority: '0.9', changefreq: 'weekly' },
   'audit':          { priority: '0.9', changefreq: 'weekly' },

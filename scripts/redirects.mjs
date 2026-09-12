@@ -57,14 +57,15 @@ export const REDIRECT_MAP = {
   '/small-business-website-design': '/websites/design-and-development',
 
   // --- Website Care & Hosting Child ---
-  '/website-maintenance': '/websites-care',
-  '/services/website-maintenance': '/websites-care',
-  '/services/websites-care': '/websites-care',
-  '/website-care': '/websites-care',
-  '/hosting': '/websites-care',
-  '/website-hosting': '/websites-care',
-  '/maintenance': '/websites-care',
-  '/care': '/websites-care',
+  '/websites-care': '/websites/hosting-and-maintenance',
+  '/website-maintenance': '/websites/hosting-and-maintenance',
+  '/services/website-maintenance': '/websites/hosting-and-maintenance',
+  '/services/websites-care': '/websites/hosting-and-maintenance',
+  '/website-care': '/websites/hosting-and-maintenance',
+  '/hosting': '/websites/hosting-and-maintenance',
+  '/website-hosting': '/websites/hosting-and-maintenance',
+  '/maintenance': '/websites/hosting-and-maintenance',
+  '/care': '/websites/hosting-and-maintenance',
 
   // --- Systems & Automation Pillar ---
   '/automation': '/systems-auto',

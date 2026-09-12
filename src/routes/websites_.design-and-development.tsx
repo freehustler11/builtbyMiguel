@@ -209,7 +209,7 @@ const FAQS = [
       <span>
         Ongoing hosting, backups, security updates, and monthly content edits are handled through the{' '}
         <Link
-          to="/websites-care"
+          to="/websites/hosting-and-maintenance"
           className="text-amber-600 dark:text-amber-400 underline font-semibold hover:text-amber-700 dark:hover:text-amber-300"
         >
           Website Hosting and Care
@@ -547,7 +547,7 @@ function WebsiteDesignDevPage() {
               </div>
               <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/websites-care"
+                  to="/websites/hosting-and-maintenance"
                   className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300"
                 >
                   Explore Website Hosting and Care →

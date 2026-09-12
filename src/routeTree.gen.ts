@@ -30,7 +30,6 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as WebsiteDemoRouteImport } from './routes/website-demo'
 import { Route as WebsitesRouteImport } from './routes/websites'
-import { Route as WebsitesCareRouteImport } from './routes/websites-care'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminActivityRouteImport } from './routes/admin/activity'
@@ -48,6 +47,7 @@ import { Route as SeoLocalRouteImport } from './routes/seo_.local'
 import { Route as SeoNationalRouteImport } from './routes/seo_.national'
 import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
 import { Route as WebsitesDesignAndDevelopmentRouteImport } from './routes/websites_.design-and-development'
+import { Route as WebsitesHostingAndMaintenanceRouteImport } from './routes/websites_.hosting-and-maintenance'
 import { Route as AdminAgenciesIndexRouteImport } from './routes/admin/agencies/index'
 import { Route as AdminAgenciesPartnerIdRouteImport } from './routes/admin/agencies/$partnerId'
 import { Route as AdminAgenciesUnassignedRouteImport } from './routes/admin/agencies/unassigned'
@@ -163,11 +163,6 @@ const WebsitesRoute = WebsitesRouteImport.update({
   path: '/websites',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WebsitesCareRoute = WebsitesCareRouteImport.update({
-  id: '/websites-care',
-  path: '/websites-care',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const WorkRoute = WorkRouteImport.update({
   id: '/work',
   path: '/work',
@@ -254,6 +249,12 @@ const WebsitesDesignAndDevelopmentRoute =
     path: '/websites/design-and-development',
     getParentRoute: () => rootRouteImport,
   } as any)
+const WebsitesHostingAndMaintenanceRoute =
+  WebsitesHostingAndMaintenanceRouteImport.update({
+    id: '/websites_/hosting-and-maintenance',
+    path: '/websites/hosting-and-maintenance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminAgenciesIndexRoute = AdminAgenciesIndexRouteImport.update({
   id: '/agencies/',
   path: '/agencies/',
@@ -322,7 +323,6 @@ export interface FileRoutesByFullPath {
   '/thank-you': typeof ThankYouRoute
   '/website-demo': typeof WebsiteDemoRoute
   '/websites': typeof WebsitesRoute
-  '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
@@ -337,6 +337,7 @@ export interface FileRoutesByFullPath {
   '/seo/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/websites/design-and-development': typeof WebsitesDesignAndDevelopmentRoute
+  '/websites/hosting-and-maintenance': typeof WebsitesHostingAndMaintenanceRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -370,7 +371,6 @@ export interface FileRoutesByTo {
   '/thank-you': typeof ThankYouRoute
   '/website-demo': typeof WebsiteDemoRoute
   '/websites': typeof WebsitesRoute
-  '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
@@ -385,6 +385,7 @@ export interface FileRoutesByTo {
   '/seo/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/websites/design-and-development': typeof WebsitesDesignAndDevelopmentRoute
+  '/websites/hosting-and-maintenance': typeof WebsitesHostingAndMaintenanceRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/portal': typeof PortalIndexRoute
@@ -421,7 +422,6 @@ export interface FileRoutesById {
   '/thank-you': typeof ThankYouRoute
   '/website-demo': typeof WebsiteDemoRoute
   '/websites': typeof WebsitesRoute
-  '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
@@ -436,6 +436,7 @@ export interface FileRoutesById {
   '/seo_/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/websites_/design-and-development': typeof WebsitesDesignAndDevelopmentRoute
+  '/websites_/hosting-and-maintenance': typeof WebsitesHostingAndMaintenanceRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -473,7 +474,6 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/website-demo'
     | '/websites'
-    | '/websites-care'
     | '/work'
     | '/admin/activity'
     | '/admin/clients'
@@ -488,6 +488,7 @@ export interface FileRouteTypes {
     | '/seo/national'
     | '/superadmin/activity'
     | '/websites/design-and-development'
+    | '/websites/hosting-and-maintenance'
     | '/admin/'
     | '/blog/'
     | '/portal/'
@@ -521,7 +522,6 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/website-demo'
     | '/websites'
-    | '/websites-care'
     | '/work'
     | '/admin/activity'
     | '/admin/clients'
@@ -536,6 +536,7 @@ export interface FileRouteTypes {
     | '/seo/national'
     | '/superadmin/activity'
     | '/websites/design-and-development'
+    | '/websites/hosting-and-maintenance'
     | '/admin'
     | '/blog'
     | '/portal'
@@ -571,7 +572,6 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/website-demo'
     | '/websites'
-    | '/websites-care'
     | '/work'
     | '/admin/activity'
     | '/admin/clients'
@@ -586,6 +586,7 @@ export interface FileRouteTypes {
     | '/seo_/national'
     | '/superadmin/activity'
     | '/websites_/design-and-development'
+    | '/websites_/hosting-and-maintenance'
     | '/admin/'
     | '/blog/'
     | '/portal/'
@@ -622,7 +623,6 @@ export interface RootRouteChildren {
   ThankYouRoute: typeof ThankYouRoute
   WebsiteDemoRoute: typeof WebsiteDemoRoute
   WebsitesRoute: typeof WebsitesRoute
-  WebsitesCareRoute: typeof WebsitesCareRoute
   WorkRoute: typeof WorkRoute
   BlogSlugRoute: typeof BlogSlugRoute
   RShareTokenRoute: typeof RShareTokenRoute
@@ -630,6 +630,7 @@ export interface RootRouteChildren {
   SeoLocalRoute: typeof SeoLocalRoute
   SeoNationalRoute: typeof SeoNationalRoute
   WebsitesDesignAndDevelopmentRoute: typeof WebsitesDesignAndDevelopmentRoute
+  WebsitesHostingAndMaintenanceRoute: typeof WebsitesHostingAndMaintenanceRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
@@ -782,13 +783,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebsitesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/websites-care': {
-      id: '/websites-care'
-      path: '/websites-care'
-      fullPath: '/websites-care'
-      preLoaderRoute: typeof WebsitesCareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/work': {
       id: '/work'
       path: '/work'
@@ -906,6 +900,13 @@ declare module '@tanstack/react-router' {
       path: '/websites/design-and-development'
       fullPath: '/websites/design-and-development'
       preLoaderRoute: typeof WebsitesDesignAndDevelopmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/websites_/hosting-and-maintenance': {
+      id: '/websites_/hosting-and-maintenance'
+      path: '/websites/hosting-and-maintenance'
+      fullPath: '/websites/hosting-and-maintenance'
+      preLoaderRoute: typeof WebsitesHostingAndMaintenanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/agencies/': {
@@ -1069,7 +1070,6 @@ const rootRouteChildren: RootRouteChildren = {
   ThankYouRoute: ThankYouRoute,
   WebsiteDemoRoute: WebsiteDemoRoute,
   WebsitesRoute: WebsitesRoute,
-  WebsitesCareRoute: WebsitesCareRoute,
   WorkRoute: WorkRoute,
   BlogSlugRoute: BlogSlugRoute,
   RShareTokenRoute: RShareTokenRoute,
@@ -1077,6 +1077,7 @@ const rootRouteChildren: RootRouteChildren = {
   SeoLocalRoute: SeoLocalRoute,
   SeoNationalRoute: SeoNationalRoute,
   WebsitesDesignAndDevelopmentRoute: WebsitesDesignAndDevelopmentRoute,
+  WebsitesHostingAndMaintenanceRoute: WebsitesHostingAndMaintenanceRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport

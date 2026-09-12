@@ -400,7 +400,7 @@ function WebsitesPage() {
 
               <div className="pt-6 border-t border-slate-100 dark:border-slate-800 mt-6">
                 <Link
-                  to="/websites-care"
+                  to="/websites/hosting-and-maintenance"
                   className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors cursor-pointer"
                 >
                   <span>Explore Website Hosting & Care →</span>
