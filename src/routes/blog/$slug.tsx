@@ -822,19 +822,6 @@ function BlogPostPage() {
                       )}
                     </button>
                     <a
-                      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(
-                        typeof window !== 'undefined' ? window.location.href : ''
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-50/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs"
-                      title="Share on X"
-                    >
-                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                      </svg>
-                    </a>
-                    <a
                       href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
                         typeof window !== 'undefined' ? window.location.href : ''
                       )}`}

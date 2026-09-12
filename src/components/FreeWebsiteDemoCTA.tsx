@@ -23,7 +23,7 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
   return (
     <section
       aria-label="Free Website Demo Section"
-      className={`relative w-full py-16 sm:py-20 md:py-24 bg-[#F0F4F8] border-t border-[#CBD5E1]/70 ${className}`}
+      className={`relative w-full py-16 sm:py-20 md:py-24 bg-[#F8FAFC] dark:bg-[#0B0F17] border-t border-slate-200/80 dark:border-slate-800 transition-colors duration-200 ${className}`}
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -32,10 +32,10 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
             <span className="w-2 h-2 rounded-full bg-[#0EA5E9] animate-pulse"></span>
             Free Live Preview
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display text-[#0B132B] tracking-tight leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display text-slate-900 dark:text-white tracking-tight leading-tight">
             See Your New Website Before You Pay
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 font-sans leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 font-sans leading-relaxed">
             We build a real working preview using your business info. No templates. No guesswork.
           </p>
         </div>
@@ -118,11 +118,11 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
         {/* Three Benefit Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Benefit Card 1 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
             <div className="w-11 h-11 rounded-xl bg-cyan-50 border border-cyan-200/80 flex items-center justify-center text-[#0EA5E9] mb-4">
               <Rocket className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-[#0B132B] mb-2">
+            <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
               Feel the Speed
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -131,11 +131,11 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
           </div>
 
           {/* Benefit Card 2 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
             <div className="w-11 h-11 rounded-xl bg-cyan-50 border border-cyan-200/80 flex items-center justify-center text-[#0EA5E9] mb-4">
               <Smartphone className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-[#0B132B] mb-2">
+            <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
               Test It on Your Phone
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -144,11 +144,11 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
           </div>
 
           {/* Benefit Card 3 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
             <div className="w-11 h-11 rounded-xl bg-cyan-50 border border-cyan-200/80 flex items-center justify-center text-[#0EA5E9] mb-4">
               <LinkIcon className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-[#0B132B] mb-2">
+            <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
               Share It With Anyone
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -174,11 +174,11 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
         {/* Three FAQ Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* FAQ Card 1 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm">
-            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 mb-3">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 mb-3">
               <Server className="w-4 h-4" />
             </div>
-            <h4 className="text-base font-bold font-display text-[#0B132B] mb-2">
+            <h4 className="text-base font-bold font-display text-slate-900 dark:text-white mb-2">
               Do I need new hosting?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -187,11 +187,11 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
           </div>
 
           {/* FAQ Card 2 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm">
-            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 mb-3">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 mb-3">
               <Gift className="w-4 h-4" />
             </div>
-            <h4 className="text-base font-bold font-display text-[#0B132B] mb-2">
+            <h4 className="text-base font-bold font-display text-slate-900 dark:text-white mb-2">
               Is it really free?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -200,11 +200,11 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
           </div>
 
           {/* FAQ Card 3 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm">
-            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 mb-3">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 mb-3">
               <Clock className="w-4 h-4" />
             </div>
-            <h4 className="text-base font-bold font-display text-[#0B132B] mb-2">
+            <h4 className="text-base font-bold font-display text-slate-900 dark:text-white mb-2">
               How long does it take?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">

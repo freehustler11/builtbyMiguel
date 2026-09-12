@@ -68,7 +68,7 @@ export function FreeAuditCTA({
   return (
     <section
       aria-label="Free Audit Request Section"
-      className={`relative w-full py-16 sm:py-20 md:py-24 bg-[#F0F4F8] border-t border-[#CBD5E1]/70 ${className}`}
+      className={`relative w-full py-16 sm:py-20 md:py-24 bg-[#F8FAFC] dark:bg-[#0B0F17] border-t border-slate-200/80 dark:border-slate-800 transition-colors duration-200 ${className}`}
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -77,10 +77,10 @@ export function FreeAuditCTA({
             <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse"></span>
             Free Video Audit
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display text-[#0B132B] tracking-tight leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display text-slate-900 dark:text-white tracking-tight leading-tight">
             {headline}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 font-sans leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 font-sans leading-relaxed">
             {subheadline}
           </p>
         </div>
@@ -163,11 +163,11 @@ export function FreeAuditCTA({
         {/* Three Benefit Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Benefit Card 1 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
             <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200/80 flex items-center justify-center text-[#0EA5E9] mb-4">
               <Search className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-[#0B132B] mb-2">
+            <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
               Check Your Ranking
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -176,11 +176,11 @@ export function FreeAuditCTA({
           </div>
 
           {/* Benefit Card 2 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
             <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200/80 flex items-center justify-center text-[#0EA5E9] mb-4">
               <Gauge className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-[#0B132B] mb-2">
+            <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
               See Why Visitors Leave
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -189,11 +189,11 @@ export function FreeAuditCTA({
           </div>
 
           {/* Benefit Card 3 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
             <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-200/80 flex items-center justify-center text-[#0EA5E9] mb-4">
               <UserCheck className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-[#0B132B] mb-2">
+            <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
               Senior Technical Team
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -219,11 +219,11 @@ export function FreeAuditCTA({
         {/* Three FAQ Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* FAQ Card 1 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm">
-            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 mb-3">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 mb-3">
               <PhoneOff className="w-4 h-4" />
             </div>
-            <h4 className="text-base font-bold font-display text-[#0B132B] mb-2">
+            <h4 className="text-base font-bold font-display text-slate-900 dark:text-white mb-2">
               Is this a sales call?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -232,11 +232,11 @@ export function FreeAuditCTA({
           </div>
 
           {/* FAQ Card 2 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm">
-            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 mb-3">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 mb-3">
               <ThumbsUp className="w-4 h-4" />
             </div>
-            <h4 className="text-base font-bold font-display text-[#0B132B] mb-2">
+            <h4 className="text-base font-bold font-display text-slate-900 dark:text-white mb-2">
               What if my site is fine?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
@@ -245,11 +245,11 @@ export function FreeAuditCTA({
           </div>
 
           {/* FAQ Card 3 */}
-          <div className="bg-white rounded-2xl p-6 border border-[#CBD5E1]/80 shadow-sm">
-            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 mb-3">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 mb-3">
               <Clock className="w-4 h-4" />
             </div>
-            <h4 className="text-base font-bold font-display text-[#0B132B] mb-2">
+            <h4 className="text-base font-bold font-display text-slate-900 dark:text-white mb-2">
               How fast do I get it?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
