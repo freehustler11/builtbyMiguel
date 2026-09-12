@@ -22,7 +22,7 @@ export const Route = createFileRoute('/contact')({
       {
         name: 'description',
         content:
-          'Get in touch directly with Miguel to discuss Local SEO, high-speed custom websites, or operational business automation. 24-hour response guaranteed.',
+          'Get in touch directly with Miguel to discuss Local SEO, fast websites, or business automation. 24-hour response guaranteed.',
       },
       {
         name: 'keywords',
@@ -98,13 +98,13 @@ function ContactPage() {
           </div>
         </div>
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
-          Let’s Build Something{' '}
+          Let's Build Systems That{' '}
           <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-            High-Performing.
+            Bring You Jobs.
           </span>
         </h1>
         <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
-          Have a project in mind, need to dominate local search, or want to automate your client intake? Send a note below.
+          Have a question about your website, local search rankings, or lead automation? Send a note below to start a conversation.
         </p>
       </div>
 
@@ -112,7 +112,7 @@ function ContactPage() {
         {/* Left Column: Inquiry Form */}
         <div className="lg:col-span-7 rounded-[3rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 sm:p-10 shadow-xl dark:shadow-none space-y-6">
           <div className="space-y-1 border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Project Discovery Note</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Send a Message</h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">I review every inquiry personally within 24 hours.</p>
           </div>
 
@@ -239,7 +239,7 @@ function ContactPage() {
                 rows={4}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Tell me about your current rankings, website goals, or administrative bottlenecks..."
+                placeholder="Tell me about your current website, Google rankings, or lead goals..."
                 className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:border-slate-900 dark:focus:border-rose-500 focus:ring-1 focus:ring-slate-900 dark:focus:ring-rose-500 transition-colors"
               />
             </div>
@@ -314,7 +314,7 @@ function ContactPage() {
                     Response Guarantee
                   </div>
                   <div className="text-slate-900 dark:text-white font-semibold">
-                    Within 24 business hours
+                    Guaranteed within 24 business hours
                   </div>
                 </div>
               </div>
@@ -328,7 +328,7 @@ function ContactPage() {
                     Service Radius
                   </div>
                   <div className="text-slate-900 dark:text-white font-semibold">
-                    United States (Nationwide Remote)
+                    Serving trade contractors nationwide
                   </div>
                 </div>
               </div>
@@ -336,7 +336,7 @@ function ContactPage() {
 
             <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 flex items-center gap-3 text-xs text-emerald-800 dark:text-emerald-300 font-mono">
               <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span>100% confidential discussion. Zero sales pressure.</span>
+              <span>100% confidential discussion. No sales pressure.</span>
             </div>
           </div>
         </div>

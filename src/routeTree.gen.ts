@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AeoGeoRouteImport } from './routes/aeo-geo'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
@@ -20,12 +21,18 @@ import { Route as LocalSeoGbpRouteImport } from './routes/local-seo-gbp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MyWorkRouteImport } from './routes/my-work'
+import { Route as NationalSeoRouteImport } from './routes/national-seo'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as SeoRouteImport } from './routes/seo'
 import { Route as SuperadminRouteImport } from './routes/superadmin'
+import { Route as SystemsAuditRouteImport } from './routes/systems-audit'
 import { Route as SystemsAutoRouteImport } from './routes/systems-auto'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
+import { Route as WebsiteDemoRouteImport } from './routes/website-demo'
+import { Route as WebsiteDesignRouteImport } from './routes/website-design'
+import { Route as WebsitesRouteImport } from './routes/websites'
 import { Route as WebsitesCareRouteImport } from './routes/websites-care'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -70,6 +77,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AeoGeoRoute = AeoGeoRouteImport.update({
+  id: '/aeo-geo',
+  path: '/aeo-geo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuditRoute = AuditRouteImport.update({
   id: '/audit',
   path: '/audit',
@@ -105,6 +117,11 @@ const MyWorkRoute = MyWorkRouteImport.update({
   path: '/my-work',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NationalSeoRoute = NationalSeoRouteImport.update({
+  id: '/national-seo',
+  path: '/national-seo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortalRoute = PortalRouteImport.update({
   id: '/portal',
   path: '/portal',
@@ -115,9 +132,19 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SeoRoute = SeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuperadminRoute = SuperadminRouteImport.update({
   id: '/superadmin',
   path: '/superadmin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SystemsAuditRoute = SystemsAuditRouteImport.update({
+  id: '/systems-audit',
+  path: '/systems-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SystemsAutoRoute = SystemsAutoRouteImport.update({
@@ -133,6 +160,21 @@ const TermsRoute = TermsRouteImport.update({
 const ThankYouRoute = ThankYouRouteImport.update({
   id: '/thank-you',
   path: '/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteDemoRoute = WebsiteDemoRouteImport.update({
+  id: '/website-demo',
+  path: '/website-demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteDesignRoute = WebsiteDesignRouteImport.update({
+  id: '/website-design',
+  path: '/website-design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsitesRoute = WebsitesRouteImport.update({
+  id: '/websites',
+  path: '/websites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WebsitesCareRoute = WebsitesCareRouteImport.update({
@@ -256,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
@@ -263,12 +306,18 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/my-work': typeof MyWorkRoute
+  '/national-seo': typeof NationalSeoRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/seo': typeof SeoRoute
   '/superadmin': typeof SuperadminRouteWithChildren
+  '/systems-audit': typeof SystemsAuditRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
+  '/website-demo': typeof WebsiteDemoRoute
+  '/website-design': typeof WebsiteDesignRoute
+  '/websites': typeof WebsitesRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -297,6 +346,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
@@ -304,11 +354,17 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/my-work': typeof MyWorkRoute
+  '/national-seo': typeof NationalSeoRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/seo': typeof SeoRoute
   '/superadmin': typeof SuperadminRouteWithChildren
+  '/systems-audit': typeof SystemsAuditRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
+  '/website-demo': typeof WebsiteDemoRoute
+  '/website-design': typeof WebsiteDesignRoute
+  '/websites': typeof WebsitesRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -339,6 +395,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
@@ -346,12 +403,18 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/my-work': typeof MyWorkRoute
+  '/national-seo': typeof NationalSeoRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/seo': typeof SeoRoute
   '/superadmin': typeof SuperadminRouteWithChildren
+  '/systems-audit': typeof SystemsAuditRoute
   '/systems-auto': typeof SystemsAutoRoute
   '/terms': typeof TermsRoute
   '/thank-you': typeof ThankYouRoute
+  '/website-demo': typeof WebsiteDemoRoute
+  '/website-design': typeof WebsiteDesignRoute
+  '/websites': typeof WebsitesRoute
   '/websites-care': typeof WebsitesCareRoute
   '/work': typeof WorkRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -383,6 +446,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
+    | '/aeo-geo'
     | '/audit'
     | '/contact'
     | '/cookie-policy'
@@ -390,12 +454,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/my-work'
+    | '/national-seo'
     | '/portal'
     | '/privacy-policy'
+    | '/seo'
     | '/superadmin'
+    | '/systems-audit'
     | '/systems-auto'
     | '/terms'
     | '/thank-you'
+    | '/website-demo'
+    | '/website-design'
+    | '/websites'
     | '/websites-care'
     | '/work'
     | '/admin/activity'
@@ -424,6 +494,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/aeo-geo'
     | '/audit'
     | '/contact'
     | '/cookie-policy'
@@ -431,11 +502,17 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/my-work'
+    | '/national-seo'
     | '/privacy-policy'
+    | '/seo'
     | '/superadmin'
+    | '/systems-audit'
     | '/systems-auto'
     | '/terms'
     | '/thank-you'
+    | '/website-demo'
+    | '/website-design'
+    | '/websites'
     | '/websites-care'
     | '/work'
     | '/admin/activity'
@@ -465,6 +542,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
+    | '/aeo-geo'
     | '/audit'
     | '/contact'
     | '/cookie-policy'
@@ -472,12 +550,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/my-work'
+    | '/national-seo'
     | '/portal'
     | '/privacy-policy'
+    | '/seo'
     | '/superadmin'
+    | '/systems-audit'
     | '/systems-auto'
     | '/terms'
     | '/thank-you'
+    | '/website-demo'
+    | '/website-design'
+    | '/websites'
     | '/websites-care'
     | '/work'
     | '/admin/activity'
@@ -508,6 +592,7 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AeoGeoRoute: typeof AeoGeoRoute
   AuditRoute: typeof AuditRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
@@ -515,12 +600,18 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
   MyWorkRoute: typeof MyWorkRoute
+  NationalSeoRoute: typeof NationalSeoRoute
   PortalRoute: typeof PortalRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  SeoRoute: typeof SeoRoute
   SuperadminRoute: typeof SuperadminRouteWithChildren
+  SystemsAuditRoute: typeof SystemsAuditRoute
   SystemsAutoRoute: typeof SystemsAutoRoute
   TermsRoute: typeof TermsRoute
   ThankYouRoute: typeof ThankYouRoute
+  WebsiteDemoRoute: typeof WebsiteDemoRoute
+  WebsiteDesignRoute: typeof WebsiteDesignRoute
+  WebsitesRoute: typeof WebsitesRoute
   WebsitesCareRoute: typeof WebsitesCareRoute
   WorkRoute: typeof WorkRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -556,6 +647,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aeo-geo': {
+      id: '/aeo-geo'
+      path: '/aeo-geo'
+      fullPath: '/aeo-geo'
+      preLoaderRoute: typeof AeoGeoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/audit': {
@@ -607,6 +705,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyWorkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/national-seo': {
+      id: '/national-seo'
+      path: '/national-seo'
+      fullPath: '/national-seo'
+      preLoaderRoute: typeof NationalSeoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portal': {
       id: '/portal'
       path: '/portal'
@@ -621,11 +726,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seo': {
+      id: '/seo'
+      path: '/seo'
+      fullPath: '/seo'
+      preLoaderRoute: typeof SeoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/superadmin': {
       id: '/superadmin'
       path: '/superadmin'
       fullPath: '/superadmin'
       preLoaderRoute: typeof SuperadminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/systems-audit': {
+      id: '/systems-audit'
+      path: '/systems-audit'
+      fullPath: '/systems-audit'
+      preLoaderRoute: typeof SystemsAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/systems-auto': {
@@ -647,6 +766,27 @@ declare module '@tanstack/react-router' {
       path: '/thank-you'
       fullPath: '/thank-you'
       preLoaderRoute: typeof ThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-demo': {
+      id: '/website-demo'
+      path: '/website-demo'
+      fullPath: '/website-demo'
+      preLoaderRoute: typeof WebsiteDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-design': {
+      id: '/website-design'
+      path: '/website-design'
+      fullPath: '/website-design'
+      preLoaderRoute: typeof WebsiteDesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/websites': {
+      id: '/websites'
+      path: '/websites'
+      fullPath: '/websites'
+      preLoaderRoute: typeof WebsitesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/websites-care': {
@@ -891,6 +1031,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  AeoGeoRoute: AeoGeoRoute,
   AuditRoute: AuditRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
@@ -898,12 +1039,18 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
   MyWorkRoute: MyWorkRoute,
+  NationalSeoRoute: NationalSeoRoute,
   PortalRoute: PortalRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  SeoRoute: SeoRoute,
   SuperadminRoute: SuperadminRouteWithChildren,
+  SystemsAuditRoute: SystemsAuditRoute,
   SystemsAutoRoute: SystemsAutoRoute,
   TermsRoute: TermsRoute,
   ThankYouRoute: ThankYouRoute,
+  WebsiteDemoRoute: WebsiteDemoRoute,
+  WebsiteDesignRoute: WebsiteDesignRoute,
+  WebsitesRoute: WebsitesRoute,
   WebsitesCareRoute: WebsitesCareRoute,
   WorkRoute: WorkRoute,
   BlogSlugRoute: BlogSlugRoute,

@@ -27,8 +27,14 @@ const EXCLUDED_ROUTES = new Set([
 // Static-route priority & changefreq
 const ROUTE_CONFIG = {
   '':               { priority: '1.0', changefreq: 'daily' },
+  'seo':            { priority: '0.9', changefreq: 'weekly' },
   'local-seo-gbp':  { priority: '0.9', changefreq: 'weekly' },
+  'national-seo':   { priority: '0.9', changefreq: 'weekly' },
+  'aeo-geo':        { priority: '0.9', changefreq: 'weekly' },
+  'websites':       { priority: '0.9', changefreq: 'weekly' },
+  'website-design': { priority: '0.9', changefreq: 'weekly' },
   'websites-care':  { priority: '0.9', changefreq: 'weekly' },
+  'website-demo':   { priority: '0.9', changefreq: 'weekly' },
   'systems-auto':   { priority: '0.9', changefreq: 'weekly' },
   'audit':          { priority: '0.9', changefreq: 'weekly' },
   'work':           { priority: '0.8', changefreq: 'weekly' },

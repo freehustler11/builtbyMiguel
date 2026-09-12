@@ -1,7 +1,18 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { AlertCircle, ArrowRight, Home, Sparkles, Search, Globe, Cpu } from 'lucide-react'
+import { resolveRedirect } from '../lib/redirects'
 
 export const Route = createFileRoute('/$')({
+  beforeLoad: ({ location }) => {
+    const fullPath = location.pathname + (location.searchStr ? location.searchStr : '')
+    const target = resolveRedirect(fullPath)
+    if (target) {
+      throw redirect({
+        to: target,
+        statusCode: 301,
+      })
+    }
+  },
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -43,14 +54,14 @@ function NotFoundPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-medium">
           <Link
-            to="/local-seo-gbp"
+            to="/seo"
             className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/40 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-2.5 transition-all"
           >
             <Search className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-            <span>Local SEO</span>
+            <span>SEO Services</span>
           </Link>
           <Link
-            to="/websites-care"
+            to="/websites"
             className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/40 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-2.5 transition-all"
           >
             <Globe className="w-4 h-4 text-cyan-500 dark:text-cyan-400 shrink-0" />

@@ -25,7 +25,7 @@ export const Route = createFileRoute('/work')({
       {
         name: 'description',
         content:
-          'Explore the custom software, automation engines, and high-speed web systems built by Miguel to dominate local search and streamline business operations.',
+          'Explore the custom software, automation tools, and fast websites built by Miguel to help local businesses grow.',
       },
       {
         name: 'keywords',
@@ -41,7 +41,7 @@ export const Route = createFileRoute('/work')({
       {
         property: 'og:description',
         content:
-          'A transparent look at the custom tools, automation engines, and high-performance websites I build and run.',
+          'A clear look at the custom tools, automation engines, and fast websites we build and run.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/work' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -81,12 +81,12 @@ function WorkPage() {
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          A transparent look at the internal tools, automation workflows, and high-performance websites I build and run.
+          A clear look at the internal tools, automation workflows, and fast websites we build and run.
         </p>
 
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 shadow-sm mt-4">
           <Lock className="w-3.5 h-3.5 text-slate-700 dark:text-slate-400" />
-          <span>Showing architectural previews & sanitized telemetry. Zero client data exposed.</span>
+          <span>Showing system previews and sanitized data. No private client information is shown.</span>
         </div>
       </section>
 
@@ -96,13 +96,13 @@ function WorkPage() {
       <section className="space-y-12">
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
-            In-House Infrastructure
+            In-House Tools
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Proprietary Tools & Automation Engines
+            Custom Tools and Automation Engines
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Custom-coded applications that eliminate manual overhead and accelerate client growth.
+            Software built to remove manual work and help local clients win more jobs.
           </p>
         </div>
 
@@ -121,29 +121,29 @@ function WorkPage() {
 
               <div className="space-y-2">
                 <div className="text-[10px] font-mono font-bold tracking-widest text-rose-600 dark:text-rose-400 uppercase">
-                  LEAD VELOCITY
+                  FAST RESPONSE
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Lead-to-Client CRM</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Real-time pipeline tracking with instant Twilio SMS dispatch, email alerts, and inbound call logging.
+                  Tracks incoming leads with instant text message alerts, email notifications, and phone call logs.
                 </p>
               </div>
 
-              <div className="space-y-2 font-mono text-xs">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Avg. Response Time</span>
-                  <span className="text-slate-900 dark:text-white font-bold">&lt; 28 seconds</span>
+              <div className="space-y-2 text-xs">
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">Under 28 Seconds</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Average response time for new inbound customer inquiries.</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Lead Conversion Lift</span>
-                  <span className="text-rose-600 dark:text-rose-400 font-bold">+38% higher</span>
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-rose-600 dark:text-rose-400">38 Percent Higher Conversion</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Fast replies turn more web visitors into paying customers.</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Stack: React · Edge Functions</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Active Engine</span>
+              <span>Built with React and fast edge functions</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Active Tool</span>
             </div>
           </div>
 
@@ -161,29 +161,29 @@ function WorkPage() {
 
               <div className="space-y-2">
                 <div className="text-[10px] font-mono font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
-                  ZERO TOUCH
+                  EASY SETUP
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Onboarding Engine</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Automatic client intake forms, digital agreement signing, and cloud asset folder creation upon checkout.
+                  Sends online intake forms, digital agreements, and shared project folders automatically.
                 </p>
               </div>
 
-              <div className="space-y-2 font-mono text-xs">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Onboarding Friction</span>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-bold">0 manual steps</span>
+              <div className="space-y-2 text-xs">
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-cyan-600 dark:text-cyan-400">Zero Manual Paperwork</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Clients sign agreements and upload files without email back-and-forth.</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Time to Kickoff</span>
-                  <span className="text-slate-900 dark:text-white font-bold">&lt; 5 minutes</span>
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">Kickoff in 5 Minutes</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Projects start right away once the client submits their details.</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Stack: Webhooks · Drive API</span>
-              <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Active Engine</span>
+              <span>Automated with webhooks and cloud storage</span>
+              <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Active Tool</span>
             </div>
           </div>
 
@@ -201,29 +201,29 @@ function WorkPage() {
 
               <div className="space-y-2">
                 <div className="text-[10px] font-mono font-bold tracking-widest text-orange-600 dark:text-orange-400 uppercase">
-                  AI INTELLIGENCE
+                  AUDIT TOOLS
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">AI Agent Workspace</h3>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">AI Audit Workspace</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Automated local SEO audit generation, geo-grid heatmap extraction, and localized content drafting.
+                  Generates local SEO audits, maps ranking coordinates, and drafts localized service pages.
                 </p>
               </div>
 
-              <div className="space-y-2 font-mono text-xs">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Audit Turnaround</span>
-                  <span className="text-orange-600 dark:text-orange-400 font-bold">&lt; 4 hours</span>
+              <div className="space-y-2 text-xs">
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-orange-600 dark:text-orange-400">Ready in Under 4 Hours</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Full local ranking audits generated and verified rapidly.</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Schema Precision</span>
-                  <span className="text-slate-900 dark:text-white font-bold">100% valid</span>
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">Accurate Local Data</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Structured data verified for Google and modern AI search tools.</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Stack: LLM Pipelines · Schema.org</span>
-              <span className="text-orange-600 dark:text-orange-400 font-semibold">Active Engine</span>
+              <span>Powered by local data engines and schema tools</span>
+              <span className="text-orange-600 dark:text-orange-400 font-semibold">Active Tool</span>
             </div>
           </div>
 
@@ -241,29 +241,29 @@ function WorkPage() {
 
               <div className="space-y-2">
                 <div className="text-[10px] font-mono font-bold tracking-widest text-emerald-600 dark:text-emerald-400 uppercase">
-                  SINGLE PANE OF GLASS
+                  LIVE VISIBILITY
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Operations Dashboard</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Real-time view of monthly recurring revenue, client deliverables, ranking heatmaps, and invoice status.
+                  Gives clients a live look at monthly rankings, deliverables, traffic trends, and billing.
                 </p>
               </div>
 
-              <div className="space-y-2 font-mono text-xs">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Data Latency</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Real-time (0s)</span>
+              <div className="space-y-2 text-xs">
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">Live Real-Time Data</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Ranking movements and lead numbers update without delay.</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Client Transparency</span>
-                  <span className="text-slate-900 dark:text-white font-bold">100% visible</span>
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">Complete Client Visibility</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">You see every completed deliverable with zero guesswork.</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Stack: TanStack · Tailwind</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Active Engine</span>
+              <span>Built with modern web frameworks and live databases</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Active Tool</span>
             </div>
           </div>
 
@@ -281,29 +281,29 @@ function WorkPage() {
 
               <div className="space-y-2">
                 <div className="text-[10px] font-mono font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
-                  AUTOMATED BILLING
+                  SIMPLE BILLING
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Payment Tracker</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Automated recurring retainer billing, Stripe payment reconciliation, and automated receipts.
+                  Handles recurring retainer payments, automated billing receipts, and card renewals.
                 </p>
               </div>
 
-              <div className="space-y-2 font-mono text-xs">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Payment Collection</span>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-bold">100% Automated</span>
+              <div className="space-y-2 text-xs">
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-cyan-600 dark:text-cyan-400">Automatic Billing</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Retainers process on schedule with clear automated receipts.</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-slate-500 dark:text-slate-400">Failed Retry Recovery</span>
-                  <span className="text-slate-900 dark:text-white font-bold">Smart Dunning</span>
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">Smart Card Retries</div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Failed payments retry smoothly without interrupting service.</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Stack: Stripe API · Webhooks</span>
-              <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Active Engine</span>
+              <span>Connected to Stripe with secure webhooks</span>
+              <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Active Tool</span>
             </div>
           </div>
         </div>
@@ -318,10 +318,10 @@ function WorkPage() {
             Real Client Results
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Before & After Transformations
+            Real Before and After Results
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Sanitized performance metrics from active local client deployments.
+            Actual performance data from active client accounts.
           </p>
         </div>
 
@@ -330,9 +330,9 @@ function WorkPage() {
           <div className="rounded-[3rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-8 sm:p-10 space-y-6 shadow-sm dark:shadow-none">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
               <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
-                LOCAL HVAC CONTRACTOR
+                LOCAL HVAC COMPANY
               </span>
-              <span className="text-xs font-mono text-slate-400 dark:text-slate-500">Austin, TX Metro</span>
+              <span className="text-xs font-mono text-slate-400 dark:text-slate-500">Austin, Texas</span>
             </div>
 
             <div className="space-y-2">
@@ -340,7 +340,7 @@ function WorkPage() {
                 From Rank #14 to #1 on Google Maps in 75 Days
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Rebuilt a slow WordPress site into a fast React application, resolved 84 citation errors, and automated 5-star review collection after every completed service call.
+                We rebuilt a slow website into a fast web app, fixed 84 directory errors, and automated review requests after service calls.
               </p>
             </div>
 
@@ -348,26 +348,26 @@ function WorkPage() {
             <div className="grid grid-cols-3 gap-4 pt-2 font-mono text-center">
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                 <div className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">#1</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Map Pack Rank</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Google Maps Rank</div>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                 <div className="text-2xl sm:text-3xl font-bold text-cyan-600 dark:text-cyan-400">+184%</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Inbound Calls</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">More Customer Calls</div>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                 <div className="text-2xl sm:text-3xl font-bold text-orange-600 dark:text-orange-400">620ms</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Mobile Speed</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Mobile Load Speed</div>
               </div>
             </div>
 
             <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Automated SMS review requests generated 68 new 5-star reviews</span>
+                <span>Automated text requests brought in 68 new 5-star Google reviews</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Instant dispatch connected to technician phones via webhook</span>
+                <span>Instant alerts send customer leads directly to technician phones</span>
               </li>
             </ul>
           </div>
@@ -378,15 +378,15 @@ function WorkPage() {
               <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/40">
                 COMMERCIAL ROOFING
               </span>
-              <span className="text-xs font-mono text-slate-400 dark:text-slate-500">DFW Metroplex</span>
+              <span className="text-xs font-mono text-slate-400 dark:text-slate-500">Dallas, Texas</span>
             </div>
 
             <div className="space-y-2">
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Zero-Touch Intake & 3.2x Lead Velocity
+                Instant Lead Intake and 3.2x More Inquiries
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Deployed automated intake pipelines and AI entity schema. Organic search visibility expanded across 12 high-intent suburbs without increasing ad spend.
+                We set up automated lead capture and local search pages. The company expanded into 12 new suburbs without spending extra money on ads.
               </p>
             </div>
 
@@ -394,26 +394,26 @@ function WorkPage() {
             <div className="grid grid-cols-3 gap-4 pt-2 font-mono text-center">
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                 <div className="text-2xl sm:text-3xl font-bold text-cyan-600 dark:text-cyan-400">3.2x</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Lead Volume</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">More Inbound Leads</div>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                 <div className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">12</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Suburbs Covered</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">New Cities Ranked</div>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                 <div className="text-2xl sm:text-3xl font-bold text-orange-600 dark:text-orange-400">0 min</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Manual Intake</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase mt-1">Manual Data Entry</div>
               </div>
             </div>
 
             <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Customer project files auto-created in Google Drive upon lead capture</span>
+                <span>Customer project folders create automatically when a lead comes in</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Full Perplexity & ChatGPT local entity graph indexing</span>
+                <span>Full local indexing across Google and AI search tools</span>
               </li>
             </ul>
           </div>
@@ -431,11 +431,11 @@ function WorkPage() {
         </div>
 
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto leading-[1.15] mb-5 sm:mb-6">
-          Ready for Systems That Give You Unfair Local Market Advantage?
+          Ready for Systems That Bring You More Jobs?
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal mb-8 sm:mb-10">
-          Request a free 5-minute video audit. We'll show you the exact software and ranking gaps your competitors are currently exploiting.
+          Request a free 5-minute video audit. We will show you where you can beat competitors in your local market.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -444,7 +444,7 @@ function WorkPage() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95 cursor-pointer"
           >
             <Sparkles className="w-5 h-5 text-rose-400 dark:text-white fill-rose-400 dark:fill-white" />
-            <span>Claim Your Free 5-Min Video Audit</span>
+            <span>Claim Your Free 5-Minute Video Audit</span>
           </Link>
         </div>
       </section>

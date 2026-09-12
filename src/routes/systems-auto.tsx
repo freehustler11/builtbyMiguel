@@ -1,3 +1,4 @@
+import { FreeSystemsAuditCTA } from '../components/FreeSystemsAuditCTA'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   Cpu,
@@ -16,24 +17,24 @@ import { CodeTerminalInspector } from '../components/CodeTerminalInspector'
 
 const SYSTEMS_FAQ = [
   {
-    question: 'How do automated SMS alerts and lead workflows increase sales conversions?',
+    question: 'How do automated text alerts help close more jobs?',
     answer:
-      'Studies show that contacting a local inbound lead within 5 minutes results in a 21x higher chance of closing the sale compared to waiting 30 minutes. Our automated webhook engines immediately bridge your website forms with SMS dispatch to your mobile phone and instant auto-reply text messages to the customer before they call a competitor.',
+      'Homeowners often hire the first contractor who calls back. My system texts your mobile phone the second a website form is submitted. It also sends an instant confirmation text to the customer so they stop calling your competitors.',
   },
   {
-    question: 'Can this connect with my existing field service software or CRM?',
+    question: 'Can your business automation services connect with my existing software?',
     answer:
-      'Yes. We build custom API bridges and webhooks into Housecall Pro, Jobber, ServiceTitan, HubSpot, Zoho, HighLevel, Airtable, or custom SQL databases.',
+      'Yes. Through my workflow automation consulting, I connect quote forms and booking workflows directly into Housecall Pro, Jobber, ServiceTitan, HubSpot, Calendly, Stripe, and custom databases.',
   },
   {
     question: 'What is the Private Client Portal?',
     answer:
-      'Every client receives private portal access where you can monitor live lead activity, search ranking heatmaps, site health metrics, monthly invoices, and submit new development requests with 1 click.',
+      'You receive a secure dashboard showing your live customer inquiries, Google rankings, monthly project tasks, and invoices in real time without waiting for slow email reports.',
   },
   {
-    question: 'Do you charge per user or per lead?',
+    question: 'Do you charge per user or per lead for marketing automation for small business?',
     answer:
-      'No. We build dedicated, bespoke systems without per-user licensing penalties. You own your data, your integrations, and your workflows with zero lock-in.',
+      'No. You pay a simple flat project or monthly retainer fee with zero per-user penalties and zero per-lead fees. You own your automations, webhook code, and customer data completely.',
   },
 ]
 
@@ -42,14 +43,15 @@ const SYSTEMS_JSON_LD = {
   '@graph': [
     {
       '@type': 'Service',
-      name: 'Custom Business Systems & Workflow Automation',
+      name: 'Business Automation Services for Contractors',
+      serviceType: 'Business Process Automation Consulting & Workflow Automation',
       provider: {
         '@type': 'LocalBusiness',
         name: 'built by Miguel',
         url: 'https://builtbymiguel.net',
       },
       description:
-        'Eliminate manual admin work with custom lead pipelines, instant SMS dispatch, client intake engines, and operational dashboards.',
+        'Business automation services, workflow automation consulting, and instant SMS dispatch pipelines for trade contractors and local businesses.',
       areaServed: 'United States',
     },
     {
@@ -73,33 +75,43 @@ export const Route = createFileRoute('/systems-auto')({
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
         title:
-          'Custom Business Systems & Workflow Automation | built by Miguel',
+          'Business Automation Services for Contractors | built by Miguel',
       },
       {
         name: 'description',
         content:
-          'Automate your local business operations. Custom lead CRMs, instant SMS dispatch, client intake engines, and real-time business dashboards.',
+          'I provide business automation services and workflow automation consulting for contractors. Route leads instantly to your phone and stop manual busywork.',
       },
       {
         name: 'keywords',
         content:
-          'business automation tools, custom crm development, webhook automation, small business workflows, lead capture automation, built by miguel',
+          'business automation services, business process automation consulting, workflow automation consulting, marketing automation for small business, built by miguel',
       },
       // OpenGraph
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
         content:
-          'Custom Business Systems & Workflow Automation | built by Miguel',
+          'Business Automation Services for Contractors | built by Miguel',
       },
       {
         property: 'og:description',
         content:
-          'Eliminate repetitive busywork. Connect forms, CRMs, booking software, and client portals into one seamless engine.',
+          'Route customer leads to your phone in seconds. Custom webhook pipelines, instant SMS dispatch, and automated client intake.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/systems-auto' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
       { name: 'twitter:card', content: 'summary_large_image' },
+      {
+        name: 'twitter:title',
+        content:
+          'Business Automation Services for Contractors | built by Miguel',
+      },
+      {
+        name: 'twitter:description',
+        content:
+          'Route customer leads to your phone in seconds. Custom webhook pipelines, instant SMS dispatch, and automated client intake.',
+      },
       { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
     ],
     links: [
@@ -123,7 +135,9 @@ function SystemsAutoPage() {
 
   return (
     <div className="space-y-24 sm:space-y-32 lg:space-y-36 py-6 sm:py-10">
-      {/* HERO SECTION */}
+      {/* =========================================================================
+          SECTION 1: HERO SECTION
+          ========================================================================= */}
       <section className="relative text-center max-w-4xl mx-auto">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-rose-200/30 via-orange-100/30 to-teal-100/30 dark:from-rose-500/10 dark:via-orange-500/10 dark:to-teal-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
@@ -133,15 +147,17 @@ function SystemsAutoPage() {
           </div>
         </div>
 
+        {/* Main H1 with Primary Keyword */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
-          Custom Systems &{' '}
+          Business Automation Services That Connect Leads Straight to{' '}
           <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-            Workflow Automation.
+            Your Phone.
           </span>
         </h1>
 
+        {/* Lead Paragraph with Primary & Secondary Keywords */}
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          Responding to inbound inquiries quickly is critical for closing jobs. We engineer custom pipelines that route web leads straight to your phone via SMS, sync seamlessly with Jobber or Housecall Pro, and trigger automated confirmations.
+          I provide business automation services, business process automation consulting, and marketing automation for small business owners who are tired of losing jobs to slow replies. My systems send website leads straight to your phone by text, sync with your scheduling software, and confirm appointments right away.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">
@@ -150,14 +166,14 @@ function SystemsAutoPage() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95"
           >
             <Sparkles className="w-5 h-5 text-rose-400 dark:text-white fill-rose-400 dark:fill-white" />
-            <span>Claim Your Free Automation Audit</span>
+            <span>Get Your Free Systems Audit</span>
           </Link>
 
           <Link
             to="/work"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base text-slate-800 dark:text-slate-200 hover:text-black dark:hover:text-white bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition-all duration-200"
           >
-            <span>View In-House Software Architecture</span>
+            <span>See My Work and Systems</span>
             <ArrowRight className="w-4 h-4 text-slate-500 dark:text-slate-400" />
           </Link>
         </div>
@@ -168,165 +184,175 @@ function SystemsAutoPage() {
         </div>
       </section>
 
-      {/* CODE INSPECTOR TERMINAL SECTION */}
+      {/* =========================================================================
+          SECTION 2: CODE INSPECTOR TERMINAL SECTION
+          ========================================================================= */}
       <section className="space-y-10">
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400">
-            <Code2 className="w-3.5 h-3.5" /> LIVE CODE ARCHITECTURE
+            <Code2 className="w-3.5 h-3.5" /> CLEAN CODE
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Engineered Webhooks & Data Pipelines
+            Reliable Webhooks and Data Pipelines
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Inspect real production automation schemas and webhook triggers.
+            Inspect the underlying automation logic that routes leads to your phone in seconds.
           </p>
         </div>
 
         <CodeTerminalInspector />
       </section>
 
-      {/* 4 DELIVERABLES WHITE CARDS */}
+      {/* =========================================================================
+          SECTION 3: 4 DELIVERABLES WHITE CARDS
+          ========================================================================= */}
       <section className="space-y-12">
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="text-[11px] font-mono uppercase tracking-widest text-orange-600 dark:text-orange-400 font-bold">
-            Operational Engines
+            Workflow Automation Consulting
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Automations We Build for You
+            Custom Automation Systems I Build for You
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Custom logic built on resilient serverless infrastructure. No flaky Zapier chains that break when APIs update.
+            Rather than forcing your team into complicated workflow automation software with endless monthly subscription fees, I write custom automations that run directly on your existing tools.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Card 1: Speed to Lead */}
           <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-orange-500/40 dark:hover:border-orange-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/40 flex items-center justify-center text-orange-600 dark:text-orange-400">
               <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-orange-600 dark:text-orange-400 uppercase">
-                SPEED-TO-LEAD
+                SPEED TO LEAD
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Instant Lead Notification Engine
+                Instant Lead Alert System
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Route customer quote requests instantly to your phone via SMS, push notifications, or dispatch alerts with zero manual data entry.
+                Get customer requests on your phone by text message right away. No manual data entry needed.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Instant SMS notifications to staff & customer</span>
+                <span>Instant text alerts to you and your customer</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Call whisper routing & inbound tracking numbers</span>
+                <span>Direct call routing and phone number tracking</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Automatic fallback email & CRM pipeline sync</span>
+                <span>Automatic backup emails and CRM pipeline sync</span>
               </li>
             </ul>
           </div>
 
+          {/* Card 2: Easy Intake */}
           <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-cyan-500/40 dark:hover:border-cyan-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
               <Layers className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
-                ZERO TOUCH
+                EASY INTAKE
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Client Intake & Onboarding Engine
+                Client Intake and Onboarding
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Automate the entire client intake process. Generate contracts, process initial retainers, create client project folders, and send welcome guides automatically upon booking.
+                Automate your client onboarding. Send digital agreements, collect payment, and set up project folders automatically.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Automated digital agreement generation & signatures</span>
+                <span>Online agreements with digital signatures</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Cloud storage folder provisioning (Google Drive / S3)</span>
+                <span>Automatic Google Drive folder creation</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Intake question validation & automated kickoff notifications</span>
+                <span>Simple kickoff questionnaires that save time</span>
               </li>
             </ul>
           </div>
 
+          {/* Card 3: Central Dashboard */}
           <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-emerald-500/40 dark:hover:border-emerald-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <Database className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-emerald-600 dark:text-emerald-400 uppercase">
-                SINGLE PANE OF GLASS
+                CENTRAL DASHBOARD
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Custom Operational Dashboards
+                Custom Business Dashboards
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Stop jumping between 6 different SaaS apps. We build centralized web dashboards that show your revenue, active jobs, technician schedules, and search rankings in real time.
+                Stop opening five different apps every morning. See your sales, booked jobs, technician schedules, and search rankings in one place.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Live KPI telemetry & revenue reporting</span>
+                <span>Live sales and lead reports</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Role-based technician and admin access permissions</span>
+                <span>Separate logins for staff and technicians</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Secure client portal integration & business dashboard</span>
+                <span>Private client portal with real-time updates</span>
               </li>
             </ul>
           </div>
 
+          {/* Card 4: Smart Tools */}
           <div className="p-6 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-indigo-500/40 dark:hover:border-indigo-500/50 hover:shadow-xl transition-all space-y-5 shadow-sm dark:shadow-none">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
               <Bot className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase">
-                AI AUTOMATION
+                SMART TOOLS
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                AI Local Intelligence Agents
+                AI Content and Search Tools
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Custom AI workflows that auto-generate localized service content, draft customer review responses with optimal keyword density, and audit competitor websites weekly.
+                Helpful tools that draft localized service pages, suggest review replies, and monitor local competitors.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Automated keyword-optimized review replies</span>
+                <span>Fast review reply drafts that boost rankings</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Geo-targeted blog and localized landing page drafter</span>
+                <span>City-specific service page writer</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Weekly competitor price and citation change alerts</span>
+                <span>Weekly updates on competitor rankings and prices</span>
               </li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* FAQ ACCORDION */}
+      {/* =========================================================================
+          SECTION 4: FAQ ACCORDION
+          ========================================================================= */}
       <section className="max-w-3xl mx-auto space-y-8">
         <div className="text-center space-y-3">
           <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
@@ -371,31 +397,7 @@ function SystemsAutoPage() {
       </section>
 
       {/* BOTTOM CTA */}
-      <section className="rounded-[3rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-8 sm:p-16 text-center shadow-xl dark:shadow-none relative overflow-hidden transition-colors duration-200">
-        <div className="mb-6 sm:mb-8 flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" /> High-Leverage Automations
-          </div>
-        </div>
-
-        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto leading-[1.15] mb-5 sm:mb-6">
-          Ready to Put Your Client Operations on Autopilot?
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal mb-8 sm:mb-10">
-          Request a free 5-minute video audit. We'll map out how to cut 10+ hours of manual busywork from your business every week.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            to="/audit"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95 cursor-pointer"
-          >
-            <Sparkles className="w-5 h-5 text-rose-400 dark:text-white fill-rose-400 dark:fill-white" />
-            <span>Claim Your Free 5-Min Video Audit</span>
-          </Link>
-        </div>
-      </section>
+      <FreeSystemsAuditCTA />
     </div>
   )
 }

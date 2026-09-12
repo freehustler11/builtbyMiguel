@@ -164,3 +164,77 @@ export const submitContactLead = createServerFn({ method: 'POST' })
       }
     }
   })
+
+export interface DemoLeadPayload {
+  businessName: string
+  trade: string
+  websiteUrl?: string
+  email: string
+}
+
+/**
+ * Server Function: Inbound Website Demo lead submission (inserts to PostgreSQL messages table)
+ */
+export const submitDemoLead = createServerFn({ method: 'POST' })
+  .validator((data: DemoLeadPayload) => data)
+  .handler(async ({ data: payload }): Promise<LeadSubmissionResponse> => {
+    const errors: Record<string, string> = {}
+
+    if (!payload.businessName?.trim()) {
+      errors.businessName = 'Business name is required'
+    }
+
+    if (!payload.trade?.trim()) {
+      errors.trade = 'Industry or trade is required'
+    }
+
+    if (!payload.email?.trim() || !validateEmail(payload.email)) {
+      errors.email = 'A valid email address is required'
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        message: 'Validation failed. Please correct the highlighted errors.',
+        errors,
+      }
+    }
+
+    try {
+      const formattedMessage = [
+        '[Free Website Demo Request]',
+        `Trade / Industry: ${payload.trade.trim()}`,
+        payload.websiteUrl?.trim()
+          ? `Current Website: ${payload.websiteUrl.trim()}`
+          : 'Current Website: None / New Project',
+      ].join('\n')
+
+      const [record] = await db
+        .insert(messages)
+        .values({
+          type: 'contact',
+          name: payload.businessName.trim(),
+          businessName: payload.businessName.trim(),
+          email: payload.email.trim().toLowerCase(),
+          location: payload.trade.trim(),
+          websiteUrl: payload.websiteUrl?.trim() || null,
+          message: formattedMessage,
+          status: 'new',
+        })
+        .returning()
+
+      return {
+        success: true,
+        message:
+          'Website demo request received. Your live preview link will be delivered within 3 business days.',
+        leadId: record.id,
+      }
+    } catch (err) {
+      console.error('Database error in submitDemoLead:', err)
+      return {
+        success: false,
+        message:
+          'Database submission failed. Please try again or reach out directly.',
+      }
+    }
+  })

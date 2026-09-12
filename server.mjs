@@ -5,6 +5,7 @@ import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { runMigrations } from './scripts/migrate.mjs'
 import { buildSitemapXml, buildRobotsTxt } from './scripts/generate-sitemap.mjs'
+import { resolveRedirect } from './scripts/redirects.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = __dirname
@@ -149,6 +150,27 @@ const server = http.createServer(async (req, res) => {
     if (isInternal) {
       res.writeHead(302, {
         Location: `https://app.builtbymiguel.net${req.url}`,
+      })
+      res.end()
+      return
+    }
+  }
+
+  // 301 Permanent Redirects for legacy and non-live URLs
+  if (host !== 'app.builtbymiguel.net' && !isTechnicalOrAsset) {
+    if (urlPath === '/my-work' || urlPath === '/my-work/') {
+      const search = req.url.includes('?') ? `?${req.url.split('?')[1]}` : ''
+      res.writeHead(301, {
+        Location: `/work${search}`,
+      })
+      res.end()
+      return
+    }
+
+    const redirectTarget = resolveRedirect(req.url)
+    if (redirectTarget) {
+      res.writeHead(301, {
+        Location: redirectTarget,
       })
       res.end()
       return

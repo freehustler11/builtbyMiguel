@@ -19,7 +19,7 @@ export const Route = createFileRoute('/about')({
       {
         name: 'description',
         content:
-          'Learn about Miguel, the developer and growth strategist behind built by Miguel. Discover the engineering philosophy combining sub-second websites, local SEO, and custom business automation.',
+          'Learn about Miguel, founder of built by Miguel. See how fast websites, Google Maps rankings, and automated lead systems help local businesses grow.',
       },
       {
         name: 'keywords',
@@ -35,7 +35,7 @@ export const Route = createFileRoute('/about')({
       {
         property: 'og:description',
         content:
-          'Why combining local SEO with custom software engineering beats bloated agency retainers every time.',
+          'Why fast websites and top Google Maps rankings beat expensive agency retainers every time.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/about' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -66,14 +66,14 @@ function AboutPage() {
         </div>
 
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
-          Engineering Local Dominance Through{' '}
+          Software Engineering for{' '}
           <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-            Speed & Automation.
+            Local Business Growth.
           </span>
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I bridge the gap between technical software engineering and real local business revenue. No outsourced junior account managers. You work directly with me.
+          I help service companies win more customers through high search rankings and clean automation. You work directly with me from day one.
         </p>
       </section>
 
@@ -85,7 +85,7 @@ function AboutPage() {
             <div className="relative rounded-2xl overflow-hidden h-60 sm:h-68 bg-slate-100 dark:bg-slate-800 shadow-inner border border-slate-100 dark:border-slate-800">
               <img
                 src="/miguel-umbac.png"
-                alt="Miguel Umbac — Founder & Lead Engineer"
+                alt="Miguel Umbac, Founder and Systems Engineer"
                 className="w-full h-full object-cover object-[center_20%] transform hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
@@ -98,13 +98,13 @@ function AboutPage() {
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1.5">
               <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold">Direct Promise</div>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                "I personally architect and review every client system. No sales intermediaries or junior staff hand-offs."
+                "I personally design and build every client system. You never get handed off to a junior account manager."
               </p>
             </div>
           </div>
 
           <div className="pt-2 flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
-            <span>Status: Taking New Clients</span>
+            <span>Available for new clients</span>
             <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               Available
@@ -127,13 +127,13 @@ function AboutPage() {
 
             <div className="space-y-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
               <p>
-                Most traditional marketing agencies sell cookie-cutter WordPress themes, charge $3,000/month for junior account managers, and send PDF reports packed with vanity metrics that don’t ring your phone.
+                Most marketing agencies sell generic templates, charge high monthly fees, and send confusing reports packed with vanity numbers that do not ring your phone.
               </p>
               <p>
-                I take a software engineer’s approach to local growth: treat your search rankings, website code, and lead capture workflows as high-performance distributed systems that must operate with sub-second speed and zero downtime.
+                I take an engineering approach to local growth. I build websites and local search systems that load in under a second and never go down.
               </p>
               <p>
-                By combining Google Business Profile entity optimization, sub-second React web architecture, and automated lead dispatch pipelines, we create an unfair competitive advantage for local service contractors.
+                By pairing top Google Map Pack rankings with instant text message alerts, we help local trade contractors win more booked jobs every week.
               </p>
             </div>
           </div>
@@ -144,16 +144,16 @@ function AboutPage() {
             </div>
             <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-700 dark:text-slate-300">
               <span className="px-3.5 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-                ⚡ TypeScript & React
+                ⚡ Fast React Websites
               </span>
               <span className="px-3.5 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-                📍 Google Maps API & GBP
+                📍 Google Maps & Local SEO
               </span>
               <span className="px-3.5 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-                🤖 AI Entity Graphing
+                🤖 AI Search Visibility
               </span>
               <span className="px-3.5 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-                🔄 Webhooks & CRM Auto
+                🔄 Instant Lead Alerts
               </span>
             </div>
           </div>
@@ -170,7 +170,7 @@ function AboutPage() {
             How Engineering Solves Local Growth
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            No hacks or short-term tricks. Just clean code, high authority, and automated operations.
+            Clean code, top search rankings, and simple systems that bring you customers.
           </p>
         </div>
 
@@ -182,7 +182,7 @@ function AboutPage() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white">1. Sub-Second Speed</h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Every delay in page load hurts Google Core Web Vitals rankings and causes mobile visitors to bounce. We engineer zero-bloat web applications that load instantly.
+              Slow load times make mobile visitors leave before they ever call. We build lightweight websites that load right away on every phone.
             </p>
           </div>
 
@@ -193,7 +193,7 @@ function AboutPage() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white">2. Local Map Visibility</h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              High-intent customers search on Google Maps daily. We execute rigorous citation cleaning and schema entity injection to ensure your business builds durable local search authority.
+              Homeowners search Google Maps when they need service right away. We clean up your listings and build authority so you show up in the top three.
             </p>
           </div>
 
@@ -204,7 +204,7 @@ function AboutPage() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white">3. Operational Automation</h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Generating calls is only half the battle. We automate SMS dispatch, client intake, and payment reconciliations so you can scale revenue without hiring extra admin staff.
+              Getting calls is only half the battle. We automate text message alerts and customer follow-ups so you close more deals without extra office work.
             </p>
           </div>
         </div>
@@ -219,11 +219,11 @@ function AboutPage() {
         </div>
 
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto leading-[1.15] mb-5 sm:mb-6">
-          Let's Discuss Your Local Search Authority & Systems
+          Let's Review Your Local Rankings and Systems
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal mb-8 sm:mb-10">
-          Request a free 5-minute video audit or send a note. I will personally review your business opportunities.
+          Request a free 5-minute video audit or send a message. I will personally review your local market and show you where to grow.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -232,14 +232,14 @@ function AboutPage() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95 cursor-pointer"
           >
             <Sparkles className="w-5 h-5 text-rose-400 dark:text-white fill-rose-400 dark:fill-white" />
-            <span>Claim Your Free 5-Min Video Audit</span>
+            <span>Get Your Free 5-Minute Video Audit</span>
           </Link>
 
           <Link
             to="/contact"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base text-slate-800 dark:text-slate-200 hover:text-black dark:hover:text-white bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition-all duration-200"
           >
-            <span>Direct Contact & Inquiry</span>
+            <span>Send a Direct Message</span>
             <ArrowRight className="w-4 h-4 text-slate-500 dark:text-slate-400" />
           </Link>
         </div>

@@ -21,21 +21,21 @@ export interface NavItem {
 
 export const SERVICE_ITEMS: NavItem[] = [
   {
-    label: 'Local SEO & GBP',
-    to: '/local-seo-gbp',
-    description: 'Dominate Google Maps and high-intent local search queries.',
+    label: 'SEO Services',
+    to: '/seo',
+    description: 'Rank on Google Maps and win more local customer calls.',
     icon: Search,
   },
   {
     label: 'Websites & Care',
-    to: '/websites-care',
-    description: 'Ultra-fast, conversion-optimized sites with ongoing maintenance.',
+    to: '/websites',
+    description: 'Fast websites that open instantly on any mobile phone.',
     icon: Globe,
   },
   {
     label: 'Systems & Automation',
     to: '/systems-auto',
-    description: 'Automate CRM, client booking, follow-ups, and workflows.',
+    description: 'Instant text alerts and automated booking workflows.',
     icon: Cpu,
   },
 ]
@@ -57,27 +57,27 @@ export function Navbar() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-md transition-colors duration-200">
+    <header className="sticky top-0 z-50 w-full border-b border-[#CBD5E1]/70 dark:border-slate-800 bg-[#F0F4F8]/95 dark:bg-[#0B132B]/95 backdrop-blur-md transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand Logo Lockup */}
           <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-rose-500 rounded-2xl p-1">
-            <div className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-slate-900 dark:bg-rose-500/10 border border-slate-800 dark:border-rose-500/30 shadow-md group-hover:scale-105 transition-all duration-200 shrink-0">
-              <span className="font-mono font-bold text-sm sm:text-lg text-white dark:text-rose-400">
+            <div className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-slate-900 dark:bg-[#06B6D4]/10 border border-slate-800 dark:border-[#06B6D4]/30 shadow-md group-hover:scale-105 transition-all duration-200 shrink-0">
+              <span className="font-mono font-bold text-sm sm:text-lg text-white dark:text-[#38BDF8]">
                 M
               </span>
               <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 flex h-2.5 w-2.5 sm:h-3 sm:w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-rose-500 ring-2 ring-white dark:ring-[#0B0F17]" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-[#F59E0B] ring-2 ring-white dark:ring-[#0B132B]" />
               </span>
             </div>
 
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
+                <span className="font-bold text-base sm:text-lg tracking-tight text-[#1E293B] dark:text-white group-hover:text-[#0EA5E9] dark:group-hover:text-[#38BDF8] transition-colors">
                   built by Miguel
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
               </div>
               <span className="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-500 dark:text-slate-400 uppercase">
                 Websites · SEO · Systems
@@ -95,8 +95,8 @@ export function Navbar() {
                 onMouseEnter={() => setServicesDropdownOpen(true)}
                 className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-all duration-150 cursor-pointer ${
                   servicesDropdownOpen
-                    ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                    ? 'text-[#1E293B] dark:text-white bg-[#CBD5E1]/40 dark:bg-slate-800 font-semibold'
+                    : 'text-[#1E293B]/80 dark:text-slate-300 hover:text-[#1E293B] dark:hover:text-white hover:bg-[#CBD5E1]/30 dark:hover:bg-slate-800/60'
                 }`}
                 aria-expanded={servicesDropdownOpen}
                 aria-haspopup="true"
@@ -168,10 +168,10 @@ export function Navbar() {
             <Link
               to="/work"
               activeProps={{
-                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
+                className: 'text-[#1E293B] dark:text-white bg-[#CBD5E1]/40 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
+                className: 'text-[#1E293B]/80 dark:text-slate-300 hover:text-[#1E293B] dark:hover:text-white hover:bg-[#CBD5E1]/30 dark:hover:bg-slate-800/60',
               }}
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
             >
@@ -181,10 +181,10 @@ export function Navbar() {
             <Link
               to="/blog"
               activeProps={{
-                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
+                className: 'text-[#1E293B] dark:text-white bg-[#CBD5E1]/40 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
+                className: 'text-[#1E293B]/80 dark:text-slate-300 hover:text-[#1E293B] dark:hover:text-white hover:bg-[#CBD5E1]/30 dark:hover:bg-slate-800/60',
               }}
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
             >
@@ -194,10 +194,10 @@ export function Navbar() {
             <Link
               to="/about"
               activeProps={{
-                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
+                className: 'text-[#1E293B] dark:text-white bg-[#CBD5E1]/40 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
+                className: 'text-[#1E293B]/80 dark:text-slate-300 hover:text-[#1E293B] dark:hover:text-white hover:bg-[#CBD5E1]/30 dark:hover:bg-slate-800/60',
               }}
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
             >
@@ -207,10 +207,10 @@ export function Navbar() {
             <Link
               to="/contact"
               activeProps={{
-                className: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold',
+                className: 'text-[#1E293B] dark:text-white bg-[#CBD5E1]/40 dark:bg-slate-800 font-semibold',
               }}
               inactiveProps={{
-                className: 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60',
+                className: 'text-[#1E293B]/80 dark:text-slate-300 hover:text-[#1E293B] dark:hover:text-white hover:bg-[#CBD5E1]/30 dark:hover:bg-slate-800/60',
               }}
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-150"
             >
@@ -223,13 +223,13 @@ export function Navbar() {
             {/* Dark Mode Theme Toggle */}
             <ThemeToggle variant="pill" />
 
-            {/* Primary CTA */}
+            {/* Primary CTA: Get My Free Audit */}
             <Link
               to="/audit"
-              className="relative inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-500 hover:bg-black shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-rose-500"
+              className="relative inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-[#0B132B] bg-[#F59E0B] hover:bg-[#D97706] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B]"
             >
-              <Sparkles className="w-4 h-4 text-rose-400 dark:text-rose-200 fill-rose-400 dark:fill-rose-200" />
-              <span>Get Free Audit</span>
+              <Sparkles className="w-4 h-4 text-[#0B132B] fill-[#0B132B]" />
+              <span>Get My Free Audit</span>
             </Link>
           </div>
 
@@ -239,10 +239,10 @@ export function Navbar() {
 
             <Link
               to="/audit"
-              className="inline-flex items-center gap-1 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full text-xs font-semibold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 transition active:scale-95 shadow-sm"
+              className="inline-flex items-center gap-1 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-[#0B132B] bg-[#F59E0B] hover:bg-[#D97706] transition active:scale-95 shadow-sm"
             >
-              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-rose-400 dark:text-rose-200" />
-              <span>Audit</span>
+              <Sparkles className="w-3.5 h-3.5 text-[#0B132B] fill-[#0B132B]" />
+              <span>Free Audit</span>
             </Link>
 
             <button
@@ -302,7 +302,7 @@ export function Navbar() {
               }}
               className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium"
             >
-              <span>Work / Case Studies</span>
+              <span>Client Work & Proof</span>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
 
@@ -317,7 +317,7 @@ export function Navbar() {
               }}
               className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-sm font-medium"
             >
-              <span>Blog & Playbooks</span>
+              <span>Blog & Articles</span>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
 

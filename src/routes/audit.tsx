@@ -22,7 +22,7 @@ export const Route = createFileRoute('/audit')({
       {
         name: 'description',
         content:
-          'Request a personalized 5-minute video breakdown of your Google Map Pack ranking, website speed bottlenecks, and competitor gaps. Delivered in 24 hours.',
+          'Get a free 5-minute video audit of your Google Maps rankings, mobile site speed, and local competitors. Delivered in 24 hours.',
       },
       {
         name: 'keywords',
@@ -38,7 +38,7 @@ export const Route = createFileRoute('/audit')({
       {
         property: 'og:description',
         content:
-          'Personalized 5-minute video breakdown of your local ranking and site performance sent within 24 hours.',
+          'Free 5-minute video audit of your Google Maps rankings and site speed delivered in 24 hours.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/audit' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -100,11 +100,11 @@ function AuditPage() {
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
           Get Your Free{' '}
           <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-            Local Visibility Audit
+            Local Video Audit
           </span>
         </h1>
         <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal">
-          I will record a personalized 5-minute video breakdown analyzing your Google Map Pack ranking, mobile speed, and competitor gaps.
+          I will record a 5-minute video showing where your business ranks on Google Maps, how fast your site loads, and where competitors win calls.
         </p>
       </div>
 
@@ -114,7 +114,7 @@ function AuditPage() {
         <div className="lg:col-span-7 rounded-[3rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 sm:p-10 shadow-xl dark:shadow-none space-y-6">
           <div className="space-y-1 border-b border-slate-100 dark:border-slate-800 pb-4">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">Your Business Details</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Where should I send your video breakdown?</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Where should I send your private video review?</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -277,7 +277,7 @@ function AuditPage() {
             </div>
 
             <p className="text-center text-xs text-slate-500 dark:text-slate-400">
-              100% confidential. No sales calls, no spam. Delivered directly to your email in 24 business hours.
+              100% confidential. No sales pressure and no spam. Delivered directly to your email in 24 hours.
             </p>
           </form>
         </div>
@@ -309,8 +309,7 @@ function AuditPage() {
                   <Check className="w-4 h-4" />
                 </div>
                 <div>
-                  <strong className="text-slate-900 dark:text-white block font-semibold">Google Map Pack Heatmap:</strong>
-                  See exactly where you drop off across your service radius.
+                  <span className="text-slate-900 dark:text-white font-semibold">See your Google Maps ranking across your entire service area.</span>
                 </div>
               </li>
 
@@ -319,8 +318,7 @@ function AuditPage() {
                   <Zap className="w-4 h-4" />
                 </div>
                 <div>
-                  <strong className="text-slate-900 dark:text-white block font-semibold">Mobile Speed Test:</strong>
-                  Real Core Web Vitals diagnostics and bounce risks.
+                  <span className="text-slate-900 dark:text-white font-semibold">Test your mobile load speed and see why visitors leave.</span>
                 </div>
               </li>
 
@@ -329,15 +327,14 @@ function AuditPage() {
                   <Check className="w-4 h-4" />
                 </div>
                 <div>
-                  <strong className="text-slate-900 dark:text-white block font-semibold">Competitor Citation Gaps:</strong>
-                  The exact directories and schema tags your top competitors have.
+                  <span className="text-slate-900 dark:text-white font-semibold">Find the listings and keywords your top competitors use to get calls.</span>
                 </div>
               </li>
             </ul>
 
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400 font-mono">
               <Clock className="w-4 h-4 text-rose-500 dark:text-rose-400 shrink-0" />
-              <span>Delivered via private Loom video in &lt; 24 business hours.</span>
+              <span>Private video delivered to your email within 24 hours.</span>
             </div>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { FreeAuditCTA } from '../components/FreeAuditCTA'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   Search,
@@ -10,29 +11,31 @@ import {
   Bot,
   Layers,
   Star,
+  Globe2,
+  ShieldCheck,
 } from 'lucide-react'
 import { useState } from 'react'
 
 const LOCAL_SEO_FAQ = [
   {
-    question: 'How long does it take to see results from Local SEO?',
+    question: 'How long does it take to see results from local seo services?',
     answer:
-      'Most local service businesses begin seeing measurable ranking movement and search impression growth within 30 to 60 days. Building dominant local visibility is a compounding process that strengthens with consistent citation building, genuine review generation, and geographic relevance.',
+      'Most contractors see ranking movement in the Google Map Pack within 30 to 60 days. Rankings improve as I clean up your directory listings, correct your profile categories, and set up a steady stream of customer reviews.',
   },
   {
-    question: 'What is AI Search Engine Citation optimization (ChatGPT, Perplexity, Gemini)?',
+    question: 'What is the difference between Google Map Pack and organic website ranking?',
     answer:
-      'AI search engines pull answers from structured entity graphs, local schema, and consistent cross-platform NAP data. We engineer your website with semantic JSON-LD entity markup and verified citation nodes so AI bots cite your business as the authoritative local recommendation.',
+      'The Google Map Pack shows three local businesses with their phone numbers, reviews, and addresses at the very top of the search page. Organic rankings appear below the map. Local search marketing ensures you win both positions in your immediate service area.',
   },
   {
-    question: 'What is the difference between the Month 1 Setup and the Monthly Retainer?',
+    question: 'What is the difference between Month 1 and the monthly plan?',
     answer:
-      'Month 1 is a comprehensive foundation overhaul: category audit, deep duplicate NAP cleanup across 50+ directories, Google Business Profile restructuring, and review funnel deployment. The Monthly Retainer covers ongoing geo-content updates, rank tracking across grid coordinates, photo updates, and continuous review generation.',
+      'Month 1 is a complete foundation sprint. I audit your Google profile, clean up citations across 50 major directories, and launch your review workflow. The monthly plan defends your top rank with fresh photos, new customer reviews, and dedicated city pages.',
   },
   {
-    question: 'Do I get access to live ranking reports and heatmaps?',
+    question: 'Do I get access to live ranking reports?',
     answer:
-      'Yes. You receive access to your private client portal, featuring live geo-grid heatmaps showing your exact ranking position across your local service area.',
+      'Yes. You get a private client portal with live visual rank maps across your entire service territory so you can see where your business stands in real time.',
   },
 ]
 
@@ -41,15 +44,21 @@ const LOCAL_SEO_JSON_LD = {
   '@graph': [
     {
       '@type': 'Service',
-      name: 'Local SEO & Google Business Profile Optimization',
+      name: 'Local SEO Services',
+      serviceType: 'Local Search Engine Optimization',
       provider: {
         '@type': 'LocalBusiness',
         name: 'built by Miguel',
         url: 'https://builtbymiguel.net',
       },
       description:
-        'Systematic Google Map Pack optimization, local citation cleanup, automated 5-star customer reviews, and local entity data for AI search engines.',
+        'Direct local SEO services and Google Business Profile optimization for trade contractors and small businesses across the United States.',
       areaServed: 'United States',
+      isPartOf: {
+        '@type': 'Service',
+        name: 'SEO Services for Contractors',
+        url: 'https://builtbymiguel.net/seo',
+      },
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: 'Local SEO Services',
@@ -105,30 +114,28 @@ export const Route = createFileRoute('/local-seo-gbp')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title:
-          'Local SEO & Google Business Profile Optimization | built by Miguel',
+        title: 'Local SEO Services: Rank in Google Maps | built by Miguel',
       },
       {
         name: 'description',
         content:
-          'Systematic Google Map Pack optimization and AI search engine visibility (ChatGPT, Perplexity). Complete local SEO retainers and NAP citation cleanup.',
+          'I provide local seo services that help trade contractors rank in the Google Map Pack and get direct calls. Claim your free 5-minute video audit right now.',
       },
       {
         name: 'keywords',
         content:
-          'local seo services, google business profile optimization, rank in google map pack, ai search citations, local citation cleaning, google map ranking',
+          'local seo services, local seo company, google business profile optimization, local seo for small business, gbp optimization, local search marketing',
       },
       // OpenGraph
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
-        content:
-          'Local SEO & Google Business Profile Optimization | built by Miguel',
+        content: 'Local SEO Services: Rank in Google Map Pack | built by Miguel',
       },
       {
         property: 'og:description',
         content:
-          'Turn Google Maps into a steady source of inbound customers with verified GBP setup, AI search entity architecture, and review workflows.',
+          'Turn Google Maps into a steady source of customer calls with dedicated GBP setup, citation cleanup, and review systems. Work directly with Miguel.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/local-seo-gbp' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -160,6 +167,17 @@ function LocalSeoGbpPage() {
       <section className="relative text-center max-w-4xl mx-auto">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-rose-200/30 via-orange-100/30 to-teal-100/30 dark:from-rose-500/10 dark:via-orange-500/10 dark:to-teal-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
+        {/* Pillar Breadcrumb Link */}
+        <div className="mb-6 flex justify-center">
+          <Link
+            to="/seo"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+          >
+            <span>←</span>
+            <span>Part of SEO Services for Contractors</span>
+          </Link>
+        </div>
+
         <div className="mb-8 sm:mb-10 flex justify-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
             <MapPin className="w-3.5 h-3.5" /> High-Intent Search Acquisition
@@ -167,23 +185,24 @@ function LocalSeoGbpPage() {
         </div>
 
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
-          Turn Google Maps into a{' '}
+          Direct{' '}
           <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-            Steady Inbound Channel.
-          </span>
+            Local SEO Services
+          </span>{' '}
+          to Win Google Map Pack Rankings.
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          High-intent local searches happen on Google Maps every day. We execute surgical GBP entity optimization, clean citations across 50+ directories, and establish automated review workflows so your business builds durable local search equity.
+          I provide direct local seo services for trade contractors and service businesses that need more local customer calls. If you serve a specific city or county, ranking in the Google Map Pack is your best source of new work. Traditional marketing agencies charge big retainers for cookie cutter templates and vanity reports. As an independent local seo company, I optimize your profile and citations myself so nearby homeowners call you first.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">
           <Link
             to="/audit"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95 cursor-pointer"
           >
             <Sparkles className="w-5 h-5 text-rose-400 dark:text-white fill-rose-400 dark:fill-white" />
-            <span>Claim Your Free 5-Min Video Audit</span>
+            <span>Get Your Free 5-Minute Video Audit</span>
           </Link>
 
           <Link
@@ -201,17 +220,113 @@ function LocalSeoGbpPage() {
         </div>
       </section>
 
+      {/* SIBLING COMPARISON SECTION */}
+      <section className="rounded-3xl sm:rounded-[2.5rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-8 sm:p-12 space-y-8">
+        <div className="space-y-3 max-w-2xl">
+          <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
+            Search Strategy Differences
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+            How This Differs From National SEO and AI Search
+          </h2>
+          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+            Different search campaigns solve different business needs. Here is how local search marketing compares to my other search paths.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          <div className="p-6 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border-2 border-rose-500/30 dark:border-rose-500/30 space-y-3">
+            <span className="text-xs font-mono font-bold text-rose-600 dark:text-rose-400 uppercase">THIS PAGE</span>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Local SEO & Map Pack</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Local SEO targets Google Maps and Map Pack results for one city or one service area. It is built for contractors who drive out to homes and job sites.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 space-y-3">
+            <span className="text-xs font-mono font-bold text-slate-400 dark:text-slate-500 uppercase">BROAD REACH</span>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">National & Regional SEO</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              National SEO targets many markets with no single location. It focuses on broad organic rankings across entire states or the whole country.
+            </p>
+            <Link
+              to="/national-seo"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline pt-1"
+            >
+              <span>View National SEO</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 space-y-3">
+            <span className="text-xs font-mono font-bold text-slate-400 dark:text-slate-500 uppercase">NEXT-GEN SEARCH</span>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">AEO & GEO (AI Search)</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              AEO and GEO targets AI answer engines like ChatGPT and Perplexity rather than traditional search result lists.
+            </p>
+            <Link
+              to="/aeo-geo"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-purple-600 dark:text-purple-400 hover:underline pt-1"
+            >
+              <span>View AI Search Optimization</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY LOCAL SEO SERVICES WORK */}
+      <section className="space-y-12">
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
+            High Intent Traffic
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Why Local SEO Services Deliver Better Leads Than Paid Ads
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+            When a homeowner needs a plumber or electrician right away, they skip the sponsored ads and look at the top three map listings.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              No Per-Click Fees on Inbound Calls
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Paid ads stop delivering the moment you pause your ad budget. Local map positions generate consistent calls without costing you fifty dollars every time someone taps your phone number.
+            </p>
+          </div>
+
+          <div className="p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800/40 flex items-center justify-center text-rose-600 dark:text-rose-400">
+              <Star className="w-5 h-5" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              Instant Local Trust and Social Proof
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Homeowners trust businesses with high star ratings and recent reviews. I combine technical profile setup with review tools so your business stands out as the most reputable choice in town.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* 4 DELIVERABLES WHITE CARDS */}
       <section className="space-y-12">
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
-            Deliverables
+            What You Get
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-            How We Elevate Your Local Presence
+            Complete Google Business Profile Optimization Included
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            No vague retainer hours or useless vanity metrics. Every deliverable is tied directly to rank elevation and inbound phone calls.
+            No vague retainer hours or vanity numbers. Every deliverable helps you rank higher and get more phone calls.
           </p>
         </div>
 
@@ -222,27 +337,27 @@ function LocalSeoGbpPage() {
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-emerald-600 dark:text-emerald-400 uppercase">
-                MAP PACK AUTHORITY
+                GOOGLE MAPS RANKINGS
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Google Business Profile Optimization
+                GBP Optimization & Categories
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Complete re-architecture of your Google Business Profile categories, secondary attributes, geo-tagged photo pipelines, and service area radiuses to maximize rank authority.
+                I update your primary and secondary categories, service areas, and geo-tagged photos to help your business rank at the top of local searches.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Primary & secondary category gap analysis</span>
+                <span>Primary and secondary category configuration</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Geo-targeted localized service landing pages</span>
+                <span>Dedicated city and service landing pages for your market</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Grid coordinate heatmap rank tracking</span>
+                <span>Visual rank maps across your service radius</span>
               </li>
             </ul>
           </div>
@@ -253,27 +368,27 @@ function LocalSeoGbpPage() {
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
-                AI ENTITY GRAPHS
+                AI SEARCH READINESS
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                AI Search Citations (ChatGPT, Gemini, Perplexity)
+                AI Search Citations
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Future-proof your local discovery. We inject advanced schema markup, Wikidata entities, and brand authority signals so AI chatbots recommend you first.
+                Make sure AI tools recommend your company when local property owners ask for recommendations.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Semantic LocalBusiness & Schema.org JSON-LD</span>
+                <span>Structured local business schema for Google and AI engines</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Entity graph clustering for generative engine search</span>
+                <span>Verified company data across major directories</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>Perplexity & ChatGPT local brand indexing</span>
+                <span>Direct inclusion in AI search answers</span>
               </li>
             </ul>
           </div>
@@ -284,27 +399,27 @@ function LocalSeoGbpPage() {
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase">
-                CLEAN DIRECTORY SIGNALS
+                DIRECTORY CLEANUP
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Local Citation Cleaning & NAP Consistency
+                Directory Citation Cleanup
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Inconsistent names, old phone numbers, and duplicate addresses destroy ranking trust. We clean and synchronize your business across 50+ high-tier local directories.
+                Old phone numbers and wrong addresses hurt your rank. I clean your listings across 50 top directories.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>100% NAP (Name, Address, Phone) consistency guarantee</span>
+                <span>Matching name, address, and phone number across the web</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Aggressive duplicate directory suppression</span>
+                <span>Removal of duplicate and outdated business listings</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Tier-1 syndication (Yelp, Apple Maps, Bing, BBB)</span>
+                <span>Top listings on Apple Maps, Yelp, and Bing</span>
               </li>
             </ul>
           </div>
@@ -315,34 +430,72 @@ function LocalSeoGbpPage() {
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-mono font-bold tracking-widest text-orange-600 dark:text-orange-400 uppercase">
-                SOCIAL PROOF AUTOMATION
+                5-STAR REVIEWS
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Review Acceleration Funnel
+                Automated Review Funnel
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Turn happy customers into 5-star Google reviews on autopilot. We deploy automated SMS/email triggers that ask for feedback right after service completion.
+                Collect 5-star Google reviews on autopilot right after you finish a job.
               </p>
             </div>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium pt-2 border-t border-slate-100 dark:border-slate-800">
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>1-click direct Google review shortlinks</span>
+                <span>Direct one-click review links sent by text message</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Keyword-rich review response templates</span>
+                <span>Helpful review response templates that boost search rankings</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0" />
-                <span>Negative feedback routing before public posting</span>
+                <span>Simple routing to resolve private customer feedback</span>
               </li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* COMPARISON GRID */}
+      {/* HOW LOCAL SEO FOR SMALL BUSINESS DRIVES JOBS */}
+      <section className="space-y-8">
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
+            Local Growth Mechanics
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+            How Local SEO for Small Business Drives Consistent Jobs
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+            I connect your local search presence directly to phone calls and estimate requests.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-3">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">1. City Coverage</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              I build dedicated pages for each town and neighborhood you work in so you rank outside your home office location.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-3">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">2. Trade Keywords</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              I optimize your services for high-intent emergency keywords that property owners search when they need work done today.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-3">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">3. Review Velocity</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Steady monthly reviews signal to Google that your business is active, reliable, and worthy of top placement.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* SETUP VS RETAINER COMPARISON GRID */}
       <section className="space-y-12">
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="text-[11px] font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-bold">
@@ -352,7 +505,7 @@ function LocalSeoGbpPage() {
             Month 1 Setup vs. Monthly Retainer
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Everything we do is clearly documented. No guesswork, no hidden fees.
+            Everything I do is clearly documented. No guesswork, no hidden fees.
           </p>
         </div>
 
@@ -363,28 +516,28 @@ function LocalSeoGbpPage() {
                 PHASE 1
               </span>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Month 1: Foundation Sprint</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Total cleanup and baseline authority build</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Total cleanup and setup</p>
             </div>
             <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300">
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Full Google Business Profile audit & category restructuring</span>
+                <span>Complete Google profile audit and category update</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>50+ directory citation audit & duplicate removal</span>
+                <span>Directory cleanup and duplicate removal across 50 sites</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Installation of Schema.org JSON-LD LocalBusiness markup</span>
+                <span>Structured local business code installed on your site</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Setup of automated customer review capture funnel</span>
+                <span>Automated review request system set up</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Baseline geo-grid rank mapping and competitor benchmarks</span>
+                <span>Initial ranking maps across your service area</span>
               </li>
             </ul>
           </div>
@@ -398,28 +551,28 @@ function LocalSeoGbpPage() {
                 PHASE 2 & BEYOND
               </span>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Monthly Growth Retainer</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Continuous rank elevation and territory defense</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Ongoing rank growth and defense</p>
             </div>
             <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300">
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Weekly geo-signal photo updates & geotag enrichment</span>
+                <span>Weekly photo updates and local signal posts</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Ongoing review generation follow-ups & keyword replies</span>
+                <span>Automated review follow-ups and keyword replies</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Monthly localized content expansion & service area pages</span>
+                <span>New city and service pages added each month</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Live grid ranking updates in your client portal dashboard</span>
+                <span>Live ranking maps inside your private client portal</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Monthly executive performance review & competitor defense</span>
+                <span>Monthly performance report with clear results</span>
               </li>
             </ul>
           </div>
@@ -433,7 +586,7 @@ function LocalSeoGbpPage() {
             Frequently Asked Questions
           </div>
           <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Local SEO & Map Pack FAQs
+            Frequently Asked Questions About Local Search Marketing
           </h2>
         </div>
 
@@ -471,31 +624,7 @@ function LocalSeoGbpPage() {
       </section>
 
       {/* BOTTOM CTA */}
-      <section className="rounded-[3rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] p-8 sm:p-16 text-center shadow-xl dark:shadow-none relative overflow-hidden transition-colors duration-200">
-        <div className="mb-6 sm:mb-8 flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-rose-600 dark:text-rose-400 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" /> Free Market Intelligence
-          </div>
-        </div>
-
-        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto leading-[1.15] mb-5 sm:mb-6">
-          See Exactly Where Your Business Ranks in Your City Today
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal mb-8 sm:mb-10">
-          Request a free 5-minute video audit. I will pull live geo-grid heatmaps of your primary services and point out the low-hanging fruit to beat your competitors.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            to="/audit"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-base text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 active:scale-95 cursor-pointer"
-          >
-            <Sparkles className="w-5 h-5 text-rose-400 dark:text-white fill-rose-400 dark:fill-white" />
-            <span>Claim Your Free 5-Min Video Audit</span>
-          </Link>
-        </div>
-      </section>
+      <FreeAuditCTA variant="local-seo" />
     </div>
   )
 }
