@@ -17,6 +17,9 @@ import {
   Lock,
   Smartphone,
   MessageSquare,
+  UserCheck,
+  Code2,
+  Workflow,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -393,14 +396,12 @@ function HomePage() {
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-400/80 dark:hover:border-amber-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/60 dark:to-amber-900/40 border border-amber-200/80 dark:border-amber-700/60 flex items-center justify-center text-amber-700 dark:text-amber-400 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                      <path d="M6 18L12 12L16 16L12 20L6 18Z" fill="#D97706" opacity="0.8" />
-                      <path d="M26 14L20 20L16 16L20 12L26 14Z" fill="#B45309" />
-                      <path d="M10 14L16 20L22 14" stroke="#78350F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-amber-100/90 to-amber-200/50 dark:from-amber-950/70 dark:to-amber-900/40 border border-amber-300/80 dark:border-amber-700/60 flex items-center justify-center text-amber-700 dark:text-amber-400 shadow-sm group-hover:scale-105 transition-transform">
+                    <UserCheck className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">01</span>
+                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                    01
+                  </span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
@@ -420,14 +421,12 @@ function HomePage() {
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-sky-400/80 dark:hover:border-sky-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/60 dark:to-sky-900/40 border border-sky-200/80 dark:border-sky-700/60 flex items-center justify-center text-sky-700 dark:text-sky-400 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                      <path d="M8 12L4 16L8 20" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M24 12L28 16L24 20" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M12 16L15 19L20 13" stroke="#0369A1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-sky-100/90 to-sky-200/50 dark:from-sky-950/70 dark:to-sky-900/40 border border-sky-300/80 dark:border-sky-700/60 flex items-center justify-center text-sky-700 dark:text-sky-400 shadow-sm group-hover:scale-105 transition-transform">
+                    <Code2 className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">02</span>
+                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                    02
+                  </span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
@@ -447,12 +446,12 @@ function HomePage() {
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-400/80 dark:hover:border-emerald-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/60 dark:to-emerald-900/40 border border-emerald-200/80 dark:border-emerald-700/60 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                      <path d="M18 4L8 18H16L14 28L24 14H16L18 4Z" fill="#059669" />
-                    </svg>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-100/90 to-emerald-200/50 dark:from-emerald-950/70 dark:to-emerald-900/40 border border-emerald-300/80 dark:border-emerald-700/60 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shadow-sm group-hover:scale-105 transition-transform">
+                    <Zap className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">03</span>
+                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                    03
+                  </span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
@@ -472,13 +471,12 @@ function HomePage() {
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-400/80 dark:hover:border-purple-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/60 dark:to-purple-900/40 border border-purple-200/80 dark:border-purple-700/60 flex items-center justify-center text-purple-700 dark:text-purple-400 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                      <circle cx="16" cy="16" r="5" stroke="#7C3AED" strokeWidth="2.5" />
-                      <path d="M16 6V8M16 24V26M6 16H8M24 16H26M8.9 8.9L10.3 10.3M21.7 21.7L23.1 23.1M8.9 23.1L10.3 21.7M21.7 10.3L23.1 8.9" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" />
-                    </svg>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-100/90 to-purple-200/50 dark:from-purple-950/70 dark:to-purple-900/40 border border-purple-300/80 dark:border-purple-700/60 flex items-center justify-center text-purple-700 dark:text-purple-400 shadow-sm group-hover:scale-105 transition-transform">
+                    <Workflow className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">04</span>
+                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                    04
+                  </span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
@@ -522,7 +520,7 @@ function HomePage() {
               What You Get
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
-              Every deliverable is engineered as an integrated engine to capture demand, convert visitors, and retain customers without bloated tech stacks or handoff delays. Instead of juggling disconnected vendors or settling for cookie-cutter templates, you get direct founder execution backed by transparent reporting and measurable business outcomes. Each pillar is custom-built to scale with your business and deliver compounding ROI over time.
+              Three connected systems built by one founder—engineered to rank locally, load in under a second, and turn leads into booked jobs automatically without agency bloat.
             </p>
           </div>
 
