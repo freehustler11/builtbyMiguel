@@ -362,13 +362,20 @@ function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* SECTION 2: VALUE STRIP                                                    */}
+      {/* SECTION 2: VALUE STRIP & METRICS BANNER                                   */}
       {/* ========================================================================= */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/70 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white via-slate-50/50 to-white dark:from-[#0B0F17] dark:via-[#0E131F] dark:to-[#0B0F17] transition-colors duration-200 overflow-hidden">
+        {/* Subtle Ambient Glow behind Value Strip */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-amber-200/20 via-sky-200/20 to-purple-200/20 dark:from-amber-500/5 dark:via-sky-500/5 dark:to-purple-500/5 blur-3xl rounded-full pointer-events-none -z-10" />
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="max-w-3xl mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight mb-4">
+          <div className="max-w-3xl mb-12 sm:mb-16 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              Unified Architecture
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight">
               One Founder, Three Systems That Actually Talk to Each Other
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
@@ -376,136 +383,126 @@ function HomePage() {
             </p>
           </div>
 
-          {/* 4 Cards Grid */}
+          {/* 4 Cards Grid - Modern SaaS Pill & Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1: Direct Founder Access */}
-            <div className="p-6 rounded-2xl bg-slate-50/70 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-amber-400/50 dark:hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4">
-              <div>
-                {/* Flat Vector Icon: Handshake / Direct Access */}
-                <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/50 flex items-center justify-center mb-4 text-amber-700 dark:text-amber-400">
-                  <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                    <path
-                      d="M6 18L12 12L16 16L12 20L6 18Z"
-                      fill="#D97706"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M26 14L20 20L16 16L20 12L26 14Z"
-                      fill="#B45309"
-                    />
-                    <path
-                      d="M10 14L16 20L22 14"
-                      stroke="#78350F"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+            <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-400/80 dark:hover:border-amber-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/60 dark:to-amber-900/40 border border-amber-200/80 dark:border-amber-700/60 flex items-center justify-center text-amber-700 dark:text-amber-400 shadow-xs group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+                      <path d="M6 18L12 12L16 16L12 20L6 18Z" fill="#D97706" opacity="0.8" />
+                      <path d="M26 14L20 20L16 16L20 12L26 14Z" fill="#B45309" />
+                      <path d="M10 14L16 20L22 14" stroke="#78350F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">01</span>
                 </div>
-                <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
-                  Direct Founder Access
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  No account manager relays your questions to someone else. You talk to the person actually building your site.
-                </p>
+                <div>
+                  <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    Direct Founder Access
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    No account manager relays your questions to someone else. You talk to the person actually building your site.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono font-medium text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                <span>Personal oversight</span>
               </div>
             </div>
 
             {/* Card 2: Professional-Grade Rigor */}
-            <div className="p-6 rounded-2xl bg-slate-50/70 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-sky-400/50 dark:hover:border-sky-500/50 transition-all flex flex-col justify-between space-y-4">
-              <div>
-                {/* Flat Vector Icon: Code / Quality Checkmark */}
-                <div className="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800/50 flex items-center justify-center mb-4 text-sky-700 dark:text-sky-400">
-                  <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                    <path
-                      d="M8 12L4 16L8 20"
-                      stroke="#0284C7"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M24 12L28 16L24 20"
-                      stroke="#0284C7"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M12 16L15 19L20 13"
-                      stroke="#0369A1"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+            <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-sky-400/80 dark:hover:border-sky-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/60 dark:to-sky-900/40 border border-sky-200/80 dark:border-sky-700/60 flex items-center justify-center text-sky-700 dark:text-sky-400 shadow-xs group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+                      <path d="M8 12L4 16L8 20" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M24 12L28 16L24 20" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M12 16L15 19L20 13" stroke="#0369A1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">02</span>
                 </div>
-                <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
-                  Professional-Grade Rigor
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Every project is built to the same code-quality standard as production software, not assembled from a drag-and-drop template.
-                </p>
+                <div>
+                  <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                    Professional-Grade Rigor
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Every project is built to the same code-quality standard as production software, not assembled from a drag-and-drop template.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono font-medium text-sky-700 dark:text-sky-400 flex items-center gap-1">
+                <span>Production standards</span>
               </div>
             </div>
 
             {/* Card 3: Sub-Second Site Speed */}
-            <div className="p-6 rounded-2xl bg-slate-50/70 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-emerald-400/50 dark:hover:border-emerald-500/50 transition-all flex flex-col justify-between space-y-4">
-              <div>
-                {/* Flat Vector Icon: Speed / Lightning */}
-                <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/50 flex items-center justify-center mb-4 text-emerald-700 dark:text-emerald-400">
-                  <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                    <path
-                      d="M18 4L8 18H16L14 28L24 14H16L18 4Z"
-                      fill="#059669"
-                    />
-                  </svg>
+            <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-400/80 dark:hover:border-emerald-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/60 dark:to-emerald-900/40 border border-emerald-200/80 dark:border-emerald-700/60 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shadow-xs group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+                      <path d="M18 4L8 18H16L14 28L24 14H16L18 4Z" fill="#059669" />
+                    </svg>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">03</span>
                 </div>
-                <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
-                  Sub-Second Site Speed
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Sites are built on React and edge hosting, tuned to load fast on the mobile connections your customers actually use.
-                </p>
+                <div>
+                  <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                    Sub-Second Site Speed
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Sites are built on React and edge hosting, tuned to load fast on the mobile connections your customers actually use.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+                <span>Edge cached</span>
               </div>
             </div>
 
             {/* Card 4: Automation-First Operations */}
-            <div className="p-6 rounded-2xl bg-slate-50/70 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-purple-400/50 dark:hover:border-purple-500/50 transition-all flex flex-col justify-between space-y-4">
-              <div>
-                {/* Flat Vector Icon: Automation / Gears */}
-                <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/50 flex items-center justify-center mb-4 text-purple-700 dark:text-purple-400">
-                  <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                    <circle cx="16" cy="16" r="5" stroke="#7C3AED" strokeWidth="2.5" />
-                    <path
-                      d="M16 6V8M16 24V26M6 16H8M24 16H26M8.9 8.9L10.3 10.3M21.7 21.7L23.1 23.1M8.9 23.1L10.3 21.7M21.7 10.3L23.1 8.9"
-                      stroke="#7C3AED"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+            <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-400/80 dark:hover:border-purple-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/60 dark:to-purple-900/40 border border-purple-200/80 dark:border-purple-700/60 flex items-center justify-center text-purple-700 dark:text-purple-400 shadow-xs group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+                      <circle cx="16" cy="16" r="5" stroke="#7C3AED" strokeWidth="2.5" />
+                      <path d="M16 6V8M16 24V26M6 16H8M24 16H26M8.9 8.9L10.3 10.3M21.7 21.7L23.1 23.1M8.9 23.1L10.3 21.7M21.7 10.3L23.1 8.9" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">04</span>
                 </div>
-                <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">
-                  Automation-First Operations
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Lead capture, CRM sync, and follow-up run automatically in the background, so nothing depends on someone checking an inbox.
-                </p>
+                <div>
+                  <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    Automation-First Operations
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Lead capture, CRM sync, and follow-up run automatically in the background, so nothing depends on someone checking an inbox.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono font-medium text-purple-700 dark:text-purple-400 flex items-center gap-1">
+                <span>Instant dispatch</span>
               </div>
             </div>
           </div>
 
           {/* CTA row */}
-          <div className="mt-10 sm:mt-12 flex flex-wrap items-center gap-4">
+          <div className="mt-12 sm:mt-14 flex flex-wrap items-center gap-4">
             <Link
               to="/audit"
-              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
+              <Sparkles className="w-4 h-4 text-slate-950" />
               <span>Get Your Free Audit</span>
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm cursor-pointer"
             >
               <span>Contact Me</span>
             </Link>
@@ -516,9 +513,13 @@ function HomePage() {
       {/* ========================================================================= */}
       {/* SECTION 3: WHAT YOU GET (FEATURE GRID)                                    */}
       {/* ========================================================================= */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/70 dark:border-slate-800/80 transition-colors duration-200">
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#FAF8F5]/60 dark:bg-[#080B11] transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 sm:mb-16">
+          <div className="mb-12 sm:mb-16 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+              Deliverables & Core Pillars
+            </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight">
               What You Get
             </h2>
@@ -527,20 +528,18 @@ function HomePage() {
           {/* 3 Pillar Cards Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Pillar 1: SEO That Actually Ranks */}
-            <div className="p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+            <div className="group relative p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-amber-400/80 dark:hover:border-amber-500/80 transition-all duration-300 flex flex-col justify-between">
               <div className="space-y-6">
                 {/* Flat Vector Illustration 1: Map pin, wider regional outline, and chat-bubble AI icon */}
-                <div className="w-full h-44 rounded-2xl bg-amber-50/80 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/40 flex items-center justify-center p-4">
-                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto" aria-label="SEO Illustration">
-                    {/* Regional Outline */}
+                <div className="w-full h-48 rounded-2xl bg-gradient-to-br from-amber-50/90 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/10 border border-amber-200/60 dark:border-amber-800/40 flex items-center justify-center p-4 group-hover:scale-[1.02] transition-transform">
+                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto drop-shadow-xs" aria-label="SEO Illustration">
                     <path
                       d="M30 60 C 40 30, 90 20, 130 35 C 165 48, 175 80, 150 100 C 120 115, 60 110, 40 95 Z"
                       fill="#FEF3C7"
-                      className="dark:fill-amber-950/40"
+                      className="dark:fill-amber-950/50"
                       stroke="#FCD34D"
                       strokeWidth="2"
                     />
-                    {/* Map Pin */}
                     <g transform="translate(60, 35)">
                       <path
                         d="M20 5 C 13 5, 8 10, 8 17 C 8 25, 20 37, 20 37 C 20 37, 32 25, 32 17 C 32 10, 27 5, 20 5 Z"
@@ -548,7 +547,6 @@ function HomePage() {
                       />
                       <circle cx="20" cy="15" r="4" fill="#FFFFFF" />
                     </g>
-                    {/* Chat-Bubble AI Icon */}
                     <g transform="translate(125, 45)">
                       <rect x="0" y="0" width="44" height="32" rx="8" fill="#1E293B" className="dark:fill-slate-800" />
                       <path d="M12 32 L16 38 L22 32 Z" fill="#1E293B" className="dark:fill-slate-800" />
@@ -559,7 +557,7 @@ function HomePage() {
                   </svg>
                 </div>
 
-                <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white">
+                <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   SEO That Actually Ranks
                 </h3>
 
@@ -567,43 +565,43 @@ function HomePage() {
                   Whether you need to dominate the Map Pack in a twenty-mile radius, rank across an entire state for commercial contracts, or get cited by AI tools like ChatGPT and Perplexity, I build the SEO strategy around where your customers are actually searching.
                 </p>
 
-                <ul className="space-y-2.5 pt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <li className="flex items-start gap-2">
+                <ul className="space-y-3 pt-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  <li className="flex items-start gap-2.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
                     <span>Local SEO and Map Pack optimization for businesses serving a specific town or metro area</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
                     <span>National and regional SEO for commercial and industrial contractors, plus AEO/GEO work so AI search engines cite your business directly</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <Link
                   to="/seo"
-                  className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-slate-900 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors group cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors group/link cursor-pointer"
                 >
                   <span>See all SEO services</span>
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  <span className="transition-transform group-hover/link:translate-x-1 font-bold">→</span>
                 </Link>
+                <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-amber-600/70 dark:text-amber-400/70 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-200/50 dark:border-amber-800/40">
+                  Rankings
+                </span>
               </div>
             </div>
 
             {/* Pillar 2: High-Speed Websites & Care */}
-            <div className="p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+            <div className="group relative p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-sky-400/80 dark:hover:border-sky-500/80 transition-all duration-300 flex flex-col justify-between">
               <div className="space-y-6">
                 {/* Flat Vector Illustration 2: Browser window with speed gauge */}
-                <div className="w-full h-44 rounded-2xl bg-sky-50/80 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/40 flex items-center justify-center p-4">
-                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto" aria-label="Speed Illustration">
-                    {/* Browser Window */}
+                <div className="w-full h-48 rounded-2xl bg-gradient-to-br from-sky-50/90 to-sky-100/50 dark:from-sky-950/30 dark:to-sky-900/10 border border-sky-200/60 dark:border-sky-800/40 flex items-center justify-center p-4 group-hover:scale-[1.02] transition-transform">
+                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto drop-shadow-xs" aria-label="Speed Illustration">
                     <rect x="25" y="15" width="150" height="90" rx="8" fill="#FFFFFF" className="dark:fill-slate-900" stroke="#BAE6FD" strokeWidth="2" />
                     <rect x="25" y="15" width="150" height="20" rx="8" fill="#E0F2FE" className="dark:fill-slate-800" />
                     <circle cx="36" cy="25" r="2.5" fill="#EF4444" />
                     <circle cx="44" cy="25" r="2.5" fill="#F59E0B" />
                     <circle cx="52" cy="25" r="2.5" fill="#10B981" />
-
-                    {/* Speed Gauge */}
                     <circle cx="100" cy="70" r="30" stroke="#E2E8F0" className="dark:stroke-slate-800" strokeWidth="6" strokeDasharray="94" strokeDashoffset="30" />
                     <circle cx="100" cy="70" r="30" stroke="#0284C7" strokeWidth="6" strokeDasharray="94" strokeDashoffset="60" strokeLinecap="round" />
                     <circle cx="100" cy="70" r="4" fill="#0284C7" />
@@ -611,7 +609,7 @@ function HomePage() {
                   </svg>
                 </div>
 
-                <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white">
+                <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                   High-Speed Websites & Care
                 </h3>
 
@@ -619,41 +617,41 @@ function HomePage() {
                   Your site is built as a custom React application, not assembled from a page-builder theme. That means faster load times, a tap-to-call setup that actually works on mobile, and no plugin conflicts to manage. Once it launches, ongoing hosting and care keep it that way.
                 </p>
 
-                <ul className="space-y-2.5 pt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <li className="flex items-start gap-2">
+                <ul className="space-y-3 pt-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  <li className="flex items-start gap-2.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-2 shrink-0" />
                     <span>Custom design and development, built to load under a second on mobile</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-2 shrink-0" />
                     <span>Edge hosting, SSL, backups, and monthly updates after launch</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <Link
                   to="/websites"
-                  className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-slate-900 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors group cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors group/link cursor-pointer"
                 >
                   <span>See website design and hosting and care plans</span>
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  <span className="transition-transform group-hover/link:translate-x-1 font-bold">→</span>
                 </Link>
+                <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-sky-600/70 dark:text-sky-400/70 bg-sky-50 dark:bg-sky-950/40 px-2 py-0.5 rounded-md border border-sky-200/50 dark:border-sky-800/40">
+                  React SSR
+                </span>
               </div>
             </div>
 
             {/* Pillar 3: Custom Systems & Automation */}
-            <div className="p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+            <div className="group relative p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-purple-400/80 dark:hover:border-purple-500/80 transition-all duration-300 flex flex-col justify-between">
               <div className="space-y-6">
                 {/* Flat Vector Illustration 3: Phone receiving an automated text alert */}
-                <div className="w-full h-44 rounded-2xl bg-purple-50/80 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/40 flex items-center justify-center p-4">
-                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto" aria-label="Automation Illustration">
-                    {/* Smartphone */}
+                <div className="w-full h-48 rounded-2xl bg-gradient-to-br from-purple-50/90 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/10 border border-purple-200/60 dark:border-purple-800/40 flex items-center justify-center p-4 group-hover:scale-[1.02] transition-transform">
+                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto drop-shadow-xs" aria-label="Automation Illustration">
                     <rect x="75" y="15" width="50" height="90" rx="8" fill="#1E293B" className="dark:fill-slate-800" />
                     <rect x="78" y="22" width="44" height="76" rx="4" fill="#F8FAFC" className="dark:fill-slate-900" />
                     <rect x="94" y="18" width="12" height="2" rx="1" fill="#64748B" />
-
-                    {/* Incoming SMS Notification Card */}
                     <rect x="40" y="42" width="120" height="38" rx="8" fill="#FFFFFF" className="dark:fill-slate-800" stroke="#DDD6FE" strokeWidth="2" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.06))" />
                     <circle cx="54" cy="61" r="5" fill="#7C3AED" />
                     <path d="M52 61 L54 63 L57 59" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -662,7 +660,7 @@ function HomePage() {
                   </svg>
                 </div>
 
-                <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white">
+                <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                   Custom Systems & Automation
                 </h3>
 
@@ -670,41 +668,45 @@ function HomePage() {
                   When a lead comes in, it is routed to a CRM, texted to your phone, and logged in a client portal automatically. No lead sits in an inbox waiting for someone to notice it.
                 </p>
 
-                <ul className="space-y-2.5 pt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <li className="flex items-start gap-2">
+                <ul className="space-y-3 pt-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  <li className="flex items-start gap-2.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0" />
                     <span>Lead CRM pipelines with instant SMS alerts</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0" />
                     <span>Client intake automation and internal dashboards</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <Link
                   to="/systems-auto"
-                  className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-slate-900 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 transition-colors group cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 transition-colors group/link cursor-pointer"
                 >
                   <span>Learn more about automated lead systems and CRM pipelines</span>
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  <span className="transition-transform group-hover/link:translate-x-1 font-bold">→</span>
                 </Link>
+                <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-purple-600/70 dark:text-purple-400/70 bg-purple-50 dark:bg-purple-950/40 px-2 py-0.5 rounded-md border border-purple-200/50 dark:border-purple-800/40">
+                  Workflows
+                </span>
               </div>
             </div>
           </div>
 
           {/* CTA row */}
-          <div className="mt-10 sm:mt-12 flex flex-wrap items-center gap-4">
+          <div className="mt-12 sm:mt-14 flex flex-wrap items-center gap-4">
             <Link
               to="/audit"
-              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
+              <Sparkles className="w-4 h-4 text-slate-950" />
               <span>Get Your Free Audit</span>
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm cursor-pointer"
             >
               <span>Contact Me</span>
             </Link>
@@ -715,11 +717,16 @@ function HomePage() {
       {/* ========================================================================= */}
       {/* SECTION 4: WHY WORK DIRECTLY WITH THE PERSON WHO BUILDS IT                */}
       {/* ========================================================================= */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/70 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
             {/* Left Column (roughly 40% width): Text block & link */}
             <div className="lg:col-span-5 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/40">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                Zero Agency Bureaucracy
+              </div>
+
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight leading-tight">
                 Why Work Directly With the Person Who Builds It
               </h2>
@@ -735,71 +742,89 @@ function HomePage() {
               <div className="pt-2">
                 <Link
                   to="/work"
-                  className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-slate-900 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors group cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors group cursor-pointer"
                 >
                   <span>See real project examples on the client work page</span>
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  <span className="transition-transform group-hover:translate-x-1 font-bold">→</span>
                 </Link>
               </div>
             </div>
 
-            {/* Right Column (roughly 60% width): Testimonials Set */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="flex items-center justify-between pb-2">
+            {/* Right Column (roughly 60% width): Testimonials Set with Speech Bubble Cards */}
+            <div className="lg:col-span-7 space-y-5">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
                 <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white">
                   What Clients Say
                 </h3>
 
-                {/* Decorative 5-star / Quote motif flat vector */}
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
                   ))}
+                  <span className="ml-1.5 font-mono text-xs font-bold text-slate-500 dark:text-slate-400">5.0 / 5.0</span>
                 </div>
               </div>
 
               {/* Testimonial Card 1 */}
-              <div className="p-6 sm:p-7 rounded-2xl bg-slate-50/80 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  ))}
+              <div className="relative p-6 sm:p-7 rounded-3xl bg-slate-50/90 dark:bg-[#111827]/90 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 hover:border-amber-400/60 dark:hover:border-amber-500/60 transition-all">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
+                    Verified Feedback
+                  </span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic font-normal">
                   "Before this, our leads went into a shared inbox and half of them got a callback the next day, if we remembered. Now a missed call gets a text back automatically, and it is probably why we stopped losing jobs to the first contractor who calls back."
                 </p>
-                <div className="text-xs font-bold text-slate-900 dark:text-white font-display pt-1">
-                  James, HVAC Company Owner
+                <div className="text-xs font-bold text-slate-900 dark:text-white font-display pt-1 flex items-center justify-between">
+                  <span>James, HVAC Company Owner</span>
+                  <span className="text-[11px] font-mono text-slate-400 font-normal">Austin, TX</span>
                 </div>
               </div>
 
               {/* Testimonial Card 2 */}
-              <div className="p-6 sm:p-7 rounded-2xl bg-slate-50/80 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  ))}
+              <div className="relative p-6 sm:p-7 rounded-3xl bg-slate-50/90 dark:bg-[#111827]/90 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 hover:border-amber-400/60 dark:hover:border-amber-500/60 transition-all">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
+                    Verified Feedback
+                  </span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic font-normal">
                   "Our old site took almost 6 seconds to load on a phone. The new one is instant, and calls from the site actually started showing up the same week it went live."
                 </p>
-                <div className="text-xs font-bold text-slate-900 dark:text-white font-display pt-1">
-                  Maria, Landscaping Business Owner
+                <div className="text-xs font-bold text-slate-900 dark:text-white font-display pt-1 flex items-center justify-between">
+                  <span>Maria, Landscaping Business Owner</span>
+                  <span className="text-[11px] font-mono text-slate-400 font-normal">Orlando, FL</span>
                 </div>
               </div>
 
               {/* Testimonial Card 3 */}
-              <div className="p-6 sm:p-7 rounded-2xl bg-slate-50/80 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  ))}
+              <div className="relative p-6 sm:p-7 rounded-3xl bg-slate-50/90 dark:bg-[#111827]/90 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 hover:border-amber-400/60 dark:hover:border-amber-500/60 transition-all">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
+                    Verified Feedback
+                  </span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic font-normal">
                   "I liked that I was talking to the person actually building the site instead of an account manager. Changes happened in a day instead of a week."
                 </p>
-                <div className="text-xs font-bold text-slate-900 dark:text-white font-display pt-1">
-                  David, Plumbing Contractor
+                <div className="text-xs font-bold text-slate-900 dark:text-white font-display pt-1 flex items-center justify-between">
+                  <span>David, Plumbing Contractor</span>
+                  <span className="text-[11px] font-mono text-slate-400 font-normal">Denver, CO</span>
                 </div>
               </div>
             </div>
@@ -808,131 +833,146 @@ function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* SECTION 5: COMPARISON TABLE                                               */}
+      {/* SECTION 5: COMPARISON TABLE (High-Contrast SaaS Side-by-Side Cards)      */}
       {/* ========================================================================= */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/70 dark:border-slate-800/80 transition-colors duration-200">
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white via-slate-50/50 to-white dark:from-[#0B0F17] dark:via-[#0E131F] dark:to-[#0B0F17] transition-colors duration-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              Honest Breakdown
+            </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight">
               Traditional Agency vs. built by Miguel
             </h2>
           </div>
 
           {/* Modern Comparison Layout (2-Column Side-by-Side Cards) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
             {/* Column 1: Traditional Agency (Muted tone with X marks) */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-slate-100/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
-              <div className="pb-4 border-b border-slate-200 dark:border-slate-800">
-                <span className="text-xs font-mono uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
-                  Other Options
-                </span>
-                <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-700 dark:text-slate-300">
-                  Traditional Agency
-                </h3>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
-                    <XIcon className="w-3.5 h-3.5" />
+            <div className="p-7 sm:p-9 rounded-3xl bg-slate-100/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 flex flex-col justify-between">
+              <div>
+                <div className="pb-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-mono uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
+                      Other Options
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-700 dark:text-slate-300">
+                      Traditional Agency
+                    </h3>
                   </div>
-                  <span>Cookie-cutter WordPress theme</span>
+                  <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                    Retainer Model
+                  </span>
                 </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
-                    <XIcon className="w-3.5 h-3.5" />
+                <div className="space-y-4 pt-6">
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                    <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
+                      <XIcon className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Cookie-cutter WordPress theme</span>
                   </div>
-                  <span>Care and support plans starting around $300+ per month</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
-                    <XIcon className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                    <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
+                      <XIcon className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Care and support plans starting around $300+ per month</span>
                   </div>
-                  <span>Junior account manager relays your requests</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
-                    <XIcon className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                    <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
+                      <XIcon className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Junior account manager relays your requests</span>
                   </div>
-                  <span>Vanity-metric PDF reports once a month</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
-                    <XIcon className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                    <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
+                      <XIcon className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Vanity-metric PDF reports once a month</span>
                   </div>
-                  <span>SEO, website, and automation handled by separate vendors</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
-                    <XIcon className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                    <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
+                      <XIcon className="w-3.5 h-3.5" />
+                    </div>
+                    <span>SEO, website, and automation handled by separate vendors</span>
                   </div>
-                  <span>Slow turnaround through a support queue</span>
+
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                    <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 text-slate-500">
+                      <XIcon className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Slow turnaround through a support queue</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Column 2: built by Miguel (Accent tone with Checkmarks) */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border-2 border-slate-900 dark:border-amber-400 shadow-xl space-y-6 relative overflow-hidden">
-              <div className="pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-mono uppercase font-bold tracking-wider text-amber-600 dark:text-amber-400 block mb-1">
-                    The Modern Standard
+            {/* Column 2: built by Miguel (Accent tone with Checkmarks & Glowing Edge) */}
+            <div className="p-7 sm:p-9 rounded-3xl bg-white dark:bg-[#111827] border-2 border-slate-900 dark:border-amber-400 shadow-2xl space-y-6 relative overflow-hidden flex flex-col justify-between">
+              {/* Highlight ribbon badge */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-bl-full pointer-events-none -z-0" />
+
+              <div>
+                <div className="pb-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between relative z-10">
+                  <div>
+                    <span className="text-xs font-mono uppercase font-bold tracking-wider text-amber-600 dark:text-amber-400 block mb-1">
+                      The Modern Standard
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white">
+                      built by Miguel
+                    </h3>
+                  </div>
+                  <span className="px-3.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-900 text-white dark:bg-amber-400 dark:text-slate-950 shadow-xs">
+                    Direct Founder
                   </span>
-                  <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white">
-                    built by Miguel
-                  </h3>
-                </div>
-                <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-900 text-white dark:bg-amber-400 dark:text-slate-950">
-                  Direct Founder
-                </span>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-200 font-medium">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400">
-                    <Check className="w-3.5 h-3.5" />
-                  </div>
-                  <span>Custom-built React website</span>
                 </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-200 font-medium">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400">
-                    <Check className="w-3.5 h-3.5" />
+                <div className="space-y-4 pt-6 relative z-10">
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400 shadow-2xs">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Custom-built React website</span>
                   </div>
-                  <span>Care plans starting at $99 per month</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-200 font-medium">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400">
-                    <Check className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400 shadow-2xs">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Care plans starting at $99 per month</span>
                   </div>
-                  <span>Direct access to the person building your site</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-200 font-medium">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400">
-                    <Check className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400 shadow-2xs">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Direct access to the person building your site</span>
                   </div>
-                  <span>Real work you can see and ask about directly</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-200 font-medium">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400">
-                    <Check className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400 shadow-2xs">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Real work you can see and ask about directly</span>
                   </div>
-                  <span>One connected system, built by one person</span>
-                </div>
 
-                <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-200 font-medium">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400">
-                    <Check className="w-3.5 h-3.5" />
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400 shadow-2xs">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    <span>One connected system, built by one person</span>
                   </div>
-                  <span>Response within 24 business hours</span>
+
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400 shadow-2xs">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Response within 24 business hours</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -943,9 +983,12 @@ function HomePage() {
       {/* ========================================================================= */}
       {/* SECTION 6: FAQ                                                            */}
       {/* ========================================================================= */}
-      <section className="w-full py-16 sm:py-24 border-b border-slate-200/70 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
+      <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/40">
+              Answers & Transparency
+            </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight">
               Frequently Asked Questions
             </h2>
@@ -958,9 +1001,9 @@ function HomePage() {
               return (
                 <div
                   key={faq.question}
-                  className={`rounded-2xl transition-all duration-200 overflow-hidden ${
+                  className={`rounded-3xl transition-all duration-200 overflow-hidden ${
                     isOpen
-                      ? 'bg-amber-50/80 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-700/60 p-5 sm:p-6 shadow-sm'
+                      ? 'bg-amber-50/90 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-700/60 p-5 sm:p-6 shadow-md'
                       : 'bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 p-5 shadow-xs'
                   }`}
                 >
@@ -973,7 +1016,7 @@ function HomePage() {
                     <h3 className="font-bold font-display text-sm sm:text-base text-slate-900 dark:text-white pr-2">
                       {faq.question}
                     </h3>
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 text-slate-700 dark:text-slate-300">
+                    <div className="flex items-center justify-center w-7 h-7 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 text-slate-700 dark:text-slate-300 shadow-2xs">
                       {isOpen ? (
                         <Minus className="w-3.5 h-3.5" />
                       ) : (
@@ -983,7 +1026,7 @@ function HomePage() {
                   </button>
 
                   {isOpen && (
-                    <div className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed pt-3 border-t border-amber-200/60 dark:border-amber-900/40 font-normal">
+                    <div className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed pt-3.5 border-t border-amber-200/60 dark:border-amber-900/40 font-normal">
                       {faq.answer}
                     </div>
                   )}
@@ -999,12 +1042,12 @@ function HomePage() {
       {/* ========================================================================= */}
       <section className="relative w-full py-20 sm:py-28 bg-[#0B0F17] dark:bg-[#070A0F] text-white border-t border-slate-800 overflow-hidden">
         {/* Ambient mesh glow for Closing CTA */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-amber-500/10 via-rose-500/5 to-transparent blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-gradient-to-b from-amber-500/15 via-rose-500/5 to-transparent blur-3xl pointer-events-none" />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           {/* Eyebrow kicker (not a heading) */}
           <div>
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-amber-400 bg-amber-400/10 border border-amber-400/30 px-3.5 py-1 rounded-full inline-block">
+            <span className="text-xs font-mono font-bold tracking-widest uppercase text-amber-400 bg-amber-400/10 border border-amber-400/30 px-3.5 py-1.5 rounded-full inline-block">
               Ready When You Are
             </span>
           </div>
@@ -1020,7 +1063,7 @@ function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <Link
               to="/audit"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
               <span>Get Your Free Audit</span>
