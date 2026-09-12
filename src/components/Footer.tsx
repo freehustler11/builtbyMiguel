@@ -44,7 +44,7 @@ export function Footer() {
               <li><Link to="/seo" className="hover:text-black dark:hover:text-white">SEO</Link></li>
               <li><Link to="/seo/local" className="hover:text-black dark:hover:text-white">Local SEO</Link></li>
               <li><Link to="/national-seo" className="hover:text-black dark:hover:text-white">National SEO</Link></li>
-              <li><Link to="/aeo-geo" className="hover:text-black dark:hover:text-white">AEO & GEO</Link></li>
+              <li><Link to="/seo/ai-search" className="hover:text-black dark:hover:text-white">AEO & GEO</Link></li>
             </ul>
           </div>
 

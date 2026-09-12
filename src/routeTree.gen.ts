@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AeoGeoRouteImport } from './routes/aeo-geo'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
@@ -46,6 +45,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as RShareTokenRouteImport } from './routes/r/$shareToken'
+import { Route as SeoAiSearchRouteImport } from './routes/seo_.ai-search'
 import { Route as SeoLocalRouteImport } from './routes/seo_.local'
 import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
 import { Route as AdminAgenciesIndexRouteImport } from './routes/admin/agencies/index'
@@ -76,11 +76,6 @@ const AboutRoute = AboutRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AeoGeoRoute = AeoGeoRouteImport.update({
-  id: '/aeo-geo',
-  path: '/aeo-geo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuditRoute = AuditRouteImport.update({
@@ -243,6 +238,11 @@ const RShareTokenRoute = RShareTokenRouteImport.update({
   path: '/r/$shareToken',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SeoAiSearchRoute = SeoAiSearchRouteImport.update({
+  id: '/seo_/ai-search',
+  path: '/seo/ai-search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SeoLocalRoute = SeoLocalRouteImport.update({
   id: '/seo_/local',
   path: '/seo/local',
@@ -304,7 +304,6 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
@@ -334,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/r/$shareToken': typeof RShareTokenRoute
+  '/seo/ai-search': typeof SeoAiSearchRoute
   '/seo/local': typeof SeoLocalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
@@ -353,7 +353,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
-  '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
@@ -382,6 +381,7 @@ export interface FileRoutesByTo {
   '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/r/$shareToken': typeof RShareTokenRoute
+  '/seo/ai-search': typeof SeoAiSearchRoute
   '/seo/local': typeof SeoLocalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin': typeof AdminIndexRoute
@@ -403,7 +403,6 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
@@ -433,6 +432,7 @@ export interface FileRoutesById {
   '/admin/workspace': typeof AdminWorkspaceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/r/$shareToken': typeof RShareTokenRoute
+  '/seo_/ai-search': typeof SeoAiSearchRoute
   '/seo_/local': typeof SeoLocalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
@@ -455,7 +455,6 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
-    | '/aeo-geo'
     | '/audit'
     | '/contact'
     | '/cookie-policy'
@@ -485,6 +484,7 @@ export interface FileRouteTypes {
     | '/admin/workspace'
     | '/blog/$slug'
     | '/r/$shareToken'
+    | '/seo/ai-search'
     | '/seo/local'
     | '/superadmin/activity'
     | '/admin/'
@@ -504,7 +504,6 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
-    | '/aeo-geo'
     | '/audit'
     | '/contact'
     | '/cookie-policy'
@@ -533,6 +532,7 @@ export interface FileRouteTypes {
     | '/admin/workspace'
     | '/blog/$slug'
     | '/r/$shareToken'
+    | '/seo/ai-search'
     | '/seo/local'
     | '/superadmin/activity'
     | '/admin'
@@ -553,7 +553,6 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
-    | '/aeo-geo'
     | '/audit'
     | '/contact'
     | '/cookie-policy'
@@ -583,6 +582,7 @@ export interface FileRouteTypes {
     | '/admin/workspace'
     | '/blog/$slug'
     | '/r/$shareToken'
+    | '/seo_/ai-search'
     | '/seo_/local'
     | '/superadmin/activity'
     | '/admin/'
@@ -604,7 +604,6 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AeoGeoRoute: typeof AeoGeoRoute
   AuditRoute: typeof AuditRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
@@ -628,6 +627,7 @@ export interface RootRouteChildren {
   WorkRoute: typeof WorkRoute
   BlogSlugRoute: typeof BlogSlugRoute
   RShareTokenRoute: typeof RShareTokenRoute
+  SeoAiSearchRoute: typeof SeoAiSearchRoute
   SeoLocalRoute: typeof SeoLocalRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
@@ -660,13 +660,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aeo-geo': {
-      id: '/aeo-geo'
-      path: '/aeo-geo'
-      fullPath: '/aeo-geo'
-      preLoaderRoute: typeof AeoGeoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/audit': {
@@ -893,6 +886,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RShareTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seo_/ai-search': {
+      id: '/seo_/ai-search'
+      path: '/seo/ai-search'
+      fullPath: '/seo/ai-search'
+      preLoaderRoute: typeof SeoAiSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/seo_/local': {
       id: '/seo_/local'
       path: '/seo/local'
@@ -1051,7 +1051,6 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
-  AeoGeoRoute: AeoGeoRoute,
   AuditRoute: AuditRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
@@ -1075,6 +1074,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorkRoute: WorkRoute,
   BlogSlugRoute: BlogSlugRoute,
   RShareTokenRoute: RShareTokenRoute,
+  SeoAiSearchRoute: SeoAiSearchRoute,
   SeoLocalRoute: SeoLocalRoute,
   BlogIndexRoute: BlogIndexRoute,
 }

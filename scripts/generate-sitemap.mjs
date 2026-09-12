@@ -30,8 +30,8 @@ const ROUTE_CONFIG = {
   '':               { priority: '1.0', changefreq: 'daily' },
   'seo':            { priority: '0.9', changefreq: 'weekly' },
   'seo/local':      { priority: '0.9', changefreq: 'weekly' },
+  'seo/ai-search':  { priority: '0.9', changefreq: 'weekly' },
   'national-seo':   { priority: '0.9', changefreq: 'weekly' },
-  'aeo-geo':        { priority: '0.9', changefreq: 'weekly' },
   'websites':       { priority: '0.9', changefreq: 'weekly' },
   'website-design': { priority: '0.9', changefreq: 'weekly' },
   'websites-care':  { priority: '0.9', changefreq: 'weekly' },
@@ -123,7 +123,7 @@ export async function buildSitemapXml() {
     const routeName = path.basename(entry.name, path.extname(entry.name))
     if (EXCLUDED_ROUTES.has(routeName) || routeName.startsWith('_')) continue
 
-    const routePath = routeName === 'index' ? '' : routeName.replace(/_\./g, '/')
+    const routePath = routeName === 'index' ? '' : routeName.replace(/_\.?/g, '/')
     staticRoutes.push(routePath)
   }
 

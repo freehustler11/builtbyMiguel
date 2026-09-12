@@ -515,7 +515,7 @@ function NationalSeoPage() {
               </div>
               <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/aeo-geo"
+                  to="/seo/ai-search"
                   className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors cursor-pointer group"
                 >
                   <span>View AI Search Optimization →</span>

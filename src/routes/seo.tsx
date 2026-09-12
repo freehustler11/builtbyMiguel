@@ -96,7 +96,7 @@ const CONTRACTOR_SEO_JSON_LD = {
             itemOffered: {
               '@type': 'Service',
               name: 'AEO & GEO Optimization',
-              url: 'https://builtbymiguel.net/aeo-geo',
+              url: 'https://builtbymiguel.net/seo/ai-search',
             },
           },
         ],
@@ -364,7 +364,7 @@ function SeoPillarPage() {
 
               <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/aeo-geo"
+                  to="/seo/ai-search"
                   className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 transition-colors group/link cursor-pointer"
                 >
                   <span>Explore AI Search & GEO →</span>

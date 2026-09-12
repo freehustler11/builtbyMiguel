@@ -30,14 +30,16 @@ export const REDIRECT_MAP: Record<string, string> = {
   '/franchise-seo': '/national-seo',
   '/franchise-seo-services': '/national-seo',
 
-  // --- AEO & GEO Child ---
-  '/aeo': '/aeo-geo',
-  '/geo': '/aeo-geo',
-  '/ai-seo': '/aeo-geo',
-  '/services/aeo-geo': '/aeo-geo',
-  '/generative-engine-optimization': '/aeo-geo',
-  '/generative-engine-optimization-services': '/aeo-geo',
-  '/answer-engine-optimization': '/aeo-geo',
+  // --- AEO & GEO / AI Search Child ---
+  '/aeo-geo': '/seo/ai-search',
+  '/aeo': '/seo/ai-search',
+  '/geo': '/seo/ai-search',
+  '/ai-seo': '/seo/ai-search',
+  '/services/aeo-geo': '/seo/ai-search',
+  '/generative-engine-optimization': '/seo/ai-search',
+  '/generative-engine-optimization-services': '/seo/ai-search',
+  '/answer-engine-optimization': '/seo/ai-search',
+  '/ai-search': '/seo/ai-search',
 
   // --- Websites Pillar ---
   '/services/websites': '/websites',

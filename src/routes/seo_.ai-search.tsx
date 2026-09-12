@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/aeo-geo')({
+export const Route = createFileRoute('/seo_/ai-search')({
   head: () => ({
     meta: [
       {
@@ -40,7 +40,7 @@ export const Route = createFileRoute('/aeo-geo')({
       },
       {
         property: 'og:url',
-        content: 'https://builtbymiguel.net/aeo-geo',
+        content: 'https://builtbymiguel.net/seo/ai-search',
       },
       {
         name: 'twitter:card',
@@ -60,7 +60,7 @@ export const Route = createFileRoute('/aeo-geo')({
     links: [
       {
         rel: 'canonical',
-        href: 'https://builtbymiguel.net/aeo-geo',
+        href: 'https://builtbymiguel.net/seo/ai-search',
       },
     ],
   }),
@@ -193,7 +193,7 @@ const AEO_GEO_JSON_LD = {
           '@type': 'ListItem',
           position: 3,
           name: 'AEO & GEO Optimization',
-          item: 'https://builtbymiguel.net/aeo-geo',
+          item: 'https://builtbymiguel.net/seo/ai-search',
         },
       ],
     },
