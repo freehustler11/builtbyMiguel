@@ -220,7 +220,7 @@ const FAQS = [
       <span>
         Yes, as separate services.{' '}
         <Link
-          to="/national-seo"
+          to="/seo/national"
           className="text-blue-600 dark:text-blue-400 underline font-semibold hover:text-blue-700 dark:hover:text-blue-300"
         >
           National & Regional SEO
@@ -455,7 +455,7 @@ function LocalSeoPage() {
               </div>
               <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/national-seo"
+                  to="/seo/national"
                   className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors cursor-pointer group"
                 >
                   <span>View National SEO →</span>

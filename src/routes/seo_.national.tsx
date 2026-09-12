@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/national-seo')({
+export const Route = createFileRoute('/seo_/national')({
   head: () => ({
     meta: [
       {
@@ -40,7 +40,7 @@ export const Route = createFileRoute('/national-seo')({
       },
       {
         property: 'og:url',
-        content: 'https://builtbymiguel.net/national-seo',
+        content: 'https://builtbymiguel.net/seo/national',
       },
       {
         name: 'twitter:card',
@@ -60,7 +60,7 @@ export const Route = createFileRoute('/national-seo')({
     links: [
       {
         rel: 'canonical',
-        href: 'https://builtbymiguel.net/national-seo',
+        href: 'https://builtbymiguel.net/seo/national',
       },
     ],
     scripts: [
@@ -79,7 +79,7 @@ export const Route = createFileRoute('/national-seo')({
           },
           description:
             'National, multi-location, and franchise SEO for B2B and enterprise-scale brands. Direct service, no agency overhead. Free 5-minute video audit.',
-          url: 'https://builtbymiguel.net/national-seo',
+          url: 'https://builtbymiguel.net/seo/national',
           areaServed: 'US',
         }),
       },
@@ -105,7 +105,7 @@ export const Route = createFileRoute('/national-seo')({
               '@type': 'ListItem',
               position: 3,
               name: 'National & Regional SEO',
-              item: 'https://builtbymiguel.net/national-seo',
+              item: 'https://builtbymiguel.net/seo/national',
             },
           ],
         }),

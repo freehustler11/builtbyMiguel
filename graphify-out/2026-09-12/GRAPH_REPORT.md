@@ -1,16 +1,16 @@
 # Graph Report - built by Miguel  (2026-09-12)
 
 ## Corpus Check
-- 561 files · ~914,663 words
+- 561 files · ~914,677 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8365 nodes · 10367 edges · 732 communities (671 shown, 46 thin omitted)
+- 8365 nodes · 10367 edges · 733 communities (672 shown, 46 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 80 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e69418ec`
+- Built from commit: `d4204706`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -48,7 +48,7 @@
 - Tailwind CSS Responsive Design
 - Launch Strategy
 - Team and Agency Model — Hire for Strategy, Outsource Execution
-- DesignSystemGenerator
+- read_rows
 - Typography Specifications
 - TestTailwindConfigGenerator
 - Prerequisites
@@ -71,7 +71,7 @@
 - GA4 Implementation Reference
 - Asset Approval Checklist
 - Logo AI Prompt Engineering
-- test_design_system_mode.py
+- design_system.py
 - Color Palette Management
 - CIP Deliverable Guide
 - BM25
@@ -333,7 +333,7 @@
 - Public Relations & Earned Media
 - HubSpot Workflow Recipes
 - International SEO: Evidence & Sources
-- design_system.py
+- persist_design_system
 - Post-Purchase Flow
 - Product Marketing Context: built by Miguel
 - Payback Period Budgeting
@@ -707,7 +707,7 @@
 - Best Practices
 - checkAuthServerFn
 - portal/index.tsx
-- aeo-geo.tsx
+- DesignSystemGenerator
 - seo.tsx
 - systems-auto.tsx
 - websites.tsx
@@ -728,10 +728,11 @@
 - national-seo.tsx
 - seo_.local.tsx
 - cookie-policy.tsx
-- terms.tsx
+- seo_.ai-search.tsx
 - .test_check_shadcn_config_exists
 - .test_get_installed_components_with_files
-- work.tsx
+- privacy-policy.tsx
+- thank-you.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `assertActiveSession()` - 86 edges
@@ -760,7 +761,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (732 total, 46 thin omitted)
+## Communities (733 total, 46 thin omitted)
 
 ### Community 0 - "routeTree.gen.ts"
 Cohesion: 0.03
@@ -780,7 +781,7 @@ Nodes (23): LogoutButton(), LogoutButtonProps, NavBlockerCounts, AdminNavProps, 
 
 ### Community 4 - "validate_data.py"
 Cohesion: 0.08
-Nodes (45): read_rows(), TestAccessibilityGuidance, TestChartsTypographyAndIcons, TestCurrentReactGuidance, TestSemanticColors, _catalog_date(), _check_app_interface_contract(), _check_catalog_contract() (+37 more)
+Nodes (46): read_rows(), TestAccessibilityGuidance, TestChartsTypographyAndIcons, TestCurrentReactGuidance, TestSemanticColors, _catalog_date(), _check_app_interface_contract(), _check_catalog_contract() (+38 more)
 
 ### Community 5 - "gray"
 Cohesion: 0.05
@@ -894,9 +895,9 @@ Nodes (31): Announcement Tactics, Before Starting, Borrowed Channels, Case Studi
 Cohesion: 0.06
 Nodes (31): Before starting, Content Marketing — the trust engine, During engagement, Early stage (pre-product-market-fit), Growth Marketing — the demand engine, Growth stage (post-PMF, scaling what works), High-leverage combinations, How this informs the plan (+23 more)
 
-### Community 33 - "DesignSystemGenerator"
-Cohesion: 0.05
-Nodes (26): DesignSystemGenerator, Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Execute searches across multiple domains., Find matching reasoning rule for a category., Apply reasoning rules to search results., Select best matching result based on priority keywords., Extract results list from search result dict. (+18 more)
+### Community 33 - "read_rows"
+Cohesion: 0.07
+Nodes (15): Find matching reasoning rule for a category., Apply reasoning rules to search results., apply_decision_rules(), _object_without_duplicates(), parse_decision_rules(), Return deterministic mutations and an audit trail; never execute data., Parse the canonical condition -> action-array representation., _validate_action() (+7 more)
 
 ### Community 34 - "Typography Specifications"
 Cohesion: 0.06
@@ -971,8 +972,8 @@ Cohesion: 0.07
 Nodes (26): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+18 more)
 
 ### Community 52 - "search"
-Cohesion: 0.10
-Nodes (8): Resolve a deprecated in-domain alias, or expose a cross-domain redirect., Main search function with auto-domain detection, search(), _style_search_destination(), TestDiagnosticsContracts, TestSearchDomains, read_rows(), TestStyleTaxonomy
+Cohesion: 0.11
+Nodes (7): Resolve a deprecated in-domain alias, or expose a cross-domain redirect., Main search function with auto-domain detection, search(), _style_search_destination(), TestSearchDomains, read_rows(), TestStyleTaxonomy
 
 ### Community 53 - "GA4 Implementation Reference"
 Cohesion: 0.09
@@ -986,9 +987,9 @@ Nodes (25): Accessibility, Archival, Asset Approval Checklist, Automation Suppor
 Cohesion: 0.08
 Nodes (25): Common Pitfalls, Core Prompt Structure, Detailed Brief, Eco/Sustainable, Effective Keywords by Style, Fashion Brand, Healthcare, Industry-Specific Prompts (+17 more)
 
-### Community 56 - "test_design_system_mode.py"
+### Community 56 - "design_system.py"
 Cohesion: 0.07
-Nodes (24): _contrast_ratio(), _derive_dark_palette(), _filter_anti_patterns_for_mode(), _palette_is_dark(), _query_wants_dark(), WCAG relative luminance of a #RRGGBB string, or None if unparseable., True when a colors.csv row's Background is a dark surface., WCAG contrast ratio for two hex colors, or None if either is invalid. (+16 more)
+Nodes (30): ansi_ljust(), _contrast_ratio(), _derive_dark_palette(), _filter_anti_patterns_for_mode(), format_ascii_box(), hex_to_ansi(), _palette_is_dark(), _query_wants_dark() (+22 more)
 
 ### Community 57 - "Color Palette Management"
 Cohesion: 0.08
@@ -1011,8 +1012,8 @@ Cohesion: 0.08
 Nodes (24): Accessibility Patterns, Alternative: Tailwind-Only Setup, Best Practices, Common Patterns, Component Layer: shadcn/ui, Component Library Guide, Component + Styling Setup, Core Stack (+16 more)
 
 ### Community 62 - "BM25"
-Cohesion: 0.12
-Nodes (8): BM25, BM25 ranking algorithm for text search, Lowercase, normalize synonyms, split, remove punctuation, filter stopwords, Build BM25 index from documents, Score all documents against query, All indexed terms, for suggestion/typo-recovery purposes., TestBm25CoreBehavior, TestTokenizer
+Cohesion: 0.07
+Nodes (16): BM25, BM25 ranking algorithm for text search, Lowercase, normalize synonyms, split, remove punctuation, filter stopwords, Build BM25 index from documents, Score all documents against query, All indexed terms, for suggestion/typo-recovery purposes., format_markdown(), generate_design_system() (+8 more)
 
 ### Community 63 - "1. SCHEMA"
 Cohesion: 0.12
@@ -2030,9 +2031,9 @@ Nodes (9): 1. MQL Alert and Assignment, 2. MQL SLA Escalation, 3. Lead Scoring U
 Cohesion: 0.22
 Nodes (6): Canonical Overrides Hreflang, Canonicalization & i18n, International SEO: Evidence & Sources, Near-Duplicate Regional Variants, Pagination Across Locales, Self-Referencing Canonicals
 
-### Community 321 - "design_system.py"
-Cohesion: 0.08
-Nodes (30): ansi_ljust(), _detect_page_type(), format_ascii_box(), format_markdown(), format_master_md(), format_page_override_md(), generate_design_system(), _generate_intelligent_overrides() (+22 more)
+### Community 321 - "persist_design_system"
+Cohesion: 0.14
+Nodes (15): _detect_page_type(), format_master_md(), format_page_override_md(), _generate_intelligent_overrides(), persist_design_system(), Path, Format design system as MASTER.md with hierarchical override logic., Format a page-specific override file with intelligent AI-generated content. (+7 more)
 
 ### Community 322 - "Post-Purchase Flow"
 Cohesion: 0.33
@@ -3378,9 +3379,9 @@ Nodes (46): checkAuthServerFn, requireAdmin(), requireClient(), requireSuperadmi
 Cohesion: 0.60
 Nodes (4): getPortalReportsServerFn, formatDate(), PortalDashboardPage(), Route
 
-### Community 706 - "aeo-geo.tsx"
-Cohesion: 0.40
-Nodes (3): AEO_GEO_FAQ, AEO_GEO_JSON_LD, Route
+### Community 706 - "DesignSystemGenerator"
+Cohesion: 0.11
+Nodes (12): DesignSystemGenerator, Generates design system recommendations from aggregated searches., Load reasoning rules from CSV., Execute searches across multiple domains., Select best matching result based on priority keywords., Extract results list from search result dict., Generate complete design system recommendation. variance/motion/density are…, Bucket a 1-10 dial value into its tier config. Returns None if value is None. (+4 more)
 
 ### Community 707 - "seo.tsx"
 Cohesion: 0.40
@@ -3445,6 +3446,10 @@ Nodes (3): Onboarding Audit, Onboarding Flow Design, Output Format
 ### Community 723 - "Mode 2: Digital Watering Hole Research"
 Cohesion: 0.50
 Nodes (4): Mode 2: Digital Watering Hole Research, Research Synthesis Template, What to Extract from Each Source, Where to Look
+
+### Community 728 - "seo_.ai-search.tsx"
+Cohesion: 0.40
+Nodes (3): AEO_GEO_FAQ, AEO_GEO_JSON_LD, Route
 
 ## Knowledge Gaps
 - **5201 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+5196 more)

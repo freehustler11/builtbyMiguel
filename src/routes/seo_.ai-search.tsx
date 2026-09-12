@@ -101,10 +101,10 @@ const AEO_GEO_FAQ = [
     question:
       'Do I need this in addition to local or national SEO, or instead of it?',
     answer:
-      'In addition. AEO and GEO work best layered on top of [Local SEO](/seo/local) or [National SEO](/national-seo), since AI engines still lean heavily on the same structured, verified business data that traditional search rankings depend on.',
+      'In addition. AEO and GEO work best layered on top of [Local SEO](/seo/local) or [National SEO](/seo/national), since AI engines still lean heavily on the same structured, verified business data that traditional search rankings depend on.',
     links: [
       { text: 'Local SEO', url: '/seo/local' },
-      { text: 'National SEO', url: '/national-seo' },
+      { text: 'National SEO', url: '/seo/national' },
     ],
   },
   {
@@ -561,7 +561,7 @@ function AeoGeoPage() {
               </div>
               <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/national-seo"
+                  to="/seo/national"
                   className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
                 >
                   View National SEO →
@@ -1085,7 +1085,7 @@ function AeoGeoPage() {
                           </Link>{' '}
                           or{' '}
                           <Link
-                            to="/national-seo"
+                            to="/seo/national"
                             className="font-semibold text-emerald-600 dark:text-emerald-400 underline underline-offset-4 hover:text-emerald-700 dark:hover:text-emerald-300"
                           >
                             National SEO

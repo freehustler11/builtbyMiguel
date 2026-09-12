@@ -22,13 +22,14 @@ export const REDIRECT_MAP: Record<string, string> = {
   '/local-seo-gbp': '/seo/local',
 
   // --- National SEO Child ---
-  '/national-seo-services': '/national-seo',
-  '/services/national-seo': '/national-seo',
-  '/b2b-seo': '/national-seo',
-  '/enterprise-seo': '/national-seo',
-  '/multi-location-seo': '/national-seo',
-  '/franchise-seo': '/national-seo',
-  '/franchise-seo-services': '/national-seo',
+  '/national-seo': '/seo/national',
+  '/national-seo-services': '/seo/national',
+  '/services/national-seo': '/seo/national',
+  '/b2b-seo': '/seo/national',
+  '/enterprise-seo': '/seo/national',
+  '/multi-location-seo': '/seo/national',
+  '/franchise-seo': '/seo/national',
+  '/franchise-seo-services': '/seo/national',
 
   // --- AEO & GEO / AI Search Child ---
   '/aeo-geo': '/seo/ai-search',

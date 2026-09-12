@@ -20,7 +20,6 @@ import { Route as LocalSeoGbpRouteImport } from './routes/local-seo-gbp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MyWorkRouteImport } from './routes/my-work'
-import { Route as NationalSeoRouteImport } from './routes/national-seo'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SeoRouteImport } from './routes/seo'
@@ -47,6 +46,7 @@ import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as RShareTokenRouteImport } from './routes/r/$shareToken'
 import { Route as SeoAiSearchRouteImport } from './routes/seo_.ai-search'
 import { Route as SeoLocalRouteImport } from './routes/seo_.local'
+import { Route as SeoNationalRouteImport } from './routes/seo_.national'
 import { Route as SuperadminActivityRouteImport } from './routes/superadmin/activity'
 import { Route as AdminAgenciesIndexRouteImport } from './routes/admin/agencies/index'
 import { Route as AdminAgenciesPartnerIdRouteImport } from './routes/admin/agencies/$partnerId'
@@ -111,11 +111,6 @@ const MessagesRoute = MessagesRouteImport.update({
 const MyWorkRoute = MyWorkRouteImport.update({
   id: '/my-work',
   path: '/my-work',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NationalSeoRoute = NationalSeoRouteImport.update({
-  id: '/national-seo',
-  path: '/national-seo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortalRoute = PortalRouteImport.update({
@@ -248,6 +243,11 @@ const SeoLocalRoute = SeoLocalRouteImport.update({
   path: '/seo/local',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SeoNationalRoute = SeoNationalRouteImport.update({
+  id: '/seo_/national',
+  path: '/seo/national',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuperadminActivityRoute = SuperadminActivityRouteImport.update({
   id: '/activity',
   path: '/activity',
@@ -311,7 +311,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/my-work': typeof MyWorkRoute
-  '/national-seo': typeof NationalSeoRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/seo': typeof SeoRoute
@@ -335,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/r/$shareToken': typeof RShareTokenRoute
   '/seo/ai-search': typeof SeoAiSearchRoute
   '/seo/local': typeof SeoLocalRoute
+  '/seo/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -360,7 +360,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/my-work': typeof MyWorkRoute
-  '/national-seo': typeof NationalSeoRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/seo': typeof SeoRoute
   '/superadmin': typeof SuperadminRouteWithChildren
@@ -383,6 +382,7 @@ export interface FileRoutesByTo {
   '/r/$shareToken': typeof RShareTokenRoute
   '/seo/ai-search': typeof SeoAiSearchRoute
   '/seo/local': typeof SeoLocalRoute
+  '/seo/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
@@ -410,7 +410,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/my-work': typeof MyWorkRoute
-  '/national-seo': typeof NationalSeoRoute
   '/portal': typeof PortalRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/seo': typeof SeoRoute
@@ -434,6 +433,7 @@ export interface FileRoutesById {
   '/r/$shareToken': typeof RShareTokenRoute
   '/seo_/ai-search': typeof SeoAiSearchRoute
   '/seo_/local': typeof SeoLocalRoute
+  '/seo_/national': typeof SeoNationalRoute
   '/superadmin/activity': typeof SuperadminActivityRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -462,7 +462,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/my-work'
-    | '/national-seo'
     | '/portal'
     | '/privacy-policy'
     | '/seo'
@@ -486,6 +485,7 @@ export interface FileRouteTypes {
     | '/r/$shareToken'
     | '/seo/ai-search'
     | '/seo/local'
+    | '/seo/national'
     | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
@@ -511,7 +511,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/my-work'
-    | '/national-seo'
     | '/privacy-policy'
     | '/seo'
     | '/superadmin'
@@ -534,6 +533,7 @@ export interface FileRouteTypes {
     | '/r/$shareToken'
     | '/seo/ai-search'
     | '/seo/local'
+    | '/seo/national'
     | '/superadmin/activity'
     | '/admin'
     | '/blog'
@@ -560,7 +560,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/my-work'
-    | '/national-seo'
     | '/portal'
     | '/privacy-policy'
     | '/seo'
@@ -584,6 +583,7 @@ export interface FileRouteTypes {
     | '/r/$shareToken'
     | '/seo_/ai-search'
     | '/seo_/local'
+    | '/seo_/national'
     | '/superadmin/activity'
     | '/admin/'
     | '/blog/'
@@ -611,7 +611,6 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
   MyWorkRoute: typeof MyWorkRoute
-  NationalSeoRoute: typeof NationalSeoRoute
   PortalRoute: typeof PortalRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SeoRoute: typeof SeoRoute
@@ -629,6 +628,7 @@ export interface RootRouteChildren {
   RShareTokenRoute: typeof RShareTokenRoute
   SeoAiSearchRoute: typeof SeoAiSearchRoute
   SeoLocalRoute: typeof SeoLocalRoute
+  SeoNationalRoute: typeof SeoNationalRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
@@ -709,13 +709,6 @@ declare module '@tanstack/react-router' {
       path: '/my-work'
       fullPath: '/my-work'
       preLoaderRoute: typeof MyWorkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/national-seo': {
-      id: '/national-seo'
-      path: '/national-seo'
-      fullPath: '/national-seo'
-      preLoaderRoute: typeof NationalSeoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portal': {
@@ -900,6 +893,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeoLocalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seo_/national': {
+      id: '/seo_/national'
+      path: '/seo/national'
+      fullPath: '/seo/national'
+      preLoaderRoute: typeof SeoNationalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/superadmin/activity': {
       id: '/superadmin/activity'
       path: '/activity'
@@ -1058,7 +1058,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
   MyWorkRoute: MyWorkRoute,
-  NationalSeoRoute: NationalSeoRoute,
   PortalRoute: PortalRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SeoRoute: SeoRoute,
@@ -1076,6 +1075,7 @@ const rootRouteChildren: RootRouteChildren = {
   RShareTokenRoute: RShareTokenRoute,
   SeoAiSearchRoute: SeoAiSearchRoute,
   SeoLocalRoute: SeoLocalRoute,
+  SeoNationalRoute: SeoNationalRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport

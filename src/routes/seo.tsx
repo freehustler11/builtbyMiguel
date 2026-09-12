@@ -88,7 +88,7 @@ const CONTRACTOR_SEO_JSON_LD = {
             itemOffered: {
               '@type': 'Service',
               name: 'National & Regional SEO',
-              url: 'https://builtbymiguel.net/national-seo',
+              url: 'https://builtbymiguel.net/seo/national',
             },
           },
           {
@@ -325,7 +325,7 @@ function SeoPillarPage() {
 
               <div className="pt-8 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <Link
-                  to="/national-seo"
+                  to="/seo/national"
                   className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors group/link cursor-pointer"
                 >
                   <span>Explore National SEO →</span>
