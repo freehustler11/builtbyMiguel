@@ -30,7 +30,7 @@ export const Route = createFileRoute('/')({
       {
         name: 'description',
         content:
-          'I run a digital marketing agency for small business owners who need custom web development, search rankings, and lead automation. Request your free audit.',
+          'built by Miguel is a digital marketing agency for small business and trade contractors. We deliver custom web development, Google Maps rankings, and small business automation.',
       },
       {
         name: 'keywords',
@@ -46,7 +46,7 @@ export const Route = createFileRoute('/')({
       {
         property: 'og:description',
         content:
-          'Custom web development, top search rankings, and small business automation that turn local searches into booked jobs.',
+          'built by Miguel is a digital marketing agency for small business and trade contractors. We deliver custom web development, Google Maps rankings, and small business automation.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -58,7 +58,7 @@ export const Route = createFileRoute('/')({
       {
         name: 'twitter:description',
         content:
-          'Custom web development, top search rankings, and small business automation that turn local searches into booked jobs.',
+          'built by Miguel is a digital marketing agency for small business and trade contractors. We deliver custom web development, Google Maps rankings, and small business automation.',
       },
       { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
     ],
@@ -71,44 +71,7 @@ export const Route = createFileRoute('/')({
     scripts: [
       {
         type: 'application/ld+json',
-        children: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: [
-            {
-              '@type': 'Question',
-              name: 'Do you work with a small business?',
-              acceptedAnswer: {
-                '@type': 'Answer',
-                text: 'Yes. I work directly with small trade businesses, contractors, and local service companies across the United States. You work with me directly, never an account manager.',
-              },
-            },
-            {
-              '@type': 'Question',
-              name: 'Do you offer ongoing support?',
-              acceptedAnswer: {
-                '@type': 'Answer',
-                text: 'Not only do I offer the expected maintenance and security, but I also provide continuous search optimization and monthly site updates. I handle everything after launch.',
-              },
-            },
-            {
-              '@type': 'Question',
-              name: 'How long does the project take on average?',
-              acceptedAnswer: {
-                '@type': 'Answer',
-                text: 'Most custom website builds and initial SEO optimizations take two to three weeks from kickoff to launch.',
-              },
-            },
-            {
-              '@type': 'Question',
-              name: 'Is there a possibility of offline meetings?',
-              acceptedAnswer: {
-                '@type': 'Answer',
-                text: 'I meet in person with clients in the local Austin area. For national clients, we collaborate smoothly via fast video reviews and direct phone calls.',
-              },
-            },
-          ],
-        }),
+        children: JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do you work with small businesses and contractors?","acceptedAnswer":{"@type":"Answer","text":"Yes. We partner directly with trade contractors, home service companies, and local businesses across the United States. You work directly with senior engineers and search strategists, never an outsourced account rep."}},{"@type":"Question","name":"What does ongoing support and site care include?","acceptedAnswer":{"@type":"Answer","text":"Every partner receives continuous Core Web Vitals monitoring, automated security scanning, monthly search optimization, and dedicated site updates. Your site stays fast, secure, and fresh without taking your time."}},{"@type":"Question","name":"How long does a custom website build and SEO sprint take?","acceptedAnswer":{"@type":"Answer","text":"Most custom web development projects and initial technical SEO optimizations launch within two to three weeks. Because code is written cleanly without template bloat, delivery is fast and reliable."}},{"@type":"Question","name":"How does collaboration and reporting work?","acceptedAnswer":{"@type":"Answer","text":"Partners receive clear video updates, direct phone access, and live metric tracking. We also offer in-person strategy sessions for clients in the Austin area."}}]}),
       },
     ],
   }),
@@ -117,24 +80,24 @@ export const Route = createFileRoute('/')({
 
 const FAQ_ITEMS = [
   {
-    question: 'Do you work with a small business?',
+    question: 'Do you work with small businesses and contractors?',
     answer:
-      'Yes. I work directly with small trade businesses, contractors, and local service companies across the United States. You work with me directly, never an account manager.',
+      'Yes. We partner directly with trade contractors, home service companies, and local businesses across the United States. You work directly with senior engineers and search strategists, never an outsourced account rep.',
   },
   {
-    question: 'Do you offer ongoing support?',
+    question: 'What does ongoing support and site care include?',
     answer:
-      'Not only do I offer the expected maintenance and security, but I also provide continuous search optimization and monthly site updates. Your site stays fast, secure, and fresh without taking your time.',
+      'Every partner receives continuous Core Web Vitals monitoring, automated security scanning, monthly search optimization, and dedicated site updates. Your site stays fast, secure, and fresh without taking your time.',
   },
   {
-    question: 'How long does the project take on average?',
+    question: 'How long does a custom website build and SEO sprint take?',
     answer:
-      'Most custom website builds and initial SEO optimizations take two to three weeks from kickoff to launch. I write the code directly so there is no agency bureaucracy.',
+      'Most custom web development projects and initial technical SEO optimizations launch within two to three weeks. Because code is written cleanly without template bloat, delivery is fast and reliable.',
   },
   {
-    question: 'Is there a possibility of offline meetings?',
+    question: 'How does collaboration and reporting work?',
     answer:
-      'I meet in person with clients in the local Austin area. For national clients, we collaborate smoothly via fast personal video audits and direct phone calls.',
+      'Partners receive clear video updates, direct phone access, and live metric tracking. We also offer in-person strategy sessions for clients in the Austin area.',
   },
 ]
 
@@ -159,9 +122,12 @@ function HomePage() {
           {/* Centered Large Headline */}
           <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
             <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-[#141522] font-display leading-[1.08]">
-              The loud voice <br className="hidden sm:block" />
-              of your brand
+              Digital Marketing Agency <br className="hidden sm:block" />
+              for Small Business
             </h1>
+            <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-slate-600 font-sans max-w-2xl mx-auto leading-relaxed">
+              built by Miguel is a full-stack digital marketing agency for small business and trade contractors. We engineer custom web development, top 3 Google Maps rankings, and small business automation to drive exclusive booked jobs.
+            </p>
           </div>
 
           {/* Central Hero Illustration: Megaphone Graphic with Orbiting Accents */}
@@ -257,17 +223,17 @@ function HomePage() {
 
           {/* Bottom Row: Subtext on Left, EXPLORE ↘ on Right */}
           <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pt-6 border-t border-slate-200/60 mt-8">
-            <div className="max-w-sm">
-              <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                I build fast custom websites, rank trade businesses in the top 3 on Google Maps, and automate lead dispatch.
+            <div className="max-w-md">
+              <p className="text-xs sm:text-sm text-slate-700 font-sans leading-relaxed">
+                As a premier digital marketing agency for small business and trade contractors, built by Miguel delivers high-performance custom web development, top 3 Google Maps rankings, and small business automation to turn local searches into exclusive booked jobs.
               </p>
             </div>
 
             <a
               href="#services"
-              className="inline-flex items-center gap-1 text-xs font-mono font-bold tracking-wider text-[#141522] hover:text-rose-600 transition-colors uppercase"
+              className="inline-flex items-center gap-1 text-xs font-mono font-bold tracking-wider text-[#141522] hover:text-rose-600 transition-colors uppercase cursor-pointer"
             >
-              <span>Explore</span>
+              <span>Explore services</span>
               <ArrowDownRight className="w-4 h-4" />
             </a>
           </div>
@@ -283,10 +249,10 @@ function HomePage() {
             {/* Left Column: Heading, Paragraph, Learn More Button */}
             <div className="lg:col-span-4 space-y-6">
               <h2 className="text-4xl sm:text-5xl font-bold font-display text-[#141522] tracking-tight">
-                Our services
+                Engineered for small business growth
               </h2>
               <p className="text-sm sm:text-base text-slate-600 font-sans leading-relaxed">
-                We focus on the data that is really important for making each of our decisions, constantly testing, configuring and optimizing processes.
+                We replace fragmented marketing with an integrated growth engine. Fast custom web development, proven search rankings, and small business automation that converts clicks into revenue.
               </p>
               <div className="pt-2">
                 <Link
@@ -307,10 +273,10 @@ function HomePage() {
               >
                 <div className="space-y-3">
                   <h3 className="text-xl sm:text-2xl font-bold font-display text-[#141522] group-hover:text-rose-600 transition-colors">
-                    Local SEO & GBP
+                    Local SEO & Google Maps
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                    We create authentic local visibility that delivers true call value to your business.
+                    Dominate the local 3-Pack where high-intent customers search. We optimize your Google Business Profile to generate exclusive incoming calls.
                   </p>
                 </div>
                 <div className="pt-6 flex items-center gap-1 text-xs font-mono font-bold text-[#141522]">
@@ -326,10 +292,10 @@ function HomePage() {
               >
                 <div className="space-y-3">
                   <h3 className="text-xl sm:text-2xl font-bold font-display text-[#141522] group-hover:text-rose-600 transition-colors">
-                    Custom Websites
+                    Custom Web Development
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                    Experts work with your trade to find potential customers and load under a second.
+                    Sub-second load speeds built on clean modern code. Zero WordPress bloat, instant mobile tap-to-call, and designs engineered to convert visitors.
                   </p>
                 </div>
                 <div className="pt-6 flex items-center gap-1 text-xs font-mono font-bold text-[#141522]">
@@ -362,10 +328,10 @@ function HomePage() {
 
                 <div className="space-y-2 relative z-10 pt-6">
                   <h3 className="text-xl sm:text-2xl font-bold font-display text-white">
-                    Business Automation
+                    Small Business Automation
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
-                    Our lead dispatch experts will create an instant SMS pipeline.
+                    Never lose a lead to slow response times. Automated SMS alerts route website inquiries straight to technician phones in under 30 seconds.
                   </p>
                 </div>
 
@@ -384,10 +350,10 @@ function HomePage() {
               >
                 <div className="space-y-3">
                   <h3 className="text-xl sm:text-2xl font-bold font-display text-[#141522] group-hover:text-rose-600 transition-colors">
-                    National & AEO
+                    National SEO & AI Search
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                    Our SEO works - we know how to drive qualified search and AI traffic.
+                    Position your brand as the verified authority across Google, ChatGPT, and AI Overviews with structured schema and technical content.
                   </p>
                 </div>
                 <div className="pt-6 flex items-center gap-1 text-xs font-mono font-bold text-[#141522]">
@@ -413,10 +379,10 @@ function HomePage() {
                   ““
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold font-display text-[#141522] leading-snug">
-                  Their experience helped us to develop the business as a whole
+                  Tripled our inbound call volume and scaled from 10 to 26 technicians.
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                  The team has played an important role in providing us with forward-thinking marketing support that influences growth. When I turned to Miguel, I had 10 employees and few leads. Now I have 26 employees in my team and the number of sales has increased 3 times.
+                  Built by Miguel completely transformed our search presence and website speed. Within 90 days, our business was locked in the top 3 Google Maps spots across our service area. Inbound calls tripled without paying for shared leads.
                 </p>
               </div>
 
@@ -442,10 +408,10 @@ function HomePage() {
                   ““
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold font-display text-[#141522] leading-snug">
-                  The Miguel team is fast, savvy, and truly ahead of the curve
+                  Sub-second site speed and instant lead dispatch changed our business.
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                  The growth squad model helped us stay agile yet laser-focused on achieving key metrics and growth objectives. Miguel is quick and consistent in delivering top and bottom-funnel growth.
+                  Our previous agency site took five seconds to load on phones. The custom web development and automated text dispatch delivered a 40% conversion lift in month one. The team operates with real engineering discipline.
                 </p>
               </div>
 
@@ -526,115 +492,6 @@ function HomePage() {
                 )
               })}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 5. BLOG SECTION (2 Large Feature Cards with Pastel Vector Banners)        */}
-      {/* ========================================================================= */}
-      <section className="w-full py-16 sm:py-24 lg:py-28 border-t border-slate-200/80">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14">
-            <div>
-              <h2 className="text-4xl sm:text-5xl font-bold font-display text-[#141522] tracking-tight">
-                Blog
-              </h2>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-500 font-sans max-w-sm text-left sm:text-right">
-              In our blog you can read articles written by experts in the field of marketing and business.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {/* Blog Card 1: Clean Up Email Strategy */}
-            <Link
-              to="/blog/$slug"
-              params={{ slug: 'what-local-seo-actually-means-for-a-home-service-business-2026' }}
-              className="group flex flex-col justify-between rounded-3xl bg-white border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all"
-            >
-              <div>
-                {/* Pastel Peach/Pink Illustration Header */}
-                <div className="h-48 sm:h-56 bg-[#FEE4D2] p-6 relative overflow-hidden flex items-center justify-center border-b border-[#FDCBB0]/50">
-                  {/* Category Pill Tag */}
-                  <div className="absolute top-4 right-4 z-10">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#141522] text-white">
-                      Local SEO
-                    </span>
-                  </div>
-
-                  {/* Vector Art: Envelope / geometric lines */}
-                  <div className="relative flex items-center justify-center">
-                    <div className="w-24 h-24 rounded-full bg-[#FF80BF] opacity-80" />
-                    <div className="absolute w-20 h-14 rounded-xl bg-white border-2 border-[#141522] shadow-sm flex items-center justify-center rotate-3">
-                      <Send className="w-6 h-6 text-[#141522]" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 sm:p-8 space-y-2.5">
-                  <h3 className="font-bold font-display text-lg sm:text-xl text-[#141522] group-hover:text-rose-600 transition-colors leading-snug">
-                    Clean up your Local SEO strategy for better customer calls
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed line-clamp-2">
-                    Local search remains one of the most powerful tools for businesses to connect with their audience and drive conversions.
-                  </p>
-                </div>
-              </div>
-            </Link>
-
-            {/* Blog Card 2: Search Engine Site Promotion */}
-            <Link
-              to="/blog/$slug"
-              params={{ slug: 'core-web-vitals-explained-for-business-owners-no-jargon' }}
-              className="group flex flex-col justify-between rounded-3xl bg-white border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all"
-            >
-              <div>
-                {/* Pastel Pink Illustration Header */}
-                <div className="h-48 sm:h-56 bg-[#FFCCE5] p-6 relative overflow-hidden flex items-center justify-center border-b border-pink-200">
-                  {/* Category Pill Tag */}
-                  <div className="absolute top-4 right-4 z-10">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#141522] text-white">
-                      Speed & Web
-                    </span>
-                  </div>
-
-                  {/* Vector Art: Browser Window with www. */}
-                  <div className="relative w-44 h-28 rounded-xl bg-white border-2 border-[#141522] shadow-sm p-2 flex flex-col justify-between">
-                    <div className="flex items-center gap-1 border-b border-slate-100 pb-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                    </div>
-                    <div className="flex items-center justify-center py-2">
-                      <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-300 font-mono text-[11px] font-bold text-[#141522]">
-                        www.
-                      </span>
-                    </div>
-                    <div className="w-full h-1.5 rounded bg-slate-100" />
-                  </div>
-                </div>
-
-                <div className="p-6 sm:p-8 space-y-2.5">
-                  <h3 className="font-bold font-display text-lg sm:text-xl text-[#141522] group-hover:text-rose-600 transition-colors leading-snug">
-                    Search engine site promotion or contextual advertising. What to choose?
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed line-clamp-2">
-                    SEO and contextual advertising are two internet marketing tools that are used to attract visitors to the site. But which one is better?
-                  </p>
-                </div>
-              </div>
-            </Link>
-          </div>
-
-          {/* Centered Button: More Articles */}
-          <div className="mt-10 sm:mt-12 text-center">
-            <Link
-              to="/blog"
-              className="inline-flex items-center justify-center px-8 py-3 rounded-full text-xs sm:text-sm font-bold text-white bg-[#141522] hover:bg-black transition-all active:scale-95 shadow-sm"
-            >
-              <span>More articles</span>
-            </Link>
           </div>
         </div>
       </section>

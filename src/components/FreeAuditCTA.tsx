@@ -36,26 +36,26 @@ const VARIANT_COPY: Record<FreeAuditCtaVariant, VariantContent> = {
   default: {
     headline: "See Why You're Losing Customers to Competitors on Google",
     subheadline:
-      'I record a free audit of your site and your Google presence. No outside team. No sales pitch.',
+      'Get a free video audit of your site and your Google presence. No outside team. No sales pitch.',
   },
   'local-seo': {
     headline: 'See Why Competitors Beat You in the Map Pack',
     subheadline:
-      "I check your Google Business Profile, called GBP for short, and show you what's holding you back.",
+      "We inspect your Google Business Profile, called GBP for short, and show you what's holding you back.",
   },
   'national-seo': {
     headline: 'See Why Competitors Outrank You Nationally',
-    subheadline: 'Get a clear read on where your national SEO stands today.',
+    subheadline: 'Get a clear read on where your national search authority stands today.',
   },
   'aeo-geo': {
     headline: 'See Why AI Tools Recommend Your Competitors',
     subheadline:
-      'Find out if ChatGPT and Google AI Overviews even know your business exists.',
+      'Find out if ChatGPT, Perplexity, and Google AI Overviews even know your business exists.',
   },
   'hosting-care': {
     headline: "See What's Slowing Down Your Website",
     subheadline:
-      "I check your site's speed and security before I recommend a care plan.",
+      "We check your site's speed, Core Web Vitals, and security before recommending a care plan.",
   },
 }
 
@@ -171,7 +171,7 @@ export function FreeAuditCTA({
               Check Your Ranking
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              I review your Google Business Profile, citations, and Map Pack spot.
+              We review your Google Business Profile, citations, and Map Pack spot.
             </p>
           </div>
 
@@ -194,10 +194,10 @@ export function FreeAuditCTA({
               <UserCheck className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold font-display text-[#0B132B] mb-2">
-              Talk to the Real Expert
+              Senior Technical Team
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              No account manager. You get me, the founder.
+              No junior account managers. Work directly with senior technical strategists.
             </p>
           </div>
         </div>
@@ -210,7 +210,7 @@ export function FreeAuditCTA({
             </div>
             <div>
               <p className="text-base sm:text-lg font-medium text-slate-100 font-sans leading-relaxed">
-                Every audit is a real video. You see exactly what I check and why.
+                Every audit is a real video screen recording. See exact technical bottlenecks and actionable growth steps.
               </p>
             </div>
           </div>
@@ -240,7 +240,7 @@ export function FreeAuditCTA({
               What if my site is fine?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              Then I'll tell you. You lose five minutes, not money.
+              We tell you upfront. You gain clear insight in five minutes with zero downside.
             </p>
           </div>
 
@@ -271,13 +271,13 @@ export function FreeAuditCTA({
           {/* Risk Reversal Line */}
           <div className="mt-5 flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-600 font-sans">
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>No card. No signup. No obligation. If I find nothing wrong, I'll tell you.</span>
+            <span>No card. No signup. No obligation. If your digital presence is already dialed in, we confirm it immediately.</span>
           </div>
 
           {/* Urgency Line */}
           <div className="mt-2.5 flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-amber-800 font-sans">
             <CalendarClock className="w-4 h-4 text-[#F59E0B] shrink-0" />
-            <span>I record every audit myself. I only take 8 requests a week.</span>
+            <span>Audits are recorded individually by our technical team. Capacity is strictly limited to 8 requests per week.</span>
           </div>
         </div>
       </div>

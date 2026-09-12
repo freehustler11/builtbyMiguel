@@ -119,7 +119,7 @@ export const Route = createFileRoute('/local-seo-gbp')({
       {
         name: 'description',
         content:
-          'I provide local seo services that help trade contractors rank in the Google Map Pack and get direct calls. Claim your free 5-minute video audit right now.',
+          'We provide local seo services that help trade contractors and local businesses rank in the Google Map Pack and win direct calls. Request a free 5-minute video audit.',
       },
       {
         name: 'keywords',
@@ -135,7 +135,7 @@ export const Route = createFileRoute('/local-seo-gbp')({
       {
         property: 'og:description',
         content:
-          'Turn Google Maps into a steady source of customer calls with dedicated GBP setup, citation cleanup, and review systems. Work directly with Miguel.',
+          'We provide local seo services that help trade contractors and local businesses rank in the Google Map Pack and win direct calls. Request a free 5-minute video audit.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/local-seo-gbp' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -193,7 +193,7 @@ function LocalSeoGbpPage() {
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide direct local seo services for trade contractors and service businesses that need more local customer calls. If you serve a specific city or county, ranking in the Google Map Pack is your best source of new work. Traditional marketing agencies charge big retainers for cookie cutter templates and vanity reports. As an independent local seo company, I optimize your profile and citations myself so nearby homeowners call you first.
+          We provide direct local seo services for trade contractors and service businesses that need more local customer calls. If you serve a specific city or regional territory, ranking in the Google Map Pack is your most profitable source of new work. Traditional marketing agencies charge big retainers for cookie-cutter templates and vanity reports. We optimize your Google Business Profile and local citation network so nearby homeowners call you first.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">

@@ -85,7 +85,7 @@ export const Route = createFileRoute('/websites-care')({
       {
         name: 'description',
         content:
-          'I provide reliable website maintenance services and website care plans for contractors. Keep your site fast, secure, and updated with zero stress.',
+          'We provide reliable website maintenance services and website care plans for contractors and small businesses. Keep your site fast, secure, and always online.',
       },
       {
         property: 'og:title',
@@ -94,7 +94,7 @@ export const Route = createFileRoute('/websites-care')({
       {
         property: 'og:description',
         content:
-          'I provide reliable website maintenance services and website care plans for contractors. Keep your site fast, secure, and updated with zero stress.',
+          'We provide reliable website maintenance services and website care plans for contractors and small businesses. Keep your site fast, secure, and always online.',
       },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: 'https://builtbymiguel.net/websites-care' },
@@ -107,7 +107,7 @@ export const Route = createFileRoute('/websites-care')({
       {
         name: 'twitter:description',
         content:
-          'I provide reliable website maintenance services and website care plans for contractors. Keep your site fast, secure, and updated with zero stress.',
+          'We provide reliable website maintenance services and website care plans for contractors and small businesses. Keep your site fast, secure, and always online.',
       },
       { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
     ],
@@ -158,7 +158,7 @@ function WebsitesCarePage() {
 
         {/* Intro Lead Paragraph with Primary & Secondary Keywords */}
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide dedicated website maintenance services and website care plans designed specifically for busy trade contractors. High-speed edge hosting and sub-second page performance are built right into every plan, so your site stays fast, secure, and ready for customer calls.
+          We provide dedicated website maintenance services and website care plans designed specifically for busy trade contractors and service businesses. High-speed edge hosting and sub-second page performance are built right into every plan, ensuring your site stays fast, secure, and ready for customer calls. Never worry about broken plugins, server crashes, or unapplied security patches again.
         </p>
 
         {/* Hero CTAs: Free Website Demo Only */}

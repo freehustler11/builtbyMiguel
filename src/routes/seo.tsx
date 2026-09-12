@@ -22,17 +22,17 @@ const CONTRACTOR_SEO_FAQ = [
   {
     question: 'How long does contractor SEO take to produce qualified phone calls?',
     answer:
-      'Most contractors see ranking improvements within 60 to 90 days. Local map rankings usually move first as I clean up your listings and profile data. Competitive organic terms follow as I build out your service pages.',
+      'Most contractors see ranking improvements within 60 to 90 days. Local map rankings usually move first as we clean up your listings and profile data. Competitive organic terms follow as we build out your dedicated service pages.',
   },
   {
     question: 'How is working with an independent seo consultant different from hiring an agency?',
     answer:
-      'You communicate directly with me on every update. Traditional agencies hand your account off to an inexperienced coordinator while charging you for overhead. I inspect the search data, write the technical code, and optimize your pages myself.',
+      'You communicate directly with senior search engineers on every update. Traditional agencies hand your account off to an inexperienced coordinator while charging for overhead. We inspect search data, engineer the technical code, and optimize pages directly.',
   },
   {
     question: 'Do you require long term contracts or high upfront commitments?',
     answer:
-      'No. I work on straightforward month to month agreements. You stay because your phone rings with qualified jobs, not because you signed a restrictive annual contract.',
+      'No. We work on straightforward month to month agreements. You stay because your phone rings with qualified jobs, not because you signed a restrictive annual contract.',
   },
 ]
 
@@ -102,12 +102,12 @@ export const Route = createFileRoute('/seo')({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       {
-        title: 'SEO Services for Contractors: Rank & Win | built by Miguel',
+        title: 'SEO Services for Small Business & Contractors | built by Miguel',
       },
       {
         name: 'description',
         content:
-          'I provide direct SEO services for contractors who need real customer calls. No agency fluff or vanity metrics. Get your free 5-minute video audit today.',
+          'We provide proven SEO services for small business and trade contractors. Dominate Google Maps and organic search to generate exclusive customer calls.',
       },
       {
         name: 'keywords',
@@ -118,12 +118,12 @@ export const Route = createFileRoute('/seo')({
       { property: 'og:type', content: 'website' },
       {
         property: 'og:title',
-        content: 'SEO Services for Contractors: Rank & Win | built by Miguel',
+        content: 'SEO Services for Small Business & Contractors | built by Miguel',
       },
       {
         property: 'og:description',
         content:
-          'Direct SEO services for trade contractors who need real phone calls. Work directly with an engineer who optimizes your rankings without agency fluff.',
+          'We provide proven SEO services for small business and trade contractors. Dominate Google Maps and organic search to generate exclusive customer calls.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/seo' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -164,13 +164,13 @@ function SeoPillarPage() {
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6 sm:mb-8">
           Direct{' '}
           <span className="bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-            SEO Services for Contractors
+            SEO Services for Small Business
           </span>{' '}
-          Who Want Real Calls.
+          That Drive Real Customer Calls.
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide direct seo services for contractors who want steady customer calls without paying heavy agency markups. Whether you run a local roofing company or a regional trade business, you work with me alone. Traditional marketing agencies charge big monthly retainers for cookie cutter templates and vanity metric reports. As an independent seo consultant, I focus on the technical search work that actually rings your phone.
+          We provide direct SEO services for small business owners and trade contractors who want steady customer calls without paying heavy agency markups. Whether you run a local plumbing company or a regional trade business, you work directly with experienced search engineers. Traditional marketing agencies charge high monthly retainers for cookie-cutter templates and vanity metric reports. We focus on the technical search architecture that actually rings your phone.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">

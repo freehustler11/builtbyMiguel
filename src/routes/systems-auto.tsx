@@ -80,7 +80,7 @@ export const Route = createFileRoute('/systems-auto')({
       {
         name: 'description',
         content:
-          'I provide business automation services and workflow automation consulting for contractors. Route leads instantly to your phone and stop manual busywork.',
+          'We provide business automation services and workflow automation consulting for contractors. Route leads instantly to technician phones and eliminate manual busywork.',
       },
       {
         name: 'keywords',
@@ -97,7 +97,7 @@ export const Route = createFileRoute('/systems-auto')({
       {
         property: 'og:description',
         content:
-          'Route customer leads to your phone in seconds. Custom webhook pipelines, instant SMS dispatch, and automated client intake.',
+          'We provide business automation services and workflow automation consulting for contractors. Route leads instantly to technician phones and eliminate manual busywork.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/systems-auto' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -110,7 +110,7 @@ export const Route = createFileRoute('/systems-auto')({
       {
         name: 'twitter:description',
         content:
-          'Route customer leads to your phone in seconds. Custom webhook pipelines, instant SMS dispatch, and automated client intake.',
+          'We provide business automation services and workflow automation consulting for contractors. Route leads instantly to technician phones and eliminate manual busywork.',
       },
       { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
     ],
@@ -157,7 +157,7 @@ function SystemsAutoPage() {
 
         {/* Lead Paragraph with Primary & Secondary Keywords */}
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide business automation services, business process automation consulting, and marketing automation for small business owners who are tired of losing jobs to slow replies. My systems send website leads straight to your phone by text, sync with your scheduling software, and confirm appointments right away.
+          We provide business automation services, workflow automation consulting, and small business automation systems for trade contractors who are tired of losing jobs to slow replies. Our systems send website leads straight to your phone by text, sync with your scheduling software, and confirm appointments right away. Speed-to-lead is the single biggest factor in closing high-ticket service work.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">

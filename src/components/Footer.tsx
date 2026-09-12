@@ -13,7 +13,7 @@ export function Footer() {
               built by Miguel
             </Link>
             <p className="text-xs text-slate-500 font-sans leading-relaxed max-w-xs">
-              We will help you show your ads to more people for less money.
+              Digital marketing agency for small business. Custom web development, Google Maps SEO, and automated lead dispatch.
             </p>
             <div className="flex items-center gap-3 pt-2 text-[#141522]">
               <span className="font-extrabold text-sm font-sans">in</span>

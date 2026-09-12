@@ -103,7 +103,7 @@ export const Route = createFileRoute('/websites')({
       {
         name: 'description',
         content:
-          'I provide custom web design for contractors who need fast mobile sites that turn visitors into calls. Claim your free interactive website demo today.',
+          'High-speed web design for contractors and small businesses that turn mobile visitors into exclusive phone calls. Get your free custom website demo.',
       },
       {
         name: 'keywords',
@@ -119,7 +119,7 @@ export const Route = createFileRoute('/websites')({
       {
         property: 'og:description',
         content:
-          'Fast custom websites built specifically for contractors and local service businesses. Sub-second speed and mobile call funnels built by Miguel.',
+          'High-speed web design for contractors and small businesses that turn mobile visitors into exclusive phone calls. Get your free custom website demo.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/websites' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -166,7 +166,7 @@ function WebsitesPillarPage() {
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide custom web design for contractors who want high-speed websites that turn local visitors into booked service calls. Most trade websites are built on bloated WordPress templates that load slowly and lose customers before the page even opens. As an independent engineer delivering specialized website design services, I write clean React code that opens instantly on every smartphone. Whether you need complete web design services or monthly care for your existing setup, you work directly with me without agency layers.
+          We deliver custom web design for contractors who want high-speed websites that convert local visitors into booked service calls. Most trade websites are built on bloated WordPress templates that load slowly and lose customers before the page even renders. Our engineering team writes clean, modern code that opens in under a second on every smartphone. Whether you need a brand-new website build or ongoing care, you receive senior engineering precision without agency layers.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">

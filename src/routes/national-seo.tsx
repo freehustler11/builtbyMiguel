@@ -119,7 +119,7 @@ export const Route = createFileRoute('/national-seo')({
       {
         name: 'description',
         content:
-          'I provide national seo services that help B2B and franchise brands win broad search rankings. No agency fluff. Get your free 5-minute video audit today.',
+          'We provide national seo services that help multi-location, franchise, and B2B brands scale organic search reach across the country. Get a free video audit.',
       },
       {
         name: 'keywords',
@@ -135,7 +135,7 @@ export const Route = createFileRoute('/national-seo')({
       {
         property: 'og:description',
         content:
-          'Scale your organic search rankings across the United States. Custom national SEO, B2B search funnels, and franchise search architecture built by Miguel.',
+          'We provide national seo services that help multi-location, franchise, and B2B brands scale organic search reach across the country. Get a free video audit.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/national-seo' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -193,7 +193,7 @@ function NationalSeoPage() {
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide national seo services for growing businesses that need organic search rankings across multiple states or the entire country. If your company sells business services, manufactures products, or operates multiple branches, broad search visibility is how you win high-value contracts. Traditional marketing agencies charge big monthly retainers for generic templates and confusing reports. As an independent national seo company, I build custom search architecture that puts your brand in front of qualified buyers nationwide.
+          We provide high-impact national seo services for growing multi-location brands, franchise networks, and B2B companies looking to expand their organic search authority nationwide. When competing across state lines, basic local tactics fall short. We engineer technical site structures, programmatic keyword clusters, and high-authority digital assets that capture search demand in every market you serve.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">

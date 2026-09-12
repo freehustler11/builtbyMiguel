@@ -120,7 +120,7 @@ export const Route = createFileRoute('/aeo-geo')({
       {
         name: 'description',
         content:
-          'I provide generative engine optimization services so ChatGPT and Perplexity cite your brand. No agency fluff. Get your free 5-minute video audit today.',
+          'We provide generative engine optimization services so ChatGPT, Perplexity, and Google AI Overviews cite and recommend your brand. Request your free audit.',
       },
       {
         name: 'keywords',
@@ -136,7 +136,7 @@ export const Route = createFileRoute('/aeo-geo')({
       {
         property: 'og:description',
         content:
-          'Structure your company data so ChatGPT, Perplexity, and Google AI Overviews cite your business first. Direct AI search engineering by Miguel.',
+          'We provide generative engine optimization services so ChatGPT, Perplexity, and Google AI Overviews cite and recommend your brand. Request your free audit.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net/aeo-geo' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -194,7 +194,7 @@ function AeoGeoPage() {
         </h1>
 
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide generative engine optimization services for trade contractors and modern businesses that want to be cited by artificial intelligence. Generative Engine Optimization, or GEO, helps your brand appear inside AI synthesized responses. Answer Engine Optimization, or AEO, structures your company details so answer engines give your business as the direct solution. While a traditional generative engine optimization agency charges big retainers for vague promises, I engineer structured entity data and clean code so tools like ChatGPT, Perplexity, and Google AI Overviews cite your business first.
+          We provide cutting-edge generative engine optimization services to ensure artificial intelligence tools cite, recommend, and feature your business. As customers shift from traditional search bars to ChatGPT, Perplexity, and Google AI Overviews, legacy SEO alone is no longer enough. We structure your entity data, schema markup, and technical knowledge graph so AI models recognize your company as the authoritative answer.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 sm:pt-10">

@@ -32,7 +32,7 @@ const WEBSITE_DESIGN_FAQ = [
   {
     question: 'Do you use WordPress, Wix, or page builders like Elementor?',
     answer:
-      'No. I build every site using modern React and clean code. Page builders add heavy database bloat, dozens of vulnerable plugins, and slow loading times on mobile devices. Clean code loads in under one second and turns more visitors into calls.',
+      'No. We build every site using modern React and clean code. Page builders add heavy database bloat, dozens of vulnerable plugins, and slow loading times on mobile devices. Clean code loads in under one second and turns more visitors into calls.',
   },
   {
     question: 'What happens after my new website is launched?',
@@ -87,7 +87,7 @@ export const Route = createFileRoute('/website-design')({
       {
         name: 'description',
         content:
-          'I provide custom website redesign services for contractors who need fast mobile sites that turn clicks into calls. Claim your free interactive website demo.',
+          'We provide custom website redesign services for contractors and small businesses that need lightning-fast mobile sites that convert visitors into calls. Request a demo.',
       },
       {
         property: 'og:title',
@@ -96,7 +96,7 @@ export const Route = createFileRoute('/website-design')({
       {
         property: 'og:description',
         content:
-          'I provide custom website redesign services for contractors who need fast mobile sites that turn clicks into calls. Claim your free interactive website demo.',
+          'We provide custom website redesign services for contractors and small businesses that need lightning-fast mobile sites that convert visitors into calls. Request a demo.',
       },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: 'https://builtbymiguel.net/website-design' },
@@ -109,7 +109,7 @@ export const Route = createFileRoute('/website-design')({
       {
         name: 'twitter:description',
         content:
-          'I provide custom website redesign services for contractors who need fast mobile sites that turn clicks into calls. Claim your free interactive website demo.',
+          'We provide custom website redesign services for contractors and small businesses that need lightning-fast mobile sites that convert visitors into calls. Request a demo.',
       },
       { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
     ],
@@ -161,7 +161,7 @@ function WebsiteDesignPage() {
 
         {/* Intro Lead with Primary & Secondary Keywords */}
         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-          I provide custom website redesign services and new website builds for trade contractors who are tired of losing jobs to slow pages. Whether you need a fresh build from scratch or a complete rebuild of an old site, I write clean code that loads in under one second.
+          We provide custom website redesign services and new website builds for trade contractors who are tired of losing jobs to slow pages. Whether you need a fresh build from scratch or a complete rebuild of an outdated site, we engineer clean code that loads in under one second. Slow websites kill advertising and SEO conversion rates. We rebuild your site to load instantly and prompt immediate phone calls.
         </p>
 
         {/* Hero CTAs */}

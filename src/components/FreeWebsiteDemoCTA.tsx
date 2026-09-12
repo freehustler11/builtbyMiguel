@@ -36,7 +36,7 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
             See Your New Website Before You Pay
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 font-sans leading-relaxed">
-            I build a real working preview using your business info. No template. No guesswork.
+            We build a real working preview using your business info. No templates. No guesswork.
           </p>
         </div>
 
@@ -111,7 +111,7 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
             </div>
           </div>
           <p className="mt-3 text-center text-xs text-slate-500 font-sans">
-            A real page I build. Not an AI concept image.
+            A real production page we build. Not an AI concept image.
           </p>
         </div>
 
@@ -165,7 +165,7 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
             </div>
             <div>
               <p className="text-base sm:text-lg font-medium text-slate-100 font-sans leading-relaxed">
-                I build every demo on the same stack real clients get. No shortcuts.
+                Every demo is built on the same production stack real clients get. No shortcuts.
               </p>
             </div>
           </div>
@@ -208,7 +208,7 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
               How long does it take?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              Three business days after I get your details.
+              Three business days after receiving your details.
             </p>
           </div>
         </div>
@@ -217,7 +217,7 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
         <div className="flex flex-col items-center text-center max-w-xl mx-auto">
           <Link
             to="/website-demo"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-[#0B132B] font-bold text-base sm:text-lg font-display tracking-tight shadow-md hover:shadow-lg transition-all duration-200 group"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-[#0B132B] font-bold text-base sm:text-lg font-display tracking-tight shadow-md hover:shadow-lg transition-all duration-200 group cursor-pointer"
           >
             <span>Get My Free Website Demo</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
@@ -232,7 +232,7 @@ export function FreeWebsiteDemoCTA({ className = '' }: FreeWebsiteDemoCTAProps) 
           {/* Urgency Line */}
           <div className="mt-2.5 flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-amber-800 font-sans">
             <Hammer className="w-4 h-4 text-[#F59E0B] shrink-0" />
-            <span>Each demo is hand built. I only take 5 requests a week.</span>
+            <span>Each demo is custom engineered. Capacity is limited to 5 requests per week.</span>
           </div>
         </div>
       </div>

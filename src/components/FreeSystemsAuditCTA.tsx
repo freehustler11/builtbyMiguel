@@ -36,7 +36,7 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
             See What's Slowing Down Your Business Behind the Scenes
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 font-sans leading-relaxed">
-            I record a free video review of your tools and workflow. I show you what's costing you time.
+            We record a free video review of your tools and workflows to show you what is costing you time.
           </p>
         </div>
 
@@ -126,7 +126,7 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
               Find the Time Sink
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              I show you exactly which task is eating your week.
+              We show you exactly which manual task is eating your week.
             </p>
           </div>
 
@@ -152,7 +152,7 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
               Get a Straight Read
             </h3>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              No sales script. Just what I'd fix first.
+              No sales scripts. Just the exact bottlenecks we would fix first.
             </p>
           </div>
         </div>
@@ -165,7 +165,7 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
             </div>
             <div>
               <p className="text-base sm:text-lg font-medium text-slate-100 font-sans leading-relaxed">
-                Every audit is a real video. You see exactly what I check and why.
+                Every audit is a real video screen recording. See exact bottlenecks and actionable automations.
               </p>
             </div>
           </div>
@@ -182,7 +182,7 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
               Do I need to install anything?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              No. I just need to see how you work today.
+              No. We just review how your workflow operates today.
             </p>
           </div>
 
@@ -192,10 +192,10 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
               <ThumbsUp className="w-4 h-4" />
             </div>
             <h4 className="text-base font-bold font-display text-[#0B132B] mb-2">
-              What if my systems are fine?
+              What if our systems are fine?
             </h4>
             <p className="text-sm text-slate-600 font-sans leading-relaxed">
-              Then I'll tell you that. You lose ten minutes, not money.
+              We tell you upfront. You gain clear insight with zero downside.
             </p>
           </div>
 
@@ -217,7 +217,7 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
         <div className="flex flex-col items-center text-center max-w-xl mx-auto">
           <Link
             to="/systems-audit"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-[#0B132B] font-bold text-base sm:text-lg font-display tracking-tight shadow-md hover:shadow-lg transition-all duration-200 group"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-[#0B132B] font-bold text-base sm:text-lg font-display tracking-tight shadow-md hover:shadow-lg transition-all duration-200 group cursor-pointer"
           >
             <span>Get My Free Systems Audit</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
@@ -232,7 +232,7 @@ export function FreeSystemsAuditCTA({ className = '' }: FreeSystemsAuditCTAProps
           {/* Urgency Line */}
           <div className="mt-2.5 flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-amber-800 font-sans">
             <CalendarClock className="w-4 h-4 text-[#F59E0B] shrink-0" />
-            <span>I record every audit myself. I only take 5 requests a week.</span>
+            <span>Audits are personally recorded by our technical team. Capacity is limited to 5 requests per week.</span>
           </div>
         </div>
       </div>
