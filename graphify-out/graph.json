@@ -3891,7 +3891,7 @@
       "file_type": "code",
       "norm_label": "blogpostpage()",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L621"
+      "source_location": "L622"
     },
     {
       "id": "src_routes_blog_slug_calculatereadingtime",
@@ -6147,7 +6147,7 @@
       "file_type": "code",
       "norm_label": "blogindexpage()",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L78"
+      "source_location": "L79"
     },
     {
       "id": "src_routes_blog_index_calculatereadingtime",
@@ -6159,7 +6159,7 @@
       "file_type": "code",
       "norm_label": "calculatereadingtime()",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L63"
+      "source_location": "L64"
     },
     {
       "id": "src_routes_blog_index_formatdate",
@@ -6171,7 +6171,7 @@
       "file_type": "code",
       "norm_label": "formatdate()",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L68"
+      "source_location": "L69"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_apply_reasoning",
@@ -56415,7 +56415,7 @@
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L15"
+      "source_location": "L16"
     },
     {
       "id": "agents_product_marketing",
@@ -112370,7 +112370,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L176",
+      "source_location": "L180",
       "weight": 1.0
     },
     {
@@ -112382,7 +112382,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L226",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -112394,7 +112394,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -112406,7 +112406,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L654",
+      "source_location": "L655",
       "weight": 1.0
     },
     {
@@ -112418,7 +112418,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L667",
+      "source_location": "L668",
       "weight": 1.0
     },
     {
@@ -112430,7 +112430,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L668",
+      "source_location": "L669",
       "weight": 1.0
     },
     {
@@ -112442,7 +112442,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/blog/$slug.tsx",
-      "source_location": "L760",
+      "source_location": "L761",
       "weight": 1.0
     },
     {
@@ -121974,7 +121974,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -126269,7 +126269,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -205807,7 +205807,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -205818,7 +205818,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L63",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -205829,7 +205829,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L68",
+      "source_location": "L69",
       "weight": 1.0
     },
     {
@@ -216318,7 +216318,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/blog/index.tsx",
-      "source_location": "L60",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -216735,5 +216735,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2a7e9e6281dce2b77e1df82b96877156ea9f9de2"
+  "built_at_commit": "6bb3e8ff4576b2713fd794a9c9df7f1814f5a726"
 }

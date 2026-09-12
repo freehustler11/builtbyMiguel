@@ -30,15 +30,15 @@
     "semantic_hash": ""
   },
   "src/routes/__root.tsx": {
-    "mtime": 1789225443.351825,
-    "seen": 1789226236.3474202,
-    "ast_hash": "03c72a45ad55abeb674638fce9c6d439",
+    "mtime": 1789226886.3032486,
+    "seen": 1789227713.5966272,
+    "ast_hash": "991fbc87a8152b011d29d723a4ccfc65",
     "semantic_hash": ""
   },
   "src/routes/about.tsx": {
-    "mtime": 1789180464.3523204,
-    "seen": 1789200111.854879,
-    "ast_hash": "7cee081ba763067047308b476ba2d55d",
+    "mtime": 1789226935.8320625,
+    "seen": 1789227713.6061404,
+    "ast_hash": "c0f548230523c65638d455d0888eb85e",
     "semantic_hash": ""
   },
   "src/routes/index.tsx": {
@@ -432,28 +432,28 @@
     "semantic_hash": "393c4f769b3fd434a0916d125f48b038"
   },
   "src/components/Footer.tsx": {
-    "mtime": 1789225073.1411753,
-    "seen": 1789226236.347176,
-    "ast_hash": "a8705f385d6d8966c9353dd1ae7760ce",
+    "mtime": 1789226861.6485968,
+    "seen": 1789227713.5957966,
+    "ast_hash": "2d388446d5c3e6fe1106e78205602e5a",
     "semantic_hash": ""
   },
   "src/routes/audit.tsx": {
-    "mtime": 1789180718.8977983,
-    "seen": 1789200111.854996,
-    "ast_hash": "c4f8af2d598079ba0d2028290e616a5f",
+    "mtime": 1789227014.8015661,
+    "seen": 1789227713.6063368,
+    "ast_hash": "aec7520fa4afa77ca06f9c3e400ff455",
     "semantic_hash": ""
   },
   "src/routes/contact.tsx": {
-    "mtime": 1789180718.9055347,
-    "seen": 1789200111.855013,
-    "ast_hash": "edee66cdcede42e976ec8ec671faceb3",
+    "mtime": 1789226992.649371,
+    "seen": 1789227713.6063528,
+    "ast_hash": "f953b0b8f36a163a23f2f7bcbd963bfd",
     "semantic_hash": ""
   },
   "src/routes/cookie-policy.tsx": {
-    "mtime": 1788437882.8129559,
-    "seen": 1789086457.9558458,
-    "ast_hash": "21e86dee40f6dda8288314d65724cc4a",
-    "semantic_hash": "21e86dee40f6dda8288314d65724cc4a"
+    "mtime": 1789227258.4016657,
+    "seen": 1789227713.6063573,
+    "ast_hash": "cdc2d6fd33d44ea21caabc49eb199e41",
+    "semantic_hash": ""
   },
   "src/routes/local-seo-gbp.tsx": {
     "mtime": 1789216261.7566333,
@@ -462,10 +462,10 @@
     "semantic_hash": ""
   },
   "src/routes/privacy-policy.tsx": {
-    "mtime": 1788437859.6402626,
-    "seen": 1789086457.9559143,
-    "ast_hash": "397f6679ccd04d6f77474457cd4f1bb7",
-    "semantic_hash": "397f6679ccd04d6f77474457cd4f1bb7"
+    "mtime": 1789227236.857929,
+    "seen": 1789227713.606421,
+    "ast_hash": "93d31dc9bd5f66f531a2a2ac111ca3eb",
+    "semantic_hash": ""
   },
   "src/routes/systems-auto.tsx": {
     "mtime": 1789219093.9819882,
@@ -474,27 +474,27 @@
     "semantic_hash": ""
   },
   "src/routes/terms.tsx": {
-    "mtime": 1788437878.3408508,
-    "seen": 1789086457.9559324,
-    "ast_hash": "982eb53ae9c9a2ddd02cfe86b76ad0dc",
-    "semantic_hash": "982eb53ae9c9a2ddd02cfe86b76ad0dc"
+    "mtime": 1789227247.4278488,
+    "seen": 1789227713.6065361,
+    "ast_hash": "a18e5a0abf93e96f50a59ceae0594c16",
+    "semantic_hash": ""
   },
   "src/routes/work.tsx": {
-    "mtime": 1789180516.4595184,
-    "seen": 1789200111.855158,
-    "ast_hash": "552f873f3176455f0feeec37d5429e5f",
+    "mtime": 1789226969.8835492,
+    "seen": 1789227713.6066368,
+    "ast_hash": "09dd1f9f5e8187b8f338d01ea75b1ab4",
     "semantic_hash": ""
   },
   "src/routes/thank-you.tsx": {
-    "mtime": 1788437842.0488522,
-    "seen": 1789086457.9559362,
-    "ast_hash": "a1151f18e86bf29bf8aff94657de3977",
-    "semantic_hash": "a1151f18e86bf29bf8aff94657de3977"
+    "mtime": 1789227273.1759138,
+    "seen": 1789227713.6065445,
+    "ast_hash": "260fc5fdbf6c2daa867f2d4cc56edb09",
+    "semantic_hash": ""
   },
   "src/routes/$.tsx": {
-    "mtime": 1789185918.4362068,
-    "seen": 1789200111.8548675,
-    "ast_hash": "cf95e1952109b0fecfa0b9283235b54f",
+    "mtime": 1789227284.1276157,
+    "seen": 1789227713.596621,
+    "ast_hash": "3dd1f7acba9b73034f3e62f689f62be6",
     "semantic_hash": ""
   },
   "src/server/forms.ts": {
@@ -966,16 +966,16 @@
     "semantic_hash": ""
   },
   "src/routes/blog/$slug.tsx": {
-    "mtime": 1789194260.1248295,
-    "seen": 1789200111.8550017,
-    "ast_hash": "ea97ca9cc4d35b86a158b61152173483",
+    "mtime": 1789227224.4501662,
+    "seen": 1789227713.6063426,
+    "ast_hash": "7229db926e75461849715b2415ff7515",
     "semantic_hash": ""
   },
   "src/routes/blog/index.tsx": {
-    "mtime": 1788438815.087762,
-    "seen": 1789086457.9558387,
-    "ast_hash": "4be5008f463e91c6e39df550934085fd",
-    "semantic_hash": "4be5008f463e91c6e39df550934085fd"
+    "mtime": 1789227086.6400175,
+    "seen": 1789227713.6063478,
+    "ast_hash": "eeea1f3000c765ed109837210e6cfeb3",
+    "semantic_hash": ""
   },
   "src/routes/login.tsx": {
     "mtime": 1789130363.3545513,
@@ -2772,8 +2772,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1789225728.2370338,
-    "seen": 1789226236.3497102,
+    "mtime": 1789227417.1420069,
+    "seen": 1789227713.6096842,
     "ast_hash": "e6f7f8c23f02e1c7b884503a9e17e018",
     "semantic_hash": ""
   },
@@ -3396,9 +3396,9 @@
     "semantic_hash": ""
   },
   "src/components/FreeSystemsAuditCTA.tsx": {
-    "mtime": 1789194374.100634,
-    "seen": 1789200111.8546188,
-    "ast_hash": "4ac2866c572f19a0bd72fb43ebb18018",
+    "mtime": 1789227058.0029447,
+    "seen": 1789227713.5958116,
+    "ast_hash": "0e0c9d6d5cc15e9dad887b261ae257a4",
     "semantic_hash": ""
   },
   "src/components/FreeWebsiteDemoCTA.tsx": {
@@ -3420,15 +3420,15 @@
     "semantic_hash": ""
   },
   "src/routes/systems-audit.tsx": {
-    "mtime": 1789188297.336141,
-    "seen": 1789200111.8551152,
-    "ast_hash": "02651b83133e853c9ef8dc7593f73a48",
+    "mtime": 1789227064.6045113,
+    "seen": 1789227713.6064882,
+    "ast_hash": "b23f00bf418500d3d2c318443e90011a",
     "semantic_hash": ""
   },
   "src/routes/website-demo.tsx": {
-    "mtime": 1789184410.781832,
-    "seen": 1789200111.855138,
-    "ast_hash": "c17a29d12bdf4c955f07a22ac76b55ee",
+    "mtime": 1789227040.255293,
+    "seen": 1789227713.60655,
+    "ast_hash": "07796dde2ab620aa3ae956ff1e472d75",
     "semantic_hash": ""
   },
   "src/routes/websites.tsx": {

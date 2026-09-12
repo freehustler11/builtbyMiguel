@@ -47,7 +47,7 @@ export const Route = createFileRoute('/systems-audit')({
 
 function SystemsAuditPage() {
   return (
-    <div className="py-6 sm:py-10">
+    <div className="w-full bg-[#FAF8F5] dark:bg-[#0B0F17] transition-colors duration-200">
       <FreeSystemsAuditCTA />
     </div>
   )

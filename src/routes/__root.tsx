@@ -217,18 +217,11 @@ function RootComponent() {
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
   const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
   const isIsolated = isInternalPath(currentPath)
-  const isFullWidthPage =
-    currentPath === '/' ||
-    currentPath === '/seo' ||
-    currentPath.startsWith('/seo/') ||
-    currentPath === '/systems-auto' ||
-    currentPath.startsWith('/systems-auto/') ||
-    currentPath === '/websites' ||
-    currentPath.startsWith('/websites/')
+  const isFullWidthPage = !isIsolated
 
   const topProgressBar = isNavigating ? (
     <div className="fixed top-0 left-0 right-0 z-[99999] pointer-events-none">
-      <div className="h-0.5 sm:h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-rose-500 shadow-[0_0_10px_rgba(37,99,235,0.8)] animate-pulse" />
+      <div className="h-0.5 sm:h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 shadow-[0_0_10px_rgba(37,99,235,0.8)] animate-pulse" />
     </div>
   ) : null
 
@@ -253,7 +246,7 @@ function RootComponent() {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-[#fafafc] dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 selection:bg-slate-900 selection:text-white dark:selection:bg-rose-500 antialiased font-sans transition-colors duration-200 min-h-screen flex flex-col">
+      <body className="bg-[#FAF8F5] dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 selection:bg-amber-400 selection:text-slate-950 dark:selection:bg-amber-400 dark:selection:text-slate-950 antialiased font-sans transition-colors duration-200 min-h-screen flex flex-col">
         {topProgressBar}
         <Navbar />
         <main className={isFullWidthPage ? "flex-1 w-full" : "flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12"}>

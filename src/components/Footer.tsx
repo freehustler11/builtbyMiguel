@@ -72,6 +72,7 @@ export function Footer() {
               <li><Link to="/audit" className="hover:text-black dark:hover:text-white">Free Audit</Link></li>
               <li><Link to="/website-demo" className="hover:text-black dark:hover:text-white">Free Demo</Link></li>
               <li><Link to="/contact" className="hover:text-black dark:hover:text-white">Contact</Link></li>
+              <li><Link to="/login" search={{ redirect: '/portal' }} className="hover:text-black dark:hover:text-white">Client Portal Login</Link></li>
             </ul>
           </div>
 
