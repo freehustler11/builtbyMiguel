@@ -2,148 +2,75 @@ import { Link, useRouterState } from '@tanstack/react-router'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
-  const routerPath = useRouterState({ select: (s) => s.location.pathname })
-  const browserPath = typeof window !== 'undefined' ? window.location.pathname : ''
-  const currentPath = routerPath || browserPath || ''
 
   return (
-    <footer className="bg-[#0B132B] text-white text-sm border-t border-slate-800 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
-          {/* Column 1: Logo & Bio */}
-          <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2.5 group inline-flex">
-              <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono font-bold text-sm">
-                M
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-base text-white font-['Space_Grotesk']">
-                  built by Miguel
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
-              </div>
+    <footer className="w-full bg-[#FAF8F5] text-[#141522] text-xs sm:text-sm border-t border-slate-200/80">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
+          {/* Column 1: Logo & Tagline */}
+          <div className="lg:col-span-4 space-y-3">
+            <Link to="/" className="font-bold text-lg text-[#141522] font-display inline-block">
+              built by Miguel
             </Link>
-
-            <p className="text-sm text-slate-300 leading-relaxed font-['IBM_Plex_Sans'] max-w-xs">
-              Fast websites, top Google Maps rankings, and automated lead systems for local businesses.
+            <p className="text-xs text-slate-500 font-sans leading-relaxed max-w-xs">
+              We will help you show your ads to more people for less money.
             </p>
-
-            <div className="pt-2 flex items-center gap-2 text-xs font-mono text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Taking on new clients this month</span>
+            <div className="flex items-center gap-3 pt-2 text-[#141522]">
+              <span className="font-extrabold text-sm font-sans">in</span>
+              <span className="w-4 h-4 rounded-full border border-[#141522] inline-block" />
+              <span className="font-serif font-bold text-sm">f</span>
+            </div>
+            <div className="pt-4 text-[11px] text-slate-400 font-mono">
+              © {currentYear} built by Miguel. All rights reserved
             </div>
           </div>
 
-          {/* Column 2: Services */}
-          <div className="space-y-4">
-            <div className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
-              Services
+          {/* Column 2: Solutions */}
+          <div className="lg:col-span-2 space-y-2.5">
+            <div className="text-xs font-bold text-[#141522] font-display">
+              Solutions
             </div>
-            <ul className="space-y-2.5 text-sm font-['IBM_Plex_Sans']">
-              <li>
-                <Link to="/seo" className="text-slate-300 hover:text-white transition-colors">
-                  SEO Services
-                </Link>
-              </li>
-              <li>
-                <Link to="/local-seo-gbp" className="text-slate-300 hover:text-white transition-colors">
-                  Local SEO & GBP
-                </Link>
-              </li>
-              <li>
-                <Link to="/national-seo" className="text-slate-300 hover:text-white transition-colors">
-                  National SEO
-                </Link>
-              </li>
-              <li>
-                <Link to="/aeo-geo" className="text-slate-300 hover:text-white transition-colors">
-                  AEO & GEO
-                </Link>
-              </li>
-              <li>
-                <Link to="/websites" className="text-slate-300 hover:text-white transition-colors">
-                  Websites & Care
-                </Link>
-              </li>
-              <li>
-                <Link to="/systems-auto" className="text-slate-300 hover:text-white transition-colors">
-                  Systems & Automation
-                </Link>
-              </li>
+            <ul className="space-y-1.5 text-xs text-slate-600 font-sans">
+              <li><Link to="/seo" className="hover:text-black">SEO</Link></li>
+              <li><Link to="/local-seo-gbp" className="hover:text-black">Local SEO</Link></li>
+              <li><Link to="/national-seo" className="hover:text-black">National SEO</Link></li>
+              <li><Link to="/aeo-geo" className="hover:text-black">AEO & GEO</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Solutions & Offers */}
-          <div className="space-y-4">
-            <div className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
-              Solutions & Proof
+          {/* Column 3: Support */}
+          <div className="lg:col-span-2 space-y-2.5">
+            <div className="text-xs font-bold text-[#141522] font-display">
+              Support
             </div>
-            <ul className="space-y-2.5 text-sm font-['IBM_Plex_Sans']">
-              <li>
-                <Link to="/audit" className="text-[#F59E0B] hover:text-amber-300 font-medium transition-colors">
-                  Free Video Audit
-                </Link>
-              </li>
-              <li>
-                <Link to="/website-demo" className="text-[#F59E0B] hover:text-amber-300 font-medium transition-colors">
-                  Free Website Demo
-                </Link>
-              </li>
-              <li>
-                <Link to="/work" className="text-slate-300 hover:text-white transition-colors">
-                  Client Work & Proof
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-slate-300 hover:text-white transition-colors">
-                  About Miguel
-                </Link>
-              </li>
+            <ul className="space-y-1.5 text-xs text-slate-600 font-sans">
+              <li><Link to="/audit" className="hover:text-black">Free Audit</Link></li>
+              <li><Link to="/website-demo" className="hover:text-black">Free Demo</Link></li>
+              <li><Link to="/contact" className="hover:text-black">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Column 4: Resources & Legal */}
-          <div className="space-y-4">
-            <div className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
-              Resources & Legal
+          {/* Column 4: Company */}
+          <div className="lg:col-span-2 space-y-2.5">
+            <div className="text-xs font-bold text-[#141522] font-display">
+              Company
             </div>
-            <ul className="space-y-2.5 text-sm font-['IBM_Plex_Sans']">
-              <li>
-                <Link to="/blog" className="text-slate-300 hover:text-white transition-colors">
-                  Blog & Articles
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-slate-300 hover:text-white transition-colors">
-                  Contact & Inquiries
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy-policy" className="text-slate-300 hover:text-white transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-slate-300 hover:text-white transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/cookie-policy" className="text-slate-300 hover:text-white transition-colors">
-                  Cookie Policy
-                </Link>
-              </li>
+            <ul className="space-y-1.5 text-xs text-slate-600 font-sans">
+              <li><Link to="/about" className="hover:text-black">About</Link></li>
+              <li><Link to="/blog" className="hover:text-black">Blog</Link></li>
+              <li><Link to="/work" className="hover:text-black">Work</Link></li>
             </ul>
           </div>
-        </div>
 
-        {/* Bottom Legal Bar */}
-        <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div>
-            © {currentYear} built by Miguel. All rights reserved.
-          </div>
-          <div className="flex items-center gap-6">
-            <span>Remote · Nationwide · U.S. Only</span>
+          {/* Column 5: Legal */}
+          <div className="lg:col-span-2 space-y-2.5">
+            <div className="text-xs font-bold text-[#141522] font-display">
+              Legal
+            </div>
+            <ul className="space-y-1.5 text-xs text-slate-600 font-sans">
+              <li><Link to="/privacy-policy" className="hover:text-black">Privacy</Link></li>
+              <li><Link to="/terms" className="hover:text-black">Terms</Link></li>
+            </ul>
           </div>
         </div>
       </div>

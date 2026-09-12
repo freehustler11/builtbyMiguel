@@ -57,7 +57,7 @@ export function Navbar() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#CBD5E1]/70 dark:border-slate-800 bg-[#F0F4F8]/95 dark:bg-[#0B132B]/95 backdrop-blur-md transition-colors duration-200">
+    <header className="sticky top-0 z-50 w-full border-b border-[#CBD5E1]/70 dark:border-slate-800 bg-[#FAF8F5]/95 dark:bg-[#141522]/95 backdrop-blur-md transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand Logo Lockup */}
