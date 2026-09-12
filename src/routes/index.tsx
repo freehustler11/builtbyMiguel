@@ -13,6 +13,10 @@ import {
   Activity,
   ShieldCheck,
   CheckCircle2,
+  Search,
+  Lock,
+  Smartphone,
+  MessageSquare,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -492,19 +496,13 @@ function HomePage() {
           </div>
 
           {/* CTA row */}
-          <div className="mt-12 sm:mt-14 flex flex-wrap items-center gap-4">
+          <div className="mt-12 sm:mt-14 flex items-center justify-start">
             <Link
               to="/audit"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
-              <span>Get Your Free Audit</span>
-            </Link>
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm cursor-pointer"
-            >
-              <span>Contact Me</span>
+              <span>Audit Your Growth Bottlenecks</span>
             </Link>
           </div>
         </div>
@@ -515,7 +513,7 @@ function HomePage() {
       {/* ========================================================================= */}
       <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#FAF8F5]/60 dark:bg-[#080B11] transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 sm:mb-16 space-y-3">
+          <div className="mb-12 sm:mb-16 space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/40">
               <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
               Deliverables & Core Pillars
@@ -523,6 +521,9 @@ function HomePage() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight">
               What You Get
             </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
+              Every deliverable is engineered as an integrated engine to capture demand, convert visitors, and retain customers without bloated tech stacks or handoff delays. Instead of juggling disconnected vendors or settling for cookie-cutter templates, you get direct founder execution backed by transparent reporting and measurable business outcomes. Each pillar is custom-built to scale with your business and deliver compounding ROI over time.
+            </p>
           </div>
 
           {/* 3 Pillar Cards Grid */}
@@ -530,31 +531,49 @@ function HomePage() {
             {/* Pillar 1: SEO That Actually Ranks */}
             <div className="group relative p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-amber-400/80 dark:hover:border-amber-500/80 transition-all duration-300 flex flex-col justify-between">
               <div className="space-y-6">
-                {/* Flat Vector Illustration 1: Map pin, wider regional outline, and chat-bubble AI icon */}
-                <div className="w-full h-48 rounded-2xl bg-gradient-to-br from-amber-50/90 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/10 border border-amber-200/60 dark:border-amber-800/40 flex items-center justify-center p-4 group-hover:scale-[1.02] transition-transform">
-                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto drop-shadow-xs" aria-label="SEO Illustration">
-                    <path
-                      d="M30 60 C 40 30, 90 20, 130 35 C 165 48, 175 80, 150 100 C 120 115, 60 110, 40 95 Z"
-                      fill="#FEF3C7"
-                      className="dark:fill-amber-950/50"
-                      stroke="#FCD34D"
-                      strokeWidth="2"
-                    />
-                    <g transform="translate(60, 35)">
-                      <path
-                        d="M20 5 C 13 5, 8 10, 8 17 C 8 25, 20 37, 20 37 C 20 37, 32 25, 32 17 C 32 10, 27 5, 20 5 Z"
-                        fill="#D97706"
-                      />
-                      <circle cx="20" cy="15" r="4" fill="#FFFFFF" />
-                    </g>
-                    <g transform="translate(125, 45)">
-                      <rect x="0" y="0" width="44" height="32" rx="8" fill="#1E293B" className="dark:fill-slate-800" />
-                      <path d="M12 32 L16 38 L22 32 Z" fill="#1E293B" className="dark:fill-slate-800" />
-                      <circle cx="14" cy="16" r="2.5" fill="#38BDF8" />
-                      <circle cx="22" cy="16" r="2.5" fill="#38BDF8" />
-                      <circle cx="30" cy="16" r="2.5" fill="#38BDF8" />
-                    </g>
-                  </svg>
+                {/* SaaS Micro-UI Graphic 1: High-Tech SERP, Map Pack & AI Citation Dashboard */}
+                <div className="w-full h-52 rounded-2xl bg-gradient-to-b from-amber-500/5 via-slate-50 to-amber-500/10 dark:from-amber-950/30 dark:via-slate-900/60 dark:to-amber-900/20 border border-amber-200/70 dark:border-amber-900/40 p-3.5 flex flex-col justify-between overflow-hidden shadow-inner group-hover:border-amber-400 transition-colors">
+                  {/* Mock Query Pill */}
+                  <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Search className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <span className="text-[11px] font-mono text-slate-700 dark:text-slate-300 truncate">
+                        "commercial hvac near me"
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 shrink-0">
+                      Live SERP
+                    </span>
+                  </div>
+
+                  {/* Rank #1 Card Preview */}
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-900/90 border border-amber-300/80 dark:border-amber-700/60 shadow-xs space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-slate-950 font-mono font-black text-[10px]">
+                          #1
+                        </span>
+                        <span className="text-xs font-bold text-slate-900 dark:text-white font-display">
+                          Google 3-Pack Winner
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        ▲ +240% YoY
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px] text-amber-500">
+                      {'★'.repeat(5)}
+                      <span className="ml-1 text-slate-500 dark:text-slate-400 font-mono text-[10px]">
+                        5.0 (140+ verified reviews)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* AI Citation Snippet */}
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-100/70 dark:bg-amber-950/50 border border-amber-300/60 dark:border-amber-800/50 text-[10px] text-amber-900 dark:text-amber-300 font-mono">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <span className="truncate">Cited by ChatGPT & Perplexity AI Search</span>
+                  </div>
                 </div>
 
                 <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
@@ -594,19 +613,57 @@ function HomePage() {
             {/* Pillar 2: High-Speed Websites & Care */}
             <div className="group relative p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-sky-400/80 dark:hover:border-sky-500/80 transition-all duration-300 flex flex-col justify-between">
               <div className="space-y-6">
-                {/* Flat Vector Illustration 2: Browser window with speed gauge */}
-                <div className="w-full h-48 rounded-2xl bg-gradient-to-br from-sky-50/90 to-sky-100/50 dark:from-sky-950/30 dark:to-sky-900/10 border border-sky-200/60 dark:border-sky-800/40 flex items-center justify-center p-4 group-hover:scale-[1.02] transition-transform">
-                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto drop-shadow-xs" aria-label="Speed Illustration">
-                    <rect x="25" y="15" width="150" height="90" rx="8" fill="#FFFFFF" className="dark:fill-slate-900" stroke="#BAE6FD" strokeWidth="2" />
-                    <rect x="25" y="15" width="150" height="20" rx="8" fill="#E0F2FE" className="dark:fill-slate-800" />
-                    <circle cx="36" cy="25" r="2.5" fill="#EF4444" />
-                    <circle cx="44" cy="25" r="2.5" fill="#F59E0B" />
-                    <circle cx="52" cy="25" r="2.5" fill="#10B981" />
-                    <circle cx="100" cy="70" r="30" stroke="#E2E8F0" className="dark:stroke-slate-800" strokeWidth="6" strokeDasharray="94" strokeDashoffset="30" />
-                    <circle cx="100" cy="70" r="30" stroke="#0284C7" strokeWidth="6" strokeDasharray="94" strokeDashoffset="60" strokeLinecap="round" />
-                    <circle cx="100" cy="70" r="4" fill="#0284C7" />
-                    <path d="M100 70 L115 58" stroke="#0284C7" strokeWidth="3" strokeLinecap="round" />
-                  </svg>
+                {/* SaaS Micro-UI Graphic 2: Developer Lighthouse & Edge Performance Console */}
+                <div className="w-full h-52 rounded-2xl bg-gradient-to-b from-sky-500/5 via-slate-50 to-sky-500/10 dark:from-sky-950/30 dark:via-slate-900/60 dark:to-sky-900/20 border border-sky-200/70 dark:border-sky-900/40 p-3.5 flex flex-col justify-between overflow-hidden shadow-inner group-hover:border-sky-400 transition-colors">
+                  {/* Browser Console Window Bar */}
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 text-[10px] font-mono text-slate-600 dark:text-slate-400">
+                      <Lock className="w-2.5 h-2.5 text-emerald-500" />
+                      <span>builtbymiguel.net</span>
+                    </div>
+                    <span className="text-[9px] font-mono font-bold text-sky-600 dark:text-sky-400">
+                      SSR Edge
+                    </span>
+                  </div>
+
+                  {/* Core Web Vitals Inspection Box */}
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="p-2 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                      <div className="text-base font-black font-mono text-emerald-600 dark:text-emerald-400">
+                        100
+                      </div>
+                      <div className="text-[9px] font-mono uppercase text-slate-500 dark:text-slate-400">
+                        Perf
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                      <div className="text-base font-black font-mono text-emerald-600 dark:text-emerald-400">
+                        0.38s
+                      </div>
+                      <div className="text-[9px] font-mono uppercase text-slate-500 dark:text-slate-400">
+                        FCP
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                      <div className="text-base font-black font-mono text-emerald-600 dark:text-emerald-400">
+                        0.00
+                      </div>
+                      <div className="text-[9px] font-mono uppercase text-slate-500 dark:text-slate-400">
+                        CLS
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Live Care / Hosting Status Badge */}
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-sky-100/70 dark:bg-sky-950/50 border border-sky-300/60 dark:border-sky-800/50 text-[10px] text-sky-900 dark:text-sky-300 font-mono">
+                    <ShieldCheck className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" />
+                    <span className="truncate">Daily Edge Backups • 99.99% Uptime Monitored</span>
+                  </div>
                 </div>
 
                 <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
@@ -646,18 +703,46 @@ function HomePage() {
             {/* Pillar 3: Custom Systems & Automation */}
             <div className="group relative p-7 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-purple-400/80 dark:hover:border-purple-500/80 transition-all duration-300 flex flex-col justify-between">
               <div className="space-y-6">
-                {/* Flat Vector Illustration 3: Phone receiving an automated text alert */}
-                <div className="w-full h-48 rounded-2xl bg-gradient-to-br from-purple-50/90 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/10 border border-purple-200/60 dark:border-purple-800/40 flex items-center justify-center p-4 group-hover:scale-[1.02] transition-transform">
-                  <svg viewBox="0 0 200 120" fill="none" className="w-48 h-auto drop-shadow-xs" aria-label="Automation Illustration">
-                    <rect x="75" y="15" width="50" height="90" rx="8" fill="#1E293B" className="dark:fill-slate-800" />
-                    <rect x="78" y="22" width="44" height="76" rx="4" fill="#F8FAFC" className="dark:fill-slate-900" />
-                    <rect x="94" y="18" width="12" height="2" rx="1" fill="#64748B" />
-                    <rect x="40" y="42" width="120" height="38" rx="8" fill="#FFFFFF" className="dark:fill-slate-800" stroke="#DDD6FE" strokeWidth="2" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.06))" />
-                    <circle cx="54" cy="61" r="5" fill="#7C3AED" />
-                    <path d="M52 61 L54 63 L57 59" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <rect x="65" y="52" width="50" height="5" rx="2" fill="#0F172A" className="dark:fill-white" />
-                    <rect x="65" y="62" width="78" height="4" rx="1.5" fill="#94A3B8" />
-                  </svg>
+                {/* SaaS Micro-UI Graphic 3: Real-Time Lead Ingestion & Instant SMS Pipeline */}
+                <div className="w-full h-52 rounded-2xl bg-gradient-to-b from-purple-500/5 via-slate-50 to-purple-500/10 dark:from-purple-950/30 dark:via-slate-900/60 dark:to-purple-900/20 border border-purple-200/70 dark:border-purple-900/40 p-3.5 flex flex-col justify-between overflow-hidden shadow-inner group-hover:border-purple-400 transition-colors">
+                  {/* Live Pipeline Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Zap className="w-3.5 h-3.5 text-purple-500" />
+                      <span className="text-xs font-bold text-slate-900 dark:text-white font-display">
+                        Lead Dispatch Engine
+                      </span>
+                    </div>
+                    <span className="flex items-center gap-1 text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Live 24/7
+                    </span>
+                  </div>
+
+                  {/* Pipeline Step Flow */}
+                  <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900/90 border border-purple-200/80 dark:border-purple-800/60 shadow-2xs space-y-2">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <div className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 font-semibold">
+                        <MessageSquare className="w-3.5 h-3.5 text-purple-500" />
+                        <span>Form / Phone Call</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-purple-600 dark:text-purple-400 font-bold">
+                        ⚡ &lt;15s dispatch
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">
+                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+                        <CheckCircle2 className="w-3 h-3" /> Owner SMS Dispatched
+                      </span>
+                      <span>CRM Updated</span>
+                    </div>
+                  </div>
+
+                  {/* Operational Guarantee Pill */}
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-100/70 dark:bg-purple-950/50 border border-purple-300/60 dark:border-purple-800/50 text-[10px] text-purple-900 dark:text-purple-300 font-mono">
+                    <Smartphone className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+                    <span className="truncate">Zero Missed Leads • Automated Follow-up</span>
+                  </div>
                 </div>
 
                 <h3 className="text-2xl font-bold font-display text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
@@ -696,19 +781,13 @@ function HomePage() {
           </div>
 
           {/* CTA row */}
-          <div className="mt-12 sm:mt-14 flex flex-wrap items-center gap-4">
+          <div className="mt-12 sm:mt-14 flex items-center justify-start">
             <Link
               to="/audit"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
-              <span>Get Your Free Audit</span>
-            </Link>
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm cursor-pointer"
-            >
-              <span>Contact Me</span>
+              <span>Request Your Tailored Growth Plan</span>
             </Link>
           </div>
         </div>
@@ -1060,19 +1139,13 @@ function HomePage() {
             Stop splitting your SEO, website, and lead follow-up across three vendors who don't talk to each other. Start with a free 5-minute audit and see exactly what's costing you leads right now.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          <div className="flex items-center justify-center pt-4">
             <Link
               to="/audit"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
-              <span>Get Your Free Audit</span>
-            </Link>
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-bold text-white bg-transparent border border-white/30 hover:border-white hover:bg-white/10 transition-all duration-200 active:scale-95 cursor-pointer"
-            >
-              <span>Contact Me</span>
+              <span>Start Your Free 5-Minute Audit</span>
             </Link>
           </div>
         </div>
