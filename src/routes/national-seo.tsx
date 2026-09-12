@@ -244,7 +244,7 @@ function NationalSeoPage() {
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
 
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 relative z-10">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 relative z-10">
           {/* SECTION 0: Breadcrumb (not a heading) */}
           <div className="mb-6">
             <Link
@@ -443,7 +443,7 @@ function NationalSeoPage() {
 
       {/* SECTION 2: How This Differs (Sibling Comparison) */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-3xl mb-12 sm:mb-16">
             {/* Eyebrow (not a heading) */}
             <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase font-mono text-blue-600 dark:text-blue-400 mb-3">
@@ -528,7 +528,7 @@ function NationalSeoPage() {
 
       {/* SECTION 3: Decision Framework */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#fafafc] dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-3xl mb-12 sm:mb-16">
             {/* Eyebrow (not a heading) */}
             <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase font-mono text-blue-600 dark:text-blue-400 mb-3">
@@ -593,7 +593,7 @@ function NationalSeoPage() {
 
       {/* SECTION 4: Why National SEO Builds Long-Term Value (Differentiators) */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-3xl mb-12 sm:mb-16">
             {/* Eyebrow (not a heading) */}
             <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase font-mono text-blue-600 dark:text-blue-400 mb-3">
@@ -667,7 +667,7 @@ function NationalSeoPage() {
 
       {/* SECTION 5: What You Get (Feature Grid) */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#fafafc] dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-3xl mb-12 sm:mb-16">
             {/* Eyebrow (not a heading) */}
             <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase font-mono text-blue-600 dark:text-blue-400 mb-3">
@@ -850,7 +850,7 @@ function NationalSeoPage() {
 
       {/* SECTION 6: Multi-Location Scale */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-3xl mb-12 sm:mb-16">
             {/* Eyebrow (not a heading) */}
             <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase font-mono text-blue-600 dark:text-blue-400 mb-3">
@@ -901,7 +901,7 @@ function NationalSeoPage() {
 
       {/* SECTION 7: Franchise System Authority */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#fafafc] dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-4xl space-y-8">
             <div>
               {/* Eyebrow (not a heading) */}
@@ -969,7 +969,7 @@ function NationalSeoPage() {
 
       {/* SECTION 8: What Clients Say (Testimonials) */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-3xl mb-12 sm:mb-16">
             {/* H2 */}
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display mb-4">
@@ -1047,7 +1047,7 @@ function NationalSeoPage() {
 
       {/* SECTION 9: FAQ */}
       <section className="py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#fafafc] dark:bg-[#0B0F17]">
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
             {/* Eyebrow (not a heading) */}
             <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase font-mono text-blue-600 dark:text-blue-400 mb-3">
@@ -1096,7 +1096,7 @@ function NationalSeoPage() {
       {/* SECTION 10: Closing CTA */}
       <section className="relative overflow-hidden py-16 sm:py-24 bg-slate-900 dark:bg-[#080C14] text-white">
         <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
-        <div className="w-full px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 relative z-10 text-center max-w-4xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 relative z-10 text-center space-y-6">
           {/* Eyebrow (not a heading) */}
           <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase font-mono text-blue-400">
             Own Every Market You Serve
