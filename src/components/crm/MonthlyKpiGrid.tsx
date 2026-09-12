@@ -16,6 +16,7 @@ import {
   Layers,
   Sparkles,
   Lock,
+  Unlock,
 } from 'lucide-react'
 import {
   getMonthlyKpiGridServerFn,
@@ -113,6 +114,7 @@ export function MonthlyKpiGrid({
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
+  const [isLocked, setIsLocked] = useState(true)
 
   const addToast = (type: 'success' | 'error' | 'info', title: string, message: string) => {
     setToasts((prev) => [
@@ -420,30 +422,62 @@ export function MonthlyKpiGrid({
       <ToastContainer toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
 
       {/* Action Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-2xs">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-[20px] bg-[var(--panel)] border border-[var(--line)] shadow-2xs">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search clients..."
-              className="h-8 pl-8 pr-3 text-[13px] rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] w-full sm:w-80 md:w-96"
+              className="h-9 pl-9 pr-4 text-[13px] rounded-full bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent)] w-full sm:w-80 md:w-96 shadow-2xs transition"
             />
           </div>
 
-          <div className="text-[12px] text-[var(--muted)]">
+          <div className="text-[12px] text-[var(--muted)] flex items-center gap-2">
             <span>{filteredRows.length} client{filteredRows.length !== 1 ? 's' : ''}</span>
+            <span className="text-[var(--line)]">•</span>
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${
+              isLocked
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isLocked ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
+              <span>{isLocked ? 'Protected (Locked)' : 'Editing Enabled'}</span>
+            </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsLocked(!isLocked)}
+            className={`h-9 inline-flex items-center gap-1.5 px-4 rounded-full text-[12px] font-semibold transition cursor-pointer shadow-xs ${
+              isLocked
+                ? 'bg-[var(--canvas)] border border-[var(--line)] text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
+                : 'bg-[var(--accent)] text-white hover:opacity-90'
+            }`}
+            title={isLocked ? 'Click to unlock inputs and edit metrics' : 'Click to lock inputs and protect from changes'}
+          >
+            {isLocked ? (
+              <>
+                <Unlock className="w-3.5 h-3.5 text-[var(--accent)]" />
+                <span>Unlock to Edit</span>
+              </>
+            ) : (
+              <>
+                <Lock className="w-3.5 h-3.5" />
+                <span>Lock KPIs</span>
+              </>
+            )}
+          </button>
+
           {dirtyCount > 0 && (
             <button
               type="button"
               onClick={handleSaveAllDirty}
-              className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium bg-[var(--accent)] text-white hover:opacity-90 shadow-2xs transition cursor-pointer"
+              className="h-9 inline-flex items-center gap-1.5 px-4 rounded-full text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 shadow-2xs transition cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               <span>Save All ({dirtyCount})</span>
@@ -454,7 +488,7 @@ export function MonthlyKpiGrid({
             type="button"
             onClick={loadData}
             disabled={isLoading}
-            className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[13px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer disabled:opacity-50"
+            className="h-9 inline-flex items-center gap-1.5 px-3.5 rounded-full text-[12px] font-medium bg-[var(--panel)] border border-[var(--line)] text-[var(--ink)] hover:bg-[var(--line)]/40 transition cursor-pointer disabled:opacity-50"
             title="Refresh grid data"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-[var(--muted)] ${isLoading ? 'animate-spin' : ''}`} />
@@ -631,6 +665,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gscClicks}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gscClicks', v)}
                             placeholder="0"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -644,6 +679,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gscImpressions}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gscImpressions', v)}
                             placeholder="0"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -658,6 +694,7 @@ export function MonthlyKpiGrid({
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gscCtr', v)}
                             placeholder="0.0"
                             step="0.01"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -672,6 +709,7 @@ export function MonthlyKpiGrid({
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gscPosition', v)}
                             placeholder="0.0"
                             step="0.1"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -685,6 +723,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gaSessions}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gaSessions', v)}
                             placeholder="0"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -698,6 +737,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gaUsers}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gaUsers', v)}
                             placeholder="0"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -711,6 +751,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gaViews}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gaViews', v)}
                             placeholder="0"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -725,6 +766,7 @@ export function MonthlyKpiGrid({
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gaEngagementRate', v)}
                             placeholder="0.0"
                             step="0.01"
+                            readOnly={isLocked}
                           />
                         )}
                       </td>
@@ -738,7 +780,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gbpCalls}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gbpCalls', v)}
                             placeholder="0"
-                            readOnly={hasLocations}
+                            readOnly={isLocked || hasLocations}
                             title={hasLocations ? 'Calculated from location entries below' : undefined}
                           />
                         )}
@@ -753,7 +795,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gbpDirections}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gbpDirections', v)}
                             placeholder="0"
-                            readOnly={hasLocations}
+                            readOnly={isLocked || hasLocations}
                             title={hasLocations ? 'Calculated from location entries below' : undefined}
                           />
                         )}
@@ -768,7 +810,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gbpWebsiteClicks}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gbpWebsiteClicks', v)}
                             placeholder="0"
-                            readOnly={hasLocations}
+                            readOnly={isLocked || hasLocations}
                             title={hasLocations ? 'Calculated from location entries below' : undefined}
                           />
                         )}
@@ -784,7 +826,7 @@ export function MonthlyKpiGrid({
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gbpRating', v)}
                             placeholder="5.0"
                             step="0.1"
-                            readOnly={hasLocations}
+                            readOnly={isLocked || hasLocations}
                             title={hasLocations ? 'Calculated from location entries below' : undefined}
                           />
                         )}
@@ -799,7 +841,7 @@ export function MonthlyKpiGrid({
                             value={state.metrics.gbpReviewsCount}
                             onChange={(v) => handleClientMetricChange(row.clientId, 'gbpReviewsCount', v)}
                             placeholder="0"
-                            readOnly={hasLocations}
+                            readOnly={isLocked || hasLocations}
                             title={hasLocations ? 'Calculated from location entries below' : undefined}
                           />
                         )}
@@ -874,6 +916,7 @@ export function MonthlyKpiGrid({
                                   value={locValues.gbpCalls}
                                   onChange={(v) => handleLocationMetricChange(row.clientId, loc.locationId, 'gbpCalls', v)}
                                   placeholder="0"
+                                  readOnly={isLocked}
                                 />
                               )}
                             </td>
@@ -887,6 +930,7 @@ export function MonthlyKpiGrid({
                                   value={locValues.gbpDirections}
                                   onChange={(v) => handleLocationMetricChange(row.clientId, loc.locationId, 'gbpDirections', v)}
                                   placeholder="0"
+                                  readOnly={isLocked}
                                 />
                               )}
                             </td>
@@ -900,6 +944,7 @@ export function MonthlyKpiGrid({
                                   value={locValues.gbpWebsiteClicks}
                                   onChange={(v) => handleLocationMetricChange(row.clientId, loc.locationId, 'gbpWebsiteClicks', v)}
                                   placeholder="0"
+                                  readOnly={isLocked}
                                 />
                               )}
                             </td>
@@ -914,6 +959,7 @@ export function MonthlyKpiGrid({
                                   onChange={(v) => handleLocationMetricChange(row.clientId, loc.locationId, 'gbpRating', v)}
                                   placeholder="5.0"
                                   step="0.1"
+                                  readOnly={isLocked}
                                 />
                               )}
                             </td>
@@ -927,6 +973,7 @@ export function MonthlyKpiGrid({
                                   value={locValues.gbpReviewsCount}
                                   onChange={(v) => handleLocationMetricChange(row.clientId, loc.locationId, 'gbpReviewsCount', v)}
                                   placeholder="0"
+                                  readOnly={isLocked}
                                 />
                               )}
                             </td>

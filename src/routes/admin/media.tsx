@@ -347,7 +347,7 @@ function AdminMediaPage() {
             type="button"
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] hover:bg-[var(--canvas)] border border-[var(--line)] transition cursor-pointer disabled:opacity-50"
+            className="btn btn-secondary rounded-full h-8 px-3.5 text-[13px]"
           >
             <RefreshCw
               className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[var(--accent)]' : 'text-[var(--muted)]'}`}
@@ -359,7 +359,7 @@ function AdminMediaPage() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
+            className="btn btn-primary rounded-full h-8 px-4 text-[13px]"
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Upload file</span>
@@ -431,7 +431,7 @@ function AdminMediaPage() {
         {/* Overview Bento Metrics */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Total Assets */}
-          <div className="p-4 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] shadow-2xs space-y-1.5">
+          <div className="p-5 card-modern space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[var(--muted)]">
                 Total Assets
@@ -447,7 +447,7 @@ function AdminMediaPage() {
           </div>
 
           {/* Images */}
-          <div className="p-4 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] shadow-2xs space-y-1.5">
+          <div className="p-5 card-modern space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[var(--muted)]">
                 Photos & Graphics
@@ -461,7 +461,7 @@ function AdminMediaPage() {
           </div>
 
           {/* Documents */}
-          <div className="p-4 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] shadow-2xs space-y-1.5">
+          <div className="p-5 card-modern space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[var(--muted)]">
                 Documents & Sheets
@@ -475,7 +475,7 @@ function AdminMediaPage() {
           </div>
 
           {/* Storage Provider Status */}
-          <div className="p-4 rounded-[8px] border border-[var(--line)] bg-[var(--panel)] shadow-2xs space-y-1.5">
+          <div className="p-5 card-modern space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[var(--muted)]">
                 Storage Engine
@@ -505,7 +505,7 @@ function AdminMediaPage() {
             handleFilesUpload(e.dataTransfer.files)
           }}
           onClick={() => fileInputRef.current?.click()}
-          className={`p-6 sm:p-8 rounded-[8px] border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition ${
+          className={`p-8 sm:p-10 rounded-[20px] border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition ${
             isDragging
               ? 'border-[var(--accent)] bg-[var(--accent)]/5'
               : 'border-[var(--line)] hover:border-[var(--muted)] bg-[var(--panel)]'
@@ -538,15 +538,15 @@ function AdminMediaPage() {
         </div>
 
         {/* Filter Tabs, Partner Filter & Search Bar */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-3 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-4 card-modern">
           {/* Left: Filter Switcher & Scope Filter */}
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Segmented Filter Switcher */}
-            <div className="flex items-center p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px] font-medium">
+            <div className="flex items-center p-0.5 rounded-full bg-[var(--canvas)]/80 border border-[var(--line)] text-[12px] font-medium">
               <button
                 type="button"
                 onClick={() => handleTypeTab('all')}
-                className={`h-7 px-3 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3.5 rounded-full transition cursor-pointer ${
                   type === 'all'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -557,7 +557,7 @@ function AdminMediaPage() {
               <button
                 type="button"
                 onClick={() => handleTypeTab('images')}
-                className={`h-7 px-3 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3.5 rounded-full transition cursor-pointer ${
                   type === 'images'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -568,7 +568,7 @@ function AdminMediaPage() {
               <button
                 type="button"
                 onClick={() => handleTypeTab('documents')}
-                className={`h-7 px-3 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3.5 rounded-full transition cursor-pointer ${
                   type === 'documents'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -600,11 +600,11 @@ function AdminMediaPage() {
             )}
 
             {/* Purpose Filter Pills */}
-            <div className="flex items-center p-0.5 rounded-[6px] bg-[var(--canvas)] border border-[var(--line)] text-[12px] font-medium">
+            <div className="flex items-center p-0.5 rounded-full bg-[var(--canvas)]/80 border border-[var(--line)] text-[12px] font-medium">
               <button
                 type="button"
                 onClick={() => handlePurposeTab('all')}
-                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3.5 rounded-full transition cursor-pointer ${
                   purpose === 'all'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -615,7 +615,7 @@ function AdminMediaPage() {
               <button
                 type="button"
                 onClick={() => handlePurposeTab('site')}
-                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3.5 rounded-full transition cursor-pointer ${
                   purpose === 'site'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -626,7 +626,7 @@ function AdminMediaPage() {
               <button
                 type="button"
                 onClick={() => handlePurposeTab('client')}
-                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3.5 rounded-full transition cursor-pointer ${
                   purpose === 'client'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'
@@ -637,7 +637,7 @@ function AdminMediaPage() {
               <button
                 type="button"
                 onClick={() => handlePurposeTab('report')}
-                className={`h-7 px-2.5 rounded-[4px] transition cursor-pointer ${
+                className={`h-7 px-3.5 rounded-full transition cursor-pointer ${
                   purpose === 'report'
                     ? 'bg-[var(--panel)] text-[var(--ink)] shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--ink)]'

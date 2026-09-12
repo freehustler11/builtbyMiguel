@@ -160,13 +160,16 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
 
   const handleDelete = async () => {
     if (!deleteId) return
+    const targetId = deleteId
+    setDeleteId(null)
+    setLocations((prev) => prev.filter((l) => l.id !== targetId))
     try {
-      await deleteClientLocationServerFn({ data: { id: deleteId } })
-      addToast('success', 'Location Removed', 'Location was successfully deleted or deactivated.')
-      setDeleteId(null)
-      loadLocations()
+      await deleteClientLocationServerFn({ data: { id: targetId } })
+      addToast('success', 'Location Deleted', 'Location was permanently removed.')
+      await loadLocations()
     } catch (err: any) {
       addToast('error', 'Delete Failed', err.message || 'Error removing location')
+      await loadLocations()
     }
   }
 
@@ -186,7 +189,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
       <ToastContainer toasts={toasts} onDismiss={(id) => setToasts((t) => t.filter((x) => x.id !== id))} />
 
       {/* Header card */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-[8px] bg-[var(--panel)] border border-[var(--line)]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 card-modern">
         <div>
           <h3 className="text-[14px] font-medium text-[var(--ink)] flex items-center gap-2">
             <Building2 className="w-4 h-4 text-[var(--accent)]" />
@@ -200,7 +203,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
           <button
             type="button"
             onClick={loadLocations}
-            className="h-8 w-8 flex items-center justify-center rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--canvas)] border border-[var(--line)] transition cursor-pointer"
+            className="btn btn-secondary rounded-full h-8 w-8 p-0"
             title="Refresh locations"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -208,7 +211,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
           <button
             type="button"
             onClick={handleOpenAdd}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[13px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer"
+            className="btn btn-primary rounded-full h-8 px-4 text-[13px]"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add location</span>
@@ -232,7 +235,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
           <button
             type="button"
             onClick={handleOpenAdd}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[12px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer shrink-0"
+            className="btn btn-primary rounded-full h-8 px-4 text-[12px] shrink-0"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add first location</span>
@@ -243,7 +246,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
           {locations.map((loc) => (
             <div
               key={loc.id}
-              className={`p-4 rounded-[8px] border border-[var(--line)] border-l-2 ${getStatusBorder(loc.accessStatus as any)} transition-all flex flex-col justify-between space-y-3 ${
+              className={`p-5 card-modern border-l-[3px] ${getStatusBorder(loc.accessStatus as any)} transition-all flex flex-col justify-between space-y-3 ${
                 loc.isActive
                   ? 'bg-[var(--panel)]'
                   : 'bg-[var(--canvas)] opacity-60'
@@ -332,7 +335,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
       {/* Add/Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
-          <div className="w-full max-w-lg bg-[var(--panel)] border border-[var(--line)] rounded-[8px] p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg bg-[var(--panel)] border border-[var(--line)] rounded-[20px] p-6 sm:p-7 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
               <h3 className="text-[15px] font-medium text-[var(--ink)] flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-[var(--accent)]" />
@@ -358,7 +361,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
                   placeholder="e.g. Downtown Flagship, Westside Branch"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full h-9 px-3 rounded-[10px] border border-[var(--line)] bg-[var(--canvas)]/70 focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
@@ -371,7 +374,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
                   placeholder="e.g. 123 Main St, Suite 400, Denver, CO"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full h-9 px-3 rounded-[10px] border border-[var(--line)] bg-[var(--canvas)]/70 focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
@@ -384,7 +387,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
                   placeholder="e.g. ChIJN1t_tDeuEmsRUsoyG83frY4"
                   value={formData.gbpPlaceId}
                   onChange={(e) => setFormData({ ...formData, gbpPlaceId: e.target.value })}
-                  className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full h-9 px-3 rounded-[10px] border border-[var(--line)] bg-[var(--canvas)]/70 focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
@@ -395,7 +398,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
                 <select
                   value={formData.accessStatus}
                   onChange={(e) => setFormData({ ...formData, accessStatus: e.target.value as any })}
-                  className="w-full h-8 px-3 rounded-[6px] border border-[var(--line)] bg-[var(--canvas)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full h-9 px-3 rounded-[10px] border border-[var(--line)] bg-[var(--canvas)]/70 focus:bg-[var(--panel)] focus:ring-2 focus:ring-indigo-500/20 text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
                 >
                   <option value="connected">Connected (Access Active)</option>
                   <option value="no_access">No Access (Permission Pending)</option>
@@ -433,14 +436,14 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="h-8 px-3 rounded-[6px] border border-[var(--line)] text-[var(--ink)] bg-[var(--panel)] hover:bg-[var(--canvas)] transition cursor-pointer"
+                  className="btn btn-ghost rounded-full h-8 px-4 text-[13px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="h-8 px-3 rounded-[6px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition disabled:opacity-50 cursor-pointer"
+                  className="btn btn-primary rounded-full h-8 px-5 text-[13px] disabled:opacity-50"
                 >
                   {submitting ? 'Saving...' : editingLoc ? 'Save changes' : 'Add location'}
                 </button>
@@ -454,7 +457,7 @@ export function LocationsBoard({ clientId }: LocationsBoardProps) {
       <ConfirmModal
         isOpen={deleteId !== null}
         title="Delete Client Location"
-        description="Are you sure you want to remove this location? If this location has historical monthly metrics recorded, it will be safely deactivated instead to protect historical report records."
+        description="Are you sure you want to permanently delete this location? This will completely remove the location and its performance entries."
         confirmText="Remove Location"
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}

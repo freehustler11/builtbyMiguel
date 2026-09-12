@@ -7,6 +7,7 @@ import {
   users,
   clientDataSources,
   clientLocations,
+  locationMonthlyMetrics,
   type Client,
   type ClientDataSource,
   type ClientLocation,
@@ -949,15 +950,9 @@ export const deleteClientLocationServerFn = createServerFn({ method: 'POST' })
       }
     }
 
-    // Attempt delete; if restricted by location_monthly_metrics foreign key, soft-deactivate by setting isActive = false
-    try {
-      await db.delete(clientLocations).where(eq(clientLocations.id, existing.id))
-    } catch {
-      await db
-        .update(clientLocations)
-        .set({ isActive: false, updatedAt: new Date() })
-        .where(eq(clientLocations.id, existing.id))
-    }
+    // Delete any child monthly location metrics first, then delete the location permanently
+    await db.delete(locationMonthlyMetrics).where(eq(locationMonthlyMetrics.locationId, existing.id))
+    await db.delete(clientLocations).where(eq(clientLocations.id, existing.id))
 
     return { success: true }
   })

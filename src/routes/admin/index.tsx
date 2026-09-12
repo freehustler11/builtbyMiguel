@@ -291,9 +291,9 @@ function AdminDashboardPage() {
         </div>
 
         {/* ------------------------------------------------------------- */}
-        {/* 2-COLUMN LOWER ROW: REPORTS DUE & RECENT ACTIVITY             */}
+        {/* LOWER ROW: REPORTS DUE FOR ACTIVE MONTH                       */}
         {/* ------------------------------------------------------------- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-2">
+        <div className="pt-2">
           {/* =========================================================== */}
           {/* REPORTS DUE                                                 */}
           {/* =========================================================== */}
@@ -310,7 +310,7 @@ function AdminDashboardPage() {
               </div>
               <Link
                 to="/admin/reports"
-                className="text-[12px] font-medium text-[var(--accent)] hover:underline inline-flex items-center gap-1"
+                className="btn btn-ghost rounded-full h-8 px-3 text-[12px] text-[var(--accent)] hover:underline inline-flex items-center gap-1"
               >
                 <span>Reports manager</span>
                 <ArrowRight className="w-3 h-3" />
@@ -318,9 +318,9 @@ function AdminDashboardPage() {
             </div>
 
             {data.reportsDue.clients.length === 0 ? (
-              <div className="p-6 card-modern text-center space-y-2">
+              <div className="p-8 card-modern text-center space-y-2">
                 <CheckCircle2 className="w-8 h-8 text-[var(--success)] mx-auto opacity-80" />
-                <p className="text-[13px] font-medium text-[var(--ink)]">
+                <p className="text-[14px] font-semibold text-[var(--ink)]">
                   All reports generated for {data.period.monthName}
                 </p>
                 <p className="text-[12px] text-[var(--muted)]">
@@ -329,86 +329,31 @@ function AdminDashboardPage() {
               </div>
             ) : (
               <div className="card-modern divide-y divide-[var(--line)] overflow-hidden">
-                {data.reportsDue.clients.slice(0, 5).map((client) => (
+                {data.reportsDue.clients.map((client) => (
                   <div
                     key={client.clientId}
-                    className="p-3.5 flex items-center justify-between gap-3 hover:bg-[var(--line)]/20 transition"
+                    className="p-4 flex items-center justify-between gap-3 hover:bg-[var(--line)]/20 transition"
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="text-[13px] font-medium text-[var(--ink)] truncate">
+                      <div className="text-[13px] font-semibold text-[var(--ink)] truncate">
                         {client.businessName}
                       </div>
                       <div className="text-[11px] text-[var(--muted)] mt-0.5">
                         {client.isKpiEntered ? (
-                          <span className="text-[var(--success)] font-medium">✓ KPIs ready</span>
+                          <span className="badge-pill badge-pill-success">✓ KPIs ready</span>
                         ) : (
-                          <span className="text-[var(--danger)] font-medium">⚠ Awaiting KPI data</span>
+                          <span className="badge-pill badge-pill-danger">⚠ Awaiting KPI data</span>
                         )}
                       </div>
                     </div>
 
                     <Link
                       to="/admin/reports/new"
-                      className="h-7 inline-flex items-center gap-1 px-2.5 rounded-[6px] text-[12px] font-medium text-white bg-[var(--accent)] hover:opacity-90 transition cursor-pointer"
+                      className="btn btn-primary rounded-full h-8 px-4 text-[12px] shrink-0"
                     >
-                      <Plus className="w-3 h-3" />
-                      <span>Create</span>
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Create Report</span>
                     </Link>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* =========================================================== */}
-          {/* RECENT ACTIVITY                                             */}
-          {/* =========================================================== */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-[15px] font-semibold text-[var(--ink)] flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-[var(--muted)]" />
-                  <span>Recent Activity</span>
-                </h2>
-                <p className="text-[12px] text-[var(--muted)] mt-0.5">
-                  {isSuperadmin ? 'System-wide activity log' : 'Agency team member actions'}
-                </p>
-              </div>
-              <Link
-                to="/admin/activity"
-                className="text-[12px] font-medium text-[var(--accent)] hover:underline inline-flex items-center gap-1"
-              >
-                <span>View history</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-
-            {data.recentActivity.length === 0 ? (
-              <div className="p-6 card-modern text-center space-y-2">
-                <Clock className="w-8 h-8 text-[var(--muted)] mx-auto opacity-60" />
-                <p className="text-[13px] font-medium text-[var(--ink)]">No recent activity</p>
-                <p className="text-[12px] text-[var(--muted)]">
-                  Actions taken by users will stream here in real time.
-                </p>
-              </div>
-            ) : (
-              <div className="card-modern divide-y divide-[var(--line)] overflow-hidden">
-                {data.recentActivity.slice(0, 6).map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-3 flex items-center justify-between gap-3 text-[12px]"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <span className="font-medium text-[var(--ink)]">
-                        {item.userName || (item.userEmail ? item.userEmail.split('@')[0] : 'System')}
-                      </span>{' '}
-                      <span className="text-[var(--muted)]">
-                        {item.action.replace('_', ' ')}
-                      </span>
-                    </div>
-                    <span className="text-[11px] text-[var(--muted)] shrink-0 font-mono">
-                      {formatTimeAgo(item.createdAt)}
-                    </span>
                   </div>
                 ))}
               </div>

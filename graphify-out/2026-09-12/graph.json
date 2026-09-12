@@ -183,7 +183,7 @@
       "file_type": "code",
       "norm_label": "semrushpreviewmatcheditem",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1447"
+      "source_location": "L1457"
     },
     {
       "id": "app_server_crm_semrushpreviewunmatcheditem",
@@ -196,7 +196,7 @@
       "file_type": "code",
       "norm_label": "semrushpreviewunmatcheditem",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1461"
+      "source_location": "L1471"
     },
     {
       "id": "src_components_crm_articlesboard_articlesboardprops",
@@ -482,7 +482,7 @@
       "file_type": "code",
       "norm_label": "mediasearch",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L39"
+      "source_location": "L33"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testfixturevalidation",
@@ -703,7 +703,7 @@
       "file_type": "code",
       "norm_label": "teampickermember",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1268"
+      "source_location": "L1278"
     },
     {
       "id": "app_server_partners_agencydetaildata",
@@ -1015,7 +1015,7 @@
       "file_type": "code",
       "norm_label": "navblockercounts",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L828"
+      "source_location": "L831"
     },
     {
       "id": "src_components_adminnav_adminnavprops",
@@ -1795,7 +1795,7 @@
       "file_type": "code",
       "norm_label": "citationitem",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1699"
+      "source_location": "L1709"
     },
     {
       "id": "app_server_crm_clientarticleitem",
@@ -1808,7 +1808,7 @@
       "file_type": "code",
       "norm_label": "clientarticleitem",
       "source_file": "app/server/crm.ts",
-      "source_location": "L335"
+      "source_location": "L339"
     },
     {
       "id": "app_server_crm_keyworditem",
@@ -1821,7 +1821,7 @@
       "file_type": "code",
       "norm_label": "keyworditem",
       "source_file": "app/server/crm.ts",
-      "source_location": "L589"
+      "source_location": "L597"
     },
     {
       "id": "app_server_crm_landingpageitem",
@@ -1847,7 +1847,7 @@
       "file_type": "code",
       "norm_label": "myworkdata",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1125"
+      "source_location": "L1135"
     },
     {
       "id": "app_server_crm_semrushcsvrowinput",
@@ -1860,7 +1860,7 @@
       "file_type": "code",
       "norm_label": "semrushcsvrowinput",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1440"
+      "source_location": "L1450"
     },
     {
       "id": "app_server_crm_taskitem",
@@ -1873,7 +1873,7 @@
       "file_type": "code",
       "norm_label": "taskitem",
       "source_file": "app/server/crm.ts",
-      "source_location": "L847"
+      "source_location": "L855"
     },
     {
       "id": "app_server_dashboard_assignedworkitem",
@@ -3464,7 +3464,7 @@
       "file_type": "code",
       "norm_label": "adminmediapage()",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L124"
+      "source_location": "L119"
     },
     {
       "id": "src_routes_admin_media_formatdate",
@@ -3476,7 +3476,7 @@
       "file_type": "code",
       "norm_label": "formatdate()",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L101"
+      "source_location": "L96"
     },
     {
       "id": "src_routes_admin_media_formatfilesize",
@@ -3488,7 +3488,7 @@
       "file_type": "code",
       "norm_label": "formatfilesize()",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L95"
+      "source_location": "L90"
     },
     {
       "id": "src_routes_admin_media_getfileicon",
@@ -3500,7 +3500,7 @@
       "file_type": "code",
       "norm_label": "getfileicon()",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L111"
+      "source_location": "L106"
     },
     {
       "id": "agents_skills_ui_ux_pro_max_scripts_tests_test_relevance_evaluator_testfixturevalidation_test_rejects_bad_count_duplicate_id_and_grade",
@@ -11714,7 +11714,7 @@
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L47"
+      "source_location": "L41"
     },
     {
       "id": "src_routes_admin_reports_id_edit",
@@ -12737,7 +12737,7 @@
       "file_type": "code",
       "norm_label": "commitsemrushcsvimportserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1565"
+      "source_location": "L1575"
     },
     {
       "id": "app_server_crm_createcitationserverfn",
@@ -12748,7 +12748,7 @@
       "file_type": "code",
       "norm_label": "createcitationserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1752"
+      "source_location": "L1762"
     },
     {
       "id": "app_server_crm_createclientarticleserverfn",
@@ -12759,7 +12759,7 @@
       "file_type": "code",
       "norm_label": "createclientarticleserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L394"
+      "source_location": "L402"
     },
     {
       "id": "app_server_crm_createkeywordserverfn",
@@ -12770,7 +12770,7 @@
       "file_type": "code",
       "norm_label": "createkeywordserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L683"
+      "source_location": "L691"
     },
     {
       "id": "app_server_crm_createlandingpageserverfn",
@@ -12781,7 +12781,7 @@
       "file_type": "code",
       "norm_label": "createlandingpageserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L136"
+      "source_location": "L140"
     },
     {
       "id": "app_server_crm_createtaskserverfn",
@@ -12792,7 +12792,7 @@
       "file_type": "code",
       "norm_label": "createtaskserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L916"
+      "source_location": "L926"
     },
     {
       "id": "app_server_crm_deletecitationserverfn",
@@ -12803,7 +12803,7 @@
       "file_type": "code",
       "norm_label": "deletecitationserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1851"
+      "source_location": "L1861"
     },
     {
       "id": "app_server_crm_deleteclientarticleserverfn",
@@ -12814,7 +12814,7 @@
       "file_type": "code",
       "norm_label": "deleteclientarticleserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L561"
+      "source_location": "L569"
     },
     {
       "id": "app_server_crm_deletekeywordserverfn",
@@ -12825,7 +12825,7 @@
       "file_type": "code",
       "norm_label": "deletekeywordserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L819"
+      "source_location": "L827"
     },
     {
       "id": "app_server_crm_deletelandingpageserverfn",
@@ -12836,7 +12836,7 @@
       "file_type": "code",
       "norm_label": "deletelandingpageserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L307"
+      "source_location": "L311"
     },
     {
       "id": "app_server_crm_deletetaskserverfn",
@@ -12847,7 +12847,7 @@
       "file_type": "code",
       "norm_label": "deletetaskserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1094"
+      "source_location": "L1104"
     },
     {
       "id": "app_server_crm_getagencyteampickerserverfn",
@@ -12858,7 +12858,7 @@
       "file_type": "code",
       "norm_label": "getagencyteampickerserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1276"
+      "source_location": "L1286"
     },
     {
       "id": "app_server_crm_getcitationsserverfn",
@@ -12869,7 +12869,7 @@
       "file_type": "code",
       "norm_label": "getcitationsserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1704"
+      "source_location": "L1714"
     },
     {
       "id": "app_server_crm_getclientarticlesserverfn",
@@ -12880,7 +12880,7 @@
       "file_type": "code",
       "norm_label": "getclientarticlesserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L342"
+      "source_location": "L346"
     },
     {
       "id": "app_server_crm_getkeywordsserverfn",
@@ -12891,7 +12891,7 @@
       "file_type": "code",
       "norm_label": "getkeywordsserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L595"
+      "source_location": "L603"
     },
     {
       "id": "app_server_crm_getlandingpagesserverfn",
@@ -12913,7 +12913,7 @@
       "file_type": "code",
       "norm_label": "getmonthlymetricsserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1322"
+      "source_location": "L1332"
     },
     {
       "id": "app_server_crm_getmyworkserverfn",
@@ -12924,7 +12924,7 @@
       "file_type": "code",
       "norm_label": "getmyworkserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1143"
+      "source_location": "L1153"
     },
     {
       "id": "app_server_crm_gettasksserverfn",
@@ -12935,7 +12935,7 @@
       "file_type": "code",
       "norm_label": "gettasksserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L854"
+      "source_location": "L862"
     },
     {
       "id": "app_server_crm_previewsemrushcsvserverfn",
@@ -12946,7 +12946,7 @@
       "file_type": "code",
       "norm_label": "previewsemrushcsvserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1468"
+      "source_location": "L1478"
     },
     {
       "id": "app_server_crm_savemonthlymetricsserverfn",
@@ -12957,7 +12957,7 @@
       "file_type": "code",
       "norm_label": "savemonthlymetricsserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1412"
+      "source_location": "L1422"
     },
     {
       "id": "app_server_crm_updatecitationserverfn",
@@ -12968,7 +12968,7 @@
       "file_type": "code",
       "norm_label": "updatecitationserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1799"
+      "source_location": "L1809"
     },
     {
       "id": "app_server_crm_updateclientarticleserverfn",
@@ -12979,7 +12979,7 @@
       "file_type": "code",
       "norm_label": "updateclientarticleserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L492"
+      "source_location": "L500"
     },
     {
       "id": "app_server_crm_updateclientarticlestatusserverfn",
@@ -12990,7 +12990,7 @@
       "file_type": "code",
       "norm_label": "updateclientarticlestatusserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L444"
+      "source_location": "L452"
     },
     {
       "id": "app_server_crm_updatekeywordserverfn",
@@ -13001,7 +13001,7 @@
       "file_type": "code",
       "norm_label": "updatekeywordserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L746"
+      "source_location": "L754"
     },
     {
       "id": "app_server_crm_updatelandingpageserverfn",
@@ -13012,7 +13012,7 @@
       "file_type": "code",
       "norm_label": "updatelandingpageserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L236"
+      "source_location": "L240"
     },
     {
       "id": "app_server_crm_updatelandingpagestatusserverfn",
@@ -13023,7 +13023,7 @@
       "file_type": "code",
       "norm_label": "updatelandingpagestatusserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L188"
+      "source_location": "L192"
     },
     {
       "id": "app_server_crm_updatetaskserverfn",
@@ -13034,7 +13034,7 @@
       "file_type": "code",
       "norm_label": "updatetaskserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1025"
+      "source_location": "L1035"
     },
     {
       "id": "app_server_crm_updatetaskstatusserverfn",
@@ -13045,7 +13045,7 @@
       "file_type": "code",
       "norm_label": "updatetaskstatusserverfn",
       "source_file": "app/server/crm.ts",
-      "source_location": "L981"
+      "source_location": "L991"
     },
     {
       "id": "app_server_reports_getreportsserverfn",
@@ -20055,7 +20055,7 @@
       "file_type": "code",
       "norm_label": "deletemediaserverfn",
       "source_file": "app/server/media.ts",
-      "source_location": "L189"
+      "source_location": "L198"
     },
     {
       "id": "app_server_media_getmediaserverfn",
@@ -20077,7 +20077,7 @@
       "file_type": "code",
       "norm_label": "uploadmediaserverfn",
       "source_file": "app/server/media.ts",
-      "source_location": "L111"
+      "source_location": "L120"
     },
     {
       "id": "app_server_storage",
@@ -56790,7 +56790,7 @@
       "file_type": "code",
       "norm_label": "getnavblockersserverfn",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L842"
+      "source_location": "L845"
     },
     {
       "id": "src_components_adminnav",
@@ -93983,7 +93983,7 @@
       "file_type": "code",
       "norm_label": "advancepublishingqueueitemserverfn",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L763"
+      "source_location": "L766"
     },
     {
       "id": "app_server_workflow_getmonthlykpigridserverfn",
@@ -106400,7 +106400,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1587",
+      "source_location": "L1597",
       "weight": 1.0
     },
     {
@@ -106412,7 +106412,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1592",
+      "source_location": "L1602",
       "weight": 1.0
     },
     {
@@ -106424,7 +106424,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1593",
+      "source_location": "L1603",
       "weight": 1.0
     },
     {
@@ -106436,7 +106436,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1765",
+      "source_location": "L1775",
       "weight": 1.0
     },
     {
@@ -106448,7 +106448,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1770",
+      "source_location": "L1780",
       "weight": 1.0
     },
     {
@@ -106460,7 +106460,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1771",
+      "source_location": "L1781",
       "weight": 1.0
     },
     {
@@ -106472,7 +106472,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L409",
+      "source_location": "L417",
       "weight": 1.0
     },
     {
@@ -106484,7 +106484,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L414",
+      "source_location": "L422",
       "weight": 1.0
     },
     {
@@ -106496,7 +106496,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L415",
+      "source_location": "L423",
       "weight": 1.0
     },
     {
@@ -106508,7 +106508,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L697",
+      "source_location": "L705",
       "weight": 1.0
     },
     {
@@ -106520,7 +106520,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L702",
+      "source_location": "L710",
       "weight": 1.0
     },
     {
@@ -106532,7 +106532,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L703",
+      "source_location": "L711",
       "weight": 1.0
     },
     {
@@ -106544,7 +106544,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L152",
+      "source_location": "L156",
       "weight": 1.0
     },
     {
@@ -106556,7 +106556,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L157",
+      "source_location": "L161",
       "weight": 1.0
     },
     {
@@ -106568,7 +106568,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -106580,7 +106580,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L930",
+      "source_location": "L940",
       "weight": 1.0
     },
     {
@@ -106592,7 +106592,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L935",
+      "source_location": "L945",
       "weight": 1.0
     },
     {
@@ -106604,7 +106604,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L939",
+      "source_location": "L949",
       "weight": 1.0
     },
     {
@@ -106616,7 +106616,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1854",
+      "source_location": "L1864",
       "weight": 1.0
     },
     {
@@ -106628,7 +106628,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1868",
+      "source_location": "L1878",
       "weight": 1.0
     },
     {
@@ -106640,7 +106640,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L564",
+      "source_location": "L572",
       "weight": 1.0
     },
     {
@@ -106652,7 +106652,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L578",
+      "source_location": "L586",
       "weight": 1.0
     },
     {
@@ -106664,7 +106664,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L579",
+      "source_location": "L587",
       "weight": 1.0
     },
     {
@@ -106676,7 +106676,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L822",
+      "source_location": "L830",
       "weight": 1.0
     },
     {
@@ -106688,7 +106688,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L836",
+      "source_location": "L844",
       "weight": 1.0
     },
     {
@@ -106700,7 +106700,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L837",
+      "source_location": "L845",
       "weight": 1.0
     },
     {
@@ -106712,7 +106712,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L310",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -106724,7 +106724,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L324",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -106736,7 +106736,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L325",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
@@ -106748,7 +106748,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1097",
+      "source_location": "L1107",
       "weight": 1.0
     },
     {
@@ -106760,7 +106760,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1111",
+      "source_location": "L1121",
       "weight": 1.0
     },
     {
@@ -106772,7 +106772,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1279",
+      "source_location": "L1289",
       "weight": 1.0
     },
     {
@@ -106784,7 +106784,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1284",
+      "source_location": "L1294",
       "weight": 1.0
     },
     {
@@ -106796,7 +106796,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1707",
+      "source_location": "L1717",
       "weight": 1.0
     },
     {
@@ -106808,7 +106808,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1712",
+      "source_location": "L1722",
       "weight": 1.0
     },
     {
@@ -106820,7 +106820,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1715",
+      "source_location": "L1725",
       "weight": 1.0
     },
     {
@@ -106832,7 +106832,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L345",
+      "source_location": "L349",
       "weight": 1.0
     },
     {
@@ -106844,7 +106844,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L350",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -106856,36 +106856,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L353",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
       "source": "app_server_crm_getkeywordsserverfn",
       "target": "app_server_auth_assertactivesession",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "app/server/crm.ts",
-      "source_location": "L606",
-      "weight": 1.0
-    },
-    {
-      "source": "app_server_crm_getkeywordsserverfn",
-      "target": "app_server_crm_resolvequerypartnerid",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "app/server/crm.ts",
-      "source_location": "L611",
-      "weight": 1.0
-    },
-    {
-      "source": "app_server_crm_getkeywordsserverfn",
-      "target": "app_server_crm_assertclientaccess",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -106893,6 +106869,30 @@
       "context": "call",
       "source_file": "app/server/crm.ts",
       "source_location": "L614",
+      "weight": 1.0
+    },
+    {
+      "source": "app_server_crm_getkeywordsserverfn",
+      "target": "app_server_crm_resolvequerypartnerid",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "app/server/crm.ts",
+      "source_location": "L619",
+      "weight": 1.0
+    },
+    {
+      "source": "app_server_crm_getkeywordsserverfn",
+      "target": "app_server_crm_assertclientaccess",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "app/server/crm.ts",
+      "source_location": "L622",
       "weight": 1.0
     },
     {
@@ -106928,7 +106928,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L94",
+      "source_location": "L95",
       "weight": 1.0
     },
     {
@@ -106940,7 +106940,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1325",
+      "source_location": "L1335",
       "weight": 1.0
     },
     {
@@ -106952,7 +106952,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1330",
+      "source_location": "L1340",
       "weight": 1.0
     },
     {
@@ -106964,7 +106964,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1331",
+      "source_location": "L1341",
       "weight": 1.0
     },
     {
@@ -106976,7 +106976,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1145",
+      "source_location": "L1155",
       "weight": 1.0
     },
     {
@@ -106988,7 +106988,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L864",
+      "source_location": "L872",
       "weight": 1.0
     },
     {
@@ -107000,7 +107000,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L869",
+      "source_location": "L877",
       "weight": 1.0
     },
     {
@@ -107012,7 +107012,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L872",
+      "source_location": "L881",
       "weight": 1.0
     },
     {
@@ -107024,7 +107024,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1478",
+      "source_location": "L1488",
       "weight": 1.0
     },
     {
@@ -107036,7 +107036,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1483",
+      "source_location": "L1493",
       "weight": 1.0
     },
     {
@@ -107048,7 +107048,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1484",
+      "source_location": "L1494",
       "weight": 1.0
     },
     {
@@ -107072,7 +107072,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1422",
+      "source_location": "L1432",
       "weight": 1.0
     },
     {
@@ -107084,7 +107084,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1427",
+      "source_location": "L1437",
       "weight": 1.0
     },
     {
@@ -107096,7 +107096,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1428",
+      "source_location": "L1438",
       "weight": 1.0
     },
     {
@@ -107108,7 +107108,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1430",
+      "source_location": "L1440",
       "weight": 1.0
     },
     {
@@ -107120,7 +107120,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1812",
+      "source_location": "L1822",
       "weight": 1.0
     },
     {
@@ -107132,7 +107132,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1826",
+      "source_location": "L1836",
       "weight": 1.0
     },
     {
@@ -107144,7 +107144,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L507",
+      "source_location": "L515",
       "weight": 1.0
     },
     {
@@ -107156,7 +107156,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L528",
+      "source_location": "L536",
       "weight": 1.0
     },
     {
@@ -107168,7 +107168,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L529",
+      "source_location": "L537",
       "weight": 1.0
     },
     {
@@ -107180,7 +107180,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L453",
+      "source_location": "L461",
       "weight": 1.0
     },
     {
@@ -107192,7 +107192,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L472",
+      "source_location": "L480",
       "weight": 1.0
     },
     {
@@ -107204,7 +107204,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L473",
+      "source_location": "L481",
       "weight": 1.0
     },
     {
@@ -107216,7 +107216,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L760",
+      "source_location": "L768",
       "weight": 1.0
     },
     {
@@ -107228,7 +107228,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L774",
+      "source_location": "L782",
       "weight": 1.0
     },
     {
@@ -107240,7 +107240,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L775",
+      "source_location": "L783",
       "weight": 1.0
     },
     {
@@ -107252,7 +107252,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L252",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -107264,7 +107264,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L273",
+      "source_location": "L277",
       "weight": 1.0
     },
     {
@@ -107276,7 +107276,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L274",
+      "source_location": "L278",
       "weight": 1.0
     },
     {
@@ -107288,7 +107288,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L197",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -107300,7 +107300,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L216",
+      "source_location": "L220",
       "weight": 1.0
     },
     {
@@ -107312,7 +107312,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L217",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -107324,7 +107324,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1040",
+      "source_location": "L1050",
       "weight": 1.0
     },
     {
@@ -107336,7 +107336,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1054",
+      "source_location": "L1064",
       "weight": 1.0
     },
     {
@@ -107348,7 +107348,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1061",
+      "source_location": "L1071",
       "weight": 1.0
     },
     {
@@ -107360,7 +107360,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1003",
+      "source_location": "L1013",
       "weight": 1.0
     },
     {
@@ -107372,7 +107372,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/crm.ts",
-      "source_location": "L989",
+      "source_location": "L999",
       "weight": 1.0
     },
     {
@@ -107432,7 +107432,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/media.ts",
-      "source_location": "L197",
+      "source_location": "L206",
       "weight": 1.0
     },
     {
@@ -107444,7 +107444,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/media.ts",
-      "source_location": "L209",
+      "source_location": "L218",
       "weight": 1.0
     },
     {
@@ -107456,31 +107456,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/media.ts",
-      "source_location": "L215",
-      "weight": 1.0
-    },
-    {
-      "source": "app_server_media_getmediaserverfn",
-      "target": "app_server_auth_assertactivesession",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "app/server/media.ts",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "app_server_media_getmediaserverfn",
-      "target": "app_server_auth_geteffectivepartnerid",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "app/server/media.ts",
-      "source_location": "L42",
+      "source_location": "L224",
       "weight": 1.0
     },
     {
@@ -107492,7 +107468,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/media.ts",
-      "source_location": "L99",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "app_server_media_getmediaserverfn",
+      "target": "app_server_auth_assertactivesession",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "app/server/media.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "app_server_media_getmediaserverfn",
+      "target": "app_server_auth_geteffectivepartnerid",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "app/server/media.ts",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -107504,7 +107504,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/media.ts",
-      "source_location": "L128",
+      "source_location": "L137",
       "weight": 1.0
     },
     {
@@ -107516,7 +107516,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/media.ts",
-      "source_location": "L147",
+      "source_location": "L156",
       "weight": 1.0
     },
     {
@@ -107528,7 +107528,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/media.ts",
-      "source_location": "L158",
+      "source_location": "L167",
       "weight": 1.0
     },
     {
@@ -108548,7 +108548,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L778",
+      "source_location": "L781",
       "weight": 1.0
     },
     {
@@ -108584,7 +108584,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L862",
+      "source_location": "L865",
       "weight": 1.0
     },
     {
@@ -108596,7 +108596,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "app/server/workflow.ts",
-      "source_location": "L877",
+      "source_location": "L880",
       "weight": 1.0
     },
     {
@@ -110492,7 +110492,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L270",
+      "source_location": "L265",
       "weight": 1.0
     },
     {
@@ -110504,7 +110504,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L320",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -110516,7 +110516,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L454",
+      "source_location": "L445",
       "weight": 1.0
     },
     {
@@ -110528,7 +110528,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L742",
+      "source_location": "L721",
       "weight": 1.0
     },
     {
@@ -110540,7 +110540,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L775",
+      "source_location": "L754",
       "weight": 1.0
     },
     {
@@ -110552,7 +110552,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L60",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -110564,7 +110564,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L66",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -110576,7 +110576,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L75",
+      "source_location": "L70",
       "weight": 1.0
     },
     {
@@ -110588,7 +110588,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L79",
+      "source_location": "L74",
       "weight": 1.0
     },
     {
@@ -112112,7 +112112,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1320",
+      "source_location": "L1330",
       "weight": 1.0
     },
     {
@@ -114300,7 +114300,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1319",
+      "source_location": "L1329",
       "weight": 1.0
     },
     {
@@ -114312,7 +114312,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1319",
+      "source_location": "L1329",
       "weight": 1.0
     },
     {
@@ -114324,7 +114324,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1319",
+      "source_location": "L1329",
       "weight": 1.0
     },
     {
@@ -119652,7 +119652,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L27",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -119664,7 +119664,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L28",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -119676,7 +119676,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L28",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -119688,7 +119688,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L29",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -119700,7 +119700,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L30",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -119712,7 +119712,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L30",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -119724,7 +119724,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L31",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -119736,7 +119736,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L31",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -119748,7 +119748,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L31",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -119760,7 +119760,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L36",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -119772,7 +119772,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L37",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -124245,7 +124245,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L27",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -124257,7 +124257,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L28",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -124269,7 +124269,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L29",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -124281,7 +124281,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L30",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -124293,7 +124293,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L31",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -124305,7 +124305,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L36",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -124317,7 +124317,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L37",
+      "source_location": "L31",
       "type_only": true,
       "weight": 1.0
     },
@@ -125953,7 +125953,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "app/server/crm.ts",
-      "source_location": "L1699",
+      "source_location": "L1709",
       "weight": 1.0
     },
     {
@@ -125965,7 +125965,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "app/server/crm.ts",
-      "source_location": "L335",
+      "source_location": "L339",
       "weight": 1.0
     },
     {
@@ -125977,7 +125977,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "app/server/crm.ts",
-      "source_location": "L589",
+      "source_location": "L597",
       "weight": 1.0
     },
     {
@@ -126001,7 +126001,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "app/server/crm.ts",
-      "source_location": "L847",
+      "source_location": "L855",
       "weight": 1.0
     },
     {
@@ -198075,7 +198075,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1025",
+      "source_location": "L1035",
       "weight": 1.0
     },
     {
@@ -198086,7 +198086,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1094",
+      "source_location": "L1104",
       "weight": 1.0
     },
     {
@@ -198097,7 +198097,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1125",
+      "source_location": "L1135",
       "weight": 1.0
     },
     {
@@ -198108,7 +198108,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1143",
+      "source_location": "L1153",
       "weight": 1.0
     },
     {
@@ -198119,7 +198119,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1268",
+      "source_location": "L1278",
       "weight": 1.0
     },
     {
@@ -198130,7 +198130,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1276",
+      "source_location": "L1286",
       "weight": 1.0
     },
     {
@@ -198141,7 +198141,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1322",
+      "source_location": "L1332",
       "weight": 1.0
     },
     {
@@ -198152,7 +198152,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L136",
+      "source_location": "L140",
       "weight": 1.0
     },
     {
@@ -198163,7 +198163,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1412",
+      "source_location": "L1422",
       "weight": 1.0
     },
     {
@@ -198174,7 +198174,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1440",
+      "source_location": "L1450",
       "weight": 1.0
     },
     {
@@ -198185,7 +198185,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1447",
+      "source_location": "L1457",
       "weight": 1.0
     },
     {
@@ -198196,7 +198196,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1461",
+      "source_location": "L1471",
       "weight": 1.0
     },
     {
@@ -198207,7 +198207,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1468",
+      "source_location": "L1478",
       "weight": 1.0
     },
     {
@@ -198218,7 +198218,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1565",
+      "source_location": "L1575",
       "weight": 1.0
     },
     {
@@ -198229,7 +198229,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1699",
+      "source_location": "L1709",
       "weight": 1.0
     },
     {
@@ -198240,7 +198240,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1704",
+      "source_location": "L1714",
       "weight": 1.0
     },
     {
@@ -198251,7 +198251,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1752",
+      "source_location": "L1762",
       "weight": 1.0
     },
     {
@@ -198262,7 +198262,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1799",
+      "source_location": "L1809",
       "weight": 1.0
     },
     {
@@ -198273,7 +198273,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L1851",
+      "source_location": "L1861",
       "weight": 1.0
     },
     {
@@ -198284,7 +198284,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L188",
+      "source_location": "L192",
       "weight": 1.0
     },
     {
@@ -198295,7 +198295,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L236",
+      "source_location": "L240",
       "weight": 1.0
     },
     {
@@ -198306,7 +198306,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L307",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -198328,7 +198328,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L335",
+      "source_location": "L339",
       "weight": 1.0
     },
     {
@@ -198339,7 +198339,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L342",
+      "source_location": "L346",
       "weight": 1.0
     },
     {
@@ -198350,7 +198350,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L394",
+      "source_location": "L402",
       "weight": 1.0
     },
     {
@@ -198361,7 +198361,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L444",
+      "source_location": "L452",
       "weight": 1.0
     },
     {
@@ -198372,7 +198372,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L492",
+      "source_location": "L500",
       "weight": 1.0
     },
     {
@@ -198383,7 +198383,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L561",
+      "source_location": "L569",
       "weight": 1.0
     },
     {
@@ -198394,7 +198394,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L589",
+      "source_location": "L597",
       "weight": 1.0
     },
     {
@@ -198405,7 +198405,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L595",
+      "source_location": "L603",
       "weight": 1.0
     },
     {
@@ -198427,7 +198427,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L683",
+      "source_location": "L691",
       "weight": 1.0
     },
     {
@@ -198438,7 +198438,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L746",
+      "source_location": "L754",
       "weight": 1.0
     },
     {
@@ -198460,7 +198460,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L819",
+      "source_location": "L827",
       "weight": 1.0
     },
     {
@@ -198482,7 +198482,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L847",
+      "source_location": "L855",
       "weight": 1.0
     },
     {
@@ -198493,7 +198493,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L854",
+      "source_location": "L862",
       "weight": 1.0
     },
     {
@@ -198504,7 +198504,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L916",
+      "source_location": "L926",
       "weight": 1.0
     },
     {
@@ -198515,7 +198515,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/crm.ts",
-      "source_location": "L981",
+      "source_location": "L991",
       "weight": 1.0
     },
     {
@@ -198680,18 +198680,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/media.ts",
-      "source_location": "L111",
-      "weight": 1.0
-    },
-    {
-      "source": "app_server_media",
-      "target": "app_server_media_deletemediaserverfn",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "app/server/media.ts",
-      "source_location": "L189",
+      "source_location": "L120",
       "weight": 1.0
     },
     {
@@ -198703,6 +198692,17 @@
       "confidence_score": 1.0,
       "source_file": "app/server/media.ts",
       "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "app_server_media",
+      "target": "app_server_media_deletemediaserverfn",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/server/media.ts",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
@@ -199560,7 +199560,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L763",
+      "source_location": "L766",
       "weight": 1.0
     },
     {
@@ -199571,7 +199571,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L828",
+      "source_location": "L831",
       "weight": 1.0
     },
     {
@@ -199582,7 +199582,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/server/workflow.ts",
-      "source_location": "L842",
+      "source_location": "L845",
       "weight": 1.0
     },
     {
@@ -203591,24 +203591,13 @@
     },
     {
       "source": "src_routes_admin_media",
-      "target": "src_routes_admin_media_formatdate",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L101",
-      "weight": 1.0
-    },
-    {
-      "source": "src_routes_admin_media",
       "target": "src_routes_admin_media_getfileicon",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L111",
+      "source_location": "L106",
       "weight": 1.0
     },
     {
@@ -203619,7 +203608,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L39",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -203630,7 +203619,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L47",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
@@ -203641,7 +203630,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L95",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "src_routes_admin_media",
+      "target": "src_routes_admin_media_formatdate",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/routes/admin/media.tsx",
+      "source_location": "L96",
       "weight": 1.0
     },
     {
@@ -214133,7 +214133,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/admin/media.tsx",
-      "source_location": "L92",
+      "source_location": "L87",
       "weight": 1.0
     },
     {
@@ -214562,5 +214562,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "357c1ae66f9ce82b42e7a71341901ce1d3412fd6"
+  "built_at_commit": "0263b8d06176ab6de8b6e0d0c85ff6963370bff1"
 }

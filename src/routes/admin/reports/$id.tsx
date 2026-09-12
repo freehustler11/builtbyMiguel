@@ -230,7 +230,7 @@ function BrandedReportViewPage() {
           <div className="flex items-center gap-3">
             <Link
               to="/admin/reports"
-              className="inline-flex items-center gap-2 text-xs font-mono font-medium text-[var(--muted)] hover:text-slate-900 dark:hover:text-white transition"
+              className="btn btn-ghost rounded-full h-8 px-3 text-xs"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>All Reports</span>
@@ -240,7 +240,7 @@ function BrandedReportViewPage() {
 
             <Link
               to="/admin/clients"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-[var(--muted)] hover:text-slate-800 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg border border-[var(--line)] bg-[var(--canvas)]"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-[var(--muted)] hover:text-[var(--ink)] px-3 py-1 rounded-full border border-[var(--line)] bg-[var(--canvas)]/80"
             >
               <Building2 className="w-3.5 h-3.5" />
               <span>{client?.businessName || 'Client'}</span>
@@ -251,7 +251,7 @@ function BrandedReportViewPage() {
               <button
                 type="button"
                 onClick={() => availableVersions.length > 1 && setShowVersionDropdown((v) => !v)}
-                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-mono font-bold bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] ${availableVersions.length > 1 ? 'cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700' : 'cursor-default'}`}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] ${availableVersions.length > 1 ? 'cursor-pointer hover:bg-[var(--canvas)]' : 'cursor-default'}`}
                 title={availableVersions.length > 1 ? 'Switch between report versions' : undefined}
               >
                 <History className="w-3 h-3 text-[var(--muted)]" />
@@ -303,7 +303,7 @@ function BrandedReportViewPage() {
             <Link
               to="/admin/reports/$id/edit"
               params={{ id: reportId }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[6px] text-xs font-semibold text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] transition"
+              className="btn btn-secondary rounded-full h-8 px-3.5 text-xs"
             >
               <Edit3 className="w-3.5 h-3.5 text-[var(--muted)]" />
               <span>Edit Data</span>
@@ -314,7 +314,7 @@ function BrandedReportViewPage() {
               type="button"
               disabled={isRegenerating}
               onClick={handleRegenerate}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[6px] text-xs font-semibold text-[var(--ink)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] transition cursor-pointer disabled:opacity-50"
+              className="btn btn-secondary rounded-full h-8 px-3.5 text-xs disabled:opacity-50"
               title={`Regenerate report (v${(report?.version || 1) + 1}) pulling latest CRM deliverables`}
             >
               <RefreshCw className={`w-3.5 h-3.5 text-[var(--muted)] ${isRegenerating ? 'animate-spin' : ''}`} />
@@ -324,7 +324,7 @@ function BrandedReportViewPage() {
             {/* ===== Public Share Link: Three States ===== */}
             {/* State 1: Active Link */}
             {isShareActive && (
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
                 <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   <span>Public Link Active</span>
@@ -353,7 +353,7 @@ function BrandedReportViewPage() {
 
             {/* State 2: Revoked */}
             {!isShareActive && shareRevokedAt && (
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800">
                 <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-rose-700 dark:text-rose-300">
                   <AlertCircle className="w-3 h-3 text-rose-500" />
                   <span>Link Revoked</span>
@@ -377,7 +377,7 @@ function BrandedReportViewPage() {
                 type="button"
                 disabled={isShareLoading}
                 onClick={handleGenerateShareLink}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-mono font-semibold text-[var(--ink)] bg-[var(--canvas)] hover:bg-slate-100 dark:hover:bg-slate-800 border border-[var(--line)] transition cursor-pointer disabled:opacity-50"
+                className="btn btn-secondary rounded-full h-8 px-3.5 text-xs disabled:opacity-50"
                 title="Create a secure public read-only link for clients or stakeholders"
               >
                 <Share2 className="w-3.5 h-3.5 text-blue-500" />
@@ -391,7 +391,7 @@ function BrandedReportViewPage() {
             <button
               type="button"
               onClick={handleDownloadPdf}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-[6px] text-xs font-bold text-white bg-[var(--accent)] hover:opacity-90 text-white shadow-sm transition-all cursor-pointer"
+              className="btn btn-primary rounded-full h-8 px-4 text-xs shadow-sm"
               title="Download clean 2-page PDF report"
             >
               <Download className="w-3.5 h-3.5" />
@@ -412,11 +412,7 @@ function BrandedReportViewPage() {
             <button
               type="button"
               onClick={() => handleToggle('show_agency_info')}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition cursor-pointer ${
-                displayOptions.show_agency_info
-                  ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                  : 'bg-[var(--canvas)] text-[var(--muted)] dark:text-[var(--muted)] border-[var(--line)] opacity-60'
-              }`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full px-3 py-1 text-[11px] font-medium border transition cursor-pointer ${displayOptions.show_agency_info ? 'bg-[var(--accent-light)] text-[var(--accent-text)] border-[var(--accent)]/30 font-semibold' : 'bg-[var(--canvas)]/70 text-[var(--muted)] border-[var(--line)] opacity-60 hover:opacity-100'}`}
               title="Toggle Agency & Partner Branding"
             >
               <Shield className="w-3 h-3" />
@@ -427,11 +423,7 @@ function BrandedReportViewPage() {
             <button
               type="button"
               onClick={() => handleToggle('show_contact_person')}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition cursor-pointer ${
-                displayOptions.show_contact_person
-                  ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                  : 'bg-[var(--canvas)] text-[var(--muted)] dark:text-[var(--muted)] border-[var(--line)] opacity-60'
-              }`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full px-3 py-1 text-[11px] font-medium border transition cursor-pointer ${displayOptions.show_contact_person ? 'bg-[var(--accent-light)] text-[var(--accent-text)] border-[var(--accent)]/30 font-semibold' : 'bg-[var(--canvas)]/70 text-[var(--muted)] border-[var(--line)] opacity-60 hover:opacity-100'}`}
               title="Toggle Client Contact Person"
             >
               <User className="w-3 h-3" />
@@ -442,11 +434,7 @@ function BrandedReportViewPage() {
             <button
               type="button"
               onClick={() => handleToggle('show_date_generated')}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition cursor-pointer ${
-                displayOptions.show_date_generated
-                  ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                  : 'bg-[var(--canvas)] text-[var(--muted)] dark:text-[var(--muted)] border-[var(--line)] opacity-60'
-              }`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full px-3 py-1 text-[11px] font-medium border transition cursor-pointer ${displayOptions.show_date_generated ? 'bg-[var(--accent-light)] text-[var(--accent-text)] border-[var(--accent)]/30 font-semibold' : 'bg-[var(--canvas)]/70 text-[var(--muted)] border-[var(--line)] opacity-60 hover:opacity-100'}`}
               title="Toggle Generation Date Timestamp"
             >
               <Calendar className="w-3 h-3" />
@@ -457,11 +445,7 @@ function BrandedReportViewPage() {
             <button
               type="button"
               onClick={() => handleToggle('show_summary')}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition cursor-pointer ${
-                displayOptions.show_summary
-                  ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                  : 'bg-[var(--canvas)] text-[var(--muted)] dark:text-[var(--muted)] border-[var(--line)] opacity-60'
-              }`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full px-3 py-1 text-[11px] font-medium border transition cursor-pointer ${displayOptions.show_summary ? 'bg-[var(--accent-light)] text-[var(--accent-text)] border-[var(--accent)]/30 font-semibold' : 'bg-[var(--canvas)]/70 text-[var(--muted)] border-[var(--line)] opacity-60 hover:opacity-100'}`}
               title="Toggle Summary / Highlights Block"
             >
               <FileText className="w-3 h-3" />
@@ -472,11 +456,7 @@ function BrandedReportViewPage() {
             <button
               type="button"
               onClick={() => handleToggle('show_tables')}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition cursor-pointer ${
-                displayOptions.show_tables
-                  ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                  : 'bg-[var(--canvas)] text-[var(--muted)] dark:text-[var(--muted)] border-[var(--line)] opacity-60'
-              }`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full px-3 py-1 text-[11px] font-medium border transition cursor-pointer ${displayOptions.show_tables ? 'bg-[var(--accent-light)] text-[var(--accent-text)] border-[var(--accent)]/30 font-semibold' : 'bg-[var(--canvas)]/70 text-[var(--muted)] border-[var(--line)] opacity-60 hover:opacity-100'}`}
               title="Toggle Page 2 Search Queries & Landing Pages Tables"
             >
               <Table className="w-3 h-3" />
@@ -487,11 +467,7 @@ function BrandedReportViewPage() {
             <button
               type="button"
               onClick={() => handleToggle('show_next_steps')}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition cursor-pointer ${
-                displayOptions.show_next_steps
-                  ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                  : 'bg-[var(--canvas)] text-[var(--muted)] dark:text-[var(--muted)] border-[var(--line)] opacity-60'
-              }`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full px-3 py-1 text-[11px] font-medium border transition cursor-pointer ${displayOptions.show_next_steps ? 'bg-[var(--accent-light)] text-[var(--accent-text)] border-[var(--accent)]/30 font-semibold' : 'bg-[var(--canvas)]/70 text-[var(--muted)] border-[var(--line)] opacity-60 hover:opacity-100'}`}
               title="Toggle Work Completed and Strategic Priorities"
             >
               <Target className="w-3 h-3" />

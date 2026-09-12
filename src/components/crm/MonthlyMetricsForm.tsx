@@ -422,7 +422,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
       />
 
       {/* Control Header: Client selection & Month/Year Picker */}
-      <div className="p-4 rounded-[8px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3.5">
+      <div className="p-4 sm:p-5 rounded-[20px] bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
@@ -430,7 +430,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                 <BarChart3 className="w-4 h-4 text-[var(--accent)]" />
                 <span>Monthly KPI Entry & Performance Metrics</span>
               </h2>
-              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[10px] font-semibold border ${
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${
                 isEditing
                   ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                   : 'bg-[var(--canvas)] text-[var(--muted)] border-[var(--line)]'
@@ -450,7 +450,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                 type="button"
                 onClick={() => setIsEditing(true)}
                 disabled={!selectedClientId || isLoading}
-                className="h-8 inline-flex items-center gap-1.5 px-3 rounded-[6px] text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
+                className="h-9 inline-flex items-center gap-1.5 px-4 rounded-full text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>Edit Metrics</span>
@@ -461,7 +461,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                   type="button"
                   onClick={handleCancelEdit}
                   disabled={isSaving}
-                  className="h-8 inline-flex items-center gap-1 px-2.5 rounded-[6px] text-[12px] font-medium bg-[var(--canvas)] border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
+                  className="h-9 inline-flex items-center gap-1 px-3.5 rounded-full text-[12px] font-medium bg-[var(--canvas)] border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                   <span>Cancel</span>
@@ -470,7 +470,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
                   type="button"
                   onClick={handleSaveClick}
                   disabled={isSaving || !selectedClientId}
-                  className="h-8 inline-flex items-center gap-1.5 px-3.5 rounded-[6px] text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
+                  className="h-9 inline-flex items-center gap-1.5 px-4 rounded-full text-[12px] font-semibold bg-[var(--accent)] text-white hover:opacity-90 transition cursor-pointer disabled:opacity-50 shadow-xs"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>{isSaving ? 'Saving...' : 'Save Metrics'}</span>
@@ -481,14 +481,14 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
             <button
               type="button"
               onClick={() => handleQuickMonth('prev')}
-              className="h-8 px-2.5 rounded-[6px] text-[11px] font-medium bg-[var(--canvas)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
+              className="h-9 px-3.5 rounded-full text-[12px] font-medium bg-[var(--canvas)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
             >
               Prior Month
             </button>
             <button
               type="button"
               onClick={() => handleQuickMonth('current')}
-              className="h-8 px-2.5 rounded-[6px] text-[11px] font-medium bg-[var(--canvas)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
+              className="h-9 px-3.5 rounded-full text-[12px] font-medium bg-[var(--canvas)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
             >
               Current Month
             </button>
@@ -496,7 +496,7 @@ export function MonthlyMetricsForm({ clientId: initialClientId, partnerId }: Mon
               type="button"
               onClick={() => loadMetrics(selectedClientId, month, year)}
               disabled={isLoading || !selectedClientId}
-              className="h-8 w-8 flex items-center justify-center rounded-[6px] text-[var(--muted)] hover:text-[var(--ink)] bg-[var(--canvas)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
+              className="h-9 w-9 flex items-center justify-center rounded-full text-[var(--muted)] hover:text-[var(--ink)] bg-[var(--canvas)] border border-[var(--line)] hover:bg-[var(--line)]/40 transition cursor-pointer"
               title="Refresh values"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-[var(--accent)]' : ''}`} />

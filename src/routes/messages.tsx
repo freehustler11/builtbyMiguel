@@ -698,10 +698,10 @@ function MessagesPage() {
 
       {/* Custom Themed Lead Inspection Modal */}
       {activeLeadModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto">
-          <div className="w-full max-w-2xl bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-8 space-y-6 animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md overflow-y-auto">
+          <div className="w-full max-w-2xl bg-[var(--panel)] rounded-[20px] border border-[var(--line)] shadow-2xl p-6 sm:p-8 space-y-6 animate-in zoom-in-95 text-[var(--ink)]">
             {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-[var(--line)]">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span
@@ -717,7 +717,7 @@ function MessagesPage() {
                     {formatDate(activeLeadModal.createdAt)}
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl font-bold font-sans text-[var(--ink)]">
                   {activeLeadModal.businessName}
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -736,16 +736,16 @@ function MessagesPage() {
 
             {/* Profile Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-4 rounded-[14px] bg-[var(--canvas)]/70 border border-[var(--line)] space-y-1">
                 <div className="text-[10px] font-mono uppercase text-slate-400 font-bold">
                   Contact Person
                 </div>
-                <div className="text-sm font-bold text-slate-900 dark:text-white">
+                <div className="text-sm font-semibold text-[var(--ink)]">
                   {activeLeadModal.name}
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-4 rounded-[14px] bg-[var(--canvas)]/70 border border-[var(--line)] space-y-1">
                 <div className="text-[10px] font-mono uppercase text-slate-400 font-bold">
                   Email
                 </div>
@@ -754,20 +754,20 @@ function MessagesPage() {
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-4 rounded-[14px] bg-[var(--canvas)]/70 border border-[var(--line)] space-y-1">
                 <div className="text-[10px] font-mono uppercase text-slate-400 font-bold">
                   Location / Market
                 </div>
-                <div className="text-sm text-slate-900 dark:text-white">
+                <div className="text-sm text-[var(--ink)]">
                   {activeLeadModal.location || 'Not specified'}
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-4 rounded-[14px] bg-[var(--canvas)]/70 border border-[var(--line)] space-y-1">
                 <div className="text-[10px] font-mono uppercase text-slate-400 font-bold">
                   Current Website
                 </div>
-                <div className="text-sm font-mono text-slate-900 dark:text-white truncate">
+                <div className="text-sm font-mono text-[var(--ink)] truncate">
                   {activeLeadModal.websiteUrl ? (
                     <a
                       href={
@@ -794,13 +794,13 @@ function MessagesPage() {
               <div className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
                 Full Inquiry Message
               </div>
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
+              <div className="p-5 rounded-[14px] bg-[var(--canvas)]/70 border border-[var(--line)] text-xs sm:text-sm text-[var(--ink)] leading-relaxed whitespace-pre-wrap">
                 {activeLeadModal.message || 'No additional details provided.'}
               </div>
             </div>
 
             {/* Modal Actions */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[var(--line)]">
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -811,7 +811,7 @@ function MessagesPage() {
                       activeLeadModal.businessName
                     )
                   }
-                  className="px-4 py-2 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer"
+                  className="btn btn-secondary rounded-full h-8 px-4 text-xs"
                 >
                   {activeLeadModal.status === 'contacted'
                     ? 'Mark as New'
@@ -824,7 +824,7 @@ function MessagesPage() {
                     setLeadToDelete(activeLeadModal)
                     setActiveLeadModal(null)
                   }}
-                  className="px-4 py-2 rounded-2xl text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900 cursor-pointer"
+                  className="btn btn-destructive rounded-full h-8 px-4 text-xs"
                 >
                   Delete
                 </button>
@@ -834,7 +834,7 @@ function MessagesPage() {
                 <button
                   type="button"
                   onClick={() => setActiveLeadModal(null)}
-                  className="px-4 py-2 rounded-2xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                  className="btn btn-ghost rounded-full h-8 px-4 text-xs"
                 >
                   Close
                 </button>
@@ -845,7 +845,7 @@ function MessagesPage() {
                   )},%0D%0A%0D%0AThank%20you%20for%20reaching%20out%20regarding%20${encodeURIComponent(
                     activeLeadModal.businessName
                   )}.`}
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-sm transition cursor-pointer"
+                  className="btn btn-primary rounded-full h-8 px-5 text-xs"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Send Email</span>
