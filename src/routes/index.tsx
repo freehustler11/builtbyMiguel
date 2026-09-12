@@ -33,17 +33,16 @@ export const Route = createFileRoute('/')({
         content: 'tSjijzpdCvum7gpDKpknIY2FN0jLAGuRNfOiAf0Kg3o',
       },
       {
-        title: 'Digital Marketing Agency for Small Business | built by Miguel',
+        title: 'Digital Marketing Services for Small Business | built by Miguel',
       },
       {
         name: 'description',
-        content:
-          'Get SEO, a fast website, and automated lead follow-up. Built and run by one founder, not an agency. Plans starting at $99/month. Start with a free 5-minute audit.',
+        content: 'Get SEO, a fast website, and automated lead follow-up, built and run directly by me, not an agency. Plans starting at $99/month. Start with a free 5-minute audit.',
       },
       {
         name: 'keywords',
         content:
-          'digital marketing agency for small business, local seo services, national seo services, aeo geo optimization, custom web development, small business automation, trade contractor marketing',
+          'digital marketing services for small business, local seo services, national seo services, aeo geo optimization, custom web development, small business automation, trade contractor marketing',
       },
       // OpenGraph
       { property: 'og:type', content: 'website' },
@@ -53,8 +52,7 @@ export const Route = createFileRoute('/')({
       },
       {
         property: 'og:description',
-        content:
-          'Get SEO, a fast website, and automated lead follow-up. Built and run by one founder, not an agency. Plans starting at $99/month. Start with a free 5-minute audit.',
+        content: 'Get SEO, a fast website, and automated lead follow-up, built and run directly by me, not an agency. Plans starting at $99/month. Start with a free 5-minute audit.',
       },
       { property: 'og:url', content: 'https://builtbymiguel.net' },
       { property: 'og:image', content: 'https://builtbymiguel.net/og-image.png' },
@@ -65,8 +63,7 @@ export const Route = createFileRoute('/')({
       },
       {
         name: 'twitter:description',
-        content:
-          'Get SEO, a fast website, and automated lead follow-up. Built and run by one founder, not an agency. Plans starting at $99/month. Start with a free 5-minute audit.',
+        content: 'Get SEO, a fast website, and automated lead follow-up, built and run directly by me, not an agency. Plans starting at $99/month. Start with a free 5-minute audit.',
       },
       { name: 'twitter:image', content: 'https://builtbymiguel.net/og-image.png' },
     ],
@@ -91,7 +88,7 @@ export const Route = createFileRoute('/')({
             name: 'Miguel Umbac',
           },
           description:
-            'Digital marketing agency for small business and trade contractors. Custom web development, SEO, and business automation run by one founder.',
+            'Digital marketing services for small business and trade contractors. Custom web development, SEO, and business automation, built and run directly by me, not an agency.',
           sameAs: [
             'https://www.linkedin.com/in/seo-specialist-miguel-umbac/',
           ],
@@ -109,7 +106,7 @@ export const Route = createFileRoute('/')({
               name: 'Is built by Miguel actually an agency?',
               acceptedAnswer: {
                 '@type': 'Answer',
-                text: 'No. It is a one-person studio. Founder Miguel Umbac personally handles every client engagement. There is no account manager layer and no outsourcing to subcontractors.',
+                text: 'No. It is a one-person studio. Miguel Umbac personally handles every client engagement. There is no account manager layer and no outsourcing to subcontractors.',
               },
             },
             {
@@ -188,7 +185,7 @@ const FAQ_ITEMS = [
   {
     question: 'Is built by Miguel actually an agency?',
     answer:
-      'No. It is a one-person studio. Founder Miguel Umbac personally handles every client engagement. There is no account manager layer and no outsourcing to subcontractors.',
+      'No. It is a one-person studio. Miguel Umbac personally handles every client engagement. There is no account manager layer and no outsourcing to subcontractors.',
   },
   {
     question:
@@ -263,12 +260,12 @@ function HomePage() {
 
               {/* Single H1 on page */}
               <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display leading-[1.12]">
-                Digital Marketing Agency for Small Business, Run by One Founder
+                Digital Marketing Services for Small Business
               </h1>
 
               {/* Subhead */}
               <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl font-normal">
-                Most digital marketing agencies for small business hand you off to a junior account manager and a templated WordPress site. I build your SEO, your website, and your lead system myself, and you talk to me directly, not a support queue.
+                Most digital marketing agencies hand you off to a junior account manager and a templated WordPress site. Your SEO, website, and lead system get built directly by me, so you're never stuck waiting on a support queue.
               </p>
 
               {/* CTAs */}
@@ -278,7 +275,7 @@ function HomePage() {
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-slate-950" />
-                  <span>Get Your Free Audit</span>
+                  <span>Get Your Free Audit →</span>
                 </Link>
                 <Link
                   to="/contact"
@@ -291,7 +288,7 @@ function HomePage() {
               {/* Verified Trust Strip */}
               <div className="pt-3 flex flex-wrap items-center gap-6 text-xs text-slate-500 dark:text-slate-400 font-mono">
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" /> 100% Direct Founder
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" /> 100% Direct Access
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" /> 24h Response Guarantee
@@ -359,7 +356,7 @@ function HomePage() {
                     </span>
                   </div>
                   <div className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
-                    New HVAC replacement inquiry routed to founder phone in <span className="font-bold text-slate-900 dark:text-white">12 seconds</span>.
+                    New HVAC replacement inquiry routed to mobile in <span className="font-bold text-slate-900 dark:text-white">12 seconds</span>.
                   </div>
                 </div>
               </div>
@@ -383,29 +380,27 @@ function HomePage() {
               Unified Architecture
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight">
-              One Founder, Three Systems That Actually Talk to Each Other
+              Three Systems That Actually Talk to Each Other
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-              Most agencies split your SEO, your website, and your lead follow-up across three different vendors who never compare notes. I build all three as one connected system, so a ranking improvement, a faster page, and a follow-up text all work toward the same goal: more jobs booked.
+              Most agencies split your SEO, your website, and your lead follow-up across three different vendors who never compare notes. Here, all three run as one connected system, built by me, so a ranking improvement, a faster page, and a follow-up text all work toward the same goal: more jobs booked.
             </p>
           </div>
 
           {/* 4 Cards Grid - Modern SaaS Pill & Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Card 1: Direct Founder Access */}
+            {/* Card 1: Direct Access */}
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-400/80 dark:hover:border-amber-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-amber-100/90 to-amber-200/50 dark:from-amber-950/70 dark:to-amber-900/40 border border-amber-300/80 dark:border-amber-700/60 flex items-center justify-center text-amber-700 dark:text-amber-400 shadow-sm group-hover:scale-105 transition-transform">
-                    <UserCheck className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-100/90 to-amber-200/50 dark:from-amber-950/70 dark:to-amber-900/40 border border-amber-300/80 dark:border-amber-700/60 flex items-center justify-center text-amber-700 dark:text-amber-400 shadow-2xs group-hover:scale-105 transition-transform">
+                    <UserCheck className="w-5 h-5" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                    01
-                  </span>
+                  <span className="font-mono text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">01</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                    Direct Founder Access
+                    Direct Access
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     No account manager relays your questions to someone else. You talk to the person actually building your site.
@@ -421,12 +416,10 @@ function HomePage() {
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-sky-400/80 dark:hover:border-sky-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-sky-100/90 to-sky-200/50 dark:from-sky-950/70 dark:to-sky-900/40 border border-sky-300/80 dark:border-sky-700/60 flex items-center justify-center text-sky-700 dark:text-sky-400 shadow-sm group-hover:scale-105 transition-transform">
-                    <Code2 className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-100/90 to-sky-200/50 dark:from-sky-950/70 dark:to-sky-900/40 border border-sky-300/80 dark:border-sky-700/60 flex items-center justify-center text-sky-700 dark:text-sky-400 shadow-2xs group-hover:scale-105 transition-transform">
+                    <Code2 className="w-5 h-5" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                    02
-                  </span>
+                  <span className="font-mono text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">02</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
@@ -446,12 +439,10 @@ function HomePage() {
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-400/80 dark:hover:border-emerald-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-100/90 to-emerald-200/50 dark:from-emerald-950/70 dark:to-emerald-900/40 border border-emerald-300/80 dark:border-emerald-700/60 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shadow-sm group-hover:scale-105 transition-transform">
-                    <Zap className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-100/90 to-emerald-200/50 dark:from-emerald-950/70 dark:to-emerald-900/40 border border-emerald-300/80 dark:border-emerald-700/60 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shadow-2xs group-hover:scale-105 transition-transform">
+                    <Zap className="w-5 h-5" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                    03
-                  </span>
+                  <span className="font-mono text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">03</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
@@ -471,12 +462,10 @@ function HomePage() {
             <div className="group relative p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-400/80 dark:hover:border-purple-500/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-100/90 to-purple-200/50 dark:from-purple-950/70 dark:to-purple-900/40 border border-purple-300/80 dark:border-purple-700/60 flex items-center justify-center text-purple-700 dark:text-purple-400 shadow-sm group-hover:scale-105 transition-transform">
-                    <Workflow className="w-7 h-7 sm:w-8 sm:h-8" strokeWidth={2} />
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-100/90 to-purple-200/50 dark:from-purple-950/70 dark:to-purple-900/40 border border-purple-300/80 dark:border-purple-700/60 flex items-center justify-center text-purple-700 dark:text-purple-400 shadow-2xs group-hover:scale-105 transition-transform">
+                    <Workflow className="w-5 h-5" strokeWidth={2} />
                   </div>
-                  <span className="font-mono text-base sm:text-lg font-black text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                    04
-                  </span>
+                  <span className="font-mono text-xs sm:text-sm font-bold text-slate-400 dark:text-slate-500">04</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
@@ -500,7 +489,7 @@ function HomePage() {
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
-              <span>Audit Your Growth Bottlenecks</span>
+              <span>Start My Free Audit →</span>
             </Link>
           </div>
         </div>
@@ -520,7 +509,7 @@ function HomePage() {
               What You Get
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
-              Three connected systems built by one founder—engineered to rank locally, load in under a second, and turn leads into booked jobs automatically without agency bloat.
+              Every project falls under three connected systems: SEO, websites, and automation. Here's exactly what each one includes.
             </p>
           </div>
 
@@ -579,7 +568,7 @@ function HomePage() {
                 </h3>
 
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Whether you need to dominate the Map Pack in a twenty-mile radius, rank across an entire state for commercial contracts, or get cited by AI tools like ChatGPT and Perplexity, I build the SEO strategy around where your customers are actually searching.
+                  Whether you need to dominate the Map Pack in a twenty-mile radius, rank across an entire state for commercial contracts, or get cited by AI tools like ChatGPT and Perplexity, your SEO strategy gets built around where your customers are actually searching.
                 </p>
 
                 <ul className="space-y-3 pt-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
@@ -785,7 +774,7 @@ function HomePage() {
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
-              <span>Request Your Tailored Growth Plan</span>
+              <span>Claim Your Free Audit →</span>
             </Link>
           </div>
         </div>
@@ -809,7 +798,7 @@ function HomePage() {
               </h2>
 
               <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                A traditional digital marketing agency for small business sells you a retainer, then routes your account through layers of staff you will never talk to. I skip that structure entirely. Every site, every automation, and every SEO fix is something I build and test myself, so there is no gap between the person making promises and the person doing the work.
+                A traditional digital marketing agency for small business sells you a retainer, then routes your account through layers of staff you will never talk to. That structure doesn't exist here. Every site, every automation, and every SEO fix comes from the same person, me, so there is no gap between the person making promises and the person doing the work.
               </p>
 
               <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
@@ -1004,7 +993,7 @@ function HomePage() {
                     </h3>
                   </div>
                   <span className="px-3.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-900 text-white dark:bg-amber-400 dark:text-slate-950 shadow-xs">
-                    Direct Founder
+                    Direct Access
                   </span>
                 </div>
 
@@ -1041,7 +1030,7 @@ function HomePage() {
                     <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400 shadow-2xs">
                       <Check className="w-3.5 h-3.5" />
                     </div>
-                    <span>One connected system, built by one person</span>
+                    <span>One connected system, built and maintained by me directly</span>
                   </div>
 
                   <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium">
@@ -1130,7 +1119,7 @@ function HomePage() {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-display text-white tracking-tight leading-tight max-w-2xl mx-auto">
-            Get a Digital Marketing System Built by One Founder, Not an Agency
+            Skip the Agency, Work With Me Directly
           </h2>
 
           <p className="text-sm sm:text-base md:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
@@ -1143,7 +1132,7 @@ function HomePage() {
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
-              <span>Start Your Free 5-Minute Audit</span>
+              <span>Get My Free Audit →</span>
             </Link>
           </div>
         </div>
