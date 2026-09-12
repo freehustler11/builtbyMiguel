@@ -58,7 +58,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#CBD5E1]/70 dark:border-slate-800 bg-[#FAF8F5]/95 dark:bg-[#141522]/95 backdrop-blur-md transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand Logo Lockup */}
           <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-rose-500 rounded-2xl p-1">

@@ -246,7 +246,7 @@ function HomePage() {
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-bl from-amber-200/30 via-orange-100/20 to-transparent dark:from-amber-500/10 dark:via-orange-500/5 dark:to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
         <div className="absolute top-1/3 left-0 w-[450px] h-[450px] bg-gradient-to-tr from-sky-200/30 via-slate-100/20 to-transparent dark:from-sky-500/10 dark:via-slate-800/5 dark:to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
             {/* Left Column: Copy & CTAs */}
             <div className="lg:col-span-7 space-y-6 text-left">
@@ -372,7 +372,7 @@ function HomePage() {
         {/* Subtle Ambient Glow behind Value Strip */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-amber-200/20 via-sky-200/20 to-purple-200/20 dark:from-amber-500/5 dark:via-sky-500/5 dark:to-purple-500/5 blur-3xl rounded-full pointer-events-none -z-10" />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           {/* Section Header */}
           <div className="max-w-3xl mb-12 sm:mb-16 space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/40">
@@ -499,7 +499,7 @@ function HomePage() {
       {/* SECTION 3: WHAT YOU GET (FEATURE GRID)                                    */}
       {/* ========================================================================= */}
       <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#FAF8F5]/60 dark:bg-[#080B11] transition-colors duration-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="mb-12 sm:mb-16 space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/40">
               <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
@@ -784,7 +784,7 @@ function HomePage() {
       {/* SECTION 4: WHY WORK DIRECTLY WITH THE PERSON WHO BUILDS IT                */}
       {/* ========================================================================= */}
       <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
             {/* Left Column (roughly 40% width): Text block & link */}
             <div className="lg:col-span-5 space-y-6">
@@ -902,7 +902,7 @@ function HomePage() {
       {/* SECTION 5: COMPARISON TABLE (High-Contrast SaaS Side-by-Side Cards)      */}
       {/* ========================================================================= */}
       <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white via-slate-50/50 to-white dark:from-[#0B0F17] dark:via-[#0E131F] dark:to-[#0B0F17] transition-colors duration-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
               Honest Breakdown
@@ -1050,7 +1050,7 @@ function HomePage() {
       {/* SECTION 6: FAQ                                                            */}
       {/* ========================================================================= */}
       <section className="relative w-full py-16 sm:py-24 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B0F17] transition-colors duration-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/40">
               Answers & Transparency
@@ -1110,7 +1110,7 @@ function HomePage() {
         {/* Ambient mesh glow for Closing CTA */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-gradient-to-b from-amber-500/15 via-rose-500/5 to-transparent blur-3xl pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 text-center space-y-6 relative z-10">
           {/* Eyebrow kicker (not a heading) */}
           <div>
             <span className="text-xs font-mono font-bold tracking-widest uppercase text-amber-400 bg-amber-400/10 border border-amber-400/30 px-3.5 py-1.5 rounded-full inline-block">

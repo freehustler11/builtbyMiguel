@@ -5,7 +5,7 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[#FAF8F5] dark:bg-[#0B0F17] text-[#141522] dark:text-slate-200 text-xs sm:text-sm border-t border-slate-200/80 dark:border-slate-800 transition-colors duration-200">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 py-12 sm:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Column 1: Logo & Tagline */}
           <div className="lg:col-span-4 space-y-3">
