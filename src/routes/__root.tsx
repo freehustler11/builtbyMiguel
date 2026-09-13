@@ -11,6 +11,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CookieConsentBanner } from '@/components/CookieConsentBanner'
+import { AccessibilityToolbar } from '@/components/AccessibilityToolbar'
 import { isInternalPath, isMarketingPath } from '../lib/hostname'
 import appCss from '../index.css?url'
 
@@ -207,7 +208,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         children: JSON.stringify(LOCAL_BUSINESS_JSON_LD),
       },
       {
-        children: `(function(){try{var t=localStorage.getItem('built_by_miguel_theme');if(t==='dark'){document.documentElement.classList.add('dark');document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.classList.remove('dark');document.documentElement.setAttribute('data-theme','light');}}catch(e){}})()`,
+        children: `(function(){try{var t=localStorage.getItem('built_by_miguel_theme');if(t==='dark'){document.documentElement.classList.add('dark');document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.classList.remove('dark');document.documentElement.setAttribute('data-theme','light');}}catch(e){}try{var a=localStorage.getItem('bbm_a11y_settings');if(a){var s=JSON.parse(a);if(s.textSize==='large')document.documentElement.classList.add('a11y-text-large');else if(s.textSize==='larger')document.documentElement.classList.add('a11y-text-larger');if(s.highContrast)document.documentElement.classList.add('a11y-high-contrast');if(s.reducedMotion)document.documentElement.classList.add('a11y-reduced-motion');if(s.underlineLinks)document.documentElement.classList.add('a11y-underline-links');}}catch(e){}})()`,
       },
     ],
   }),
@@ -255,6 +256,7 @@ function RootComponent() {
         </main>
         <Footer />
         <CookieConsentBanner />
+        <AccessibilityToolbar />
         <ScrollRestoration />
         <Scripts />
       </body>

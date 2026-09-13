@@ -30,9 +30,9 @@
     "semantic_hash": ""
   },
   "src/routes/__root.tsx": {
-    "mtime": 1789226886.3032486,
-    "seen": 1789227713.5966272,
-    "ast_hash": "991fbc87a8152b011d29d723a4ccfc65",
+    "mtime": 1789269556.1168208,
+    "seen": 1789269933.7532349,
+    "ast_hash": "5a4f7ed498e279e54e1bca95ca1c473d",
     "semantic_hash": ""
   },
   "src/routes/about.tsx": {
@@ -432,9 +432,9 @@
     "semantic_hash": "393c4f769b3fd434a0916d125f48b038"
   },
   "src/components/Footer.tsx": {
-    "mtime": 1789266788.582291,
-    "seen": 1789267427.2379875,
-    "ast_hash": "0422602c43f4691eb96b756028b49088",
+    "mtime": 1789269539.8998733,
+    "seen": 1789269933.7529998,
+    "ast_hash": "0e2616c42dab7eeb6cd2d8aa50ccbeda",
     "semantic_hash": ""
   },
   "src/routes/audit.tsx": {
@@ -450,9 +450,9 @@
     "semantic_hash": ""
   },
   "src/routes/cookie-policy.tsx": {
-    "mtime": 1789227258.4016657,
-    "seen": 1789227713.6063573,
-    "ast_hash": "cdc2d6fd33d44ea21caabc49eb199e41",
+    "mtime": 1789269435.7892923,
+    "seen": 1789269933.7533717,
+    "ast_hash": "33971add322e04c2fa1fa2a92032fa54",
     "semantic_hash": ""
   },
   "src/routes/local-seo-gbp.tsx": {
@@ -2772,8 +2772,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1789268869.05374,
-    "seen": 1789269195.4031112,
+    "mtime": 1789269608.720694,
+    "seen": 1789269933.7555723,
     "ast_hash": "e6f7f8c23f02e1c7b884503a9e17e018",
     "semantic_hash": ""
   },
@@ -3603,6 +3603,12 @@
     "mtime": 1789266473.4221456,
     "seen": 1789267427.2417371,
     "ast_hash": "3cbf6098eea4b478bfad89d574410264",
+    "semantic_hash": ""
+  },
+  "src/components/CookieConsentBanner.tsx": {
+    "mtime": 1789269530.1057742,
+    "seen": 1789269933.7529862,
+    "ast_hash": "b95f1289ce42460fe70295ba29c4d5bd",
     "semantic_hash": ""
   }
 }

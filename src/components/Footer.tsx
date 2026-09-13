@@ -100,6 +100,7 @@ export function Footer() {
               <li><Link to="/privacy-policy" className="hover:text-black dark:hover:text-white">Privacy</Link></li>
               <li><Link to="/terms" className="hover:text-black dark:hover:text-white">Terms</Link></li>
               <li><Link to="/cookie-policy" className="hover:text-black dark:hover:text-white">Cookie Policy</Link></li>
+              <li><Link to="/accessibility" className="hover:text-black dark:hover:text-white">Accessibility</Link></li>
               <li>
                 <button
                   type="button"

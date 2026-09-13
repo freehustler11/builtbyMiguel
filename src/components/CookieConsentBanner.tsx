@@ -126,7 +126,7 @@ export function CookieConsentBanner() {
         <aside
           role="region"
           aria-label="Cookie Consent Banner"
-          className="fixed bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-xl z-[9999] animate-in fade-in slide-in-from-bottom-5 duration-300"
+          className="fixed bottom-3 left-3 right-3 sm:bottom-6 sm:right-6 sm:left-auto sm:max-w-lg z-[9995] animate-in fade-in slide-in-from-bottom-5 duration-300"
         >
           <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 shadow-2xl backdrop-blur-md text-slate-700 dark:text-slate-300 text-sm">
             <p className="leading-relaxed text-slate-800 dark:text-slate-200">

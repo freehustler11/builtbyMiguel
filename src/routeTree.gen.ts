@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AeoGeoRouteImport } from './routes/aeo-geo'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -78,6 +79,11 @@ const SplatRoute = SplatRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccessibilityRoute = AccessibilityRouteImport.update({
+  id: '/accessibility',
+  path: '/accessibility',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -347,6 +353,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
   '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
@@ -404,6 +411,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
   '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
   '/contact': typeof ContactRoute
@@ -458,6 +466,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
   '/aeo-geo': typeof AeoGeoRoute
   '/audit': typeof AuditRoute
@@ -517,6 +526,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/accessibility'
     | '/admin'
     | '/aeo-geo'
     | '/audit'
@@ -574,6 +584,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/accessibility'
     | '/aeo-geo'
     | '/audit'
     | '/contact'
@@ -627,6 +638,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/accessibility'
     | '/admin'
     | '/aeo-geo'
     | '/audit'
@@ -685,6 +697,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
+  AccessibilityRoute: typeof AccessibilityRoute
   AdminRoute: typeof AdminRouteWithChildren
   AeoGeoRoute: typeof AeoGeoRoute
   AuditRoute: typeof AuditRoute
@@ -734,6 +747,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -1214,6 +1234,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
+  AccessibilityRoute: AccessibilityRoute,
   AdminRoute: AdminRouteWithChildren,
   AeoGeoRoute: AeoGeoRoute,
   AuditRoute: AuditRoute,

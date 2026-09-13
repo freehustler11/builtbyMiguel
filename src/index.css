@@ -283,3 +283,60 @@ html.dark, .dark {
 .card-modern:hover {
   box-shadow: var(--card-shadow-hover);
 }
+
+/* ==========================================================================
+   Site-Wide Accessibility (A11y) Modes & Overrides
+   ========================================================================== */
+
+/* Text Sizing */
+html.a11y-text-large {
+  font-size: 112.5%;
+}
+html.a11y-text-larger {
+  font-size: 125%;
+}
+
+/* High Contrast Mode */
+html.a11y-high-contrast {
+  filter: contrast(125%);
+}
+html.a11y-high-contrast body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+html.dark.a11y-high-contrast body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+html.a11y-high-contrast a {
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+}
+html.a11y-high-contrast button,
+html.a11y-high-contrast input,
+html.a11y-high-contrast textarea,
+html.a11y-high-contrast select {
+  border-color: #000000 !important;
+}
+html.dark.a11y-high-contrast button,
+html.dark.a11y-high-contrast input,
+html.dark.a11y-high-contrast textarea,
+html.dark.a11y-high-contrast select {
+  border-color: #ffffff !important;
+}
+
+/* Reduced Motion Mode */
+html.a11y-reduced-motion *,
+html.a11y-reduced-motion *::before,
+html.a11y-reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Underline All Links Mode */
+html.a11y-underline-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+}
