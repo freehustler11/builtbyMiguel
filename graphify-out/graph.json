@@ -11189,7 +11189,7 @@
       "file_type": "code",
       "norm_label": "termspage()",
       "source_file": "src/routes/terms.tsx",
-      "source_location": "L27"
+      "source_location": "L43"
     },
     {
       "id": "src_routes_work_workpage",
@@ -216786,7 +216786,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/terms.tsx",
-      "source_location": "L24",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -216951,5 +216951,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "17053b92dea08f59233d1f53386b2a856b91ef75"
+  "built_at_commit": "6e9870f5b53bb338e02f7533a6d5d612060b2ecb"
 }

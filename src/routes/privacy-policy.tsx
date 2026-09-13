@@ -99,6 +99,9 @@ function PrivacyPolicyPage() {
                 <strong className="text-slate-900 dark:text-white">Business Details:</strong> Your website URL, target service areas, and local market goals.
               </li>
               <li>
+                <strong className="text-slate-900 dark:text-white">Client Account Data:</strong> If you become a client, information processed through your CRM, automation tools, and client portal, including business operational data you provide us access to (e.g. lead records, scheduling data, review information).
+              </li>
+              <li>
                 <strong className="text-slate-900 dark:text-white">Diagnostic Analytics:</strong> Technical data such as browser type, device type, referring URL, and approximate geolocation (derived from IP address), used to understand website performance and visitor behavior.
               </li>
               <li>
@@ -246,7 +249,7 @@ function PrivacyPolicyPage() {
               >
                 umbacmi@gmail.com
               </a>
-              . We will respond within a reasonable timeframe and in accordance with applicable law.
+              . We will respond within 30 days of a verified request, extendable by an additional 30 days where necessary due to the complexity or volume of the request, and will notify you if an extension is needed.
             </p>
           </section>
 
@@ -313,7 +316,10 @@ function PrivacyPolicyPage() {
               15. Governing Law and Dispute Resolution
             </h2>
             <p>
-              This Privacy Policy is governed by the laws of the Republic of the Philippines, without regard to conflict of law principles. Any dispute arising from or relating to this Privacy Policy or our data practices will first be addressed through good-faith informal negotiation between the parties. If a dispute cannot be resolved informally within 30 days, it will be subject to the exclusive jurisdiction of the courts of Dumaguete City, Negros Oriental, Philippines. Nothing in this section limits any non-waivable rights you may have under mandatory local consumer protection or data protection law in your own country of residence.
+              This Privacy Policy is governed by the laws of the Republic of the Philippines, without regard to conflict of law principles. Any dispute arising from or relating to this Privacy Policy or our data practices will first be addressed through good-faith informal negotiation between the parties. If a dispute cannot be resolved informally within 30 days, it will be subject to the exclusive jurisdiction of the courts of Dumaguete City, Negros Oriental, Philippines.
+            </p>
+            <p>
+              This governing-law choice does not limit our services to clients in the Philippines, we work with clients worldwide, and this clause exists solely to establish a single, consistent jurisdiction for resolving disputes. It does not override any mandatory consumer protection or data protection rights you may be entitled to under the law of your own country of residence, to the extent such rights cannot be validly waived by agreement.
             </p>
           </section>
 
