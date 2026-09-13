@@ -661,3 +661,138 @@ export const postComments = pgTable(
 export type PostComment = typeof postComments.$inferSelect
 export type NewPostComment = typeof postComments.$inferInsert
 
+/**
+ * Internal Leads table for sales outreach and prospecting
+ */
+export const leads = pgTable(
+  'leads',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    companyName: text('company_name').notNull(),
+    websiteUrl: text('website_url'),
+    hasWebsite: text('has_website', { enum: ['yes', 'no', 'unknown'] })
+      .default('unknown')
+      .notNull(),
+    email: text('email'),
+    phone: text('phone'),
+    gbpStatus: text('gbp_status', {
+      enum: [
+        'not_found',
+        'unclaimed',
+        'claimed_unoptimized',
+        'claimed_well_optimized',
+        'unknown',
+      ],
+    })
+      .default('unknown')
+      .notNull(),
+    industry: text('industry', {
+      enum: [
+        'plumbing',
+        'hvac',
+        'electrical',
+        'roofing',
+        'landscaping',
+        'general_contractor',
+        'other',
+      ],
+    })
+      .default('other')
+      .notNull(),
+    cityArea: text('city_area'),
+    leadSource: text('lead_source', {
+      enum: [
+        'manual_research',
+        'referral',
+        'directory_scrape',
+        'inbound_inquiry',
+        'other',
+      ],
+    })
+      .default('manual_research')
+      .notNull(),
+    pipelineStage: text('pipeline_stage', {
+      enum: [
+        'new',
+        'attempted_contact',
+        'contacted',
+        'follow_up_scheduled',
+        'interested_qualified',
+        'proposal_sent',
+        'won',
+        'lost',
+        'do_not_contact',
+      ],
+    })
+      .default('new')
+      .notNull(),
+    assignedTo: uuid('assigned_to').references((): AnyPgColumn => users.id, {
+      onDelete: 'set null',
+    }),
+    nextFollowUpDate: timestamp('next_follow_up_date', { withTimezone: true }),
+    dateAdded: timestamp('date_added', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    addedBy: uuid('added_by').references((): AnyPgColumn => users.id, {
+      onDelete: 'set null',
+    }),
+    lastContactDate: timestamp('last_contact_date', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('leads_pipeline_stage_idx').on(table.pipelineStage),
+    index('leads_assigned_to_idx').on(table.assignedTo),
+    index('leads_next_follow_up_date_idx').on(table.nextFollowUpDate),
+    index('leads_lower_company_name_idx').on(sql`lower(${table.companyName})`),
+    index('leads_lower_email_idx').on(sql`lower(${table.email})`),
+    index('leads_phone_idx').on(table.phone),
+  ]
+)
+
+export type Lead = typeof leads.$inferSelect
+export type NewLead = typeof leads.$inferInsert
+
+/**
+ * Lead Activity Log table for outreach history and notes (immutable, append-only)
+ */
+export const leadActivities = pgTable(
+  'lead_activities',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    leadId: uuid('lead_id')
+      .references((): AnyPgColumn => leads.id, { onDelete: 'cascade' })
+      .notNull(),
+    userId: uuid('user_id').references((): AnyPgColumn => users.id, {
+      onDelete: 'set null',
+    }),
+    userName: text('user_name').notNull(),
+    note: text('note').notNull(),
+    type: text('type', {
+      enum: ['note', 'call', 'email', 'meeting', 'stage_change'],
+    })
+      .default('note')
+      .notNull(),
+    stageFrom: text('stage_from'),
+    stageTo: text('stage_to'),
+    nextFollowUpDate: timestamp('next_follow_up_date', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('lead_activities_lead_id_created_at_idx').on(
+      table.leadId,
+      table.createdAt
+    ),
+  ]
+)
+
+export type LeadActivity = typeof leadActivities.$inferSelect
+export type NewLeadActivity = typeof leadActivities.$inferInsert
+
+

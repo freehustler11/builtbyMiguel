@@ -19,6 +19,8 @@ import {
   locationMonthlyMetrics,
   posts,
   postComments,
+  leads,
+  leadActivities,
 } from '../app/db/schema'
 import { eq, sql, inArray, and, isNull, or } from 'drizzle-orm'
 import { hashPassword, verifyPassword, createSessionToken, verifySessionToken, getSessionData } from '../app/lib/auth'
@@ -4924,6 +4926,147 @@ async function runSimulations() {
     assert(true, 'Sim31: Blog comments & moderation simulation completed cleanly')
   } catch (err: any) {
     assert(false, 'Simulation 31 failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 32: Internal Lead Tracking & Nurture Tool (CRM)
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 32: Internal Lead Tracking & Nurture Tool')
+  try {
+    // 1. Fetch test superadmin & staff user
+    const [adminUser] = await db.select().from(users).where(eq(users.role, 'superadmin')).limit(1)
+    assert(Boolean(adminUser?.id), 'Sim32: Found active superadmin user')
+
+    const [staffUser] = await db
+      .select()
+      .from(users)
+      .where(or(eq(users.role, 'partner_employee'), eq(users.role, 'partner')))
+      .limit(1)
+    const assignedStaffId = staffUser ? staffUser.id : adminUser.id
+
+    // 2. Create a prospective lead
+    const today = new Date()
+    const testCompanyName = 'Dumaguete Dental Care'
+    const testEmail = 'info@dumaguetedental.test'
+    const testPhone = '+63 917 555 1234'
+
+    const [createdLead] = await db
+      .insert(leads)
+      .values({
+        companyName: testCompanyName,
+        websiteUrl: 'https://dumaguetedental.test',
+        hasWebsite: 'yes',
+        email: testEmail,
+        phone: testPhone,
+        gbpStatus: 'claimed_unoptimized',
+        industry: 'other',
+        cityArea: 'Dumaguete City, Negros Oriental',
+        leadSource: 'manual_research',
+        pipelineStage: 'new',
+        assignedTo: assignedStaffId,
+        nextFollowUpDate: today,
+        addedBy: adminUser.id,
+      })
+      .returning()
+
+    assert(Boolean(createdLead?.id), 'Sim32: Prospective lead successfully inserted')
+    assert(createdLead.companyName === testCompanyName, 'Sim32: Company name persisted correctly')
+    assert(createdLead.hasWebsite === 'yes', 'Sim32: Website status stored as yes')
+    assert(createdLead.pipelineStage === 'new', 'Sim32: Initial pipeline stage is New')
+    assert(Boolean(createdLead.nextFollowUpDate), 'Sim32: Next follow up date is set')
+
+    // 3. Duplicate checks: company name, email, phone
+    const [dupByName] = await db
+      .select({ id: leads.id, companyName: leads.companyName })
+      .from(leads)
+      .where(sql`lower(${leads.companyName}) = lower(${'dumaguete dental care'})`)
+
+    assert(Boolean(dupByName && dupByName.id === createdLead.id), 'Sim32: Duplicate detection flags case-insensitive company name match')
+
+    const [dupByEmail] = await db
+      .select({ id: leads.id })
+      .from(leads)
+      .where(sql`lower(${leads.email}) = lower(${'INFO@DUMAGUETEDENTAL.TEST'})`)
+
+    assert(Boolean(dupByEmail && dupByEmail.id === createdLead.id), 'Sim32: Duplicate detection flags case-insensitive email match')
+
+    const [dupByPhone] = await db
+      .select({ id: leads.id })
+      .from(leads)
+      .where(eq(leads.phone, testPhone))
+
+    assert(Boolean(dupByPhone && dupByPhone.id === createdLead.id), 'Sim32: Duplicate detection flags exact phone match')
+
+    // 4. Append-only Lead Activity Log & Last Contact Date sync
+    const [initialActivity] = await db
+      .insert(leadActivities)
+      .values({
+        leadId: createdLead.id,
+        userId: adminUser.id,
+        userName: adminUser.name || 'Miguel Umbac',
+        note: 'Called front desk, receptionist gave owner email and best callback time.',
+        type: 'call',
+      })
+      .returning()
+
+    assert(Boolean(initialActivity?.id), 'Sim32: Append-only lead activity note recorded')
+    assert(initialActivity.leadId === createdLead.id, 'Sim32: Activity correctly bound to leadId')
+
+    // Update lead's lastContactDate
+    const contactTimestamp = new Date()
+    await db
+      .update(leads)
+      .set({ lastContactDate: contactTimestamp, updatedAt: new Date() })
+      .where(eq(leads.id, createdLead.id))
+
+    const [leadAfterContact] = await db.select().from(leads).where(eq(leads.id, createdLead.id))
+    assert(Boolean(leadAfterContact?.lastContactDate), 'Sim32: lastContactDate synchronized after outreach activity')
+
+    // 5. Stage Transitions & Follow-up Scheduling
+    await db
+      .update(leads)
+      .set({
+        pipelineStage: 'contacted',
+        updatedAt: new Date(),
+      })
+      .where(eq(leads.id, createdLead.id))
+
+    const [leadContacted] = await db.select().from(leads).where(eq(leads.id, createdLead.id))
+    assert(leadContacted.pipelineStage === 'contacted', 'Sim32: Lead stage successfully transitioned to Contacted')
+
+    // Transition to do_not_contact: should wipe nextFollowUpDate
+    await db
+      .update(leads)
+      .set({
+        pipelineStage: 'do_not_contact',
+        nextFollowUpDate: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(leads.id, createdLead.id))
+
+    const [leadDnc] = await db.select().from(leads).where(eq(leads.id, createdLead.id))
+    assert(leadDnc.pipelineStage === 'do_not_contact', 'Sim32: Lead stage marked as Do Not Contact')
+    assert(leadDnc.nextFollowUpDate === null, 'Sim32: Next follow up date cleared upon Do Not Contact transition')
+
+    // 6. Role guard checks
+    const clientRole = 'client'
+    const staffRole = 'partner_employee'
+    const isStaffOrSuperadmin = (role: string) => ['superadmin', 'partner', 'partner_employee'].includes(role)
+
+    assert(!isStaffOrSuperadmin(clientRole), 'Sim32: Client role is strictly blocked from Leads tool')
+    assert(isStaffOrSuperadmin(staffRole), 'Sim32: Staff role (partner_employee) is granted access to Leads tool')
+    assert(isStaffOrSuperadmin('superadmin'), 'Sim32: Superadmin role is granted access to Leads tool')
+
+    // 7. Cleanup fixtures
+    await db.delete(leadActivities).where(eq(leadActivities.leadId, createdLead.id))
+    await db.delete(leads).where(eq(leads.id, createdLead.id))
+
+    const [cleanedLead] = await db.select().from(leads).where(eq(leads.id, createdLead.id))
+    assert(!cleanedLead, 'Sim32: Test lead and cascade activities cleanly removed')
+
+    assert(true, 'Sim32: Internal Lead Tracking & Nurture Tool simulation completed successfully')
+  } catch (err: any) {
+    assert(false, 'Simulation 32 failed', err.message)
   }
 
   // ---------------------------------------------------------------

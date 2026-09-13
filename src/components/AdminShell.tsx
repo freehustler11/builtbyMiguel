@@ -28,6 +28,7 @@ import {
   Table2,
   Send,
   User,
+  Target,
 } from 'lucide-react'
 import { LogoutButton } from './LogoutButton'
 import { ThemeToggle } from './ThemeToggle'
@@ -135,6 +136,13 @@ const NAV_GROUPS: NavGroupDef[] = [
         label: 'All clients',
         to: '/admin/clients',
         icon: Users,
+        roles: ['superadmin', 'partner', 'partner_employee'],
+      },
+      {
+        id: 'leads',
+        label: 'Leads & Pipeline',
+        to: '/admin/leads',
+        icon: Target,
         roles: ['superadmin', 'partner', 'partner_employee'],
       },
       {

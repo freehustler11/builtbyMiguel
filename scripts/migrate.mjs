@@ -645,6 +645,53 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS "post_comments_status_idx" ON "post_comments" ("status");`
     await sql`CREATE INDEX IF NOT EXISTS "post_comments_created_at_idx" ON "post_comments" ("created_at");`
 
+    // 27. Internal Leads and Lead Activities Tables
+    console.log('🔄 Migration 27: Creating leads and lead_activities tables...')
+    await sql`
+      CREATE TABLE IF NOT EXISTS "leads" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "company_name" text NOT NULL,
+        "website_url" text,
+        "has_website" text DEFAULT 'unknown' NOT NULL,
+        "email" text,
+        "phone" text,
+        "gbp_status" text DEFAULT 'unknown' NOT NULL,
+        "industry" text DEFAULT 'other' NOT NULL,
+        "city_area" text,
+        "lead_source" text DEFAULT 'manual_research' NOT NULL,
+        "pipeline_stage" text DEFAULT 'new' NOT NULL,
+        "assigned_to" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "next_follow_up_date" timestamp with time zone,
+        "date_added" timestamp with time zone DEFAULT now() NOT NULL,
+        "added_by" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "last_contact_date" timestamp with time zone,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "leads_pipeline_stage_idx" ON "leads" ("pipeline_stage");`
+    await sql`CREATE INDEX IF NOT EXISTS "leads_assigned_to_idx" ON "leads" ("assigned_to");`
+    await sql`CREATE INDEX IF NOT EXISTS "leads_next_follow_up_date_idx" ON "leads" ("next_follow_up_date");`
+    await sql`CREATE INDEX IF NOT EXISTS "leads_lower_company_name_idx" ON "leads" (lower("company_name"));`
+    await sql`CREATE INDEX IF NOT EXISTS "leads_lower_email_idx" ON "leads" (lower("email"));`
+    await sql`CREATE INDEX IF NOT EXISTS "leads_phone_idx" ON "leads" ("phone");`
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS "lead_activities" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "lead_id" uuid NOT NULL REFERENCES "leads"("id") ON DELETE CASCADE,
+        "user_id" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "user_name" text NOT NULL,
+        "note" text NOT NULL,
+        "type" text DEFAULT 'note' NOT NULL,
+        "stage_from" text,
+        "stage_to" text,
+        "next_follow_up_date" timestamp with time zone,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "lead_activities_lead_id_created_at_idx" ON "lead_activities" ("lead_id", "created_at");`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

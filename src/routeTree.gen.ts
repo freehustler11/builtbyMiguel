@@ -40,6 +40,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminActivityRouteImport } from './routes/admin/activity'
 import { Route as AdminClientsRouteImport } from './routes/admin/clients'
 import { Route as AdminCommentsRouteImport } from './routes/admin/comments'
+import { Route as AdminLeadsRouteImport } from './routes/admin/leads'
 import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminTeamRouteImport } from './routes/admin/team'
@@ -222,6 +223,11 @@ const AdminCommentsRoute = AdminCommentsRouteImport.update({
   path: '/comments',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
   id: '/media',
   path: '/media',
@@ -386,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/comments': typeof AdminCommentsRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
@@ -441,6 +448,7 @@ export interface FileRoutesByTo {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/comments': typeof AdminCommentsRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
@@ -501,6 +509,7 @@ export interface FileRoutesById {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/comments': typeof AdminCommentsRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/team': typeof AdminTeamRoute
@@ -562,6 +571,7 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/clients'
     | '/admin/comments'
+    | '/admin/leads'
     | '/admin/media'
     | '/admin/posts'
     | '/admin/team'
@@ -617,6 +627,7 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/clients'
     | '/admin/comments'
+    | '/admin/leads'
     | '/admin/media'
     | '/admin/posts'
     | '/admin/team'
@@ -676,6 +687,7 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/clients'
     | '/admin/comments'
+    | '/admin/leads'
     | '/admin/media'
     | '/admin/posts'
     | '/admin/team'
@@ -957,6 +969,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCommentsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/media': {
       id: '/admin/media'
       path: '/media'
@@ -1158,6 +1177,7 @@ interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminClientsRoute: typeof AdminClientsRoute
   AdminCommentsRoute: typeof AdminCommentsRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminTeamRoute: typeof AdminTeamRoute
@@ -1176,6 +1196,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
   AdminClientsRoute: AdminClientsRoute,
   AdminCommentsRoute: AdminCommentsRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminTeamRoute: AdminTeamRoute,
