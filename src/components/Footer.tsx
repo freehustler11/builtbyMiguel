@@ -15,6 +15,9 @@ export function Footer() {
             <p className="text-xs text-slate-500 dark:text-slate-400 font-sans leading-relaxed max-w-xs">
               Digital marketing services for small business. Custom web development, Google Maps SEO, and automated lead dispatch.
             </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-sans leading-relaxed max-w-xs">
+              Based in Dumaguete City, Philippines. Serving clients across the US, Canada, Australia, and worldwide.
+            </p>
             {/* Social Profile: Verified LinkedIn Only */}
             <div className="flex items-center gap-3 pt-2">
               <a

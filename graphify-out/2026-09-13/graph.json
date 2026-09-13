@@ -3221,7 +3221,7 @@
       "file_type": "code",
       "norm_label": "contactpage()",
       "source_file": "src/routes/contact.tsx",
-      "source_location": "L58"
+      "source_location": "L63"
     },
     {
       "id": "src_routes_website_demo_websitedemopage",
@@ -20267,7 +20267,7 @@
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/routes/contact.tsx",
-      "source_location": "L14"
+      "source_location": "L10"
     },
     {
       "id": "src_routes_website_demo",
@@ -112611,7 +112611,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/contact.tsx",
-      "source_location": "L76",
+      "source_location": "L80",
       "weight": 1.0
     },
     {
@@ -122180,7 +122180,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/contact.tsx",
-      "source_location": "L12",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -126476,7 +126476,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/routes/contact.tsx",
-      "source_location": "L12",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -206166,7 +206166,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/contact.tsx",
-      "source_location": "L14",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -216558,7 +216558,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/contact.tsx",
-      "source_location": "L55",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -216951,5 +216951,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d67fa0f72a70e600f78391a86538ac3984eb6b42"
+  "built_at_commit": "03fce79aa4ac5c0f299d04438f583626ade678ad"
 }
