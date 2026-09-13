@@ -21,6 +21,10 @@ import {
   postComments,
   leads,
   leadActivities,
+  campaigns,
+  campaignSteps,
+  leadCampaignEnrollments,
+  leadCampaignStepLogs,
 } from '../app/db/schema'
 import { eq, sql, inArray, and, isNull, or } from 'drizzle-orm'
 import { hashPassword, verifyPassword, createSessionToken, verifySessionToken, getSessionData } from '../app/lib/auth'
@@ -5067,6 +5071,290 @@ async function runSimulations() {
     assert(true, 'Sim32: Internal Lead Tracking & Nurture Tool simulation completed successfully')
   } catch (err: any) {
     assert(false, 'Simulation 32 failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 33: Multi-Channel Campaigns, Sequences & Compliance
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 33: Multi-Channel Campaigns, Sequences & Compliance')
+  try {
+    const [adminUser] = await db.select().from(users).where(eq(users.role, 'superadmin')).limit(1)
+    assert(Boolean(adminUser?.id), 'Sim33: Found active superadmin')
+
+    // 1. Create a 3-step multi-channel test campaign
+    const [testCamp] = await db
+      .insert(campaigns)
+      .values({
+        name: 'Sim33 Multi-Channel Sequence',
+        description: 'Test sequence across email, contact form, and phone',
+        isActive: true,
+        createdById: adminUser.id,
+      })
+      .returning()
+    assert(Boolean(testCamp?.id), 'Sim33: Created test sequence campaign')
+
+    const [step1] = await db
+      .insert(campaignSteps)
+      .values({
+        campaignId: testCamp.id,
+        stepOrder: 1,
+        label: 'Initial Email',
+        channel: 'email',
+        delayDays: 0,
+        subjectTemplate: 'Question for {{company_name}} in {{city}}',
+        bodyTemplate: 'Hi {{contact_name}}, saw your {{industry}} work in {{city}}.',
+      })
+      .returning()
+
+    const [step2] = await db
+      .insert(campaignSteps)
+      .values({
+        campaignId: testCamp.id,
+        stepOrder: 2,
+        label: 'Contact Form Message',
+        channel: 'contact_form',
+        delayDays: 3,
+        bodyTemplate: 'Hi {{company_name}} team, following up on email.',
+      })
+      .returning()
+
+    const [step3] = await db
+      .insert(campaignSteps)
+      .values({
+        campaignId: testCamp.id,
+        stepOrder: 3,
+        label: 'Follow-Up Call',
+        channel: 'phone',
+        delayDays: 5,
+        callScript: 'Ask for owner of {{company_name}} regarding local search.',
+      })
+      .returning()
+
+    assert(step1.channel === 'email' && step2.channel === 'contact_form' && step3.channel === 'phone', 'Sim33: All three channels configured in campaign steps')
+
+    // 2. Create test lead (US) with hasContactForm
+    const [usLead] = await db
+      .insert(leads)
+      .values({
+        companyName: 'Apex Roofing Austin',
+        websiteUrl: 'https://apexroofing.test',
+        hasWebsite: 'yes',
+        hasContactForm: 'yes',
+        email: 'info@apexroofing.test',
+        phone: '+1 512 555 9876',
+        country: 'US',
+        industry: 'roofing',
+        cityArea: 'Austin, TX',
+        pipelineStage: 'new',
+        assignedTo: adminUser.id,
+        addedBy: adminUser.id,
+      })
+      .returning()
+
+    assert(usLead.hasContactForm === 'yes' && usLead.country === 'US', 'Sim33: Lead persisted with hasContactForm and country')
+
+    // 3. Create Canadian lead to test compliance warning
+    const [caLead] = await db
+      .insert(leads)
+      .values({
+        companyName: 'Maple Leaf Plumbing',
+        websiteUrl: 'https://mapleleafplumbing.test',
+        hasWebsite: 'yes',
+        hasContactForm: 'yes',
+        email: 'contact@mapleleafplumbing.test',
+        country: 'Canada',
+        industry: 'plumbing',
+        cityArea: 'Toronto, ON',
+        pipelineStage: 'new',
+        assignedTo: adminUser.id,
+        addedBy: adminUser.id,
+      })
+      .returning()
+
+    assert(caLead.country === 'Canada', 'Sim33: Canada lead created with country verification')
+
+    // 4. Enroll US Lead in Campaign
+    const [enrollment] = await db
+      .insert(leadCampaignEnrollments)
+      .values({
+        leadId: usLead.id,
+        campaignId: testCamp.id,
+        status: 'active',
+        currentStepOrder: 1,
+        enrolledById: adminUser.id,
+      })
+      .returning()
+
+    assert(Boolean(enrollment?.id), 'Sim33: Lead successfully enrolled in campaign')
+
+    // Schedule step logs
+    const now = new Date()
+    const [log1] = await db
+      .insert(leadCampaignStepLogs)
+      .values({
+        enrollmentId: enrollment.id,
+        leadId: usLead.id,
+        stepId: step1.id,
+        stepOrder: 1,
+        channel: 'email',
+        status: 'due',
+        dueDate: now,
+      })
+      .returning()
+
+    const [log2] = await db
+      .insert(leadCampaignStepLogs)
+      .values({
+        enrollmentId: enrollment.id,
+        leadId: usLead.id,
+        stepId: step2.id,
+        stepOrder: 2,
+        channel: 'contact_form',
+        status: 'not_due',
+        dueDate: new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000),
+      })
+      .returning()
+
+    const [log3] = await db
+      .insert(leadCampaignStepLogs)
+      .values({
+        enrollmentId: enrollment.id,
+        leadId: usLead.id,
+        stepId: step3.id,
+        stepOrder: 3,
+        channel: 'phone',
+        status: 'not_due',
+        dueDate: new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000),
+      })
+      .returning()
+
+    assert(log1.status === 'due' && log2.status === 'not_due', 'Sim33: Step 1 initialized as due, step 2 not due')
+
+    // 5. Complete Step 1 (Email)
+    await db
+      .update(leadCampaignStepLogs)
+      .set({ status: 'completed', completedAt: now })
+      .where(eq(leadCampaignStepLogs.id, log1.id))
+
+    await db
+      .insert(leadActivities)
+      .values({
+        leadId: usLead.id,
+        userId: adminUser.id,
+        userName: adminUser.name || 'Miguel Umbac',
+        note: 'Completed Email touch (Step 1).',
+        type: 'email',
+      })
+
+    // Advance to Step 2
+    await db
+      .update(leadCampaignEnrollments)
+      .set({ currentStepOrder: 2 })
+      .where(eq(leadCampaignEnrollments.id, enrollment.id))
+
+    const [enrAfterStep1] = await db
+      .select()
+      .from(leadCampaignEnrollments)
+      .where(eq(leadCampaignEnrollments.id, enrollment.id))
+    assert(enrAfterStep1.currentStepOrder === 2, 'Sim33: Enrollment progressed to Step 2')
+
+    // 6. Complete Step 2 (Contact Form)
+    await db
+      .update(leadCampaignStepLogs)
+      .set({ status: 'completed', completedAt: new Date() })
+      .where(eq(leadCampaignStepLogs.id, log2.id))
+
+    await db
+      .insert(leadActivities)
+      .values({
+        leadId: usLead.id,
+        userId: adminUser.id,
+        userName: adminUser.name || 'Miguel Umbac',
+        note: 'Submitted website Contact Form touch (Step 2).',
+        type: 'note',
+      })
+
+    // Advance to Step 3
+    await db
+      .update(leadCampaignEnrollments)
+      .set({ currentStepOrder: 3 })
+      .where(eq(leadCampaignEnrollments.id, enrollment.id))
+
+    // 7. Complete Step 3 (Phone Call) with Call Outcome
+    const callOutcome = 'answered'
+    const callNotes = 'Spoke with owner Bob, interested in GBP ranking audit next Tuesday.'
+    await db
+      .update(leadCampaignStepLogs)
+      .set({
+        status: 'completed',
+        completedAt: new Date(),
+        callOutcome,
+        notes: callNotes,
+      })
+      .where(eq(leadCampaignStepLogs.id, log3.id))
+
+    await db
+      .insert(leadActivities)
+      .values({
+        leadId: usLead.id,
+        userId: adminUser.id,
+        userName: adminUser.name || 'Miguel Umbac',
+        note: `Completed Phone Call touch (Step 3). Outcome: ${callOutcome}. Notes: ${callNotes}`,
+        type: 'call',
+      })
+
+    const [savedCallLog] = await db
+      .select()
+      .from(leadCampaignStepLogs)
+      .where(eq(leadCampaignStepLogs.id, log3.id))
+    assert(savedCallLog.callOutcome === 'answered', 'Sim33: Phone call outcome recorded')
+    assert(savedCallLog.notes === callNotes, 'Sim33: Phone call notes recorded')
+
+    // 8. Test Response Received (Pauses sequence and updates stage)
+    await db
+      .update(leadCampaignEnrollments)
+      .set({ status: 'paused', pausedReason: 'response_received' })
+      .where(eq(leadCampaignEnrollments.id, enrollment.id))
+
+    await db
+      .update(leads)
+      .set({ pipelineStage: 'interested_qualified' })
+      .where(eq(leads.id, usLead.id))
+
+    const [enrPaused] = await db
+      .select()
+      .from(leadCampaignEnrollments)
+      .where(eq(leadCampaignEnrollments.id, enrollment.id))
+    assert(enrPaused.status === 'paused' && enrPaused.pausedReason === 'response_received', 'Sim33: Campaign sequence paused on response received')
+
+    // 9. Test Do Not Contact Safety Shutdown
+    await db
+      .update(leads)
+      .set({ pipelineStage: 'do_not_contact', nextFollowUpDate: null })
+      .where(eq(leads.id, usLead.id))
+
+    await db
+      .update(leadCampaignEnrollments)
+      .set({ status: 'terminated', pausedReason: 'do_not_contact' })
+      .where(eq(leadCampaignEnrollments.id, enrollment.id))
+
+    const [enrTerminated] = await db
+      .select()
+      .from(leadCampaignEnrollments)
+      .where(eq(leadCampaignEnrollments.id, enrollment.id))
+    assert(enrTerminated.status === 'terminated', 'Sim33: Sequence automatically terminated upon Do Not Contact transition')
+
+    // 10. Clean up fixtures
+    await db.delete(leadCampaignStepLogs).where(eq(leadCampaignStepLogs.enrollmentId, enrollment.id))
+    await db.delete(leadCampaignEnrollments).where(eq(leadCampaignEnrollments.id, enrollment.id))
+    await db.delete(campaignSteps).where(eq(campaignSteps.campaignId, testCamp.id))
+    await db.delete(campaigns).where(eq(campaigns.id, testCamp.id))
+    await db.delete(leadActivities).where(inArray(leadActivities.leadId, [usLead.id, caLead.id]))
+    await db.delete(leads).where(inArray(leads.id, [usLead.id, caLead.id]))
+
+    assert(true, 'Sim33: Multi-channel campaign and compliance simulation completed successfully')
+  } catch (err: any) {
+    assert(false, 'Simulation 33 failed', err.message)
   }
 
   // ---------------------------------------------------------------

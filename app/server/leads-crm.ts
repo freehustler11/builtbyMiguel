@@ -1,6 +1,21 @@
 import { createServerFn } from '@tanstack/react-start'
-import { eq, desc, asc, and, or, sql, isNull, inArray } from 'drizzle-orm'
-import { db, leads, leadActivities, users, type Lead, type LeadActivity } from '../db'
+import { eq, desc, asc, and, or, sql, isNull, inArray, lte } from 'drizzle-orm'
+import {
+  db,
+  leads,
+  leadActivities,
+  campaigns,
+  campaignSteps,
+  leadCampaignEnrollments,
+  leadCampaignStepLogs,
+  users,
+  type Lead,
+  type LeadActivity,
+  type Campaign,
+  type CampaignStep,
+  type LeadCampaignEnrollment,
+  type LeadCampaignStepLog,
+} from '../db'
 import { assertActiveSession } from './auth'
 import { logActivity } from './activity-logger'
 
@@ -37,6 +52,13 @@ export const INDUSTRIES = [
   { id: 'other', label: 'Other' },
 ] as const
 
+export const COUNTRIES = [
+  { id: 'US', label: 'United States' },
+  { id: 'Canada', label: 'Canada' },
+  { id: 'Australia', label: 'Australia' },
+  { id: 'Other', label: 'Other' },
+] as const
+
 export const GBP_STATUSES = [
   { id: 'not_found', label: 'Not Found' },
   { id: 'unclaimed', label: 'Unclaimed' },
@@ -51,6 +73,20 @@ export const LEAD_SOURCES = [
   { id: 'directory_scrape', label: 'Directory / Scrape' },
   { id: 'inbound_inquiry', label: 'Inbound Inquiry' },
   { id: 'other', label: 'Other' },
+] as const
+
+export const CHANNELS = [
+  { id: 'email', label: 'Email' },
+  { id: 'contact_form', label: 'Contact Form' },
+  { id: 'phone', label: 'Phone Call' },
+] as const
+
+export const CALL_OUTCOMES = [
+  { id: 'answered', label: 'Answered' },
+  { id: 'no_answer', label: 'No Answer' },
+  { id: 'voicemail_left', label: 'Voicemail Left' },
+  { id: 'callback_scheduled', label: 'Callback Scheduled' },
+  { id: 'wrong_number', label: 'Wrong Number' },
 ] as const
 
 /**
@@ -70,6 +106,10 @@ export interface LeadWithAssignee extends Lead {
   assignedUserEmail: string | null
   assignedUserAvatar: string | null
   addedByName: string | null
+  activeCampaignId?: string | null
+  activeCampaignName?: string | null
+  campaignStatus?: string | null
+  currentStepOrder?: number | null
 }
 
 export interface StaffUserItem {
@@ -78,6 +118,50 @@ export interface StaffUserItem {
   email: string
   role: string
   avatarUrl: string | null
+}
+
+export interface DueWorklistItem {
+  stepLogId: string
+  enrollmentId: string
+  leadId: string
+  companyName: string
+  websiteUrl: string | null
+  hasWebsite: string
+  hasContactForm: string
+  email: string | null
+  phone: string | null
+  country: string
+  industry: string
+  cityArea: string | null
+  assignedToName: string | null
+  assignedToId: string | null
+  stepId: string
+  stepOrder: number
+  stepLabel: string
+  channel: 'email' | 'contact_form' | 'phone'
+  dueDate: string
+  isOverdue: boolean
+  campaignName: string
+  renderedSubject: string | null
+  renderedBody: string | null
+  renderedScript: string | null
+  complianceNotice: string | null
+  complianceWarning: string | null
+}
+
+/**
+ * Helper to substitute merge fields
+ */
+function substituteMergeFields(
+  template: string | null,
+  lead: { companyName: string; industry: string; cityArea: string | null }
+): string {
+  if (!template) return ''
+  return template
+    .replace(/\{\{company_name\}\}/gi, lead.companyName)
+    .replace(/\{\{contact_name\}\}/gi, lead.companyName)
+    .replace(/\{\{industry\}\}/gi, lead.industry || 'local service')
+    .replace(/\{\{city\}\}/gi, lead.cityArea || 'your service area')
 }
 
 /**
@@ -117,6 +201,7 @@ export const getLeadsServerFn = createServerFn({ method: 'GET' })
       stage?: string
       assignedTo?: string
       industry?: string
+      country?: string
       overdueOnly?: boolean
       dueTodayOnly?: boolean
       search?: string
@@ -133,27 +218,6 @@ export const getLeadsServerFn = createServerFn({ method: 'GET' })
   }> => {
     await assertStaffOrAdmin()
 
-    // 1. Fetch all leads joined with staff assignee
-    const assignee = db.$with('assignee').as(
-      db
-        .select({
-          userId: users.id,
-          userName: users.name,
-          userEmail: users.email,
-          userAvatar: users.avatarUrl,
-        })
-        .from(users)
-    )
-
-    const creator = db.$with('creator').as(
-      db
-        .select({
-          creatorId: users.id,
-          creatorName: users.name,
-        })
-        .from(users)
-    )
-
     const now = new Date()
     const startOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0))
     const endOfToday = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000)
@@ -161,26 +225,50 @@ export const getLeadsServerFn = createServerFn({ method: 'GET' })
     const rawLeads = await db
       .select({
         lead: leads,
-        assignedUserName: assignee.userName,
-        assignedUserEmail: assignee.userEmail,
-        assignedUserAvatar: assignee.userAvatar,
-        addedByName: creator.creatorName,
+        assignedUserName: users.name,
+        assignedUserEmail: users.email,
+        assignedUserAvatar: users.avatarUrl,
       })
       .from(leads)
-      .leftJoin(assignee, eq(leads.assignedTo, assignee.userId))
-      .leftJoin(creator, eq(leads.addedBy, creator.creatorId))
+      .leftJoin(users, eq(leads.assignedTo, users.id))
       .orderBy(asc(leads.nextFollowUpDate), desc(leads.createdAt))
 
-    const formatted: LeadWithAssignee[] = rawLeads.map((r) => ({
-      ...r.lead,
-      assignedUserName: r.assignedUserName,
-      assignedUserEmail: r.assignedUserEmail,
-      assignedUserAvatar: r.assignedUserAvatar,
-      addedByName: r.addedByName,
-    }))
+    // Fetch active enrollments with campaign names
+    const activeEnrollments = await db
+      .select({
+        enrollment: leadCampaignEnrollments,
+        campaignName: campaigns.name,
+      })
+      .from(leadCampaignEnrollments)
+      .innerJoin(campaigns, eq(leadCampaignEnrollments.campaignId, campaigns.id))
+      .where(inArray(leadCampaignEnrollments.status, ['active', 'paused']))
 
-    // Calculate metrics across ALL leads
-    const byStage: Record<PipelineStage, number> = {
+    const enrollmentMap = new Map<string, { campaignId: string; campaignName: string; status: string; stepOrder: number }>()
+    for (const e of activeEnrollments) {
+      enrollmentMap.set(e.enrollment.leadId, {
+        campaignId: e.enrollment.campaignId,
+        campaignName: e.campaignName,
+        status: e.enrollment.status,
+        stepOrder: e.enrollment.currentStepOrder,
+      })
+    }
+
+    const formatted: LeadWithAssignee[] = rawLeads.map((r) => {
+      const enr = enrollmentMap.get(r.lead.id)
+      return {
+        ...r.lead,
+        assignedUserName: r.assignedUserName,
+        assignedUserEmail: r.assignedUserEmail,
+        assignedUserAvatar: r.assignedUserAvatar,
+        addedByName: null,
+        activeCampaignId: enr?.campaignId || null,
+        activeCampaignName: enr?.campaignName || null,
+        campaignStatus: enr?.status || null,
+        currentStepOrder: enr?.stepOrder || null,
+      }
+    })
+
+    const initialStageCounts: Record<PipelineStage, number> = {
       new: 0,
       attempted_contact: 0,
       contacted: 0,
@@ -192,70 +280,65 @@ export const getLeadsServerFn = createServerFn({ method: 'GET' })
       do_not_contact: 0,
     }
 
-    let overdue = 0
-    let dueToday = 0
+    let overdueCount = 0
+    let dueTodayCount = 0
 
-    const terminalStages = ['won', 'lost', 'do_not_contact']
-
-    formatted.forEach((l) => {
-      const st = l.pipelineStage as PipelineStage
-      if (byStage[st] !== undefined) {
-        byStage[st]++
+    for (const item of formatted) {
+      if (item.pipelineStage in initialStageCounts) {
+        initialStageCounts[item.pipelineStage as PipelineStage]++
       }
-
-      if (l.nextFollowUpDate && !terminalStages.includes(l.pipelineStage)) {
-        const fDate = new Date(l.nextFollowUpDate)
-        if (fDate < startOfToday) {
-          overdue++
-        } else if (fDate >= startOfToday && fDate < endOfToday) {
-          dueToday++
+      if (item.nextFollowUpDate && item.pipelineStage !== 'do_not_contact' && item.pipelineStage !== 'won' && item.pipelineStage !== 'lost') {
+        const d = new Date(item.nextFollowUpDate)
+        if (d < startOfToday) {
+          overdueCount++
+        } else if (d >= startOfToday && d < endOfToday) {
+          dueTodayCount++
         }
       }
-    })
+    }
 
-    // Filter results according to query params
     let filtered = formatted
-
-    if (data?.stage && data.stage !== 'all') {
+    if (data.stage) {
       filtered = filtered.filter((l) => l.pipelineStage === data.stage)
     }
-
-    if (data?.assignedTo && data.assignedTo !== 'all') {
-      if (data.assignedTo === 'unassigned') {
-        filtered = filtered.filter((l) => !l.assignedTo)
-      } else {
-        filtered = filtered.filter((l) => l.assignedTo === data.assignedTo)
-      }
+    if (data.assignedTo) {
+      filtered = filtered.filter((l) => l.assignedTo === data.assignedTo)
     }
-
-    if (data?.industry && data.industry !== 'all') {
+    if (data.industry) {
       filtered = filtered.filter((l) => l.industry === data.industry)
     }
-
-    if (data?.overdueOnly) {
-      filtered = filtered.filter((l) => {
-        if (!l.nextFollowUpDate || terminalStages.includes(l.pipelineStage)) return false
-        return new Date(l.nextFollowUpDate) < startOfToday
-      })
+    if (data.country) {
+      filtered = filtered.filter((l) => l.country === data.country)
     }
-
-    if (data?.dueTodayOnly) {
-      filtered = filtered.filter((l) => {
-        if (!l.nextFollowUpDate || terminalStages.includes(l.pipelineStage)) return false
-        const fDate = new Date(l.nextFollowUpDate)
-        return fDate >= startOfToday && fDate < endOfToday
-      })
+    if (data.overdueOnly) {
+      filtered = filtered.filter(
+        (l) =>
+          l.nextFollowUpDate &&
+          new Date(l.nextFollowUpDate) < startOfToday &&
+          l.pipelineStage !== 'do_not_contact' &&
+          l.pipelineStage !== 'won' &&
+          l.pipelineStage !== 'lost'
+      )
     }
-
-    if (data?.search && data.search.trim()) {
+    if (data.dueTodayOnly) {
+      filtered = filtered.filter(
+        (l) =>
+          l.nextFollowUpDate &&
+          new Date(l.nextFollowUpDate) >= startOfToday &&
+          new Date(l.nextFollowUpDate) < endOfToday &&
+          l.pipelineStage !== 'do_not_contact' &&
+          l.pipelineStage !== 'won' &&
+          l.pipelineStage !== 'lost'
+      )
+    }
+    if (data.search && data.search.trim()) {
       const q = data.search.toLowerCase().trim()
       filtered = filtered.filter(
         (l) =>
           l.companyName.toLowerCase().includes(q) ||
           (l.email && l.email.toLowerCase().includes(q)) ||
-          (l.phone && l.phone.includes(q)) ||
-          (l.cityArea && l.cityArea.toLowerCase().includes(q)) ||
-          (l.assignedUserName && l.assignedUserName.toLowerCase().includes(q))
+          (l.phone && l.phone.toLowerCase().includes(q)) ||
+          (l.cityArea && l.cityArea.toLowerCase().includes(q))
       )
     }
 
@@ -263,105 +346,120 @@ export const getLeadsServerFn = createServerFn({ method: 'GET' })
       leads: filtered,
       counts: {
         total: formatted.length,
-        overdue,
-        dueToday,
-        byStage,
+        overdue: overdueCount,
+        dueToday: dueTodayCount,
+        byStage: initialStageCounts,
       },
     }
   })
 
 /**
- * Server Function: Get single lead details with complete activity log
+ * Server Function: Get single lead with activity logs and campaign info
  */
 export const getLeadByIdServerFn = createServerFn({ method: 'GET' })
-  .validator((data: { leadId: string }) => {
-    if (!data.leadId) throw new Error('Lead ID is required')
-    return data
-  })
-  .handler(async ({ data }): Promise<{ lead: LeadWithAssignee; activities: LeadActivity[] }> => {
+  .validator((data: { id: string }) => data)
+  .handler(async ({ data }): Promise<{
+    lead: LeadWithAssignee | null
+    activities: LeadActivity[]
+    enrollment: (LeadCampaignEnrollment & { campaignName: string; steps: LeadCampaignStepLog[] }) | null
+  }> => {
     await assertStaffOrAdmin()
 
     const [leadRow] = await db
-      .select()
+      .select({
+        lead: leads,
+        assignedUserName: users.name,
+        assignedUserEmail: users.email,
+        assignedUserAvatar: users.avatarUrl,
+      })
       .from(leads)
-      .where(eq(leads.id, data.leadId))
+      .leftJoin(users, eq(leads.assignedTo, users.id))
+      .where(eq(leads.id, data.id))
 
-    if (!leadRow) {
-      throw new Error('Lead not found')
-    }
+    if (!leadRow) return { lead: null, activities: [], enrollment: null }
 
-    let assignedUserName = null
-    let assignedUserEmail = null
-    let assignedUserAvatar = null
-    if (leadRow.assignedTo) {
-      const [u] = await db
-        .select({ name: users.name, email: users.email, avatarUrl: users.avatarUrl })
-        .from(users)
-        .where(eq(users.id, leadRow.assignedTo))
-      if (u) {
-        assignedUserName = u.name
-        assignedUserEmail = u.email
-        assignedUserAvatar = u.avatarUrl
+    const logs = await db
+      .select()
+      .from(leadActivities)
+      .where(eq(leadActivities.leadId, data.id))
+      .orderBy(desc(leadActivities.createdAt))
+
+    // Active or paused enrollment
+    const [enr] = await db
+      .select({
+        enrollment: leadCampaignEnrollments,
+        campaignName: campaigns.name,
+      })
+      .from(leadCampaignEnrollments)
+      .innerJoin(campaigns, eq(leadCampaignEnrollments.campaignId, campaigns.id))
+      .where(
+        and(
+          eq(leadCampaignEnrollments.leadId, data.id),
+          inArray(leadCampaignEnrollments.status, ['active', 'paused'])
+        )
+      )
+      .limit(1)
+
+    let enrollmentData: (LeadCampaignEnrollment & { campaignName: string; steps: LeadCampaignStepLog[] }) | null = null
+    if (enr) {
+      const steps = await db
+        .select()
+        .from(leadCampaignStepLogs)
+        .where(eq(leadCampaignStepLogs.enrollmentId, enr.enrollment.id))
+        .orderBy(asc(leadCampaignStepLogs.stepOrder))
+
+      enrollmentData = {
+        ...enr.enrollment,
+        campaignName: enr.campaignName,
+        steps,
       }
     }
 
-    let addedByName = null
-    if (leadRow.addedBy) {
-      const [creator] = await db
-        .select({ name: users.name })
-        .from(users)
-        .where(eq(users.id, leadRow.addedBy))
-      if (creator) addedByName = creator.name
-    }
-
-    const activities = await db
-      .select()
-      .from(leadActivities)
-      .where(eq(leadActivities.leadId, data.leadId))
-      .orderBy(desc(leadActivities.createdAt))
-
     return {
       lead: {
-        ...leadRow,
-        assignedUserName,
-        assignedUserEmail,
-        assignedUserAvatar,
-        addedByName,
+        ...leadRow.lead,
+        assignedUserName: leadRow.assignedUserName,
+        assignedUserEmail: leadRow.assignedUserEmail,
+        assignedUserAvatar: leadRow.assignedUserAvatar,
+        addedByName: null,
+        activeCampaignId: enr?.enrollment.campaignId || null,
+        activeCampaignName: enr?.campaignName || null,
+        campaignStatus: enr?.enrollment.status || null,
+        currentStepOrder: enr?.enrollment.currentStepOrder || null,
       },
-      activities,
+      activities: logs,
+      enrollment: enrollmentData,
     }
   })
 
 /**
- * Server Function: Check for duplicate leads before creation
+ * Server Function: Check duplicates on add
  */
 export const checkLeadDuplicatesServerFn = createServerFn({ method: 'POST' })
   .validator(
     (data: {
-      companyName: string
+      companyName?: string
       email?: string
       phone?: string
-      excludeLeadId?: string
+      excludeId?: string
     }) => data
   )
-  .handler(async ({ data }): Promise<{ duplicates: Array<{ id: string; companyName: string; email: string | null; phone: string | null; pipelineStage: string; assignedToName: string | null }> }> => {
+  .handler(async ({ data }): Promise<{
+    duplicates: Array<{ id: string; companyName: string; email: string | null; phone: string | null; matchReason: string }>
+  }> => {
     await assertStaffOrAdmin()
 
     const conditions = []
-
     if (data.companyName && data.companyName.trim()) {
       conditions.push(sql`lower(${leads.companyName}) = lower(${data.companyName.trim()})`)
     }
-
     if (data.email && data.email.trim()) {
       conditions.push(sql`lower(${leads.email}) = lower(${data.email.trim()})`)
     }
-
     if (data.phone && data.phone.trim()) {
-      // Normalize phone: strip non-digits
-      const digits = data.phone.replace(/\D/g, '')
-      if (digits.length >= 7) {
-        conditions.push(sql`regexp_replace(${leads.phone}, '\\D', '', 'g') = ${digits}`)
+      const cleanPhone = data.phone.replace(/[^0-9+]/g, '')
+      if (cleanPhone.length >= 6) {
+        conditions.push(sql`replace(replace(replace(${leads.phone}, ' ', ''), '-', ''), '(', '') LIKE ${'%' + cleanPhone + '%'}`)
       }
     }
 
@@ -369,125 +467,118 @@ export const checkLeadDuplicatesServerFn = createServerFn({ method: 'POST' })
       return { duplicates: [] }
     }
 
-    let baseQuery = db
+    let query = db
       .select({
         id: leads.id,
         companyName: leads.companyName,
         email: leads.email,
         phone: leads.phone,
-        pipelineStage: leads.pipelineStage,
-        assignedTo: leads.assignedTo,
       })
       .from(leads)
       .where(or(...conditions))
 
-    const matches = await baseQuery
+    const rows = await query
+    const results = rows
+      .filter((r) => !data.excludeId || r.id !== data.excludeId)
+      .map((r) => {
+        const reasons: string[] = []
+        if (data.companyName && r.companyName.toLowerCase() === data.companyName.trim().toLowerCase()) {
+          reasons.push('Company Name')
+        }
+        if (data.email && r.email && r.email.toLowerCase() === data.email.trim().toLowerCase()) {
+          reasons.push('Email')
+        }
+        if (data.phone && r.phone) {
+          reasons.push('Phone')
+        }
+        return {
+          ...r,
+          matchReason: reasons.join(', ') || 'Partial Match',
+        }
+      })
 
-    const filtered = data.excludeLeadId
-      ? matches.filter((m) => m.id !== data.excludeLeadId)
-      : matches
-
-    if (filtered.length === 0) {
-      return { duplicates: [] }
-    }
-
-    // Resolve assigned staff names
-    const staffIds = filtered.map((m) => m.assignedTo).filter(Boolean) as string[]
-    const staffMap = new Map<string, string>()
-    if (staffIds.length > 0) {
-      const staffRows = await db.select({ id: users.id, name: users.name, email: users.email }).from(users).where(inArray(users.id, staffIds))
-      staffRows.forEach((s) => staffMap.set(s.id, s.name || s.email))
-    }
-
-    return {
-      duplicates: filtered.map((m) => ({
-        id: m.id,
-        companyName: m.companyName,
-        email: m.email,
-        phone: m.phone,
-        pipelineStage: m.pipelineStage,
-        assignedToName: m.assignedTo ? staffMap.get(m.assignedTo) || null : null,
-      })),
-    }
+    return { duplicates: results }
   })
 
 /**
- * Server Function: Create a new lead record
+ * Server Function: Create a new prospective lead
  */
 export const createLeadServerFn = createServerFn({ method: 'POST' })
   .validator(
     (data: {
       companyName: string
-      websiteUrl?: string
+      websiteUrl?: string | null
       hasWebsite?: 'yes' | 'no' | 'unknown'
-      email?: string
-      phone?: string
+      hasContactForm?: 'yes' | 'no' | 'unknown'
+      email?: string | null
+      phone?: string | null
+      country?: 'US' | 'Canada' | 'Australia' | 'Other'
       gbpStatus?: 'not_found' | 'unclaimed' | 'claimed_unoptimized' | 'claimed_well_optimized' | 'unknown'
       industry?: 'plumbing' | 'hvac' | 'electrical' | 'roofing' | 'landscaping' | 'general_contractor' | 'other'
-      cityArea?: string
+      cityArea?: string | null
       leadSource?: 'manual_research' | 'referral' | 'directory_scrape' | 'inbound_inquiry' | 'other'
       pipelineStage?: PipelineStage
-      assignedTo?: string
+      assignedTo?: string | null
       nextFollowUpDate?: string | null
-      initialNote?: string
-    }) => {
-      if (!data.companyName || !data.companyName.trim()) {
-        throw new Error('Company Name is required')
-      }
-      return data
-    }
+      initialNote?: string | null
+    }) => data
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<{ lead: Lead }> => {
     const session = await assertStaffOrAdmin()
 
-    // Auto-suggest hasWebsite = 'yes' if URL provided and not specified
-    let hasWebsite = data.hasWebsite || 'unknown'
-    if (data.websiteUrl && data.websiteUrl.trim() && hasWebsite === 'unknown') {
-      hasWebsite = 'yes'
+    if (!data.companyName || !data.companyName.trim()) {
+      throw new Error('Company name is required')
     }
 
-    const nextFollowUp = data.nextFollowUpDate ? new Date(data.nextFollowUpDate) : null
+    let hasWebsiteVal = data.hasWebsite || 'unknown'
+    if (data.websiteUrl && data.websiteUrl.trim() && hasWebsiteVal === 'unknown') {
+      hasWebsiteVal = 'yes'
+    }
 
-    const [newLead] = await db
+    let hasContactFormVal = data.hasContactForm || 'unknown'
+    if (hasWebsiteVal === 'no') {
+      hasContactFormVal = 'no'
+    }
+
+    const followUp = data.nextFollowUpDate ? new Date(data.nextFollowUpDate) : null
+
+    const [created] = await db
       .insert(leads)
       .values({
         companyName: data.companyName.trim(),
         websiteUrl: data.websiteUrl?.trim() || null,
-        hasWebsite,
+        hasWebsite: hasWebsiteVal,
+        hasContactForm: hasContactFormVal,
         email: data.email?.trim() || null,
         phone: data.phone?.trim() || null,
+        country: data.country || 'US',
         gbpStatus: data.gbpStatus || 'unknown',
         industry: data.industry || 'other',
         cityArea: data.cityArea?.trim() || null,
         leadSource: data.leadSource || 'manual_research',
         pipelineStage: data.pipelineStage || 'new',
-        assignedTo: data.assignedTo || session.userId || null,
-        nextFollowUpDate: nextFollowUp,
-        addedBy: session.userId || null,
-        lastContactDate: new Date(),
+        assignedTo: data.assignedTo || session.userId,
+        nextFollowUpDate: followUp,
+        addedBy: session.userId,
       })
       .returning()
 
-    // Create initial activity log entry
-    const noteText = data.initialNote?.trim() || 'Lead created and added to pipeline.'
     await db.insert(leadActivities).values({
-      leadId: newLead.id,
-      userId: session.userId || null,
-      userName: session.name || session.email || 'Staff',
-      note: noteText,
+      leadId: created.id,
+      userId: session.userId,
+      userName: (session.email ?? '').split('@')[0],
+      note: data.initialNote?.trim() || 'Lead created in pipeline.',
       type: 'note',
-      stageTo: newLead.pipelineStage,
-      nextFollowUpDate: nextFollowUp,
+      stageTo: created.pipelineStage,
+      nextFollowUpDate: followUp,
     })
 
     await logActivity({
-      userId: session.userId || null,
-      userEmail: session.email || null,
-      role: session.role,
-      action: `lead_created_${newLead.id}`,
+      userId: session.userId,
+      action: 'create_lead',
     })
 
-    return { success: true, leadId: newLead.id }
+    return { lead: created }
   })
 
 /**
@@ -496,122 +587,119 @@ export const createLeadServerFn = createServerFn({ method: 'POST' })
 export const updateLeadServerFn = createServerFn({ method: 'POST' })
   .validator(
     (data: {
-      leadId: string
+      id: string
       companyName?: string
-      websiteUrl?: string
+      websiteUrl?: string | null
       hasWebsite?: 'yes' | 'no' | 'unknown'
-      email?: string
-      phone?: string
+      hasContactForm?: 'yes' | 'no' | 'unknown'
+      email?: string | null
+      phone?: string | null
+      country?: 'US' | 'Canada' | 'Australia' | 'Other'
       gbpStatus?: 'not_found' | 'unclaimed' | 'claimed_unoptimized' | 'claimed_well_optimized' | 'unknown'
       industry?: 'plumbing' | 'hvac' | 'electrical' | 'roofing' | 'landscaping' | 'general_contractor' | 'other'
-      cityArea?: string
+      cityArea?: string | null
       leadSource?: 'manual_research' | 'referral' | 'directory_scrape' | 'inbound_inquiry' | 'other'
       assignedTo?: string | null
       nextFollowUpDate?: string | null
-    }) => {
-      if (!data.leadId) throw new Error('Lead ID is required')
-      return data
-    }
+      pipelineStage?: PipelineStage
+    }) => data
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<{ lead: Lead }> => {
     const session = await assertStaffOrAdmin()
 
-    const [existing] = await db.select().from(leads).where(eq(leads.id, data.leadId))
-    if (!existing) throw new Error('Lead not found')
-
-    const updatePayload: Partial<Lead> = {
+    const updatePayload: Record<string, any> = {
       updatedAt: new Date(),
     }
 
     if (data.companyName !== undefined) updatePayload.companyName = data.companyName.trim()
     if (data.websiteUrl !== undefined) updatePayload.websiteUrl = data.websiteUrl?.trim() || null
     if (data.hasWebsite !== undefined) updatePayload.hasWebsite = data.hasWebsite
+    if (data.hasContactForm !== undefined) updatePayload.hasContactForm = data.hasContactForm
     if (data.email !== undefined) updatePayload.email = data.email?.trim() || null
     if (data.phone !== undefined) updatePayload.phone = data.phone?.trim() || null
+    if (data.country !== undefined) updatePayload.country = data.country
     if (data.gbpStatus !== undefined) updatePayload.gbpStatus = data.gbpStatus
     if (data.industry !== undefined) updatePayload.industry = data.industry
     if (data.cityArea !== undefined) updatePayload.cityArea = data.cityArea?.trim() || null
     if (data.leadSource !== undefined) updatePayload.leadSource = data.leadSource
+    if (data.assignedTo !== undefined) {
+      if (session.role !== 'superadmin' && session.role !== 'admin') {
+        // Staff cannot reassign
+      } else {
+        updatePayload.assignedTo = data.assignedTo || null
+      }
+    }
     if (data.nextFollowUpDate !== undefined) {
       updatePayload.nextFollowUpDate = data.nextFollowUpDate ? new Date(data.nextFollowUpDate) : null
     }
 
-    // Reassignment check: Staff can assign to self; Superadmin can reassign to anyone
-    if (data.assignedTo !== undefined) {
-      const isSuperadmin = session.role === 'superadmin' || session.role === 'admin'
-      if (!isSuperadmin && data.assignedTo !== session.userId && existing.assignedTo && existing.assignedTo !== session.userId) {
-        throw new Error('Only administrators can reassign leads between other staff members')
+    if (data.pipelineStage !== undefined) {
+      updatePayload.pipelineStage = data.pipelineStage
+      if (data.pipelineStage === 'do_not_contact') {
+        updatePayload.nextFollowUpDate = null
+        // Terminate any active sequence
+        await db
+          .update(leadCampaignEnrollments)
+          .set({ status: 'terminated', pausedReason: 'do_not_contact', updatedAt: new Date() })
+          .where(and(eq(leadCampaignEnrollments.leadId, data.id), eq(leadCampaignEnrollments.status, 'active')))
       }
-      updatePayload.assignedTo = data.assignedTo
     }
 
-    await db.update(leads).set(updatePayload).where(eq(leads.id, data.leadId))
+    const [updated] = await db
+      .update(leads)
+      .set(updatePayload)
+      .where(eq(leads.id, data.id))
+      .returning()
 
-    return { success: true }
+    return { lead: updated }
   })
 
 /**
- * Server Function: Update lead stage with automatic activity log
+ * Server Function: Update lead stage
  */
 export const updateLeadStageServerFn = createServerFn({ method: 'POST' })
-  .validator(
-    (data: {
-      leadId: string
-      newStage: PipelineStage
-      note?: string
-    }) => {
-      if (!data.leadId) throw new Error('Lead ID is required')
-      if (!data.newStage) throw new Error('Target stage is required')
-      return data
-    }
-  )
-  .handler(async ({ data }) => {
+  .validator((data: { id: string; stage: PipelineStage; note?: string }) => data)
+  .handler(async ({ data }): Promise<{ lead: Lead }> => {
     const session = await assertStaffOrAdmin()
 
-    const [lead] = await db.select().from(leads).where(eq(leads.id, data.leadId))
-    if (!lead) throw new Error('Lead not found')
+    const [current] = await db.select().from(leads).where(eq(leads.id, data.id))
+    if (!current) throw new Error('Lead not found')
 
-    const oldStage = lead.pipelineStage as PipelineStage
-    if (oldStage === data.newStage) {
-      return { success: true }
-    }
+    const previousStage = current.pipelineStage
+    const isDnc = data.stage === 'do_not_contact'
 
-    // If marked Do Not Contact, clear next follow-up date
-    const isDnc = data.newStage === 'do_not_contact'
-
-    await db
+    const [updated] = await db
       .update(leads)
       .set({
-        pipelineStage: data.newStage,
-        nextFollowUpDate: isDnc ? null : lead.nextFollowUpDate,
-        lastContactDate: new Date(),
+        pipelineStage: data.stage,
+        nextFollowUpDate: isDnc ? null : current.nextFollowUpDate,
         updatedAt: new Date(),
       })
-      .where(eq(leads.id, data.leadId))
+      .where(eq(leads.id, data.id))
+      .returning()
 
-    const stageLabelFrom = PIPELINE_STAGES.find((s) => s.id === oldStage)?.label || oldStage
-    const stageLabelTo = PIPELINE_STAGES.find((s) => s.id === data.newStage)?.label || data.newStage
-
-    const noteText = data.note?.trim()
-      ? `Stage changed to ${stageLabelTo}. Note: ${data.note.trim()}`
-      : `Pipeline stage moved from ${stageLabelFrom} to ${stageLabelTo}.`
+    if (isDnc) {
+      await db
+        .update(leadCampaignEnrollments)
+        .set({ status: 'terminated', pausedReason: 'do_not_contact', updatedAt: new Date() })
+        .where(and(eq(leadCampaignEnrollments.leadId, data.id), eq(leadCampaignEnrollments.status, 'active')))
+    }
 
     await db.insert(leadActivities).values({
-      leadId: data.leadId,
-      userId: session.userId || null,
-      userName: session.name || session.email || 'Staff',
-      note: noteText,
+      leadId: data.id,
+      userId: session.userId,
+      userName: (session.email ?? '').split('@')[0],
+      note: data.note?.trim() || `Stage changed from ${previousStage} to ${data.stage}`,
       type: 'stage_change',
-      stageFrom: oldStage,
-      stageTo: data.newStage,
+      stageFrom: previousStage,
+      stageTo: data.stage,
     })
 
-    return { success: true }
+    return { lead: updated }
   })
 
 /**
- * Server Function: Add an outreach note to the activity log
- * Optionally updates nextFollowUpDate and/or pipelineStage atomically
+ * Server Function: Add an activity note to a lead
  */
 export const addLeadActivityServerFn = createServerFn({ method: 'POST' })
   .validator(
@@ -621,83 +709,621 @@ export const addLeadActivityServerFn = createServerFn({ method: 'POST' })
       type?: 'note' | 'call' | 'email' | 'meeting'
       newStage?: PipelineStage
       nextFollowUpDate?: string | null
-    }) => {
-      if (!data.leadId) throw new Error('Lead ID is required')
-      if (!data.note || !data.note.trim()) throw new Error('Note text is required')
-      return data
-    }
+    }) => data
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<{ activity: LeadActivity; lead: Lead }> => {
     const session = await assertStaffOrAdmin()
 
-    const [lead] = await db.select().from(leads).where(eq(leads.id, data.leadId))
-    if (!lead) throw new Error('Lead not found')
+    if (!data.note || !data.note.trim()) {
+      throw new Error('Activity note cannot be empty')
+    }
+
+    const [leadRow] = await db.select().from(leads).where(eq(leads.id, data.leadId))
+    if (!leadRow) throw new Error('Lead not found')
 
     const now = new Date()
-    const leadUpdates: Partial<Lead> = {
+    const updateLeadPayload: Record<string, any> = {
       lastContactDate: now,
       updatedAt: now,
     }
 
-    let stageFrom = lead.pipelineStage
-    let stageTo = lead.pipelineStage
+    let stageFrom: string | null = null
+    let stageTo: string | null = null
 
-    if (data.newStage && data.newStage !== lead.pipelineStage) {
-      leadUpdates.pipelineStage = data.newStage
+    if (data.newStage && data.newStage !== leadRow.pipelineStage) {
+      updateLeadPayload.pipelineStage = data.newStage
+      stageFrom = leadRow.pipelineStage
       stageTo = data.newStage
       if (data.newStage === 'do_not_contact') {
-        leadUpdates.nextFollowUpDate = null
+        updateLeadPayload.nextFollowUpDate = null
+        await db
+          .update(leadCampaignEnrollments)
+          .set({ status: 'terminated', pausedReason: 'do_not_contact', updatedAt: now })
+          .where(and(eq(leadCampaignEnrollments.leadId, data.leadId), eq(leadCampaignEnrollments.status, 'active')))
       }
     }
 
     if (data.nextFollowUpDate !== undefined && data.newStage !== 'do_not_contact') {
-      leadUpdates.nextFollowUpDate = data.nextFollowUpDate ? new Date(data.nextFollowUpDate) : null
+      updateLeadPayload.nextFollowUpDate = data.nextFollowUpDate ? new Date(data.nextFollowUpDate) : null
     }
 
-    // 1. Update lead record
-    await db.update(leads).set(leadUpdates).where(eq(leads.id, data.leadId))
+    const [updatedLead] = await db
+      .update(leads)
+      .set(updateLeadPayload)
+      .where(eq(leads.id, data.leadId))
+      .returning()
 
-    // 2. Insert activity log
-    await db.insert(leadActivities).values({
-      leadId: data.leadId,
-      userId: session.userId || null,
-      userName: session.name || session.email || 'Staff',
-      note: data.note.trim(),
-      type: data.type || 'note',
-      stageFrom: stageFrom !== stageTo ? stageFrom : undefined,
-      stageTo: stageFrom !== stageTo ? stageTo : undefined,
-      nextFollowUpDate: leadUpdates.nextFollowUpDate || undefined,
+    const [newActivity] = await db
+      .insert(leadActivities)
+      .values({
+        leadId: data.leadId,
+        userId: session.userId,
+        userName: (session.email ?? '').split('@')[0],
+        note: data.note.trim(),
+        type: data.type || 'note',
+        stageFrom,
+        stageTo,
+        nextFollowUpDate: updatedLead.nextFollowUpDate,
+      })
+      .returning()
+
+    return { activity: newActivity, lead: updatedLead }
+  })
+
+/**
+ * Server Function: Delete lead (Superadmin only)
+ */
+export const deleteLeadServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { id: string }) => data)
+  .handler(async ({ data }): Promise<{ success: boolean }> => {
+    const session = await assertStaffOrAdmin()
+    if (session.role !== 'superadmin' && session.role !== 'admin') {
+      throw new Error('Forbidden: Only superadmin can delete leads')
+    }
+
+    await db.delete(leads).where(eq(leads.id, data.id))
+
+    await logActivity({
+      userId: session.userId,
+      action: 'delete_lead',
     })
 
     return { success: true }
   })
 
+// ============================================================================
+// CAMPAIGNS & MULTI-CHANNEL SEQUENCE ENGINE
+// ============================================================================
+
+export interface CampaignWithSteps extends Campaign {
+  steps: CampaignStep[]
+  activeLeadsCount: number
+}
+
 /**
- * Server Function: Delete a lead (Superadmin only)
+ * Server Function: Get all campaigns
  */
-export const deleteLeadServerFn = createServerFn({ method: 'POST' })
-  .validator((data: { leadId: string }) => {
-    if (!data.leadId) throw new Error('Lead ID is required')
-    return data
-  })
-  .handler(async ({ data }) => {
+export const getCampaignsServerFn = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ campaigns: CampaignWithSteps[] }> => {
+    await assertStaffOrAdmin()
+
+    const allCampaigns = await db.select().from(campaigns).orderBy(desc(campaigns.createdAt))
+    const allSteps = await db.select().from(campaignSteps).orderBy(asc(campaignSteps.stepOrder))
+    const enrollments = await db
+      .select({
+        campaignId: leadCampaignEnrollments.campaignId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(leadCampaignEnrollments)
+      .where(eq(leadCampaignEnrollments.status, 'active'))
+      .groupBy(leadCampaignEnrollments.campaignId)
+
+    const enrollmentCountMap = new Map<string, number>()
+    for (const e of enrollments) {
+      enrollmentCountMap.set(e.campaignId, e.count)
+    }
+
+    const stepsMap = new Map<string, CampaignStep[]>()
+    for (const s of allSteps) {
+      if (!stepsMap.has(s.campaignId)) stepsMap.set(s.campaignId, [])
+      stepsMap.get(s.campaignId)!.push(s)
+    }
+
+    const result: CampaignWithSteps[] = allCampaigns.map((c) => ({
+      ...c,
+      steps: stepsMap.get(c.id) || [],
+      activeLeadsCount: enrollmentCountMap.get(c.id) || 0,
+    }))
+
+    return { campaigns: result }
+  }
+)
+
+/**
+ * Server Function: Save campaign (create or update with full steps)
+ */
+export const saveCampaignServerFn = createServerFn({ method: 'POST' })
+  .validator(
+    (data: {
+      id?: string
+      name: string
+      description?: string
+      isActive?: boolean
+      steps: Array<{
+        stepOrder: number
+        label: string
+        channel: 'email' | 'contact_form' | 'phone'
+        delayDays: number
+        subjectTemplate?: string | null
+        bodyTemplate?: string | null
+        callScript?: string | null
+      }>
+    }) => data
+  )
+  .handler(async ({ data }): Promise<{ campaign: Campaign }> => {
     const session = await assertStaffOrAdmin()
 
-    if (session.role !== 'superadmin' && session.role !== 'admin') {
-      throw new Error('Unauthorized: Only administrators can delete lead records')
+    if (!data.name || !data.name.trim()) {
+      throw new Error('Campaign name is required')
     }
+    if (!data.steps || data.steps.length === 0) {
+      throw new Error('Campaign must have at least one step')
+    }
+
+    let campaignId = data.id
+
+    if (campaignId) {
+      const [updated] = await db
+        .update(campaigns)
+        .set({
+          name: data.name.trim(),
+          description: data.description?.trim() || null,
+          isActive: data.isActive ?? true,
+          updatedAt: new Date(),
+        })
+        .where(eq(campaigns.id, campaignId))
+        .returning()
+
+      // Delete existing steps and re-insert
+      await db.delete(campaignSteps).where(eq(campaignSteps.campaignId, campaignId))
+    } else {
+      const [created] = await db
+        .insert(campaigns)
+        .values({
+          name: data.name.trim(),
+          description: data.description?.trim() || null,
+          isActive: data.isActive ?? true,
+          createdById: session.userId,
+        })
+        .returning()
+      campaignId = created.id
+    }
+
+    // Insert steps
+    for (let i = 0; i < data.steps.length; i++) {
+      const s = data.steps[i]
+      await db.insert(campaignSteps).values({
+        campaignId: campaignId!,
+        stepOrder: i + 1,
+        label: s.label.trim() || `Step ${i + 1}`,
+        channel: s.channel,
+        delayDays: Math.max(0, s.delayDays || 0),
+        subjectTemplate: s.channel === 'email' ? s.subjectTemplate?.trim() || null : null,
+        bodyTemplate: s.channel !== 'phone' ? s.bodyTemplate?.trim() || null : null,
+        callScript: s.channel === 'phone' ? s.callScript?.trim() || null : null,
+      })
+    }
+
+    const [finalCampaign] = await db.select().from(campaigns).where(eq(campaigns.id, campaignId!))
+    return { campaign: finalCampaign }
+  })
+
+/**
+ * Server Function: Enroll a lead in a campaign sequence
+ */
+export const enrollLeadInCampaignServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { leadId: string; campaignId: string }) => data)
+  .handler(async ({ data }): Promise<{ enrollment: LeadCampaignEnrollment }> => {
+    const session = await assertStaffOrAdmin()
 
     const [lead] = await db.select().from(leads).where(eq(leads.id, data.leadId))
     if (!lead) throw new Error('Lead not found')
+    if (lead.pipelineStage === 'do_not_contact') {
+      throw new Error('Cannot enroll lead: marked as Do Not Contact')
+    }
 
-    await db.delete(leads).where(eq(leads.id, data.leadId))
+    const [campaign] = await db.select().from(campaigns).where(eq(campaigns.id, data.campaignId))
+    if (!campaign || !campaign.isActive) {
+      throw new Error('Selected campaign is invalid or inactive')
+    }
 
-    await logActivity({
-      userId: session.userId || null,
-      userEmail: session.email || null,
-      role: 'superadmin',
-      action: `lead_deleted_${data.leadId}`,
+    const steps = await db
+      .select()
+      .from(campaignSteps)
+      .where(eq(campaignSteps.campaignId, data.campaignId))
+      .orderBy(asc(campaignSteps.stepOrder))
+
+    if (steps.length === 0) {
+      throw new Error('Campaign has no defined steps')
+    }
+
+    // Terminate any previous active or paused enrollments
+    await db
+      .update(leadCampaignEnrollments)
+      .set({ status: 'terminated', pausedReason: 'enrolled_new_campaign', updatedAt: new Date() })
+      .where(and(eq(leadCampaignEnrollments.leadId, data.leadId), inArray(leadCampaignEnrollments.status, ['active', 'paused'])))
+
+    const now = new Date()
+    const [enrollment] = await db
+      .insert(leadCampaignEnrollments)
+      .values({
+        leadId: data.leadId,
+        campaignId: data.campaignId,
+        status: 'active',
+        currentStepOrder: 1,
+        enrolledById: session.userId,
+      })
+      .returning()
+
+    // Create step logs for all steps
+    const step1DelayMs = steps[0].delayDays * 24 * 60 * 60 * 1000
+    const step1DueDate = new Date(now.getTime() + step1DelayMs)
+
+    for (let i = 0; i < steps.length; i++) {
+      const step = steps[i]
+      const isFirst = i === 0
+      const dueDate = isFirst ? step1DueDate : new Date(step1DueDate.getTime() + 999 * 24 * 60 * 60 * 1000) // placeholder for future steps
+      const status = isFirst ? (step1DueDate <= now ? 'due' : 'not_due') : 'not_due'
+
+      await db.insert(leadCampaignStepLogs).values({
+        enrollmentId: enrollment.id,
+        leadId: data.leadId,
+        stepId: step.id,
+        stepOrder: step.stepOrder,
+        channel: step.channel,
+        status,
+        dueDate,
+      })
+    }
+
+    // Update lead's next follow up date to step 1 due date
+    await db
+      .update(leads)
+      .set({
+        nextFollowUpDate: step1DueDate,
+        updatedAt: now,
+      })
+      .where(eq(leads.id, data.leadId))
+
+    await db.insert(leadActivities).values({
+      leadId: data.leadId,
+      userId: session.userId,
+      userName: (session.email ?? '').split('@')[0],
+      note: `Enrolled in campaign sequence: "${campaign.name}". Step 1 due: ${step1DueDate.toLocaleDateString()}.`,
+      type: 'note',
+      nextFollowUpDate: step1DueDate,
     })
+
+    return { enrollment }
+  })
+
+/**
+ * Server Function: Get Due Today and Overdue Multi-Channel Worklist
+ */
+export const getDueTodayWorklistServerFn = createServerFn({ method: 'GET' })
+  .validator((data?: { assignedTo?: string; channel?: string }) => data || {})
+  .handler(async ({ data }): Promise<{ worklist: DueWorklistItem[] }> => {
+    await assertStaffOrAdmin()
+
+    const now = new Date()
+    const endOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999))
+
+    // Query step logs that are due or overdue under active enrollments
+    const rawItems = await db
+      .select({
+        stepLog: leadCampaignStepLogs,
+        lead: leads,
+        step: campaignSteps,
+        campaign: campaigns,
+        assignedUserName: users.name,
+      })
+      .from(leadCampaignStepLogs)
+      .innerJoin(leadCampaignEnrollments, eq(leadCampaignStepLogs.enrollmentId, leadCampaignEnrollments.id))
+      .innerJoin(leads, eq(leadCampaignStepLogs.leadId, leads.id))
+      .innerJoin(campaignSteps, eq(leadCampaignStepLogs.stepId, campaignSteps.id))
+      .innerJoin(campaigns, eq(campaignSteps.campaignId, campaigns.id))
+      .leftJoin(users, eq(leads.assignedTo, users.id))
+      .where(
+        and(
+          eq(leadCampaignEnrollments.status, 'active'),
+          inArray(leadCampaignStepLogs.status, ['due', 'not_due']),
+          lte(leadCampaignStepLogs.dueDate, endOfToday),
+          sql`${leads.pipelineStage} != 'do_not_contact'`
+        )
+      )
+      .orderBy(asc(leadCampaignStepLogs.dueDate), asc(leads.companyName))
+
+    const worklist: DueWorklistItem[] = []
+
+    for (const item of rawItems) {
+      if (data.assignedTo && item.lead.assignedTo !== data.assignedTo) continue
+      if (data.channel && item.step.channel !== data.channel) continue
+
+      const dueDate = new Date(item.stepLog.dueDate)
+      const isOverdue = dueDate < new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0))
+
+      // Merge tags substitution
+      const renderedSubject = substituteMergeFields(item.step.subjectTemplate, item.lead)
+      let renderedBody = substituteMergeFields(item.step.bodyTemplate, item.lead)
+      const renderedScript = substituteMergeFields(item.step.callScript, item.lead)
+
+      let complianceNotice: string | null = null
+      let complianceWarning: string | null = null
+
+      if (item.step.channel === 'email') {
+        if (item.lead.country === 'Canada' || item.lead.country === 'Australia') {
+          complianceWarning = `Consent Required: Recipient is in ${item.lead.country}. CASL / Spam Act requires prior consent before commercial electronic messages.`
+        }
+        // US CAN-SPAM mandatory elements
+        complianceNotice = 'Opt-out notice and business postal address included in template footer.'
+        renderedBody += `\n\n---\nIf you prefer not to receive future emails regarding local search visibility, simply reply with "STOP" or "UNSUBSCRIBE" and you will be immediately removed.\nBuilt by Miguel | [Your Business Address or PO Box]`
+      }
+
+      worklist.push({
+        stepLogId: item.stepLog.id,
+        enrollmentId: item.stepLog.enrollmentId,
+        leadId: item.lead.id,
+        companyName: item.lead.companyName,
+        websiteUrl: item.lead.websiteUrl,
+        hasWebsite: item.lead.hasWebsite,
+        hasContactForm: item.lead.hasContactForm,
+        email: item.lead.email,
+        phone: item.lead.phone,
+        country: item.lead.country,
+        industry: item.lead.industry,
+        cityArea: item.lead.cityArea,
+        assignedToName: item.assignedUserName,
+        assignedToId: item.lead.assignedTo,
+        stepId: item.step.id,
+        stepOrder: item.step.stepOrder,
+        stepLabel: item.step.label,
+        channel: item.step.channel as any,
+        dueDate: dueDate.toISOString(),
+        isOverdue,
+        campaignName: item.campaign.name,
+        renderedSubject: renderedSubject || null,
+        renderedBody: renderedBody || null,
+        renderedScript: renderedScript || null,
+        complianceNotice,
+        complianceWarning,
+      })
+    }
+
+    return { worklist }
+  })
+
+/**
+ * Server Function: Mark campaign step as completed (Email sent, form submitted, or call logged)
+ */
+export const completeCampaignStepServerFn = createServerFn({ method: 'POST' })
+  .validator(
+    (data: {
+      stepLogId: string
+      callOutcome?: 'answered' | 'no_answer' | 'voicemail_left' | 'callback_scheduled' | 'wrong_number'
+      notes?: string
+    }) => data
+  )
+  .handler(async ({ data }): Promise<{ success: boolean; nextStepDue?: string | null }> => {
+    const session = await assertStaffOrAdmin()
+
+    const [stepLog] = await db
+      .select()
+      .from(leadCampaignStepLogs)
+      .where(eq(leadCampaignStepLogs.id, data.stepLogId))
+
+    if (!stepLog) throw new Error('Step log record not found')
+
+    const now = new Date()
+
+    // 1. Mark this step log as completed
+    await db
+      .update(leadCampaignStepLogs)
+      .set({
+        status: 'completed',
+        completedAt: now,
+        completedById: session.userId,
+        callOutcome: data.callOutcome || null,
+        notes: data.notes?.trim() || null,
+        updatedAt: now,
+      })
+      .where(eq(leadCampaignStepLogs.id, data.stepLogId))
+
+    // 2. Log activity in leadActivities
+    let activityNote = ''
+    if (stepLog.channel === 'email') {
+      activityNote = `Completed Email touch (Step ${stepLog.stepOrder}).`
+    } else if (stepLog.channel === 'contact_form') {
+      activityNote = `Submitted website Contact Form touch (Step ${stepLog.stepOrder}).`
+    } else if (stepLog.channel === 'phone') {
+      activityNote = `Completed Phone Call touch (Step ${stepLog.stepOrder}). Outcome: ${data.callOutcome || 'Completed'}. ${data.notes ? 'Notes: ' + data.notes.trim() : ''}`
+    }
+
+    await db.insert(leadActivities).values({
+      leadId: stepLog.leadId,
+      userId: session.userId,
+      userName: (session.email ?? '').split('@')[0],
+      note: activityNote,
+      type: stepLog.channel === 'phone' ? 'call' : stepLog.channel === 'email' ? 'email' : 'note',
+    })
+
+    // Update lastContactDate
+    await db
+      .update(leads)
+      .set({ lastContactDate: now, updatedAt: now })
+      .where(eq(leads.id, stepLog.leadId))
+
+    // 3. Find next step in enrollment
+    const nextStepOrder = stepLog.stepOrder + 1
+    const [nextStepLog] = await db
+      .select({
+        log: leadCampaignStepLogs,
+        step: campaignSteps,
+      })
+      .from(leadCampaignStepLogs)
+      .innerJoin(campaignSteps, eq(leadCampaignStepLogs.stepId, campaignSteps.id))
+      .where(
+        and(
+          eq(leadCampaignStepLogs.enrollmentId, stepLog.enrollmentId),
+          eq(leadCampaignStepLogs.stepOrder, nextStepOrder)
+        )
+      )
+
+    let nextStepDueStr: string | null = null
+
+    if (nextStepLog) {
+      // Calculate next step dueDate = now + delayDays
+      const delayMs = nextStepLog.step.delayDays * 24 * 60 * 60 * 1000
+      const nextDueDate = new Date(now.getTime() + delayMs)
+      nextStepDueStr = nextDueDate.toISOString()
+
+      await db
+        .update(leadCampaignStepLogs)
+        .set({
+          dueDate: nextDueDate,
+          status: nextDueDate <= now ? 'due' : 'not_due',
+          updatedAt: now,
+        })
+        .where(eq(leadCampaignStepLogs.id, nextStepLog.log.id))
+
+      await db
+        .update(leadCampaignEnrollments)
+        .set({
+          currentStepOrder: nextStepOrder,
+          updatedAt: now,
+        })
+        .where(eq(leadCampaignEnrollments.id, stepLog.enrollmentId))
+
+      // Update lead next follow up date
+      await db
+        .update(leads)
+        .set({
+          nextFollowUpDate: nextDueDate,
+          pipelineStage: 'attempted_contact',
+          updatedAt: now,
+        })
+        .where(eq(leads.id, stepLog.leadId))
+    } else {
+      // Sequence completed!
+      await db
+        .update(leadCampaignEnrollments)
+        .set({
+          status: 'completed',
+          completedAt: now,
+          updatedAt: now,
+        })
+        .where(eq(leadCampaignEnrollments.id, stepLog.enrollmentId))
+
+      await db.insert(leadActivities).values({
+        leadId: stepLog.leadId,
+        userId: session.userId,
+        userName: (session.email ?? '').split('@')[0],
+        note: 'Completed all steps in sequence.',
+        type: 'note',
+      })
+    }
+
+    return { success: true, nextStepDue: nextStepDueStr }
+  })
+
+/**
+ * Server Function: Mark response received (Pauses sequence and prompts stage change)
+ */
+export const markLeadResponseReceivedServerFn = createServerFn({ method: 'POST' })
+  .validator(
+    (data: {
+      leadId: string
+      enrollmentId?: string
+      channel?: string
+      notes?: string
+      newStage?: PipelineStage
+    }) => data
+  )
+  .handler(async ({ data }): Promise<{ success: boolean; suggestedStage: PipelineStage }> => {
+    const session = await assertStaffOrAdmin()
+
+    const now = new Date()
+
+    // 1. Pause active campaign enrollments
+    await db
+      .update(leadCampaignEnrollments)
+      .set({
+        status: 'paused',
+        pausedReason: 'response_received',
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(leadCampaignEnrollments.leadId, data.leadId),
+          eq(leadCampaignEnrollments.status, 'active')
+        )
+      )
+
+    // 2. Mark step logs responseReceived
+    await db
+      .update(leadCampaignStepLogs)
+      .set({
+        responseReceived: true,
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(leadCampaignStepLogs.leadId, data.leadId),
+          inArray(leadCampaignStepLogs.status, ['due', 'not_due'])
+        )
+      )
+
+    const stageToSet = data.newStage || 'contacted'
+
+    // 3. Update lead stage & lastContactDate
+    await db
+      .update(leads)
+      .set({
+        pipelineStage: stageToSet,
+        lastContactDate: now,
+        updatedAt: now,
+      })
+      .where(eq(leads.id, data.leadId))
+
+    // 4. Log activity
+    await db.insert(leadActivities).values({
+      leadId: data.leadId,
+      userId: session.userId,
+      userName: (session.email ?? '').split('@')[0],
+      note: `Response received on ${data.channel || 'outreach channel'}! Sequence paused. ${data.notes ? 'Notes: ' + data.notes.trim() : ''}`,
+      type: 'note',
+      stageFrom: 'attempted_contact',
+      stageTo: stageToSet,
+    })
+
+    return { success: true, suggestedStage: stageToSet }
+  })
+
+/**
+ * Server Function: Terminate or pause lead campaign
+ */
+export const terminateLeadCampaignServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { enrollmentId: string; reason?: string }) => data)
+  .handler(async ({ data }): Promise<{ success: boolean }> => {
+    await assertStaffOrAdmin()
+
+    await db
+      .update(leadCampaignEnrollments)
+      .set({
+        status: 'terminated',
+        pausedReason: data.reason || 'manual_termination',
+        updatedAt: new Date(),
+      })
+      .where(eq(leadCampaignEnrollments.id, data.enrollmentId))
 
     return { success: true }
   })

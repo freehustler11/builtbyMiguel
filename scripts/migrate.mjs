@@ -692,6 +692,136 @@ export async function runMigrations() {
     `
     await sql`CREATE INDEX IF NOT EXISTS "lead_activities_lead_id_created_at_idx" ON "lead_activities" ("lead_id", "created_at");`
 
+    // 28. Leads Multi-Channel Campaigns, Sequences & Step Logs
+    console.log('🔄 Migration 28: Adding campaigns, steps, enrollments, and country fields...')
+    await sql`ALTER TABLE "leads" ADD COLUMN IF NOT EXISTS "has_contact_form" text DEFAULT 'unknown' NOT NULL;`
+    await sql`ALTER TABLE "leads" ADD COLUMN IF NOT EXISTS "country" text DEFAULT 'US' NOT NULL;`
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS "campaigns" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "name" text NOT NULL,
+        "description" text,
+        "is_active" boolean DEFAULT true NOT NULL,
+        "created_by_id" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "campaigns_is_active_idx" ON "campaigns" ("is_active");`
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS "campaign_steps" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "campaign_id" uuid NOT NULL REFERENCES "campaigns"("id") ON DELETE CASCADE,
+        "step_order" integer NOT NULL,
+        "label" text NOT NULL,
+        "channel" text NOT NULL,
+        "delay_days" integer DEFAULT 0 NOT NULL,
+        "subject_template" text,
+        "body_template" text,
+        "call_script" text,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "campaign_steps_campaign_id_order_idx" ON "campaign_steps" ("campaign_id", "step_order");`
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS "lead_campaign_enrollments" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "lead_id" uuid NOT NULL REFERENCES "leads"("id") ON DELETE CASCADE,
+        "campaign_id" uuid NOT NULL REFERENCES "campaigns"("id") ON DELETE CASCADE,
+        "status" text DEFAULT 'active' NOT NULL,
+        "paused_reason" text,
+        "current_step_order" integer DEFAULT 1 NOT NULL,
+        "enrolled_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "completed_at" timestamp with time zone,
+        "enrolled_by_id" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "lead_campaign_enrollments_lead_status_idx" ON "lead_campaign_enrollments" ("lead_id", "status");`
+    await sql`CREATE INDEX IF NOT EXISTS "lead_campaign_enrollments_campaign_idx" ON "lead_campaign_enrollments" ("campaign_id");`
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS "lead_campaign_step_logs" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "enrollment_id" uuid NOT NULL REFERENCES "lead_campaign_enrollments"("id") ON DELETE CASCADE,
+        "lead_id" uuid NOT NULL REFERENCES "leads"("id") ON DELETE CASCADE,
+        "step_id" uuid NOT NULL REFERENCES "campaign_steps"("id") ON DELETE CASCADE,
+        "step_order" integer NOT NULL,
+        "channel" text NOT NULL,
+        "status" text DEFAULT 'not_due' NOT NULL,
+        "due_date" timestamp with time zone NOT NULL,
+        "completed_at" timestamp with time zone,
+        "completed_by_id" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+        "call_outcome" text,
+        "notes" text,
+        "response_received" boolean DEFAULT false NOT NULL,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "lead_step_logs_enrollment_idx" ON "lead_campaign_step_logs" ("enrollment_id");`
+    await sql`CREATE INDEX IF NOT EXISTS "lead_step_logs_lead_status_due_idx" ON "lead_campaign_step_logs" ("lead_id", "status", "due_date");`
+    await sql`CREATE INDEX IF NOT EXISTS "lead_step_logs_status_due_idx" ON "lead_campaign_step_logs" ("status", "due_date");`
+
+    // Seed default starter sequence if no campaigns exist
+    const [existingCampaigns] = await sql`SELECT count(*)::int as count FROM "campaigns";`
+    if (existingCampaigns.count === 0) {
+      const [admin] = await sql`SELECT "id" FROM "users" WHERE "role" = 'superadmin' LIMIT 1;`
+      const [starter] = await sql`
+        INSERT INTO "campaigns" ("name", "description", "is_active", "created_by_id")
+        VALUES (
+          'Cold Outreach - Local Trades (3-Step Multi-Channel)',
+          'Multi-channel outreach sequence combining Email, Website Contact Form, and a follow-up Phone Call.',
+          true,
+          ${admin ? admin.id : null}
+        )
+        RETURNING "id";
+      `
+
+      if (starter?.id) {
+        await sql`
+          INSERT INTO "campaign_steps" ("campaign_id", "step_order", "label", "channel", "delay_days", "subject_template", "body_template", "call_script")
+          VALUES
+          (
+            ${starter.id},
+            1,
+            'Initial Cold Email',
+            'email',
+            0,
+            'Quick question regarding {{company_name}} in {{city}}',
+            'Hi {{contact_name}},\n\nI was reviewing local {{industry}} businesses in {{city}} and noticed {{company_name}}.\n\nWe build and optimize high-converting search systems and Google Business Profiles specifically for trade businesses. Would you be open to a 3-minute video audit of your current visibility?\n\nBest regards,\nMiguel Umbac\nbuilt by Miguel',
+            NULL
+          ),
+          (
+            ${starter.id},
+            2,
+            'Contact Form Touch',
+            'contact_form',
+            3,
+            NULL,
+            'Hi {{company_name}} team,\n\nI sent a brief email a few days ago regarding your search presence in {{city}}. We help trade contractors generate direct inquiries through local SEO.\n\nHappy to share a free breakdown if you have 5 minutes this week.\n\nBest,\nMiguel Umbac (builtbymiguel.net)',
+            NULL
+          ),
+          (
+            ${starter.id},
+            3,
+            'Follow-Up Phone Call',
+            'phone',
+            7,
+            NULL,
+            NULL,
+            'Hi, my name is Miguel from built by Miguel. I sent a couple of notes earlier this week regarding {{company_name}}''s Google search presence. May I speak with the business owner or whoever handles your marketing?'
+          );
+        `
+        console.log('✅ Seeded default multi-channel starter campaign.')
+      }
+    }
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

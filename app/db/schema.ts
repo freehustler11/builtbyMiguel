@@ -673,6 +673,12 @@ export const leads = pgTable(
     hasWebsite: text('has_website', { enum: ['yes', 'no', 'unknown'] })
       .default('unknown')
       .notNull(),
+    hasContactForm: text('has_contact_form', { enum: ['yes', 'no', 'unknown'] })
+      .default('unknown')
+      .notNull(),
+    country: text('country', { enum: ['US', 'Canada', 'Australia', 'Other'] })
+      .default('US')
+      .notNull(),
     email: text('email'),
     phone: text('phone'),
     gbpStatus: text('gbp_status', {
@@ -794,5 +800,167 @@ export const leadActivities = pgTable(
 
 export type LeadActivity = typeof leadActivities.$inferSelect
 export type NewLeadActivity = typeof leadActivities.$inferInsert
+
+/**
+ * Campaigns table for reusable multi-channel sequence definitions
+ */
+export const campaigns = pgTable(
+  'campaigns',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    description: text('description'),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdById: uuid('created_by_id').references((): AnyPgColumn => users.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('campaigns_is_active_idx').on(table.isActive),
+  ]
+)
+
+export type Campaign = typeof campaigns.$inferSelect
+export type NewCampaign = typeof campaigns.$inferInsert
+
+/**
+ * Campaign Steps table (ordered sequence steps across Email, Contact Form, Phone)
+ */
+export const campaignSteps = pgTable(
+  'campaign_steps',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    campaignId: uuid('campaign_id')
+      .references((): AnyPgColumn => campaigns.id, { onDelete: 'cascade' })
+      .notNull(),
+    stepOrder: integer('step_order').notNull(),
+    label: text('label').notNull(),
+    channel: text('channel', { enum: ['email', 'contact_form', 'phone'] }).notNull(),
+    delayDays: integer('delay_days').default(0).notNull(),
+    subjectTemplate: text('subject_template'),
+    bodyTemplate: text('body_template'),
+    callScript: text('call_script'),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('campaign_steps_campaign_id_order_idx').on(table.campaignId, table.stepOrder),
+  ]
+)
+
+export type CampaignStep = typeof campaignSteps.$inferSelect
+export type NewCampaignStep = typeof campaignSteps.$inferInsert
+
+/**
+ * Lead Campaign Enrollments table (one active campaign per lead)
+ */
+export const leadCampaignEnrollments = pgTable(
+  'lead_campaign_enrollments',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    leadId: uuid('lead_id')
+      .references((): AnyPgColumn => leads.id, { onDelete: 'cascade' })
+      .notNull(),
+    campaignId: uuid('campaign_id')
+      .references((): AnyPgColumn => campaigns.id, { onDelete: 'cascade' })
+      .notNull(),
+    status: text('status', {
+      enum: ['active', 'paused', 'completed', 'terminated'],
+    })
+      .default('active')
+      .notNull(),
+    pausedReason: text('paused_reason'),
+    currentStepOrder: integer('current_step_order').default(1).notNull(),
+    enrolledAt: timestamp('enrolled_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+    enrolledById: uuid('enrolled_by_id').references((): AnyPgColumn => users.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('lead_campaign_enrollments_lead_status_idx').on(table.leadId, table.status),
+    index('lead_campaign_enrollments_campaign_idx').on(table.campaignId),
+  ]
+)
+
+export type LeadCampaignEnrollment = typeof leadCampaignEnrollments.$inferSelect
+export type NewLeadCampaignEnrollment = typeof leadCampaignEnrollments.$inferInsert
+
+/**
+ * Lead Campaign Step Logs table (per-step due dates, status, completion, call outcomes)
+ */
+export const leadCampaignStepLogs = pgTable(
+  'lead_campaign_step_logs',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    enrollmentId: uuid('enrollment_id')
+      .references((): AnyPgColumn => leadCampaignEnrollments.id, {
+        onDelete: 'cascade',
+      })
+      .notNull(),
+    leadId: uuid('lead_id')
+      .references((): AnyPgColumn => leads.id, { onDelete: 'cascade' })
+      .notNull(),
+    stepId: uuid('step_id')
+      .references((): AnyPgColumn => campaignSteps.id, { onDelete: 'cascade' })
+      .notNull(),
+    stepOrder: integer('step_order').notNull(),
+    channel: text('channel', { enum: ['email', 'contact_form', 'phone'] }).notNull(),
+    status: text('status', {
+      enum: ['not_due', 'due', 'completed', 'skipped'],
+    })
+      .default('not_due')
+      .notNull(),
+    dueDate: timestamp('due_date', { withTimezone: true }).notNull(),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+    completedById: uuid('completed_by_id').references((): AnyPgColumn => users.id, {
+      onDelete: 'set null',
+    }),
+    callOutcome: text('call_outcome', {
+      enum: [
+        'answered',
+        'no_answer',
+        'voicemail_left',
+        'callback_scheduled',
+        'wrong_number',
+      ],
+    }),
+    notes: text('notes'),
+    responseReceived: boolean('response_received').default(false).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('lead_step_logs_enrollment_idx').on(table.enrollmentId),
+    index('lead_step_logs_lead_status_due_idx').on(table.leadId, table.status, table.dueDate),
+    index('lead_step_logs_status_due_idx').on(table.status, table.dueDate),
+  ]
+)
+
+export type LeadCampaignStepLog = typeof leadCampaignStepLogs.$inferSelect
+export type NewLeadCampaignStepLog = typeof leadCampaignStepLogs.$inferInsert
+
 
 
