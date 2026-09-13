@@ -11201,7 +11201,7 @@
       "file_type": "code",
       "norm_label": "workpage()",
       "source_file": "src/routes/work.tsx",
-      "source_location": "L61"
+      "source_location": "L69"
     },
     {
       "id": "src_routes_websites_hosting_and_maintenance_websitehostingandmaintenancepage",
@@ -92594,7 +92594,7 @@
       "file_type": "code",
       "norm_label": "route",
       "source_file": "src/routes/work.tsx",
-      "source_location": "L17"
+      "source_location": "L16"
     },
     {
       "id": "agents_skills_sms_references_sequence_templates_post_purchase_flow",
@@ -206727,7 +206727,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/work.tsx",
-      "source_location": "L17",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -216858,7 +216858,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "src/routes/work.tsx",
-      "source_location": "L58",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -216951,5 +216951,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "03fce79aa4ac5c0f299d04438f583626ade678ad"
+  "built_at_commit": "e22c7e823388b9ad56c4a4fd9033371c60312fd4"
 }

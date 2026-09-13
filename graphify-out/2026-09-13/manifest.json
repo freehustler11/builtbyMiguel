@@ -432,9 +432,9 @@
     "semantic_hash": "393c4f769b3fd434a0916d125f48b038"
   },
   "src/components/Footer.tsx": {
-    "mtime": 1789226861.6485968,
-    "seen": 1789227713.5957966,
-    "ast_hash": "2d388446d5c3e6fe1106e78205602e5a",
+    "mtime": 1789266788.582291,
+    "seen": 1789267427.2379875,
+    "ast_hash": "0422602c43f4691eb96b756028b49088",
     "semantic_hash": ""
   },
   "src/routes/audit.tsx": {
@@ -480,9 +480,9 @@
     "semantic_hash": ""
   },
   "src/routes/work.tsx": {
-    "mtime": 1789226969.8835492,
-    "seen": 1789227713.6066368,
-    "ast_hash": "09dd1f9f5e8187b8f338d01ea75b1ab4",
+    "mtime": 1789266974.4864733,
+    "seen": 1789267427.2391853,
+    "ast_hash": "a0257b063e1c723c20f23b49e0992490",
     "semantic_hash": ""
   },
   "src/routes/thank-you.tsx": {
@@ -2772,8 +2772,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1789264120.6081922,
-    "seen": 1789264439.552928,
+    "mtime": 1789267053.198275,
+    "seen": 1789267427.2416956,
     "ast_hash": "e6f7f8c23f02e1c7b884503a9e17e018",
     "semantic_hash": ""
   },
@@ -3537,6 +3537,72 @@
     "mtime": 1789228275.9034216,
     "seen": 1789229013.3211963,
     "ast_hash": "db12b3c0c1ff570bb237ddeb2117103c",
+    "semantic_hash": ""
+  },
+  "public/images/work/gsc-client-a.webp": {
+    "mtime": 1789266305.414788,
+    "seen": 1789267427.2417157,
+    "ast_hash": "445c0ccaadca452b1ec9c67cf69618b2",
+    "semantic_hash": ""
+  },
+  "public/images/work/gsc-client-b.webp": {
+    "mtime": 1789266305.4167204,
+    "seen": 1789267427.2417185,
+    "ast_hash": "f8f95e720f675b1e8d91abe3aeb78975",
+    "semantic_hash": ""
+  },
+  "public/images/work/gsc-client-c.webp": {
+    "mtime": 1789266305.4262822,
+    "seen": 1789267427.2417207,
+    "ast_hash": "b6647e0cb57a4c95f098f549251db6e8",
+    "semantic_hash": ""
+  },
+  "public/images/work/gsc-client-d.webp": {
+    "mtime": 1789266305.428285,
+    "seen": 1789267427.2417223,
+    "ast_hash": "a58129c0f6c222113a3d8805129bc1bc",
+    "semantic_hash": ""
+  },
+  "public/images/work/pagespeed-desktop.webp": {
+    "mtime": 1789266732.0534825,
+    "seen": 1789267427.2417243,
+    "ast_hash": "49883a46ba778cb4da634284f8c62045",
+    "semantic_hash": ""
+  },
+  "public/images/work/pagespeed-mobile.webp": {
+    "mtime": 1789266732.0524354,
+    "seen": 1789267427.2417262,
+    "ast_hash": "497a31be915a00a2b65bd5fc11d6fdd0",
+    "semantic_hash": ""
+  },
+  "public/images/work/portfolio-dental-clinic.webp": {
+    "mtime": 1789266437.0824785,
+    "seen": 1789267427.2417283,
+    "ast_hash": "7335834dea3a73d438605565a825b34f",
+    "semantic_hash": ""
+  },
+  "public/images/work/portfolio-ecommerce.webp": {
+    "mtime": 1789266437.094353,
+    "seen": 1789267427.2417302,
+    "ast_hash": "1eb2d23376369a7fd83cabc0462a21bc",
+    "semantic_hash": ""
+  },
+  "public/images/work/portfolio-law-firm.webp": {
+    "mtime": 1789266437.0973754,
+    "seen": 1789267427.2417328,
+    "ast_hash": "b95126f7c99525dd930626ce70f80e9c",
+    "semantic_hash": ""
+  },
+  "public/images/work/portfolio-seo-consultancy.webp": {
+    "mtime": 1789266437.081473,
+    "seen": 1789267427.2417352,
+    "ast_hash": "9b1f03befc640be6b563a8d9404a6a87",
+    "semantic_hash": ""
+  },
+  "public/images/work/semrush-keyword-growth.webp": {
+    "mtime": 1789266473.4221456,
+    "seen": 1789267427.2417371,
+    "ast_hash": "3cbf6098eea4b478bfad89d574410264",
     "semantic_hash": ""
   }
 }
