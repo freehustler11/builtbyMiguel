@@ -99,6 +99,20 @@ export function Footer() {
             <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 font-sans">
               <li><Link to="/privacy-policy" className="hover:text-black dark:hover:text-white">Privacy</Link></li>
               <li><Link to="/terms" className="hover:text-black dark:hover:text-white">Terms</Link></li>
+              <li><Link to="/cookie-policy" className="hover:text-black dark:hover:text-white">Cookie Policy</Link></li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.dispatchEvent(new Event('open-cookie-preferences'))
+                    }
+                  }}
+                  className="text-left text-xs text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
+                >
+                  Cookie Preferences
+                </button>
+              </li>
             </ul>
           </div>
         </div>

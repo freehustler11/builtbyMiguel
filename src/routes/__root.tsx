@@ -10,6 +10,7 @@ import {
 import type { QueryClient } from '@tanstack/react-query'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import { CookieConsentBanner } from '@/components/CookieConsentBanner'
 import { isInternalPath, isMarketingPath } from '../lib/hostname'
 import appCss from '../index.css?url'
 
@@ -253,6 +254,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <Footer />
+        <CookieConsentBanner />
         <ScrollRestoration />
         <Scripts />
       </body>
