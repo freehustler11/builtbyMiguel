@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { getPublicPostBySlugServerFn } from '../../server/posts'
+import { BlogComments } from '../../components/BlogComments'
 import type { Post } from '../../db/schema'
 
 export const Route = createFileRoute('/blog/$slug')({
@@ -922,6 +923,9 @@ function BlogPostPage() {
                 </div>
               </div>
             </div>
+
+            {/* Blog Post Moderated Comments */}
+            <BlogComments postId={post.id} postTitle={post.title} />
           </section>
         </div>
       </main>

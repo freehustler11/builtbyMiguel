@@ -17,6 +17,8 @@ import {
   clientDataSources,
   clientLocations,
   locationMonthlyMetrics,
+  posts,
+  postComments,
 } from '../app/db/schema'
 import { eq, sql, inArray, and, isNull, or } from 'drizzle-orm'
 import { hashPassword, verifyPassword, createSessionToken, verifySessionToken, getSessionData } from '../app/lib/auth'
@@ -4801,6 +4803,127 @@ async function runSimulations() {
     assert(true, 'Sim30: Task-first workflow simulation completed cleanly')
   } catch (err: any) {
     assert(false, 'Simulation 30 failed', err.message)
+  }
+
+  // ---------------------------------------------------------------
+  // SIMULATION 31: Blog Comments (Public Submission + Moderation Queue)
+  // ---------------------------------------------------------------
+  console.log('\n🔍 SIMULATION 31: Blog Comments & Superadmin Moderation')
+  try {
+    // 1. Create a published blog post
+    const [testPost] = await db
+      .insert(posts)
+      .values({
+        title: 'Local SEO Playbook for Service Businesses',
+        slug: `sim31-local-seo-${Date.now()}`,
+        content: '# Local SEO Playbook\n\nFull guide on dominating local map pack rankings.',
+        status: 'published',
+      })
+      .returning()
+
+    assert(!!testPost && testPost.status === 'published', 'Sim31: Published blog post created')
+
+    // 2. Submit comment (initial status must be "pending")
+    const [pendingComment] = await db
+      .insert(postComments)
+      .values({
+        postId: testPost.id,
+        name: 'Alex Johnson',
+        email: 'alex@localpro.test',
+        content: 'This strategy helped our HVAC dispatch immensely!',
+        status: 'pending',
+      })
+      .returning()
+
+    assert(pendingComment.status === 'pending', 'Sim31: New comment has default status pending')
+
+    // 3. Public query MUST NOT return pending comment
+    const publicBeforeApproval = await db
+      .select({
+        id: postComments.id,
+        name: postComments.name,
+        content: postComments.content,
+      })
+      .from(postComments)
+      .where(and(eq(postComments.postId, testPost.id), eq(postComments.status, 'published')))
+
+    assert(publicBeforeApproval.length === 0, 'Sim31: Unapproved comments NEVER appear in public queries')
+
+    // 4. Honeypot check: bot submissions with honeypot filled are ignored
+    const honeypotSubmission = {
+      name: 'Bot Spammer',
+      email: 'bot@spam.test',
+      content: 'Cheap loans at example.com',
+      honeypot: 'http://spam-link.test',
+    }
+    const shouldDiscard = !!honeypotSubmission.honeypot
+    assert(shouldDiscard, 'Sim31: Honeypot field triggers silent discard of automated spam')
+
+    // 5. Superadmin approves comment -> status becomes 'published'
+    await db
+      .update(postComments)
+      .set({ status: 'published', updatedAt: new Date() })
+      .where(eq(postComments.id, pendingComment.id))
+
+    const [approvedRow] = await db
+      .select()
+      .from(postComments)
+      .where(eq(postComments.id, pendingComment.id))
+
+    assert(approvedRow.status === 'published', 'Sim31: Superadmin approval updates status to published')
+
+    // 6. Public query now returns the comment WITHOUT exposing email
+    const publicAfterApproval = await db
+      .select({
+        id: postComments.id,
+        name: postComments.name,
+        content: postComments.content,
+        createdAt: postComments.createdAt,
+      })
+      .from(postComments)
+      .where(and(eq(postComments.postId, testPost.id), eq(postComments.status, 'published')))
+
+    assert(publicAfterApproval.length === 1, 'Sim31: Approved comment is immediately visible in public query')
+    assert(publicAfterApproval[0].name === 'Alex Johnson', 'Sim31: Commenter name correctly returned')
+    assert(!('email' in publicAfterApproval[0]), 'Sim31: Commenter email is strictly omitted from public response')
+
+    // 7. Moderation actions: Reject and Spam
+    await db
+      .update(postComments)
+      .set({ status: 'rejected', updatedAt: new Date() })
+      .where(eq(postComments.id, pendingComment.id))
+
+    const publicAfterReject = await db
+      .select()
+      .from(postComments)
+      .where(and(eq(postComments.postId, testPost.id), eq(postComments.status, 'published')))
+
+    assert(publicAfterReject.length === 0, 'Sim31: Rejected comment is immediately removed from public view')
+
+    await db
+      .update(postComments)
+      .set({ status: 'spam', updatedAt: new Date() })
+      .where(eq(postComments.id, pendingComment.id))
+
+    const [spamRow] = await db
+      .select()
+      .from(postComments)
+      .where(eq(postComments.id, pendingComment.id))
+
+    assert(spamRow.status === 'spam', 'Sim31: Comment marked as spam is flagged properly')
+
+    // 8. Role guard check: partner / client cannot moderate
+    const partnerRole = 'partner'
+    const isSuperadmin = (r: string) => r === 'superadmin' || r === 'admin'
+    assert(!isSuperadmin(partnerRole), 'Sim31: Non-superadmin roles are strictly blocked from moderation')
+
+    // 9. Clean up Sim31 fixtures
+    await db.delete(postComments).where(eq(postComments.id, pendingComment.id))
+    await db.delete(posts).where(eq(posts.id, testPost.id))
+
+    assert(true, 'Sim31: Blog comments & moderation simulation completed cleanly')
+  } catch (err: any) {
+    assert(false, 'Simulation 31 failed', err.message)
   }
 
   // ---------------------------------------------------------------

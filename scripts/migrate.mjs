@@ -625,6 +625,26 @@ export async function runMigrations() {
     await sql`ALTER TABLE "clients" ADD COLUMN IF NOT EXISTS "assigned_staff_id" uuid REFERENCES "users"("id") ON DELETE SET NULL;`
     await sql`CREATE INDEX IF NOT EXISTS "clients_assigned_staff_id_idx" ON "clients" ("assigned_staff_id");`
 
+    // 26. Blog Post Comments Table & Moderation Queue
+    console.log('🔄 Migration 26: Creating post_comments table and indexes...')
+    await sql`
+      CREATE TABLE IF NOT EXISTS "post_comments" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+        "post_id" uuid NOT NULL REFERENCES "posts"("id") ON DELETE CASCADE,
+        "name" text NOT NULL,
+        "email" text NOT NULL,
+        "content" text NOT NULL,
+        "status" text DEFAULT 'pending' NOT NULL,
+        "ip_hash" text,
+        "user_agent" text,
+        "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+        "updated_at" timestamp with time zone DEFAULT now() NOT NULL
+      );
+    `
+    await sql`CREATE INDEX IF NOT EXISTS "post_comments_post_id_idx" ON "post_comments" ("post_id");`
+    await sql`CREATE INDEX IF NOT EXISTS "post_comments_status_idx" ON "post_comments" ("status");`
+    await sql`CREATE INDEX IF NOT EXISTS "post_comments_created_at_idx" ON "post_comments" ("created_at");`
+
     console.log('✅ PostgreSQL database tables initialized & synchronized.')
   } catch (err) {
     console.error('❌ Database initialization error:', err)

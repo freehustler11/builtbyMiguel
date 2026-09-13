@@ -89,7 +89,7 @@ function CookiePolicyPage() {
                 <strong className="text-slate-900 dark:text-white">Analytics Cookies:</strong> help us understand how visitors use the site (e.g. which pages are viewed, how long visitors stay) so we can improve performance and content. These are only set with your consent.
               </li>
               <li>
-                <strong className="text-slate-900 dark:text-white">Functional Cookies:</strong> remember choices you make (e.g. display preferences) to improve your experience. These are only set with your consent.
+                <strong className="text-slate-900 dark:text-white">Functional Cookies:</strong> remember choices you make (e.g. display preferences, or remembering your name and email for the blog comment form) to improve your experience. These are only set with your consent.
               </li>
             </ul>
             <p>

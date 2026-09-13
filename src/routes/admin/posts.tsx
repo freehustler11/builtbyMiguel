@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, useRouter, Link } from '@tanstack/react-r
 import { useState, useMemo } from 'react'
 import {
   FileText,
+  MessageSquare,
   Plus,
   Search,
   Edit3,
@@ -2236,6 +2237,14 @@ function AdminPostsPage() {
             />
             <span className="hidden sm:inline">Refresh</span>
           </button>
+
+          <Link
+            to="/admin/comments"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[6px] text-[13px] font-medium text-[var(--ink)] bg-[var(--panel)] hover:bg-[var(--canvas)] border border-[var(--line)] transition cursor-pointer"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-amber-500" />
+            <span>Comments</span>
+          </Link>
 
           <button
             type="button"

@@ -629,3 +629,35 @@ export const locationMonthlyMetrics = pgTable(
 
 export type LocationMonthlyMetric = typeof locationMonthlyMetrics.$inferSelect
 export type NewLocationMonthlyMetric = typeof locationMonthlyMetrics.$inferInsert
+
+/**
+ * Comments table for blog articles with moderation workflow
+ */
+export const postComments = pgTable(
+  'post_comments',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    postId: uuid('post_id')
+      .references(() => posts.id, { onDelete: 'cascade' })
+      .notNull(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    content: text('content').notNull(),
+    status: text('status', { enum: ['pending', 'published', 'rejected', 'spam'] })
+      .default('pending')
+      .notNull(),
+    ipHash: text('ip_hash'),
+    userAgent: text('user_agent'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('post_comments_post_id_idx').on(table.postId),
+    index('post_comments_status_idx').on(table.status),
+    index('post_comments_created_at_idx').on(table.createdAt),
+  ]
+)
+
+export type PostComment = typeof postComments.$inferSelect
+export type NewPostComment = typeof postComments.$inferInsert
+

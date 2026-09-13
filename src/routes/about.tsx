@@ -362,13 +362,15 @@ function AboutPage() {
                   className="relative w-full h-52 sm:h-56 bg-slate-100 dark:bg-slate-800/80 overflow-hidden cursor-pointer group/thumb border-b border-slate-100 dark:border-slate-800 text-left focus:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500"
                   aria-label={`View full certificate: ${cert.title}`}
                 >
-                  <img
-                    src={cert.imageSrc}
-                    alt={cert.title}
-                    className="w-full h-full object-cover object-top transition-transform duration-300 group-hover/thumb:scale-105"
-                    loading="lazy"
+                  <div
+                    role="img"
+                    aria-label={cert.title}
+                    onContextMenu={(e) => e.preventDefault()}
+                    onDragStart={(e) => e.preventDefault()}
+                    style={{ backgroundImage: `url("${cert.imageSrc}")` }}
+                    className="w-full h-full bg-cover bg-top bg-no-repeat transition-transform duration-300 group-hover/thumb:scale-105 select-none pointer-events-auto"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/30 transition-colors flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/30 transition-colors flex items-center justify-center pointer-events-none">
                     <span className="opacity-0 group-hover/thumb:opacity-100 transition-opacity inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-medium text-white bg-black/70 backdrop-blur-xs shadow-md">
                       <ExternalLink className="w-3.5 h-3.5" />
                       Click to view scan
@@ -411,6 +413,15 @@ function AboutPage() {
               </div>
             ))}
           </div>
+
+          {/* Certificate Verification Notice */}
+          <p className="text-center text-xs sm:text-sm font-mono text-slate-500 dark:text-slate-400 pt-2">
+            Certificate images are watermarked for verification.{' '}
+            <Link to="/contact" className="text-amber-600 dark:text-amber-400 font-semibold hover:underline">
+              Contact us
+            </Link>{' '}
+            to verify authenticity directly.
+          </p>
         </section>
 
         {/* SECTION 5: Core Build Stack */}
@@ -672,12 +683,15 @@ function AboutPage() {
               </button>
             </div>
 
-            {/* Modal Image Scan */}
-            <div className="flex-1 overflow-auto p-4 sm:p-6 flex items-center justify-center bg-slate-100/50 dark:bg-slate-950/50">
-              <img
-                src={selectedCert.imageSrc}
-                alt={selectedCert.title}
-                className="max-h-[70vh] w-auto max-w-full object-contain rounded-lg shadow-md border border-slate-200 dark:border-slate-800"
+            {/* Modal Image Scan (Rendered via CSS background-image with right-click & drag protection) */}
+            <div className="flex-1 overflow-auto p-4 sm:p-6 flex items-center justify-center bg-slate-100/50 dark:bg-slate-950/50 min-h-[300px] sm:min-h-[480px]">
+              <div
+                role="img"
+                aria-label={selectedCert.title}
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
+                style={{ backgroundImage: `url("${selectedCert.imageSrc}")` }}
+                className="w-full h-[55vh] sm:h-[65vh] max-w-3xl bg-contain bg-center bg-no-repeat rounded-lg shadow-md border border-slate-200 dark:border-slate-800 select-none"
               />
             </div>
 
