@@ -8,13 +8,18 @@ import {
   users,
   monthlyMetrics,
   clientDataSources,
+  clientLocations,
+  locationMonthlyMetrics,
   type Report,
   type Client,
+  type ClientLocation,
   type ClientSnapshot,
   type DeliverablesSnapshot,
 } from '../db'
 import { assertActiveSession, getEffectivePartnerId } from './auth'
 import { logActivity } from './activity-logger'
+import { recordMonthlyMetrics, type LocationMonthlyMetricsInput } from './metrics'
+export type { LocationMonthlyMetricsInput } from './metrics'
 import {
   parseReportPeriod,
   parseDecimalValue,
@@ -490,6 +495,40 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
 
     const dataSources = await getClientDataSourceMap(targetClient.id)
 
+    // Query active locations and location monthly metrics
+    const activeLocations = await db
+      .select()
+      .from(clientLocations)
+      .where(and(eq(clientLocations.clientId, targetClient.id), eq(clientLocations.isActive, true)))
+      .orderBy(clientLocations.name)
+
+    let locationMetrics: typeof locationMonthlyMetrics.$inferSelect[] = []
+    let prevLocationMetrics: typeof locationMonthlyMetrics.$inferSelect[] = []
+
+    if (activeLocations.length > 0) {
+      const locIds = activeLocations.map((l) => l.id)
+      locationMetrics = await db
+        .select()
+        .from(locationMonthlyMetrics)
+        .where(
+          and(
+            inArray(locationMonthlyMetrics.locationId, locIds),
+            eq(locationMonthlyMetrics.month, month),
+            eq(locationMonthlyMetrics.year, year)
+          )
+        )
+      prevLocationMetrics = await db
+        .select()
+        .from(locationMonthlyMetrics)
+        .where(
+          and(
+            inArray(locationMonthlyMetrics.locationId, locIds),
+            eq(locationMonthlyMetrics.month, prevMonth),
+            eq(locationMonthlyMetrics.year, prevYear)
+          )
+        )
+    }
+
     if (!currentMetrics) {
       return {
         ready: false,
@@ -503,6 +542,9 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
         metrics: null,
         prevMetrics: null,
         deliverables: null,
+        locations: activeLocations,
+        locationMetrics,
+        prevLocationMetrics,
         dataSources,
       }
     }
@@ -547,6 +589,9 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
         metrics: currentMetrics,
         prevMetrics: prevMetrics || null,
         deliverables: null,
+        locations: activeLocations,
+        locationMetrics,
+        prevLocationMetrics,
         dataSources,
       }
     }
@@ -566,6 +611,9 @@ export const getReportPreflightDataServerFn = createServerFn({ method: 'GET' })
       metrics: currentMetrics,
       prevMetrics: prevMetrics || null,
       deliverables,
+      locations: activeLocations,
+      locationMetrics,
+      prevLocationMetrics,
       dataSources,
     }
   })
@@ -617,6 +665,7 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
       summary?: string
       workCompleted?: string
       nextSteps?: string
+      locationMetrics?: LocationMonthlyMetricsInput[]
     }) => {
       if (!data.clientId?.trim()) throw new Error('Client selection is required')
       if (!data.title?.trim()) throw new Error('Report title is required')
@@ -644,6 +693,25 @@ export const createReportServerFn = createServerFn({ method: 'POST' })
     }
 
     const { periodStart, periodEnd, nextMonthStart, month, year } = parseReportPeriod(data.reportMonth)
+
+    // If locationMetrics provided, synchronize to location_monthly_metrics and update rolled-up monthly_metrics
+    if (Array.isArray(data.locationMetrics) && data.locationMetrics.length > 0) {
+      await recordMonthlyMetrics({
+        clientId: targetClient.id,
+        month,
+        year,
+        metrics: {
+          gbpCalls: data.gbpCalls !== undefined && data.gbpCalls !== null ? parseNullableInt(data.gbpCalls) : undefined,
+          gbpDirections: data.gbpDirections !== undefined && data.gbpDirections !== null ? parseNullableInt(data.gbpDirections) : undefined,
+          gbpWebsiteClicks: data.gbpWebsiteClicks !== undefined && data.gbpWebsiteClicks !== null ? parseNullableInt(data.gbpWebsiteClicks) : undefined,
+          gbpViews: data.gbpViews !== undefined && data.gbpViews !== null ? parseNullableInt(data.gbpViews) : undefined,
+          gbpRating: data.gbpRating !== undefined && data.gbpRating !== null ? parseDecimalValue(data.gbpRating) : undefined,
+          gbpReviewsCount: data.gbpReviewsCount !== undefined && data.gbpReviewsCount !== null ? parseNullableInt(data.gbpReviewsCount) : undefined,
+          locationMetrics: data.locationMetrics,
+        },
+        auth,
+      })
+    }
 
     // PRE-FLIGHT CHECK: Block report creation if monthly_metrics is missing
     const [currentMetrics] = await db
@@ -1042,6 +1110,7 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       summary?: string
       workCompleted?: string
       nextSteps?: string
+      locationMetrics?: LocationMonthlyMetricsInput[]
     }) => {
       if (!data.id) throw new Error('Report ID is required')
       if (!data.clientId?.trim()) throw new Error('Client is required')
@@ -1074,6 +1143,31 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
     }
 
     const { periodStart, periodEnd } = parseReportPeriod(data.reportMonth)
+    const nextMonthStart = new Date(periodStart)
+    nextMonthStart.setUTCMonth(nextMonthStart.getUTCMonth() + 1)
+    const month = periodStart.getUTCMonth() + 1
+    const year = periodStart.getUTCFullYear()
+
+    // If locationMetrics provided, synchronize to location_monthly_metrics and update rolled-up monthly_metrics
+    let freshDeliverablesSnapshot: DeliverablesSnapshot | undefined = undefined
+    if (Array.isArray(data.locationMetrics) && data.locationMetrics.length > 0) {
+      await recordMonthlyMetrics({
+        clientId: data.clientId.trim(),
+        month,
+        year,
+        metrics: {
+          gbpCalls: data.gbpCalls !== undefined && data.gbpCalls !== null ? parseNullableInt(data.gbpCalls) : undefined,
+          gbpDirections: data.gbpDirections !== undefined && data.gbpDirections !== null ? parseNullableInt(data.gbpDirections) : undefined,
+          gbpWebsiteClicks: data.gbpWebsiteClicks !== undefined && data.gbpWebsiteClicks !== null ? parseNullableInt(data.gbpWebsiteClicks) : undefined,
+          gbpViews: data.gbpViews !== undefined && data.gbpViews !== null ? parseNullableInt(data.gbpViews) : undefined,
+          gbpRating: data.gbpRating !== undefined && data.gbpRating !== null ? parseDecimalValue(data.gbpRating) : undefined,
+          gbpReviewsCount: data.gbpReviewsCount !== undefined && data.gbpReviewsCount !== null ? parseNullableInt(data.gbpReviewsCount) : undefined,
+          locationMetrics: data.locationMetrics,
+        },
+        auth,
+      })
+      freshDeliverablesSnapshot = await collectDeliverablesSnapshot(data.clientId.trim(), periodStart, nextMonthStart)
+    }
 
     const [clientRow] = await db
       .select()
@@ -1097,7 +1191,7 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
           isWhiteLabel: Boolean(clientRow.isWhiteLabel),
           partnerName: clientRow.partnerName || null,
           partnerLogoUrl: clientRow.partnerLogoUrl || null,
-          partnerLogoBgColor: clientRow.partnerLogoBgColor || '#ffffff',
+          partnerLogoBgColor: clientRow.partnerLogoBgColor ?? '#ffffff',
           dataSources,
         }
       : undefined
@@ -1111,6 +1205,7 @@ export const updateReportServerFn = createServerFn({ method: 'POST' })
       periodStart,
       periodEnd,
       ...(clientSnapshot ? { clientSnapshot } : {}),
+      ...(freshDeliverablesSnapshot ? { deliverablesSnapshot: freshDeliverablesSnapshot } : {}),
       previousReportId: data.previousReportId || null,
       // GBP Current
       gbpCalls: gbpConnected ? parseNullableInt(data.gbpCalls) : null,

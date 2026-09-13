@@ -835,9 +835,9 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
           pageBreakInside: 'avoid',
         }}
       >
-        <div className="flex-1 flex flex-col justify-start gap-8 sm:gap-9 print:gap-6">
+        <div className="flex-1 flex flex-col justify-start gap-3.5 sm:gap-4 print:gap-2.5">
           {/* Section Header for Page 2 */}
-          <div className="flex items-center justify-between border-b border-slate-200/80 print:border-slate-300 pb-4 mb-2">
+          <div className="flex items-center justify-between border-b border-slate-200/80 print:border-slate-300 pb-3 mb-1">
             <div className="flex items-center gap-2">
               <FileSpreadsheet className="w-4 h-4" style={{ color: primaryColor }} />
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
@@ -1125,13 +1125,13 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                     <table className="w-full text-xs text-left">
                       <thead>
                         <tr className="border-b border-slate-200 text-[10px] font-mono uppercase text-slate-500">
-                          <th className="pb-1.5 font-bold">Location</th>
-                          <th className="pb-1.5 font-bold text-center">Status</th>
-                          <th className="pb-1.5 font-bold text-right">Calls</th>
-                          <th className="pb-1.5 font-bold text-right">Directions</th>
-                          <th className="pb-1.5 font-bold text-right">Website Clicks</th>
-                          <th className="pb-1.5 font-bold text-right">Rating</th>
-                          <th className="pb-1.5 font-bold text-right">Reviews</th>
+                          <th className="pb-1 font-bold">Location</th>
+                          <th className="pb-1 font-bold text-center">Status</th>
+                          <th className="pb-1 font-bold text-right">Calls</th>
+                          <th className="pb-1 font-bold text-right">Directions</th>
+                          <th className="pb-1 font-bold text-right">Website Clicks</th>
+                          <th className="pb-1 font-bold text-right">Rating</th>
+                          <th className="pb-1 font-bold text-right">Reviews</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
@@ -1139,7 +1139,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                           const isConn = loc.accessStatus === 'connected'
                           return (
                             <tr key={loc.locationId} className="hover:bg-slate-50/60">
-                              <td className="py-1.5 pr-2">
+                              <td className="py-1 pr-2">
                                 <span className="font-sans font-bold text-slate-900 block truncate" title={loc.name}>
                                   {loc.name}
                                 </span>
@@ -1149,7 +1149,7 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                                   </span>
                                 )}
                               </td>
-                              <td className="py-1.5 text-center">
+                              <td className="py-1 text-center">
                                 <span
                                   className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
                                     isConn
@@ -1162,19 +1162,19 @@ export function ReportDocument({ report, client, displayOptions: customDisplayOp
                                   {isConn ? 'Connected' : loc.accessStatus === 'no_access' ? 'No Access' : 'N/A'}
                                 </span>
                               </td>
-                              <td className="py-1.5 text-right font-bold text-slate-800">
+                              <td className="py-1 text-right font-bold text-slate-800">
                                 {isConn ? (loc.gbpCalls !== null ? loc.gbpCalls.toLocaleString() : '—') : '—'}
                               </td>
-                              <td className="py-1.5 text-right text-slate-700">
+                              <td className="py-1 text-right text-slate-700">
                                 {isConn ? (loc.gbpDirections !== null ? loc.gbpDirections.toLocaleString() : '—') : '—'}
                               </td>
-                              <td className="py-1.5 text-right text-slate-700">
+                              <td className="py-1 text-right text-slate-700">
                                 {isConn ? (loc.gbpWebsiteClicks !== null ? loc.gbpWebsiteClicks.toLocaleString() : '—') : '—'}
                               </td>
-                              <td className="py-1.5 text-right text-amber-600 font-bold">
+                              <td className="py-1 text-right text-amber-600 font-bold">
                                 {isConn && loc.gbpRating !== null ? `${Number(loc.gbpRating).toFixed(1)} ★` : '—'}
                               </td>
-                              <td className="py-1.5 text-right text-slate-800 font-bold">
+                              <td className="py-1 text-right text-slate-800 font-bold">
                                 {isConn ? (loc.gbpReviewsCount !== null ? loc.gbpReviewsCount.toLocaleString() : '—') : '—'}
                               </td>
                             </tr>

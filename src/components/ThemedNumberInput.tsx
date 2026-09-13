@@ -3,7 +3,7 @@ import { ChevronUp, ChevronDown } from 'lucide-react'
 
 export interface ThemedNumberInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'> {
-  theme?: 'blue' | 'emerald' | 'indigo' | 'rose' | 'slate'
+  theme?: 'amber' | 'blue' | 'emerald' | 'indigo' | 'rose' | 'slate'
   step?: number | string
   min?: number | string
   max?: number | string
@@ -14,7 +14,7 @@ export interface ThemedNumberInputProps
 }
 
 export function ThemedNumberInput({
-  theme = 'blue',
+  theme = 'amber',
   step = 1,
   min = 0,
   max,
@@ -40,6 +40,11 @@ export function ThemedNumberInput({
     : 0
 
   const themeClasses = {
+    amber: {
+      hover: 'hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/60',
+      active: 'active:bg-amber-100 dark:active:bg-amber-900/60',
+      focusRing: 'focus-within:ring-amber-500',
+    },
     emerald: {
       hover: 'hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60',
       active: 'active:bg-emerald-100 dark:active:bg-emerald-900/60',

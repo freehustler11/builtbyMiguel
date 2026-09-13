@@ -25,6 +25,7 @@ import {
   FileSpreadsheet,
   AlertCircle,
   CheckCircle,
+  MapPin,
 } from 'lucide-react'
 import { checkAuthServerFn, requireAdmin } from '../../../lib/auth'
 import { AdminShell } from '../../../components/AdminShell'
@@ -39,7 +40,25 @@ import {
   getReportPreflightDataServerFn,
   type QueryItem,
   type PageItem,
+  type LocationMonthlyMetricsInput,
 } from '../../../server/reports'
+
+export interface LocationFormState {
+  locationId: string
+  name: string
+  address?: string | null
+  phone?: string | null
+  accessStatus?: string | null
+  gbpCalls: number | string
+  gbpDirections: number | string
+  gbpWebsiteClicks: number | string
+  gbpRating: number | string
+  gbpReviewsCount: number | string
+  prevGbpCalls?: number | string
+  prevGbpDirections?: number | string
+  prevGbpWebsiteClicks?: number | string
+  prevGbpReviewsCount?: number | string
+}
 
 function parseNullableInt(val: unknown): number | null {
   if (val === null || val === undefined || val === '') return null
@@ -353,6 +372,7 @@ function AdminReportFormPage() {
     return null
   }
 
+  const [locationInputs, setLocationInputs] = useState<LocationFormState[]>([])
   const [formError, setFormError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isPullingPrior, setIsPullingPrior] = useState(false)
@@ -397,6 +417,52 @@ function AdminReportFormPage() {
         if (!isMounted) return
         setPreflightData(data)
         setIsCheckingPreflight(false)
+
+        // Initialize location-level inputs from preflight data
+        if (data.locations && Array.isArray(data.locations) && data.locations.length > 0) {
+          const locMetricsMap = new Map<string, any>()
+          if (Array.isArray(data.locationMetrics)) {
+            for (const m of data.locationMetrics) {
+              locMetricsMap.set(m.locationId, m)
+            }
+          }
+          const prevLocMetricsMap = new Map<string, any>()
+          if (Array.isArray(data.prevLocationMetrics)) {
+            for (const m of data.prevLocationMetrics) {
+              prevLocMetricsMap.set(m.locationId, m)
+            }
+          }
+
+          const snapshotLocs = (existingReport?.deliverablesSnapshot as any)?.locations || []
+          const snapMap = new Map<string, any>()
+          for (const s of snapshotLocs) {
+            snapMap.set(s.locationId, s)
+          }
+
+          const locs: LocationFormState[] = data.locations.map((loc: any) => {
+            const m = locMetricsMap.get(loc.id) || snapMap.get(loc.id)
+            const prevM = prevLocMetricsMap.get(loc.id)
+            return {
+              locationId: loc.id,
+              name: loc.name,
+              address: loc.address,
+              phone: loc.phone,
+              accessStatus: loc.accessStatus || 'connected',
+              gbpCalls: m?.gbpCalls !== undefined && m?.gbpCalls !== null ? m.gbpCalls : '',
+              gbpDirections: m?.gbpDirections !== undefined && m?.gbpDirections !== null ? m.gbpDirections : '',
+              gbpWebsiteClicks: m?.gbpWebsiteClicks !== undefined && m?.gbpWebsiteClicks !== null ? m.gbpWebsiteClicks : (m?.gbpViews !== undefined && m?.gbpViews !== null ? m.gbpViews : ''),
+              gbpRating: m?.gbpRating !== undefined && m?.gbpRating !== null ? m.gbpRating : 5.0,
+              gbpReviewsCount: m?.gbpReviewsCount !== undefined && m?.gbpReviewsCount !== null ? m.gbpReviewsCount : '',
+              prevGbpCalls: prevM?.gbpCalls !== undefined && prevM?.gbpCalls !== null ? prevM.gbpCalls : '',
+              prevGbpDirections: prevM?.gbpDirections !== undefined && prevM?.gbpDirections !== null ? prevM.gbpDirections : '',
+              prevGbpWebsiteClicks: prevM?.gbpWebsiteClicks !== undefined && prevM?.gbpWebsiteClicks !== null ? prevM.gbpWebsiteClicks : (prevM?.gbpViews !== undefined && prevM?.gbpViews !== null ? prevM.gbpViews : ''),
+              prevGbpReviewsCount: prevM?.gbpReviewsCount !== undefined && prevM?.gbpReviewsCount !== null ? prevM.gbpReviewsCount : '',
+            }
+          })
+          setLocationInputs(locs)
+        } else {
+          setLocationInputs([])
+        }
 
         // If ready and creating new report (not editing an existing snapshot), auto-populate metrics
         if (data.ready && data.metrics && !isEditing) {
@@ -534,6 +600,78 @@ function AdminReportFormPage() {
       isMounted = false
     }
   }, [selectedClientId, reportMonth, isEditing])
+
+  const handleLocationChange = (idx: number, field: keyof LocationFormState, value: any) => {
+    setLocationInputs((prev) => {
+      const next = [...prev]
+      next[idx] = { ...next[idx], [field]: value }
+
+      if (next.length > 1) {
+        let totalCalls = 0
+        let totalDirections = 0
+        let totalClicks = 0
+        let totalReviews = 0
+        let weightedRatingSum = 0
+        let totalRatingWeight = 0
+
+        let totalPrevCalls = 0
+        let totalPrevDirections = 0
+        let totalPrevClicks = 0
+        let totalPrevReviews = 0
+
+        for (const loc of next) {
+          const calls = Number(loc.gbpCalls) || 0
+          const directions = Number(loc.gbpDirections) || 0
+          const clicks = Number(loc.gbpWebsiteClicks) || 0
+          const reviews = Number(loc.gbpReviewsCount) || 0
+          const rating = Number(loc.gbpRating) || 0
+
+          totalCalls += calls
+          totalDirections += directions
+          totalClicks += clicks
+          totalReviews += reviews
+
+          if (reviews > 0 && rating > 0) {
+            weightedRatingSum += rating * reviews
+            totalRatingWeight += reviews
+          } else if (rating > 0) {
+            weightedRatingSum += rating
+            totalRatingWeight += 1
+          }
+
+          const pCalls = Number(loc.prevGbpCalls) || 0
+          const pDirections = Number(loc.prevGbpDirections) || 0
+          const pClicks = Number(loc.prevGbpWebsiteClicks) || 0
+          const pReviews = Number(loc.prevGbpReviewsCount) || 0
+
+          totalPrevCalls += pCalls
+          totalPrevDirections += pDirections
+          totalPrevClicks += pClicks
+          totalPrevReviews += pReviews
+        }
+
+        const avgRating = totalRatingWeight > 0 ? (weightedRatingSum / totalRatingWeight) : 5.0
+
+        setGbpCalls(totalCalls)
+        setGbpDirections(totalDirections)
+        setGbpWebsiteClicks(totalClicks)
+        setGbpViews(totalClicks)
+        setGbpReviewsCount(totalReviews)
+        setGbpReviewCount(totalReviews)
+        setGbpRating(Number(avgRating.toFixed(1)))
+
+        if (totalPrevCalls > 0 || totalPrevDirections > 0 || totalPrevClicks > 0 || totalPrevReviews > 0) {
+          setPrevGbpCalls(totalPrevCalls)
+          setPrevGbpDirections(totalPrevDirections)
+          setPrevGbpWebsiteClicks(totalPrevClicks)
+          setPrevGbpViews(totalPrevClicks)
+          setPrevGbpReviewsCount(totalPrevReviews)
+        }
+      }
+
+      return next
+    })
+  }
 
   // Handler: Auto-pull prior month metrics from latest client report
   const handleAutoPullPriorMonth = async () => {
@@ -717,6 +855,17 @@ function AdminReportFormPage() {
       const isGsc = (ds.gsc ?? 'connected') === 'connected'
       const isGa4 = (ds.ga4 ?? 'connected') === 'connected'
 
+      const cleanedLocationMetrics: LocationMonthlyMetricsInput[] = locationInputs.length > 0
+        ? locationInputs.map((loc) => ({
+            locationId: loc.locationId,
+            gbpCalls: parseNullableInt(loc.gbpCalls),
+            gbpDirections: parseNullableInt(loc.gbpDirections),
+            gbpWebsiteClicks: parseNullableInt(loc.gbpWebsiteClicks),
+            gbpRating: parseDecimalValue(loc.gbpRating),
+            gbpReviewsCount: parseNullableInt(loc.gbpReviewsCount),
+          }))
+        : []
+
       const payload = {
         clientId: selectedClientId,
         title: title.trim(),
@@ -767,6 +916,8 @@ function AdminReportFormPage() {
         summary: summary.trim() || undefined,
         workCompleted: workCompleted.trim() || undefined,
         nextSteps: nextSteps.trim() || undefined,
+        // Multi-Location GBP Metrics
+        locationMetrics: cleanedLocationMetrics.length > 0 ? cleanedLocationMetrics : undefined,
       }
 
       if (isEditing && editId) {
@@ -944,23 +1095,23 @@ function AdminReportFormPage() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Section 1: Client & Period Metadata */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-5">
-              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                <Building2 className="w-4 h-4 text-rose-500" />
-                <span>Client & Reporting Period</span>
+            <div className="p-6 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-5">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
+                <Building2 className="w-4 h-4 text-amber-500" />
+                <span>Client &amp; Reporting Period</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Client Selector */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)]">
                     Select Client *
                   </label>
                   <select
                     required
                     value={selectedClientId}
                     onChange={(e) => setSelectedClientId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl text-xs border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium transition"
                   >
                     {clients.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -971,14 +1122,14 @@ function AdminReportFormPage() {
 
                   {/* Client Info Pill */}
                   {selectedClient && (
-                    <div className="flex items-center gap-2 pt-1 text-[11px] font-mono text-slate-500">
+                    <div className="flex items-center gap-2 pt-1 text-[11px] font-mono text-[var(--ink-muted)]">
                       <span
                         className="w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: selectedClient.primaryColor || '#2563eb' }}
+                        style={{ backgroundColor: selectedClient.primaryColor || '#d97706' }}
                       />
-                      <span>Brand Color: {selectedClient.primaryColor || '#2563eb'}</span>
+                      <span>Brand Color: {selectedClient.primaryColor || '#d97706'}</span>
                       {selectedClient.isWhiteLabel && (
-                        <span className="text-purple-600 font-bold">• White-Label Partner</span>
+                        <span className="text-amber-600 dark:text-amber-400 font-bold">• White-Label Partner</span>
                       )}
                     </div>
                   )}
@@ -986,14 +1137,14 @@ function AdminReportFormPage() {
 
                 {/* Reporting Period / Month */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)]">
                     Report Period / Month *
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     <select
                       value={selectedMonth}
                       onChange={(e) => handleMonthChange(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl text-xs border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono transition"
                     >
                       {MONTH_NAMES.map((m) => (
                         <option key={m} value={m}>
@@ -1004,7 +1155,7 @@ function AdminReportFormPage() {
                     <select
                       value={selectedYear}
                       onChange={(e) => handleYearChange(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl text-xs border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono transition"
                     >
                       {YEARS.map((y) => (
                         <option key={y} value={y}>
@@ -1018,7 +1169,7 @@ function AdminReportFormPage() {
 
               {/* Title */}
               <div className="space-y-1.5 pt-1">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)]">
                   Report Title *
                 </label>
                 <input
@@ -1030,49 +1181,235 @@ function AdminReportFormPage() {
                     setHasManuallyEditedTitle(true)
                   }}
                   placeholder="e.g. Local SEO Report or Apex Plumbing - Monthly Performance Report"
-                  className="w-full px-3.5 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-semibold"
+                  className="w-full px-3.5 py-2.5 rounded-xl text-xs border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold transition"
                 />
               </div>
 
               {/* Google Business Profile Reputation (Rating + Review Count) */}
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="pt-2 border-t border-[var(--line)] grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                  <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)] flex items-center gap-1.5">
                     <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                     <span>GBP Star Rating (e.g. 4.9 or 5.0)</span>
+                    {locationInputs.length > 1 && (
+                      <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-normal">
+                        (Weighted average from {locationInputs.length} profiles)
+                      </span>
+                    )}
                   </label>
                   <ThemedNumberInput
-                    theme="blue"
+                    theme="amber"
                     step="0.1"
                     min="1.0"
                     max="5.0"
                     value={gbpRating}
                     onChange={(e) => setGbpRating(e.target.value)}
-                    inputClassName="rounded-2xl px-3.5 py-2 focus:ring-2 focus:ring-amber-500"
+                    inputClassName="rounded-xl px-3.5 py-2 font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                  <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)] flex items-center gap-1.5">
                     <Users className="w-3.5 h-3.5 text-amber-500" />
                     <span>Total Review Count</span>
+                    {locationInputs.length > 1 && (
+                      <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-normal">
+                        (Sum across all locations)
+                      </span>
+                    )}
                   </label>
                   <ThemedNumberInput
-                    theme="blue"
+                    theme="amber"
                     min="0"
                     value={gbpReviewCount}
                     onChange={(e) => setGbpReviewCount(e.target.value)}
-                    inputClassName="rounded-2xl px-3.5 py-2 focus:ring-2 focus:ring-amber-500"
+                    inputClassName="rounded-xl px-3.5 py-2 font-bold focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
             </div>
 
+            {/* Multi-Location Google Business Profile Matrix (when client has multiple locations) */}
+            {locationInputs.length > 1 && (
+              <div className="p-6 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--line)] pb-3">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-amber-500" />
+                    <div>
+                      <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
+                        Multi-Location Google Business Profile Matrix ({locationInputs.length} Profiles Tracked)
+                      </h3>
+                      <p className="text-[11px] text-[var(--ink-muted)]">
+                        Enter performance metrics for each business location. Metrics are automatically rolled up into your aggregate KPIs and client deliverables report.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[11px] font-mono px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 font-semibold shrink-0">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Live Roll-Up Active</span>
+                  </div>
+                </div>
+
+                {/* Roll-up summary bar */}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 p-3.5 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-center">
+                  <div>
+                    <span className="text-[10px] font-mono text-[var(--ink-muted)] uppercase block">Total Calls</span>
+                    <span className="text-sm font-bold font-mono text-[var(--ink)]">{Number(gbpCalls) || 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-[var(--ink-muted)] uppercase block">Directions</span>
+                    <span className="text-sm font-bold font-mono text-[var(--ink)]">{Number(gbpDirections) || 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-[var(--ink-muted)] uppercase block">Website Clicks</span>
+                    <span className="text-sm font-bold font-mono text-[var(--ink)]">{Number(gbpWebsiteClicks) || 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-[var(--ink-muted)] uppercase block">Weighted Rating</span>
+                    <span className="text-sm font-bold font-mono text-amber-500">{Number(gbpRating || 5.0).toFixed(1)} ★</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-[var(--ink-muted)] uppercase block">Total Reviews</span>
+                    <span className="text-sm font-bold font-mono text-[var(--ink)]">{Number(gbpReviewsCount) || 0}</span>
+                  </div>
+                </div>
+
+                {/* Individual location cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                  {locationInputs.map((loc, idx) => (
+                    <div
+                      key={loc.locationId}
+                      className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] space-y-3"
+                    >
+                      <div className="flex items-start justify-between gap-2 border-b border-[var(--line)] pb-2">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                            <span className="text-xs font-bold text-[var(--ink)] truncate">{loc.name}</span>
+                          </div>
+                          {loc.address && (
+                            <span className="text-[11px] text-[var(--ink-muted)] block truncate mt-0.5">{loc.address}</span>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                          Profile #{idx + 1}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Calls (Current)
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={loc.gbpCalls}
+                            onChange={(e) => handleLocationChange(idx, 'gbpCalls', e.target.value)}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Prior Month
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={loc.prevGbpCalls || ''}
+                            onChange={(e) => handleLocationChange(idx, 'prevGbpCalls', e.target.value)}
+                            inputClassName="text-[var(--ink-muted)]"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Directions
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={loc.gbpDirections}
+                            onChange={(e) => handleLocationChange(idx, 'gbpDirections', e.target.value)}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Prior Month
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={loc.prevGbpDirections || ''}
+                            onChange={(e) => handleLocationChange(idx, 'prevGbpDirections', e.target.value)}
+                            inputClassName="text-[var(--ink-muted)]"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Website Clicks
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={loc.gbpWebsiteClicks}
+                            onChange={(e) => handleLocationChange(idx, 'gbpWebsiteClicks', e.target.value)}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Prior Month
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={loc.prevGbpWebsiteClicks || ''}
+                            onChange={(e) => handleLocationChange(idx, 'prevGbpWebsiteClicks', e.target.value)}
+                            inputClassName="text-[var(--ink-muted)]"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Rating (★)
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            step="0.1"
+                            min="1.0"
+                            max="5.0"
+                            value={loc.gbpRating}
+                            onChange={(e) => handleLocationChange(idx, 'gbpRating', e.target.value)}
+                            inputClassName="font-bold text-amber-500 focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] block truncate">
+                            Reviews Count
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={loc.gbpReviewsCount}
+                            onChange={(e) => handleLocationChange(idx, 'gbpReviewsCount', e.target.value)}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Section 2: Grouped Metrics with MoM Comparison */}
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                  <BarChart3 className="w-4 h-4 text-rose-500" />
+                <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
+                  <BarChart3 className="w-4 h-4 text-amber-500" />
                   <span>Key Performance Indicators (Current vs. Prior Month)</span>
                 </div>
 
@@ -1080,7 +1417,7 @@ function AdminReportFormPage() {
                   type="button"
                   onClick={handleAutoPullPriorMonth}
                   disabled={isPullingPrior || !selectedClientId}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold font-mono text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 transition cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold font-mono text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition cursor-pointer disabled:opacity-50"
                   title="Auto-fill previous month columns from client's latest existing report"
                 >
                   <Zap className={`w-3.5 h-3.5 text-amber-500 ${isPullingPrior ? 'animate-spin' : ''}`} />
@@ -1090,174 +1427,184 @@ function AdminReportFormPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {/* Card 1: Google Business Profile (GBP) */}
-                <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+                <div className="p-5 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
                       <PhoneCall className="w-3.5 h-3.5" />
                       <span>Google Business Profile</span>
                     </div>
-                    {preflightData?.dataSources && preflightData.dataSources.gbp !== 'connected' && (
+                    {locationInputs.length > 1 ? (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 font-semibold">
+                        {locationInputs.length} Locations Roll-Up
+                      </span>
+                    ) : preflightData?.dataSources && preflightData.dataSources.gbp !== 'connected' ? (
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
                         {preflightData.dataSources.gbp === 'no_access' ? 'No Access' : 'N/A'}
                       </span>
-                    )}
+                    ) : null}
                   </div>
 
                   {preflightData?.dataSources && preflightData.dataSources.gbp !== 'connected' ? (
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-center space-y-1 my-2">
-                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-center space-y-1 my-2">
+                      <p className="text-xs font-semibold text-[var(--ink)]">
                         GBP Excluded from Report
                       </p>
-                      <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                      <p className="text-[11px] text-[var(--ink-muted)]">
                         Access is marked as {preflightData.dataSources.gbp}. Metrics will be stored as null.
                       </p>
                     </div>
                   ) : (
                     <>
-                  {/* Calls */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Calls (Current) {renderFieldBadge('gbpCalls')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={gbpCalls}
-                        onChange={(e) => {
-                          setGbpCalls(e.target.value)
-                          markFieldEdited('gbpCalls')
-                        }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month {renderFieldBadge('prevGbpCalls')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={prevGbpCalls}
-                        onChange={(e) => {
-                          setPrevGbpCalls(e.target.value)
-                          markFieldEdited('prevGbpCalls')
-                        }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
-                      />
-                    </div>
-                  </div>
+                      {locationInputs.length > 1 && (
+                        <div className="p-2 rounded-lg bg-amber-500/5 border border-amber-500/15 text-[10px] font-mono text-amber-700 dark:text-amber-300 leading-tight">
+                          ⚡ Values represent combined totals across {locationInputs.length} locations. Modify individual locations in matrix above.
+                        </div>
+                      )}
 
-                  {/* Directions */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Directions (Current) {renderFieldBadge('gbpDirections')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={gbpDirections}
-                        onChange={(e) => {
-                          setGbpDirections(e.target.value)
-                          markFieldEdited('gbpDirections')
-                        }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month {renderFieldBadge('prevGbpDirections')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={prevGbpDirections}
-                        onChange={(e) => {
-                          setPrevGbpDirections(e.target.value)
-                          markFieldEdited('prevGbpDirections')
-                        }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
-                      />
-                    </div>
-                  </div>
+                      {/* Calls */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
+                            Calls (Current) {renderFieldBadge('gbpCalls')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={gbpCalls}
+                            onChange={(e) => {
+                              setGbpCalls(e.target.value)
+                              markFieldEdited('gbpCalls')
+                            }}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block">
+                            Prior Month {renderFieldBadge('prevGbpCalls')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={prevGbpCalls}
+                            onChange={(e) => {
+                              setPrevGbpCalls(e.target.value)
+                              markFieldEdited('prevGbpCalls')
+                            }}
+                            inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
+                          />
+                        </div>
+                      </div>
 
-                  {/* Website Clicks */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Website Clicks (Current) {renderFieldBadge('gbpWebsiteClicks')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={gbpWebsiteClicks}
-                        onChange={(e) => {
-                          setGbpWebsiteClicks(e.target.value)
-                          setGbpViews(e.target.value)
-                          markFieldEdited('gbpWebsiteClicks')
-                        }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month {renderFieldBadge('prevGbpWebsiteClicks')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={prevGbpWebsiteClicks}
-                        onChange={(e) => {
-                          setPrevGbpWebsiteClicks(e.target.value)
-                          setPrevGbpViews(e.target.value)
-                          markFieldEdited('prevGbpWebsiteClicks')
-                        }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
-                      />
-                    </div>
-                  </div>
+                      {/* Directions */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
+                            Directions (Current) {renderFieldBadge('gbpDirections')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={gbpDirections}
+                            onChange={(e) => {
+                              setGbpDirections(e.target.value)
+                              markFieldEdited('gbpDirections')
+                            }}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block">
+                            Prior Month {renderFieldBadge('prevGbpDirections')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={prevGbpDirections}
+                            onChange={(e) => {
+                              setPrevGbpDirections(e.target.value)
+                              markFieldEdited('prevGbpDirections')
+                            }}
+                            inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
+                          />
+                        </div>
+                      </div>
 
-                  {/* Reviews Count (Current vs Prior) */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
-                        Reviews (Current) {renderFieldBadge('gbpReviewsCount')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={gbpReviewsCount}
-                        onChange={(e) => {
-                          setGbpReviewsCount(e.target.value)
-                          setGbpReviewCount(e.target.value)
-                          markFieldEdited('gbpReviewsCount')
-                        }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
-                        Prior Month {renderFieldBadge('prevGbpReviewsCount')}
-                      </label>
-                      <ThemedNumberInput
-                        theme="blue"
-                        min="0"
-                        value={prevGbpReviewsCount}
-                        onChange={(e) => {
-                          setPrevGbpReviewsCount(e.target.value)
-                          markFieldEdited('prevGbpReviewsCount')
-                        }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
-                      />
-                    </div>
-                  </div>
+                      {/* Website Clicks */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
+                            Website Clicks (Current) {renderFieldBadge('gbpWebsiteClicks')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={gbpWebsiteClicks}
+                            onChange={(e) => {
+                              setGbpWebsiteClicks(e.target.value)
+                              setGbpViews(e.target.value)
+                              markFieldEdited('gbpWebsiteClicks')
+                            }}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block">
+                            Prior Month {renderFieldBadge('prevGbpWebsiteClicks')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={prevGbpWebsiteClicks}
+                            onChange={(e) => {
+                              setPrevGbpWebsiteClicks(e.target.value)
+                              setPrevGbpViews(e.target.value)
+                              markFieldEdited('prevGbpWebsiteClicks')
+                            }}
+                            inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Reviews Count (Current vs Prior) */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
+                            Reviews (Current) {renderFieldBadge('gbpReviewsCount')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={gbpReviewsCount}
+                            onChange={(e) => {
+                              setGbpReviewsCount(e.target.value)
+                              setGbpReviewCount(e.target.value)
+                              markFieldEdited('gbpReviewsCount')
+                            }}
+                            inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block">
+                            Prior Month {renderFieldBadge('prevGbpReviewsCount')}
+                          </label>
+                          <ThemedNumberInput
+                            theme="amber"
+                            min="0"
+                            value={prevGbpReviewsCount}
+                            onChange={(e) => {
+                              setPrevGbpReviewsCount(e.target.value)
+                              markFieldEdited('prevGbpReviewsCount')
+                            }}
+                            inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
+                          />
+                        </div>
+                      </div>
                     </>
                   )}
                 </div>
 
                 {/* Card 2: Google Search Console (GSC) */}
-                <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+                <div className="p-5 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                       <MousePointerClick className="w-3.5 h-3.5" />
@@ -1428,9 +1775,9 @@ function AdminReportFormPage() {
                 </div>
 
                 {/* Card 3: Google Analytics 4 (GA4) */}
-                <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+                <div className="p-5 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
                       <Users className="w-3.5 h-3.5" />
                       <span>Analytics (GA4)</span>
                     </div>
@@ -1442,11 +1789,11 @@ function AdminReportFormPage() {
                   </div>
 
                   {preflightData?.dataSources && preflightData.dataSources.ga4 !== 'connected' ? (
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-center space-y-1 my-2">
-                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-center space-y-1 my-2">
+                      <p className="text-xs font-semibold text-[var(--ink)]">
                         GA4 Excluded from Report
                       </p>
-                      <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                      <p className="text-[11px] text-[var(--ink-muted)]">
                         Access is marked as {preflightData.dataSources.ga4}. Metrics will be stored as null.
                       </p>
                     </div>
@@ -1456,33 +1803,33 @@ function AdminReportFormPage() {
                   {/* Total Users */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                      <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
                         Total Users (Current) {renderFieldBadge('gaUsers')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={gaUsers}
                         onChange={(e) => {
                           setGaUsers(e.target.value)
                           markFieldEdited('gaUsers')
                         }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block" title="Total Users (Prior Month)">
+                      <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block" title="Total Users (Prior Month)">
                         Prior Month {renderFieldBadge('prevGaUsers')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={prevGaUsers}
                         onChange={(e) => {
                           setPrevGaUsers(e.target.value)
                           markFieldEdited('prevGaUsers')
                         }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
+                        inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
                       />
                     </div>
                   </div>
@@ -1490,33 +1837,33 @@ function AdminReportFormPage() {
                   {/* Sessions */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                      <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
                         Sessions (Current) {renderFieldBadge('gaSessions')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={gaSessions}
                         onChange={(e) => {
                           setGaSessions(e.target.value)
                           markFieldEdited('gaSessions')
                         }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                      <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block">
                         Prior Month {renderFieldBadge('prevGaSessions')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={prevGaSessions}
                         onChange={(e) => {
                           setPrevGaSessions(e.target.value)
                           markFieldEdited('prevGaSessions')
                         }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
+                        inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
                       />
                     </div>
                   </div>
@@ -1524,33 +1871,33 @@ function AdminReportFormPage() {
                   {/* Pageviews */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                      <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
                         Views (Current) {renderFieldBadge('gaViews')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={gaViews}
                         onChange={(e) => {
                           setGaViews(e.target.value)
                           markFieldEdited('gaViews')
                         }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                      <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block">
                         Prior Month {renderFieldBadge('prevGaViews')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={prevGaViews}
                         onChange={(e) => {
                           setPrevGaViews(e.target.value)
                           markFieldEdited('prevGaViews')
                         }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
+                        inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
                       />
                     </div>
                   </div>
@@ -1558,33 +1905,33 @@ function AdminReportFormPage() {
                   {/* New Users */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono font-bold uppercase text-slate-500 truncate block">
+                      <label className="text-[10px] font-mono font-bold uppercase text-[var(--ink-muted)] truncate block">
                         New Users (Current) {renderFieldBadge('gaNewUsers')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={gaNewUsers}
                         onChange={(e) => {
                           setGaNewUsers(e.target.value)
                           markFieldEdited('gaNewUsers')
                         }}
-                        inputClassName="font-bold focus:ring-2 focus:ring-indigo-500"
+                        inputClassName="font-bold focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-mono uppercase text-slate-400 truncate block">
+                      <label className="text-[10px] font-mono uppercase text-[var(--ink-muted)] truncate block">
                         Prior Month {renderFieldBadge('prevGaNewUsers')}
                       </label>
                       <ThemedNumberInput
-                        theme="indigo"
+                        theme="amber"
                         min="0"
                         value={prevGaNewUsers}
                         onChange={(e) => {
                           setPrevGaNewUsers(e.target.value)
                           markFieldEdited('prevGaNewUsers')
                         }}
-                        inputClassName="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400"
+                        inputClassName="bg-[var(--surface)] text-[var(--ink-muted)]"
                       />
                     </div>
                   </div>
@@ -1597,18 +1944,18 @@ function AdminReportFormPage() {
             {/* Section 3: Deep Metric Tables */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
                   <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
                   <span>Deep Metric Tables (Top 5 Queries &amp; Top 5 Pages)</span>
                 </div>
-                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                <span className="text-[11px] font-mono text-[var(--ink-muted)]">
                   Detailed search queries and landing pages for Page 2 of the report
                 </span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {/* Table 1: Top 5 Search Queries */}
-                <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+                <div className="p-5 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3">
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
@@ -1619,13 +1966,13 @@ function AdminReportFormPage() {
                         GSC Performance
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                      Where to find: In <strong className="text-slate-700 dark:text-slate-300">GSC &gt; Performance &gt; Queries</strong> tab. Enter the top 5 search terms driving impressions and clicks.
+                    <p className="text-[11px] text-[var(--ink-muted)] leading-tight">
+                      Where to find: In <strong className="text-[var(--ink)]">GSC &gt; Performance &gt; Queries</strong> tab. Enter the top 5 search terms driving impressions and clicks.
                     </p>
                   </div>
 
                   {/* Header labels row */}
-                  <div className="grid grid-cols-12 gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2 py-1.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 rounded-xl">
+                  <div className="grid grid-cols-12 gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--ink-muted)] px-2 py-1.5 border-b border-[var(--line)] bg-[var(--surface)] rounded-xl">
                     <div className="col-span-6 flex items-center gap-1">
                       <span>#</span>
                       <span className="ml-1">Search Query / Keyword</span>
@@ -1653,7 +2000,7 @@ function AdminReportFormPage() {
                       return (
                         <div key={idx} className="grid grid-cols-12 gap-2 items-center">
                           <div className="col-span-6 flex items-center gap-1.5">
-                            <span className="w-5 text-center text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                            <span className="w-5 text-center text-[10px] font-mono font-bold text-[var(--ink-muted)] shrink-0">
                               #{idx + 1}
                             </span>
                             <input
@@ -1661,7 +2008,7 @@ function AdminReportFormPage() {
                               placeholder={queryPlaceholders[idx] || `Keyword #${idx + 1}`}
                               value={q.query}
                               onChange={(e) => handleQueryChange(idx, 'query', e.target.value)}
-                              className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                              className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:outline-none focus:ring-2 focus:ring-emerald-500"
                             />
                           </div>
                           <div className="col-span-2">
@@ -1702,24 +2049,24 @@ function AdminReportFormPage() {
                 </div>
 
                 {/* Table 2: Top 5 High-Value Pages */}
-                <div className="p-5 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+                <div className="p-5 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-3">
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
                         <Globe className="w-3.5 h-3.5" />
                         <span>Top 5 Landing Pages (GSC)</span>
                       </div>
-                      <span className="text-[10px] font-mono text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-md font-semibold border border-indigo-200 dark:border-indigo-800">
+                      <span className="text-[10px] font-mono text-amber-700 dark:text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md font-semibold border border-amber-500/20">
                         Google Search Console
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                      Where to find: In <strong className="text-slate-700 dark:text-slate-300">GSC &gt; Performance &gt; Search results &gt; Pages</strong> tab. Enter the top URLs by impressions and average position.
+                    <p className="text-[11px] text-[var(--ink-muted)] leading-tight">
+                      Where to find: In <strong className="text-[var(--ink)]">GSC &gt; Performance &gt; Search results &gt; Pages</strong> tab. Enter the top URLs by impressions and average position.
                     </p>
                   </div>
 
                   {/* Header labels row */}
-                  <div className="grid grid-cols-12 gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2 py-1.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 rounded-xl">
+                  <div className="grid grid-cols-12 gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--ink-muted)] px-2 py-1.5 border-b border-[var(--line)] bg-[var(--surface)] rounded-xl">
                     <div className="col-span-6 flex items-center gap-1">
                       <span>#</span>
                       <span className="ml-1">Page URL / Path</span>
@@ -1744,7 +2091,7 @@ function AdminReportFormPage() {
                       return (
                         <div key={idx} className="grid grid-cols-12 gap-2 items-center">
                           <div className="col-span-6 flex items-center gap-1.5">
-                            <span className="w-5 text-center text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                            <span className="w-5 text-center text-[10px] font-mono font-bold text-[var(--ink-muted)] shrink-0">
                               #{idx + 1}
                             </span>
                             <input
@@ -1752,28 +2099,28 @@ function AdminReportFormPage() {
                               placeholder={pagePlaceholders[idx] || (idx === 0 ? '/' : `/service-${idx}`)}
                               value={p.path}
                               onChange={(e) => handlePageChange(idx, 'path', e.target.value)}
-                              className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500"
                             />
                           </div>
                           <div className="col-span-3">
                             <ThemedNumberInput
-                              theme="indigo"
+                              theme="amber"
                               min="0"
                               placeholder="0"
                               value={p.impressions === 0 || p.impressions === '' || p.impressions === undefined ? '' : p.impressions}
                               onChange={(e) => handlePageChange(idx, 'impressions', e.target.value)}
-                              inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
+                              inputClassName="text-right focus:ring-2 focus:ring-amber-500"
                             />
                           </div>
                           <div className="col-span-3">
                             <ThemedNumberInput
-                              theme="indigo"
+                              theme="amber"
                               step="0.1"
                               min="1.0"
                               placeholder="1.0"
                               value={p.position !== undefined && p.position !== null ? p.position : ''}
                               onChange={(e) => handlePageChange(idx, 'position', e.target.value)}
-                              inputClassName="text-right focus:ring-2 focus:ring-indigo-500"
+                              inputClassName="text-right focus:ring-2 focus:ring-amber-500"
                             />
                           </div>
                         </div>
@@ -1785,15 +2132,15 @@ function AdminReportFormPage() {
             </div>
 
             {/* Section 4: Narrative Text Fields */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-5">
-              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                <FileText className="w-4 h-4 text-rose-500" />
+            <div className="p-6 rounded-2xl bg-[var(--panel)] border border-[var(--line)] shadow-xs space-y-5">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink)]">
+                <FileText className="w-4 h-4 text-amber-500" />
                 <span>{summaryTitle || 'Performance Highlights & Strategic Updates'}</span>
               </div>
 
               {/* Customizable Summary Heading / Title */}
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)]">
                   Summary Section Heading / Title
                 </label>
                 <input
@@ -1801,23 +2148,23 @@ function AdminReportFormPage() {
                   value={summaryTitle}
                   onChange={(e) => setSummaryTitle(e.target.value)}
                   placeholder="e.g. Performance Highlights & Strategic Updates"
-                  className="w-full px-4 py-2.5 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 font-semibold"
+                  className="w-full px-4 py-2.5 rounded-xl text-xs border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold transition"
                 />
               </div>
 
               {/* Summary Body */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400">
+                  <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)]">
                     Summary Content
                   </label>
                   <button
                     type="button"
                     onClick={handleDraftSummaryFromMetrics}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold font-mono text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition cursor-pointer shadow-2xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold font-mono text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition cursor-pointer shadow-2xs"
                     title="Draft 3 structured bullet points based on live metrics"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                     <span>⚡ Draft Summary from Metrics</span>
                   </button>
                 </div>
@@ -1826,43 +2173,43 @@ function AdminReportFormPage() {
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
                   placeholder="Provide a concise 1-2 paragraph overview of performance, milestones achieved, and key growth drivers during this reporting period..."
-                  className="w-full p-4 rounded-2xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                  className="w-full p-4 rounded-xl text-xs border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 leading-relaxed transition"
                 />
               </div>
 
               {/* Work Completed */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                  <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)] flex items-center gap-1.5">
                     <ListChecks className="w-3.5 h-3.5 text-emerald-500" />
                     <span>Work Completed This Month (One item per line)</span>
                   </label>
-                  <span className="text-[10px] font-mono text-slate-400">Renders as styled checklist</span>
+                  <span className="text-[10px] font-mono text-[var(--ink-muted)]">Renders as styled checklist</span>
                 </div>
                 <textarea
                   rows={5}
                   value={workCompleted}
                   onChange={(e) => setWorkCompleted(e.target.value)}
                   placeholder="• Optimized Google Business Profile primary category and weekly posts&#10;• Fixed meta title and description lengths across top 10 landing pages&#10;• Built 15 high-authority local citations and directory links&#10;• Reduced mobile Cumulative Layout Shift (CLS) on the service quote page"
-                  className="w-full p-4 rounded-2xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                  className="w-full p-4 rounded-xl text-xs font-mono border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 leading-relaxed transition"
                 />
               </div>
 
               {/* Next Steps */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-mono font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                    <ListOrdered className="w-3.5 h-3.5 text-indigo-500" />
+                  <label className="text-xs font-mono font-bold uppercase text-[var(--ink-muted)] flex items-center gap-1.5">
+                    <ListOrdered className="w-3.5 h-3.5 text-amber-500" />
                     <span>Next Steps & Priorities (One item per line)</span>
                   </label>
-                  <span className="text-[10px] font-mono text-slate-400">Renders as roadmap targets</span>
+                  <span className="text-[10px] font-mono text-[var(--ink-muted)]">Renders as roadmap targets</span>
                 </div>
                 <textarea
                   rows={4}
                   value={nextSteps}
                   onChange={(e) => setNextSteps(e.target.value)}
                   placeholder="• Launch review generation SMS campaign targeting past 60-day customers&#10;• Implement structured schema markup for LocalBusiness and FAQ items&#10;• Publish 2 localized case study articles targeting high-intent suburbs"
-                  className="w-full p-4 rounded-2xl text-xs font-mono border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 leading-relaxed"
+                  className="w-full p-4 rounded-xl text-xs font-mono border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 leading-relaxed transition"
                 />
               </div>
             </div>
@@ -1871,14 +2218,14 @@ function AdminReportFormPage() {
             <div className="flex items-center justify-end gap-3 pt-2">
               <Link
                 to="/admin/reports"
-                className="px-5 py-2.5 rounded-2xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="px-5 py-2.5 rounded-xl text-xs font-semibold text-[var(--ink-muted)] hover:bg-[var(--line)] hover:text-[var(--ink)] transition"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isSubmitting || Boolean(preflightData && !preflightData.ready && !isEditing)}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-bold text-white bg-slate-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-500 shadow-sm transition disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-stone-950 bg-amber-500 hover:bg-amber-400 shadow-sm transition disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                 title={
                   preflightData && !preflightData.ready && !isEditing
                     ? preflightData.missing === 'metrics_fields'
@@ -1889,7 +2236,7 @@ function AdminReportFormPage() {
               >
                 {preflightData && !preflightData.ready && !isEditing ? (
                   <>
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-300" />
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-900" />
                     <span>
                       {preflightData.missing === 'metrics_fields'
                         ? 'Incomplete Channel Metrics'

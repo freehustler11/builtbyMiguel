@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "src/routes/about.tsx": {
-    "mtime": 1789226935.8320625,
-    "seen": 1789227713.6061404,
-    "ast_hash": "c0f548230523c65638d455d0888eb85e",
+    "mtime": 1789228449.907616,
+    "seen": 1789229013.3201308,
+    "ast_hash": "c001bf1887d30799e38bf34bf73859f5",
     "semantic_hash": ""
   },
   "src/routes/index.tsx": {
@@ -2772,8 +2772,8 @@
     "semantic_hash": ""
   },
   "public/robots.txt": {
-    "mtime": 1789227417.1420069,
-    "seen": 1789227713.6096842,
+    "mtime": 1789228653.8822284,
+    "seen": 1789229013.3211823,
     "ast_hash": "e6f7f8c23f02e1c7b884503a9e17e018",
     "semantic_hash": ""
   },
@@ -3507,6 +3507,36 @@
     "mtime": 1789225049.3816042,
     "seen": 1789226236.347718,
     "ast_hash": "9203c467ed7239a39712b097e3b64ec3",
+    "semantic_hash": ""
+  },
+  "public/images/certificates/all-white-hat-advanced-seo.webp": {
+    "mtime": 1789228275.89853,
+    "seen": 1789229013.3211875,
+    "ast_hash": "208169a91c246deb93531dd4a6d4d6f6",
+    "semantic_hash": ""
+  },
+  "public/images/certificates/ghl-training-hbc.webp": {
+    "mtime": 1789228275.9062753,
+    "seen": 1789229013.3211896,
+    "ast_hash": "809ffa1004cf71269e7fd697e9629701",
+    "semantic_hash": ""
+  },
+  "public/images/certificates/pinoyseo-bootcamp.webp": {
+    "mtime": 1789228275.896873,
+    "seen": 1789229013.3211918,
+    "ast_hash": "aff5d829ee7dfbac49679c15cc9469e7",
+    "semantic_hash": ""
+  },
+  "public/images/certificates/premium-local-seo-ai-tools.webp": {
+    "mtime": 1789228275.9082117,
+    "seen": 1789229013.321194,
+    "ast_hash": "825c335e618d3d28b8c833ae7eb34458",
+    "semantic_hash": ""
+  },
+  "public/images/certificates/seotalks-local-seo-masterclass.webp": {
+    "mtime": 1789228275.9034216,
+    "seen": 1789229013.3211963,
+    "ast_hash": "db12b3c0c1ff570bb237ddeb2117103c",
     "semantic_hash": ""
   }
 }
